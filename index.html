@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Recomiéndame un móvil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  /* ---- VARIABLES ---- */
+  :root {
+    --bg: #F7F6F2;
+    --surface: #FFFFFF;
+    --surface2: #F0EEE8;
+    --border: #E2DFD6;
+    --border2: #CBC7BC;
+    --text: #1A1916;
+    --text2: #6B6860;
+    --text3: #A09D96;
+    --accent: #1D5AE5;
+    --accent-bg: #EBF0FD;
+    --accent-text: #1440B0;
+    --green: #0F6E56;
+    --green-bg: #E1F5EE;
+    --green-border: #5DCAA5;
+    --green-text: #085041;
+    --amber: #854F0B;
+    --amber-bg: #FAEEDA;
+    --coral: #993C1D;
+    --coral-bg: #FAECE7;
+    --purple: #3C3489;
+    --purple-bg: #EEEDFE;
+    --radius: 10px;
+    --radius-sm: 6px;
+    --radius-pill: 20px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ---- TOPBAR ---- */
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1.5rem;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .topbar-logo {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .topbar-logo span { color: var(--accent); }
+  .topbar-right { display: flex; align-items: center; gap: 10px; }
+  .nick-display {
+    font-size: 13px;
+    color: var(--text2);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    padding: 5px 12px;
+  }
+  .nick-display b { color: var(--text); }
+
+  /* ---- LAYOUT ---- */
+  .container { max-width: 720px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+
+  /* ---- STATS ---- */
+  .stats {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+  }
+  .stat-pill {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    padding: 5px 14px;
+    font-size: 12px;
+    color: var(--text2);
+  }
+  .stat-pill b { color: var(--text); }
+
+  /* ---- ACTIONS BAR ---- */
+  .actions-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 1.25rem;
+    align-items: center;
+  }
+  .tabs {
+    display: flex;
+    gap: 2px;
+    background: var(--surface2);
+    border-radius: var(--radius-pill);
+    padding: 3px;
+    flex: 1;
+  }
+  .tab {
+    flex: 1;
+    padding: 6px 12px;
+    font-size: 13px;
+    color: var(--text2);
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-radius: var(--radius-pill);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    transition: all 0.15s;
+  }
+  .tab.active {
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: var(--shadow);
+  }
+  .btn-new {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-pill);
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    white-space: nowrap;
+    transition: background 0.15s;
+  }
+  .btn-new:hover { background: #1440B0; }
+
+  /* ---- NICK MODAL ---- */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.4);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 200;
+  }
+  .modal-overlay.hidden { display: none; }
+  .modal {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 2rem;
+    width: 360px;
+    max-width: 95vw;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  }
+  .modal h2 { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+  .modal p { font-size: 13px; color: var(--text2); margin-bottom: 1.25rem; line-height: 1.5; }
+  .modal input {
+    width: 100%;
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    margin-bottom: 12px;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .modal input:focus { border-color: var(--accent); }
+  .modal-error { font-size: 12px; color: var(--coral); margin-bottom: 10px; min-height: 16px; }
+  .btn-primary {
+    width: 100%;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-primary:hover { background: #1440B0; }
+
+  /* ---- NUEVO HILO FORM ---- */
+  .new-form {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+    display: none;
+  }
+  .new-form.open { display: block; }
+  .new-form h3 { font-size: 15px; font-weight: 600; margin-bottom: 1rem; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 1rem; }
+  .form-item { display: flex; flex-direction: column; gap: 4px; }
+  .form-item label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; }
+  .form-item input, .form-item select, .form-item textarea {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px 10px;
+    font-size: 13px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-item input:focus, .form-item select:focus, .form-item textarea:focus { border-color: var(--accent); }
+  .form-item.full { grid-column: 1 / -1; }
+  .form-item textarea { resize: none; height: 64px; }
+  .form-footer { display: flex; gap: 8px; justify-content: flex-end; }
+  .btn-cancel {
+    background: none;
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 8px 16px;
+    font-size: 13px;
+    cursor: pointer;
+    color: var(--text2);
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-submit {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* ---- THREAD ---- */
+  .thread {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 1rem;
+    overflow: hidden;
+    transition: box-shadow 0.15s;
+  }
+  .thread:hover { box-shadow: var(--shadow); }
+
+  .thread-header { padding: 1rem 1.25rem; }
+  .thread-meta {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 10px;
+  }
+  .avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600; flex-shrink: 0;
+    font-family: 'DM Mono', monospace;
+  }
+  .username { font-size: 13px; font-weight: 600; color: var(--text); }
+  .timestamp { font-size: 11px; color: var(--text3); margin-left: auto; }
+
+  .badge {
+    font-size: 10px; padding: 2px 7px;
+    border-radius: var(--radius-pill);
+    font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em;
+  }
+  .badge-expert { background: var(--amber-bg); color: var(--amber); }
+  .badge-trusted { background: var(--green-bg); color: var(--green); }
+  .badge-new { background: var(--surface2); color: var(--text3); }
+
+  .plantilla {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+  }
+  .p-item {
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    padding: 7px 9px;
+  }
+  .p-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 2px; }
+  .p-value { font-size: 12px; color: var(--text); font-weight: 500; }
+
+  /* ---- CONSENSO ---- */
+  .consensus-banner {
+    margin: 0 1.25rem 0.75rem;
+    background: var(--green-bg);
+    border: 1px solid var(--green-border);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .consensus-icon { font-size: 20px; }
+  .consensus-label { font-size: 11px; color: var(--green); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+  .consensus-phone { font-size: 15px; font-weight: 600; color: var(--green-text); }
+  .consensus-count { font-size: 11px; color: var(--green); margin-top: 1px; }
+
+  /* ---- RESPUESTAS ---- */
+  .replies { padding: 0 1.25rem; }
+  .reply {
+    padding: 0.75rem 0;
+    border-top: 1px solid var(--border);
+  }
+  .reply-meta { display: flex; align-items: center; gap: 7px; margin-bottom: 6px; }
+  .reply-body { font-size: 13px; color: var(--text); line-height: 1.6; }
+  .phone-tag {
+    display: inline-block;
+    background: var(--accent-bg);
+    color: var(--accent-text);
+    font-size: 11px; font-weight: 600;
+    padding: 2px 9px; border-radius: var(--radius-pill);
+    margin-top: 6px;
+    font-family: 'DM Mono', monospace;
+  }
+  .consensus-tag {
+    display: inline-flex; align-items: center; gap: 3px;
+    background: var(--green-bg); color: var(--green);
+    font-size: 10px; font-weight: 600;
+    padding: 2px 8px; border-radius: var(--radius-pill);
+    margin-left: 6px; vertical-align: middle;
+    text-transform: uppercase; letter-spacing: 0.03em;
+  }
+  .reply-actions {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 8px;
+  }
+  .vote-btn {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 12px; color: var(--text3);
+    cursor: pointer; border: none; background: none;
+    font-family: 'DM Sans', sans-serif;
+    padding: 3px 8px; border-radius: var(--radius-pill);
+    transition: all 0.15s;
+  }
+  .vote-btn:hover { background: var(--surface2); color: var(--accent); }
+  .vote-btn.voted-util { color: var(--accent); background: var(--accent-bg); }
+  .vote-btn.voted-noutil { color: var(--coral); background: var(--coral-bg); }
+
+  /* ---- REPLY BOX ---- */
+  .reply-box {
+    margin: 0.75rem 1.25rem 1rem;
+    display: flex; gap: 8px; align-items: flex-end;
+  }
+  .reply-input {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 9px 12px;
+    font-size: 13px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    resize: none;
+    height: 38px;
+    transition: border-color 0.15s, height 0.15s;
+  }
+  .reply-input:focus { border-color: var(--accent); }
+  .reply-send {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    width: 38px; height: 38px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .reply-send:hover { background: #1440B0; }
+  .reply-send:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* ---- EMPTY / LOADING ---- */
+  .empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text2);
+    font-size: 14px;
+  }
+  .empty b { display: block; font-size: 16px; color: var(--text); margin-bottom: 6px; }
+  .loading { text-align: center; padding: 2rem; color: var(--text3); font-size: 13px; }
+
+  @media (max-width: 520px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .plantilla { grid-template-columns: 1fr 1fr; }
+    .tabs .tab { font-size: 11px; padding: 6px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ====== NICK MODAL ====== -->
+<div class="modal-overlay" id="nickModal">
+  <div class="modal">
+    <h2>Elige tu nombre</h2>
+    <p>No necesitas contraseña. Tu nickname te identifica en la comunidad. Si alguien ya lo usa, el sistema te avisará.</p>
+    <input type="text" id="nickInput" placeholder="ej. Juanillo_tech" maxlength="20" />
+    <div class="modal-error" id="nickError"></div>
+    <button class="btn-primary" onclick="registrarNick()">Entrar</button>
+  </div>
+</div>
+
+<!-- ====== TOPBAR ====== -->
+<div class="topbar">
+  <div class="topbar-logo">📱 <span>Recomiéndame</span> un móvil</div>
+  <div class="topbar-right">
+    <div class="nick-display" id="nickDisplay">Cargando...</div>
+  </div>
+</div>
+
+<!-- ====== CONTAINER ====== -->
+<div class="container">
+
+  <div class="stats" id="statsBar">
+    <div class="stat-pill">Cargando estadísticas...</div>
+  </div>
+
+  <div class="actions-bar">
+    <div class="tabs">
+      <button class="tab active" onclick="setTab('recientes', this)">Recientes</button>
+      <button class="tab" onclick="setTab('activas', this)">Más activas</button>
+      <button class="tab" onclick="setTab('resueltas', this)">Resueltas</button>
+    </div>
+    <button class="btn-new" onclick="abrirForm()">+ Nueva consulta</button>
+  </div>
+
+  <!-- ====== NUEVO HILO FORM ====== -->
+  <div class="new-form" id="newForm">
+    <h3>Cuéntanos qué buscas</h3>
+    <div class="form-grid">
+      <div class="form-item">
+        <label>Presupuesto</label>
+        <input type="text" id="f_presupuesto" placeholder="ej. 300€" />
+      </div>
+      <div class="form-item">
+        <label>Móvil actual</label>
+        <input type="text" id="f_movil_actual" placeholder="ej. Redmi Note 10" />
+      </div>
+      <div class="form-item">
+        <label>Marca preferida</label>
+        <input type="text" id="f_marca_pref" placeholder="Sin preferencia" />
+      </div>
+      <div class="form-item">
+        <label>Marca que NO quieres</label>
+        <input type="text" id="f_marca_no" placeholder="ej. Apple" />
+      </div>
+      <div class="form-item">
+        <label>Garantía España</label>
+        <select id="f_garantia">
+          <option value="Sí">Sí, necesaria</option>
+          <option value="No">No necesaria</option>
+        </select>
+      </div>
+      <div class="form-item">
+        <label>Modelos</label>
+        <select id="f_modelos">
+          <option value="Actuales">Actuales</option>
+          <option value="Puede ser antiguo">Puede ser antiguo</option>
+        </select>
+      </div>
+      <div class="form-item full">
+        <label>Uso principal</label>
+        <input type="text" id="f_uso" placeholder="ej. WhatsApp, fotos, redes sociales..." />
+      </div>
+      <div class="form-item">
+        <label>Tamaño pantalla</label>
+        <select id="f_tamano">
+          <option value="Sin preferencia">Sin preferencia</option>
+          <option value="Pequeño <6&quot;">Pequeño &lt;6"</option>
+          <option value="Normal 6-6.5&quot;">Normal 6-6.5"</option>
+          <option value="Grande >6.5&quot;">Grande &gt;6.5"</option>
+        </select>
+      </div>
+      <div class="form-item">
+        <label>¿Juegas?</label>
+        <select id="f_juegos">
+          <option value="No">No</option>
+          <option value="Algún casual">Algún casual</option>
+          <option value="Sí, bastante">Sí, bastante</option>
+        </select>
+      </div>
+      <div class="form-item">
+        <label>¿Usas mucho la cámara?</label>
+        <select id="f_camara">
+          <option value="No mucho">No mucho</option>
+          <option value="Sí, importante">Sí, importante</option>
+        </select>
+      </div>
+      <div class="form-item">
+        <label>¿Mucha batería?</label>
+        <select id="f_bateria">
+          <option value="Normal">Normal</option>
+          <option value="Sí, prioritaria">Sí, prioritaria</option>
+        </select>
+      </div>
+      <div class="form-item">
+        <label>¿Carga rápida?</label>
+        <select id="f_carga">
+          <option value="No necesaria">No necesaria</option>
+          <option value="Sí">Sí</option>
+        </select>
+      </div>
+      <div class="form-item full">
+        <label>Algo más que añadir</label>
+        <textarea id="f_extra" placeholder="Cualquier detalle adicional..."></textarea>
+      </div>
+    </div>
+    <div class="form-footer">
+      <button class="btn-cancel" onclick="cerrarForm()">Cancelar</button>
+      <button class="btn-submit" id="btnPublicar" onclick="publicarHilo()">Publicar consulta</button>
+    </div>
+  </div>
+
+  <!-- ====== HILOS LIST ====== -->
+  <div id="hilosList">
+    <div class="loading">Cargando consultas...</div>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+// CONFIG — CAMBIA ESTAS DOS LÍNEAS POR LAS TUYAS DE SUPABASE
+// ============================================================
+const SUPABASE_URL = 'https://eqtjsgqascldwhqomncu.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_AH7nQIp9WPOqUowcPi3W4Q_djmApiMF';
+// ============================================================
+
+const { createClient } = supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ---- COLORES AVATAR ----
+const AVATAR_COLORS = [
+  { bg: '#E6F1FB', color: '#185FA5' },
+  { bg: '#E1F5EE', color: '#0F6E56' },
+  { bg: '#FAEEDA', color: '#854F0B' },
+  { bg: '#FAECE7', color: '#993C1D' },
+  { bg: '#EEEDFE', color: '#3C3489' },
+  { bg: '#FCEBEB', color: '#A32D2D' },
+];
+function avatarColor(nick) {
+  let h = 0;
+  for (let c of nick) h = (h * 31 + c.charCodeAt(0)) & 0xFFFF;
+  return AVATAR_COLORS[h % AVATAR_COLORS.length];
+}
+function initials(nick) {
+  return nick.substring(0, 2).toUpperCase();
+}
+function avatarEl(nick) {
+  const c = avatarColor(nick);
+  return `<div class="avatar" style="background:${c.bg};color:${c.color}">${initials(nick)}</div>`;
+}
+
+// ---- BADGE REPUTACION ----
+function badgeHtml(puntos) {
+  if (puntos >= 50) return '<span class="badge badge-expert">Experto</span>';
+  if (puntos >= 10) return '<span class="badge badge-trusted">De confianza</span>';
+  return '<span class="badge badge-new">Nuevo</span>';
+}
+
+// ---- TIEMPO RELATIVO ----
+function timeAgo(ts) {
+  const diff = (Date.now() - new Date(ts)) / 1000;
+  if (diff < 60) return 'ahora';
+  if (diff < 3600) return `hace ${Math.floor(diff/60)}min`;
+  if (diff < 86400) return `hace ${Math.floor(diff/3600)}h`;
+  return `hace ${Math.floor(diff/86400)}d`;
+}
+
+// ---- DETECCION MOVIL EN TEXTO ----
+const MOVILES = [
+  'iPhone 16','iPhone 15','iPhone 14','iPhone 13','iPhone 12','iPhone SE',
+  'Samsung Galaxy S24','Samsung Galaxy S23','Samsung Galaxy S22','Samsung Galaxy A55',
+  'Samsung Galaxy A54','Samsung Galaxy A35','Samsung Galaxy A25','Samsung Galaxy S23 FE',
+  'Xiaomi 14','Xiaomi 13','Redmi Note 13 Pro','Redmi Note 13','Redmi Note 12',
+  'Redmi 13C','POCO X6 Pro','POCO X6','POCO M6 Pro','POCO F6',
+  'Google Pixel 9','Google Pixel 8','Google Pixel 7','Google Pixel 8a',
+  'OnePlus 12','OnePlus 12R','OnePlus Nord 4','OnePlus Nord CE4',
+  'Motorola Edge 50','Motorola Moto G85','Motorola Moto G54',
+  'OPPO Find X8','OPPO Reno 12','realme 12 Pro','realme GT 6',
+  'Sony Xperia 1 VI','Nokia G42',
+];
+function detectarMovil(texto) {
+  const t = texto.toLowerCase();
+  for (const m of MOVILES) {
+    if (t.includes(m.toLowerCase())) return m;
+  }
+  return null;
+}
+
+// ---- ESTADO ----
+let usuario = null;
+let tabActual = 'recientes';
+let hilosData = [];
+
+// ---- NICK / USUARIO ----
+async function init() {
+  const nickGuardado = localStorage.getItem('moviles_nick');
+  if (nickGuardado) {
+    const { data } = await db.from('usuarios').select('*').eq('nickname', nickGuardado).single();
+    if (data) {
+      usuario = data;
+      mostrarNick();
+      document.getElementById('nickModal').classList.add('hidden');
+    }
+  }
+  cargarStats();
+  cargarHilos();
+}
+
+function mostrarNick() {
+  document.getElementById('nickDisplay').innerHTML = usuario
+    ? `Hola, <b>${usuario.nickname}</b> · ${usuario.puntos}pts`
+    : 'Invitado';
+}
+
+async function registrarNick() {
+  const nick = document.getElementById('nickInput').value.trim();
+  const err = document.getElementById('nickError');
+  if (!nick || nick.length < 3) { err.textContent = 'Mínimo 3 caracteres'; return; }
+  if (!/^[a-zA-Z0-9_\-\.]+$/.test(nick)) { err.textContent = 'Solo letras, números, _ y -'; return; }
+
+  const { data: existe } = await db.from('usuarios').select('id').eq('nickname', nick).single();
+  if (existe) {
+    usuario = (await db.from('usuarios').select('*').eq('nickname', nick).single()).data;
+  } else {
+    const { data } = await db.from('usuarios').insert({ nickname: nick }).select().single();
+    usuario = data;
+  }
+  localStorage.setItem('moviles_nick', nick);
+  mostrarNick();
+  document.getElementById('nickModal').classList.add('hidden');
+}
+
+document.getElementById('nickInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') registrarNick();
+});
+
+// ---- STATS ----
+async function cargarStats() {
+  const { count: totalHilos } = await db.from('hilos').select('*', { count: 'exact', head: true });
+  const { count: resueltos } = await db.from('hilos').select('*', { count: 'exact', head: true }).eq('resuelto', true);
+  const { count: asesores } = await db.from('usuarios').select('*', { count: 'exact', head: true });
+  document.getElementById('statsBar').innerHTML = `
+    <div class="stat-pill"><b>${totalHilos || 0}</b> consultas abiertas</div>
+    <div class="stat-pill"><b>${resueltos || 0}</b> resueltas</div>
+    <div class="stat-pill"><b>${asesores || 0}</b> asesores</div>
+  `;
+}
+
+// ---- TABS ----
+function setTab(tab, el) {
+  tabActual = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  cargarHilos();
+}
+
+// ---- CARGAR HILOS ----
+async function cargarHilos() {
+  document.getElementById('hilosList').innerHTML = '<div class="loading">Cargando consultas...</div>';
+
+  let query = db.from('hilos').select(`*, respuestas(count)`);
+  if (tabActual === 'resueltas') query = query.eq('resuelto', true);
+  else if (tabActual === 'recientes') query = query.order('created_at', { ascending: false });
+  else query = query.order('created_at', { ascending: false });
+
+  const { data: hilos } = await query.limit(30);
+  hilosData = hilos || [];
+
+  if (!hilosData.length) {
+    document.getElementById('hilosList').innerHTML = `
+      <div class="empty"><b>Aún no hay consultas</b>Sé el primero en preguntar 👆</div>
+    `;
+    return;
+  }
+
+  let html = '';
+  for (const h of hilosData) {
+    html += await renderHilo(h);
+  }
+  document.getElementById('hilosList').innerHTML = html;
+
+  // Cargar respuestas de cada hilo
+  for (const h of hilosData) {
+    cargarRespuestas(h.id);
+  }
+}
+
+// ---- RENDER HILO ----
+async function renderHilo(h) {
+  const { data: u } = await db.from('usuarios').select('puntos').eq('nickname', h.nickname).single();
+  const puntos = u ? u.puntos : 0;
+
+  const campos = [
+    { label: 'Presupuesto', val: h.presupuesto },
+    { label: 'Móvil actual', val: h.movil_actual },
+    { label: 'Garantía ES', val: h.garantia_espana },
+    { label: 'Uso', val: h.uso_principal },
+    { label: 'Batería', val: h.bateria },
+    { label: 'Cámara', val: h.camara },
+    { label: 'Pantalla', val: h.tamano_pantalla },
+    { label: 'Juegos', val: h.juegos },
+    { label: 'Carga rápida', val: h.carga_rapida },
+  ].filter(c => c.val && c.val !== 'Sin preferencia' && c.val !== 'No' && c.val !== 'No mucho' && c.val !== 'Normal' && c.val !== 'No necesaria');
+
+  const plantillaHtml = campos.map(c => `
+    <div class="p-item">
+      <div class="p-label">${c.label}</div>
+      <div class="p-value">${c.val}</div>
+    </div>
+  `).join('');
+
+  const consensoHtml = h.consenso_movil ? `
+    <div class="consensus-banner">
+      <div class="consensus-icon">🏆</div>
+      <div>
+        <div class="consensus-label">Consenso de la comunidad</div>
+        <div class="consensus-phone">${h.consenso_movil}</div>
+        <div class="consensus-count">${h.consenso_votos} asesores coinciden</div>
+      </div>
+    </div>
+  ` : '';
+
+  return `
+    <div class="thread" id="thread_${h.id}">
+      <div class="thread-header">
+        <div class="thread-meta">
+          ${avatarEl(h.nickname)}
+          <div>
+            <span class="username">${h.nickname}</span>
+            ${badgeHtml(puntos)}
+          </div>
+          <span class="timestamp">${timeAgo(h.created_at)}</span>
+        </div>
+        <div class="plantilla">${plantillaHtml}</div>
+        ${h.datos_extra ? `<div style="margin-top:8px;font-size:12px;color:var(--text2);font-style:italic;">${h.datos_extra}</div>` : ''}
+      </div>
+      ${consensoHtml}
+      <div class="replies" id="replies_${h.id}">
+        <div class="loading" style="padding:1rem 0;font-size:12px;">Cargando respuestas...</div>
+      </div>
+      <div class="reply-box">
+        <textarea class="reply-input" id="rinput_${h.id}" placeholder="Añade tu recomendación..." rows="1"
+          oninput="autoResize(this)"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarRespuesta('${h.id}')}"></textarea>
+        <button class="reply-send" onclick="enviarRespuesta('${h.id}')">➤</button>
+      </div>
+    </div>
+  `;
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+// ---- CARGAR RESPUESTAS ----
+async function cargarRespuestas(hiloId) {
+  const { data: respuestas } = await db
+    .from('respuestas')
+    .select('*')
+    .eq('hilo_id', hiloId)
+    .order('created_at', { ascending: true });
+
+  const container = document.getElementById(`replies_${hiloId}`);
+  if (!container) return;
+
+  if (!respuestas || !respuestas.length) {
+    container.innerHTML = '<div style="padding:0.75rem 0;font-size:12px;color:var(--text3);border-top:1px solid var(--border);">Sé el primero en recomendar</div>';
+    return;
+  }
+
+  // Calcular consenso
+  const conteo = {};
+  for (const r of respuestas) {
+    if (r.movil_detectado) {
+      conteo[r.movil_detectado] = (conteo[r.movil_detectado] || 0) + 1;
+    }
+  }
+  const topMovil = Object.entries(conteo).sort((a, b) => b[1] - a[1])[0];
+  if (topMovil && topMovil[1] >= 3) {
+    await db.from('hilos').update({
+      consenso_movil: topMovil[0],
+      consenso_votos: topMovil[1]
+    }).eq('id', hiloId);
+    // Actualizar banner si existe
+    const banner = document.querySelector(`#thread_${hiloId} .consensus-banner`);
+    if (!banner) {
+      const header = document.querySelector(`#thread_${hiloId} .thread-header`);
+      if (header) {
+        const bannerEl = document.createElement('div');
+        bannerEl.className = 'consensus-banner';
+        bannerEl.style.margin = '0 1.25rem 0.75rem';
+        bannerEl.innerHTML = `
+          <div class="consensus-icon">🏆</div>
+          <div>
+            <div class="consensus-label">Consenso de la comunidad</div>
+            <div class="consensus-phone">${topMovil[0]}</div>
+            <div class="consensus-count">${topMovil[1]} asesores coinciden</div>
+          </div>
+        `;
+        header.after(bannerEl);
+      }
+    }
+  }
+
+  // Votos del usuario actual
+  let votosUsuario = {};
+  if (usuario) {
+    const { data: vots } = await db.from('votos')
+      .select('respuesta_id, tipo')
+      .eq('usuario_id', usuario.id)
+      .in('respuesta_id', respuestas.map(r => r.id));
+    if (vots) vots.forEach(v => votosUsuario[v.respuesta_id] = v.tipo);
+  }
+
+  let html = '';
+  for (const r of respuestas) {
+    const { data: u } = await db.from('usuarios').select('puntos').eq('nickname', r.nickname).single();
+    const puntos = u ? u.puntos : 0;
+    const esConsenso = topMovil && r.movil_detectado === topMovil[0] && topMovil[1] >= 3;
+    const miVoto = votosUsuario[r.id];
+
+    html += `
+      <div class="reply" id="reply_${r.id}">
+        <div class="reply-meta">
+          ${avatarEl(r.nickname)}
+          <span class="username" style="font-size:12px;">${r.nickname}</span>
+          ${badgeHtml(puntos)}
+          <span class="timestamp" style="font-size:11px;">${timeAgo(r.created_at)}</span>
+        </div>
+        <div class="reply-body">
+          ${r.contenido}
+          ${r.movil_detectado ? `<div>
+            <span class="phone-tag">${r.movil_detectado}</span>
+            ${esConsenso ? `<span class="consensus-tag">👥 Consenso ×${topMovil[1]}</span>` : ''}
+          </div>` : ''}
+        </div>
+        <div class="reply-actions">
+          <button class="vote-btn ${miVoto === 'util' ? 'voted-util' : ''}"
+            onclick="votar('${r.id}', 'util', '${hiloId}', '${r.nickname}')">
+            👍 ${r.votos_util}
+          </button>
+          <button class="vote-btn ${miVoto === 'noutil' ? 'voted-noutil' : ''}"
+            onclick="votar('${r.id}', 'noutil', '${hiloId}', '${r.nickname}')">
+            👎 ${r.votos_noutil}
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  container.innerHTML = html;
+}
+
+// ---- ENVIAR RESPUESTA ----
+async function enviarRespuesta(hiloId) {
+  if (!usuario) { alert('Elige un nickname primero'); document.getElementById('nickModal').classList.remove('hidden'); return; }
+  const input = document.getElementById(`rinput_${hiloId}`);
+  const texto = input.value.trim();
+  if (!texto) return;
+
+  const movil = detectarMovil(texto);
+
+  const { data } = await db.from('respuestas').insert({
+    hilo_id: hiloId,
+    usuario_id: usuario.id,
+    nickname: usuario.nickname,
+    contenido: texto,
+    movil_detectado: movil
+  }).select().single();
+
+  // Dar puntos al asesor
+  await db.from('usuarios').update({ puntos: (usuario.puntos || 0) + 2 }).eq('id', usuario.id);
+  usuario.puntos = (usuario.puntos || 0) + 2;
+  mostrarNick();
+
+  input.value = '';
+  input.style.height = 'auto';
+
+  if (data) {
+    cargarRespuestas(hiloId);
+  }
+}
+
+// ---- VOTAR ----
+async function votar(respuestaId, tipo, hiloId, nickAsesor) {
+  if (!usuario) { alert('Elige un nickname primero'); document.getElementById('nickModal').classList.remove('hidden'); return; }
+
+  const { data: yaVoto } = await db.from('votos')
+    .select('id, tipo')
+    .eq('respuesta_id', respuestaId)
+    .eq('usuario_id', usuario.id)
+    .single();
+
+  if (yaVoto) return; // Ya votó
+
+  await db.from('votos').insert({ respuesta_id: respuestaId, usuario_id: usuario.id, tipo });
+
+  const campo = tipo === 'util' ? 'votos_util' : 'votos_noutil';
+  const { data: resp } = await db.from('respuestas').select(campo).eq('id', respuestaId).single();
+  await db.from('respuestas').update({ [campo]: (resp[campo] || 0) + 1 }).eq('id', respuestaId);
+
+  // Puntos al asesor si es voto útil
+  if (tipo === 'util') {
+    const { data: asesor } = await db.from('usuarios').select('puntos').eq('nickname', nickAsesor).single();
+    if (asesor) await db.from('usuarios').update({ puntos: asesor.puntos + 3 }).eq('nickname', nickAsesor);
+  }
+
+  cargarRespuestas(hiloId);
+}
+
+// ---- PUBLICAR HILO ----
+async function publicarHilo() {
+  if (!usuario) { alert('Elige un nickname primero'); document.getElementById('nickModal').classList.remove('hidden'); return; }
+
+  const btn = document.getElementById('btnPublicar');
+  btn.disabled = true;
+  btn.textContent = 'Publicando...';
+
+  const { error } = await db.from('hilos').insert({
+    usuario_id: usuario.id,
+    nickname: usuario.nickname,
+    presupuesto: document.getElementById('f_presupuesto').value,
+    movil_actual: document.getElementById('f_movil_actual').value,
+    marca_preferida: document.getElementById('f_marca_pref').value,
+    marca_no_quiere: document.getElementById('f_marca_no').value,
+    garantia_espana: document.getElementById('f_garantia').value,
+    modelos: document.getElementById('f_modelos').value,
+    uso_principal: document.getElementById('f_uso').value,
+    tamano_pantalla: document.getElementById('f_tamano').value,
+    juegos: document.getElementById('f_juegos').value,
+    camara: document.getElementById('f_camara').value,
+    bateria: document.getElementById('f_bateria').value,
+    carga_rapida: document.getElementById('f_carga').value,
+    datos_extra: document.getElementById('f_extra').value,
+  });
+
+  btn.disabled = false;
+  btn.textContent = 'Publicar consulta';
+
+  if (!error) {
+    cerrarForm();
+    cargarHilos();
+    cargarStats();
+  } else {
+    alert('Error al publicar: ' + error.message);
+  }
+}
+
+// ---- FORM ----
+function abrirForm() {
+  if (!usuario) { document.getElementById('nickModal').classList.remove('hidden'); return; }
+  document.getElementById('newForm').classList.add('open');
+  document.getElementById('newForm').scrollIntoView({ behavior: 'smooth' });
+}
+function cerrarForm() {
+  document.getElementById('newForm').classList.remove('open');
+}
+
+// ---- ARRANQUE ----
+init();
+</script>
+</body>
+</html>
