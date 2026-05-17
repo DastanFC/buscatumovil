@@ -2,54 +2,32 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
 <title>Recomiéndame un móvil</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-  :root {
-    --bg: #F7F6F2;
-    --surface: #FFFFFF;
-    --surface2: #F0EEE8;
-    --border: #E2DFD6;
-    --border2: #CBC7BC;
-    --text: #1A1916;
-    --text2: #6B6860;
-    --text3: #A09D96;
-    --accent: #1D5AE5;
-    --accent-bg: #EBF0FD;
-    --accent-text: #1440B0;
-    --green: #0F6E56;
-    --green-bg: #E1F5EE;
-    --green-border: #5DCAA5;
-    --green-text: #085041;
-    --amber: #854F0B;
-    --amber-bg: #FAEEDA;
-    --coral: #993C1D;
-    --coral-bg: #FAECE7;
-    --purple: #3C3489;
-    --purple-bg: #EEEDFE;
-    --radius: 10px;
-    --radius-sm: 6px;
-    --radius-pill: 20px;
-    --shadow: 0 1px 3px rgba(0,0,0,0.08);
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #F5F7FA;
+    color: #1A1A2E;
+    line-height: 1.5;
   }
 
+  /* Topbar */
   .topbar {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 0 1.5rem;
-    height: 56px;
+    background: white;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    padding: 0 20px;
+    height: 64px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -57,456 +35,723 @@
     top: 0;
     z-index: 100;
   }
-  .topbar-logo { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
-  .topbar-logo span { color: var(--accent); }
-  .topbar-right { display: flex; align-items: center; gap: 10px; }
-  .nick-display {
-    font-size: 13px;
-    color: var(--text2);
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-pill);
-    padding: 5px 12px;
-  }
-  .nick-display b { color: var(--text); }
 
-  .container { max-width: 800px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+  .logo {
+    font-size: 1.2rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #1E3C72 0%, #2A5298 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 
-  .stats {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 1.25rem;
-    flex-wrap: wrap;
-  }
-  .stat-pill {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-pill);
-    padding: 5px 14px;
-    font-size: 12px;
-    color: var(--text2);
-  }
-  .stat-pill b { color: var(--text); }
-
-  .actions-bar {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 1.25rem;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-  .tabs {
-    display: flex;
-    gap: 4px;
-    background: var(--surface2);
-    border-radius: var(--radius-pill);
-    padding: 3px;
-    flex: 1;
-    flex-wrap: wrap;
-  }
-  .tab {
-    padding: 6px 12px;
-    font-size: 13px;
-    color: var(--text2);
-    border: none;
+  .logo span {
     background: none;
-    cursor: pointer;
-    border-radius: var(--radius-pill);
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 500;
-    transition: all 0.15s;
-    white-space: nowrap;
+    -webkit-text-fill-color: #2A5298;
   }
-  .tab.active {
-    background: var(--surface);
-    color: var(--text);
-    box-shadow: var(--shadow);
-  }
-  .btn-new {
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius-pill);
-    padding: 8px 18px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    white-space: nowrap;
-  }
-  .btn-new:hover { background: #1440B0; }
 
-  .modal-overlay {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.5);
-    display: flex; align-items: center; justify-content: center;
-    z-index: 200;
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #F0F2F5;
+    padding: 6px 16px;
+    border-radius: 40px;
+    font-size: 0.85rem;
+    font-weight: 500;
   }
-  .modal-overlay.hidden { display: none; }
-  .modal {
-    background: var(--surface);
-    border-radius: var(--radius);
-    padding: 2rem;
-    width: 420px;
-    max-width: 95vw;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+
+  /* Container */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px 20px 60px;
   }
-  .modal h2 { font-size: 20px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-  .modal p { font-size: 13px; color: var(--text2); margin-bottom: 1.25rem; line-height: 1.5; }
-  .modal input {
-    width: 100%;
-    border: 1px solid var(--border2);
-    border-radius: var(--radius-sm);
-    padding: 12px 14px;
-    font-size: 14px;
-    font-family: 'DM Sans', sans-serif;
-    outline: none;
-    margin-bottom: 12px;
-    background: var(--bg);
-    color: var(--text);
+
+  /* Stats Cards */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
   }
-  .modal input:focus { border-color: var(--accent); }
-  .modal-error { font-size: 12px; color: var(--coral); margin-bottom: 10px; min-height: 16px; }
-  .modal-warning {
-    background: var(--coral-bg);
-    border-left: 3px solid var(--coral);
-    border-radius: var(--radius-sm);
-    padding: 12px;
-    font-size: 12px;
-    color: var(--coral);
-    margin: 15px 0;
+
+  .stat-card {
+    background: white;
+    border-radius: 20px;
+    padding: 16px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    border: 1px solid rgba(0,0,0,0.05);
   }
-  .modal-warning strong { font-weight: 600; display: block; margin-bottom: 4px; }
-  .btn-primary {
-    width: 100%;
-    background: var(--accent);
-    color: #fff;
+
+  .stat-number {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #2A5298;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: 4px;
+  }
+
+  /* Tabs */
+  .tabs-container {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .tab {
+    padding: 10px 20px;
     border: none;
-    border-radius: var(--radius-sm);
-    padding: 12px;
-    font-size: 14px;
+    background: white;
+    border-radius: 40px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid #E1E4E8;
+  }
+
+  .tab.active {
+    background: #2A5298;
+    color: white;
+    border-color: #2A5298;
+  }
+
+  .new-btn {
+    margin-left: auto;
+    background: linear-gradient(135deg, #1E3C72, #2A5298);
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: transform 0.1s;
+  }
+
+  .new-btn:hover {
+    transform: scale(0.98);
+  }
+
+  /* Formulario */
+  .form-card {
+    background: white;
+    border-radius: 24px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    border: 1px solid #E1E4E8;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .form-field.full-width {
+    grid-column: span 2;
+  }
+
+  .form-field label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #888;
+  }
+
+  .form-field input,
+  .form-field select,
+  .form-field textarea {
+    padding: 12px 14px;
+    border: 1.5px solid #E8ECF0;
+    border-radius: 14px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    transition: all 0.2s;
+    background: #FAFBFC;
+  }
+
+  .form-field input:focus,
+  .form-field select:focus,
+  .form-field textarea:focus {
+    outline: none;
+    border-color: #2A5298;
+    background: white;
+  }
+
+  .form-field textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+
+  .btn-cancel {
+    padding: 10px 20px;
+    background: #F0F2F5;
+    border: none;
+    border-radius: 40px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .btn-submit {
+    padding: 10px 28px;
+    background: linear-gradient(135deg, #1E3C72, #2A5298);
+    color: white;
+    border: none;
+    border-radius: 40px;
     font-weight: 600;
     cursor: pointer;
+  }
+
+  /* Thread Card */
+  .thread-card {
+    background: white;
+    border-radius: 24px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    border: 1px solid #E1E4E8;
+    transition: all 0.2s;
+  }
+
+  .thread-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid #F0F2F5;
+  }
+
+  .thread-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  .author-info {
+    flex: 1;
+  }
+
+  .author-name {
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  .badge {
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 500;
+    margin-left: 8px;
+  }
+
+  .badge-expert {
+    background: #FEF3C7;
+    color: #D97706;
+  }
+
+  .badge-trusted {
+    background: #D1FAE5;
+    color: #059669;
+  }
+
+  .badge-new {
+    background: #F3F4F6;
+    color: #6B7280;
+  }
+
+  .badge-admin {
+    background: #1E1B4B;
+    color: #A78BFA;
+  }
+
+  .timestamp {
+    font-size: 0.7rem;
+    color: #9CA3AF;
+  }
+
+  /* Specs Grid */
+  .specs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .spec-item {
+    background: #F8FAFE;
+    padding: 10px 12px;
+    border-radius: 14px;
+  }
+
+  .spec-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    color: #9CA3AF;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .spec-value {
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-top: 4px;
+  }
+
+  .extra-note {
+    margin-top: 12px;
+    font-size: 0.8rem;
+    color: #6B7280;
+    font-style: italic;
+    padding: 8px 0;
+  }
+
+  /* Thread Actions */
+  .thread-actions {
+    padding: 12px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #FAFBFC;
+    border-bottom: 1px solid #F0F2F5;
+  }
+
+  .reply-count {
+    font-size: 0.8rem;
+    color: #6B7280;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .reply-count span {
+    font-weight: 700;
+    color: #2A5298;
+  }
+
+  .resolve-btn {
+    background: none;
+    border: 1px solid #10B981;
+    color: #10B981;
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .resolve-btn:hover {
+    background: #10B981;
+    color: white;
+  }
+
+  .resolved-badge {
+    background: #D1FAE5;
+    color: #059669;
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    font-weight: 600;
+  }
+
+  /* Replies Section */
+  .replies-section {
+    padding: 0 24px;
+  }
+
+  .reply-item {
+    padding: 16px 0;
+    border-bottom: 1px solid #F0F2F5;
+  }
+
+  .reply-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+
+  .reply-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .reply-author {
+    font-weight: 600;
+    font-size: 0.8rem;
+  }
+
+  .reply-time {
+    font-size: 0.65rem;
+    color: #9CA3AF;
+  }
+
+  .reply-content {
+    font-size: 0.85rem;
+    color: #374151;
+    line-height: 1.5;
+    margin-left: 42px;
+  }
+
+  .phone-tag {
+    display: inline-block;
+    background: #EFF6FF;
+    color: #1E40AF;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
     margin-top: 8px;
   }
-  .btn-primary:hover { background: #1440B0; }
+
+  .reply-actions {
+    margin-left: 42px;
+    margin-top: 10px;
+    display: flex;
+    gap: 16px;
+  }
+
+  .vote-btn {
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: #9CA3AF;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 20px;
+    transition: all 0.2s;
+  }
+
+  .vote-btn:hover {
+    background: #F3F4F6;
+  }
+
+  .vote-btn.voted-util {
+    color: #2A5298;
+    background: #EFF6FF;
+  }
+
+  .vote-btn.voted-noutil {
+    color: #DC2626;
+    background: #FEF2F2;
+  }
+
+  /* Reply Box */
+  .reply-box {
+    padding: 16px 24px 24px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .reply-input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1.5px solid #E8ECF0;
+    border-radius: 24px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    resize: none;
+    background: #FAFBFC;
+    transition: all 0.2s;
+  }
+
+  .reply-input:focus {
+    outline: none;
+    border-color: #2A5298;
+    background: white;
+  }
+
+  .send-btn {
+    background: #2A5298;
+    color: white;
+    border: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.1s;
+  }
+
+  .send-btn:active {
+    transform: scale(0.95);
+  }
+
+  /* Modales */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  .modal-overlay.hidden {
+    display: none;
+  }
+
+  .modal {
+    background: white;
+    border-radius: 32px;
+    padding: 32px;
+    max-width: 400px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .modal h2 {
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+  }
+
+  .modal input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1.5px solid #E8ECF0;
+    border-radius: 16px;
+    font-size: 1rem;
+    margin: 16px 0;
+  }
+
+  .code-display {
+    background: #F0F2F5;
+    text-align: center;
+    padding: 24px;
+    border-radius: 20px;
+    margin: 16px 0;
+  }
+
+  .code-display .code {
+    font-family: monospace;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: #2A5298;
+  }
+
+  .warning-box {
+    background: #FEF3C7;
+    padding: 16px;
+    border-radius: 16px;
+    margin: 16px 0;
+    font-size: 0.8rem;
+    color: #92400E;
+  }
+
   .remember-check {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin: 12px 0;
-    font-size: 13px;
-    color: var(--text2);
-  }
-  .remember-check input { width: auto; margin: 0; }
-
-  .code-modal .generated-code {
-    background: var(--accent-bg);
-    border: 2px dashed var(--accent);
-    border-radius: var(--radius);
-    padding: 20px;
-    text-align: center;
-    margin: 15px 0;
-  }
-  .generated-code .code-value {
-    font-family: 'DM Mono', monospace;
-    font-size: 32px;
-    font-weight: 600;
-    letter-spacing: 4px;
-    color: var(--accent);
-    background: white;
-    display: inline-block;
-    padding: 10px 20px;
-    border-radius: var(--radius-pill);
-  }
-  .warning-text {
-    background: var(--amber-bg);
-    border-radius: var(--radius-sm);
-    padding: 12px;
-    font-size: 12px;
-    color: var(--amber);
-    text-align: center;
+    margin: 16px 0;
   }
 
-  .thread {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    margin-bottom: 1rem;
-    overflow: hidden;
-    transition: box-shadow 0.15s;
-  }
-  .thread:hover { box-shadow: var(--shadow); }
-
-  .thread-header { padding: 1rem 1.25rem; }
-  .thread-meta {
-    display: flex; align-items: center; gap: 8px;
-    margin-bottom: 10px;
-    flex-wrap: wrap;
-  }
-  .avatar {
-    width: 30px; height: 30px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px; font-weight: 600; flex-shrink: 0;
-    font-family: 'DM Mono', monospace;
-  }
-  .username { font-size: 13px; font-weight: 600; color: var(--text); }
-  .timestamp { font-size: 11px; color: var(--text3); margin-left: auto; }
-
-  .badge {
-    font-size: 10px; padding: 2px 7px;
-    border-radius: var(--radius-pill);
-    font-weight: 600; text-transform: uppercase;
-  }
-  .badge-expert { background: var(--amber-bg); color: var(--amber); }
-  .badge-trusted { background: var(--green-bg); color: var(--green); }
-  .badge-new { background: var(--surface2); color: var(--text3); }
-  .badge-admin { background: #2D2D2D; color: white; }
-
-  .plantilla {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 6px;
-  }
-  .p-item {
-    background: var(--bg);
-    border-radius: var(--radius-sm);
-    padding: 7px 9px;
-  }
-  .p-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 2px; }
-  .p-value { font-size: 12px; color: var(--text); font-weight: 500; }
-
-  .thread-actions {
-    margin: 0 1.25rem 0.75rem;
-    display: flex;
-    gap: 12px;
-    align-items: center;
-  }
-  .reply-count {
-    font-size: 12px;
-    color: var(--text2);
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-  .reply-count span { font-weight: 600; color: var(--accent); }
-  .btn-resolve {
-    background: none;
-    border: 1px solid var(--green-border);
-    border-radius: var(--radius-pill);
-    padding: 4px 12px;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--green);
-    cursor: pointer;
-  }
-  .btn-resolve:hover { background: var(--green-bg); }
-  .resolved-badge {
-    background: var(--green-bg);
-    color: var(--green-text);
-    font-size: 11px;
-    font-weight: 600;
-    padding: 4px 12px;
-    border-radius: var(--radius-pill);
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-  }
-  .has-reply-icon { color: var(--accent); font-size: 14px; margin-left: 6px; }
-
-  .replies { padding: 0 1.25rem; }
-  .reply {
-    padding: 0.75rem 0;
-    border-top: 1px solid var(--border);
-  }
-  .reply-meta { display: flex; align-items: center; gap: 7px; margin-bottom: 6px; flex-wrap: wrap; }
-  .reply-body { font-size: 13px; color: var(--text); line-height: 1.6; }
-  .phone-tag {
-    display: inline-block;
-    background: var(--accent-bg);
-    color: var(--accent-text);
-    font-size: 11px; font-weight: 600;
-    padding: 2px 9px; border-radius: var(--radius-pill);
-    margin-top: 6px;
-    font-family: 'DM Mono', monospace;
-  }
-  .reply-actions {
-    display: flex; align-items: center; gap: 10px;
-    margin-top: 8px;
-  }
-  .vote-btn {
-    display: flex; align-items: center; gap: 4px;
-    font-size: 12px; color: var(--text3);
-    cursor: pointer; border: none; background: none;
-    padding: 3px 8px; border-radius: var(--radius-pill);
-  }
-  .vote-btn:hover { background: var(--surface2); color: var(--accent); }
-  .vote-btn.voted-util { color: var(--accent); background: var(--accent-bg); }
-  .vote-btn.voted-noutil { color: var(--coral); background: var(--coral-bg); }
-
-  .reply-box {
-    margin: 0.75rem 1.25rem 1rem;
-    display: flex; gap: 8px; align-items: flex-end;
-  }
-  .reply-input {
-    flex: 1;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 9px 12px;
-    font-size: 13px;
-    font-family: 'DM Sans', sans-serif;
-    outline: none;
-    resize: none;
-    height: 38px;
-  }
-  .reply-input:focus { border-color: var(--accent); }
-  .reply-send {
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius-sm);
-    width: 38px; height: 38px;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px; flex-shrink: 0;
-  }
-  .reply-send:hover { background: #1440B0; }
-
-  .empty {
-    text-align: center;
-    padding: 3rem 1rem;
-    color: var(--text2);
-    font-size: 14px;
-  }
-  .empty b { display: block; font-size: 16px; color: var(--text); margin-bottom: 6px; }
-  .loading { text-align: center; padding: 2rem; color: var(--text3); font-size: 13px; }
-
+  /* Paginación */
   .pagination {
     display: flex;
     justify-content: center;
     gap: 8px;
-    margin-top: 1.5rem;
-    flex-wrap: wrap;
+    margin-top: 24px;
   }
-  .page-btn {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 6px 12px;
-    font-size: 13px;
-    cursor: pointer;
-    color: var(--text2);
-  }
-  .page-btn.active {
-    background: var(--accent);
-    color: white;
-    border-color: var(--accent);
-  }
-  .page-btn:hover:not(.active) { background: var(--surface2); }
 
-  @media (max-width: 520px) {
-    .form-grid { grid-template-columns: 1fr; }
-    .plantilla { grid-template-columns: 1fr 1fr; }
-    .tabs { gap: 2px; }
-    .tab { font-size: 11px; padding: 6px 8px; }
-    .modal { padding: 1.5rem; }
-    .generated-code .code-value { font-size: 24px; letter-spacing: 2px; }
+  .page-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid #E1E4E8;
+    background: white;
+    cursor: pointer;
+    font-weight: 500;
+  }
+
+  .page-btn.active {
+    background: #2A5298;
+    color: white;
+    border-color: #2A5298;
+  }
+
+  /* Empty State */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: 24px;
+  }
+
+  /* Loading */
+  .loading {
+    text-align: center;
+    padding: 40px;
+  }
+
+  @media (max-width: 600px) {
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+    .form-field.full-width {
+      grid-column: span 1;
+    }
+    .stats-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .stat-number {
+      font-size: 1.3rem;
+    }
+    .thread-header {
+      padding: 16px;
+    }
+    .replies-section {
+      padding: 0 16px;
+    }
+    .reply-box {
+      padding: 12px 16px 20px;
+    }
   }
 </style>
 </head>
 <body>
 
-<!-- MODAL PRINCIPAL: LOGIN / REGISTRO -->
+<!-- MODAL LOGIN -->
 <div class="modal-overlay" id="authModal">
   <div class="modal">
-    <h2>🔐 Acceder a la comunidad</h2>
-    <p>Elige un nickname para identificarte en la comunidad.</p>
-    
-    <input type="text" id="nicknameInput" placeholder="Ej. Juanillo_tech" maxlength="25" autocomplete="off" />
-    <input type="password" id="codigoInput" placeholder="Código de acceso (si ya tienes cuenta)" style="display:none;" />
-    
+    <h2>✨ Identifícate</h2>
+    <p style="color:#666; margin-bottom:8px;">Elige un nombre único para la comunidad</p>
+    <input type="text" id="nicknameInput" placeholder="Ej. Juanillo_tech" autocomplete="off" />
+    <input type="password" id="codigoInput" placeholder="Código secreto" style="display:none;" />
     <div class="remember-check">
       <input type="checkbox" id="rememberMe" checked />
-      <label for="rememberMe">📱 Recordarme en este dispositivo</label>
+      <label>🔐 Recordarme en este dispositivo</label>
     </div>
-    
-    <div class="modal-error" id="authError"></div>
-    <button class="btn-primary" id="authButton" onclick="procesarAcceso()">▶ Continuar</button>
+    <div id="authError" style="color:#DC2626; font-size:0.8rem; margin:8px 0;"></div>
+    <button class="btn-submit" style="width:100%;" onclick="procesarAcceso()">Continuar</button>
+    <p style="font-size:0.7rem; color:#9CA3AF; text-align:center; margin-top:16px;">
+      💡 Sin correo ni contraseña. Guarda tu código secreto.
+    </p>
   </div>
 </div>
 
-<!-- MODAL: MOSTRAR CÓDIGO GENERADO (SOLO PARA NUEVOS USUARIOS) -->
+<!-- MODAL CÓDIGO NUEVO -->
 <div class="modal-overlay hidden" id="codeModal">
-  <div class="modal code-modal">
+  <div class="modal">
     <h2>🔑 ¡GUARDA ESTE CÓDIGO!</h2>
-    <p>Tu cuenta ha sido creada. Este es tu <strong>código de acceso único</strong>:</p>
-    
-    <div class="generated-code">
-      <div class="code-value" id="generatedCodeValue">XXXXXX</div>
+    <p>Tu código de acceso único es:</p>
+    <div class="code-display">
+      <div class="code" id="generatedCodeValue">XXXXXX</div>
     </div>
-    
-    <div class="modal-warning">
-      <strong>⚠️ IMPORTANTE - LEE CON ATENCIÓN:</strong>
-      • No guardamos tu email ni teléfono<br>
-      • <strong>Si pierdes este código, pierdes tu cuenta permanentemente</strong><br>
-      • No podrás recuperar tu nickname sin este código<br>
-      • 📸 <strong>Haz una captura de pantalla o escríbelo ahora mismo</strong>
+    <div class="warning-box">
+      ⚠️ <strong>IMPORTANTE</strong><br/>
+      • No guardamos tu email<br/>
+      • <strong>Si pierdes este código, pierdes tu cuenta</strong><br/>
+      • 📸 Haz una captura de pantalla ahora
     </div>
-    
-    <div class="warning-text">
-      💡 Con la opción "Recordarme" activada, no necesitarás el código en este dispositivo.
-    </div>
-    
-    <button class="btn-primary" onclick="cerrarCodeModal()">✅ Entendido, guardaré mi código</button>
+    <button class="btn-submit" style="width:100%;" onclick="cerrarCodeModal()">✅ Entendido, lo guardé</button>
   </div>
 </div>
 
+<!-- TOPBAR -->
 <div class="topbar">
-  <div class="topbar-logo">📱 <span>Recomiéndame</span> un móvil</div>
-  <div class="topbar-right">
-    <div class="nick-display" id="nickDisplay">👤 Invitado</div>
-  </div>
+  <div class="logo">📱 <span>Recomiéndame</span> un móvil</div>
+  <div class="user-info" id="userInfo">👤 Invitado</div>
 </div>
 
 <div class="container">
-  <div class="stats" id="statsBar">
-    <div class="stat-pill">📊 Cargando...</div>
+  <!-- Stats -->
+  <div class="stats-grid" id="statsGrid">
+    <div class="stat-card"><div class="stat-number" id="totalConsultas">0</div><div class="stat-label">Consultas</div></div>
+    <div class="stat-card"><div class="stat-number" id="resueltasCount">0</div><div class="stat-label">Resueltas</div></div>
+    <div class="stat-card"><div class="stat-number" id="miembrosCount">0</div><div class="stat-label">Miembros</div></div>
   </div>
 
-  <div class="actions-bar">
-    <div class="tabs" id="mainTabs">
-      <button class="tab active" onclick="setTab('abiertas', this)">📋 Consultas abiertas</button>
-      <button class="tab" onclick="setTab('mis_abiertas', this)">📝 Mis consultas abiertas</button>
-      <button class="tab" onclick="setTab('mis_cerradas', this)">✅ Mis consultas cerradas</button>
-    </div>
-    <button class="btn-new" onclick="abrirForm()">+ Nueva consulta</button>
+  <!-- Tabs -->
+  <div class="tabs-container">
+    <button class="tab active" onclick="setTab('abiertas', this)">📋 Consultas abiertas</button>
+    <button class="tab" onclick="setTab('mis_abiertas', this)">📝 Mis consultas</button>
+    <button class="tab" onclick="setTab('mis_cerradas', this)">✅ Cerradas</button>
+    <button class="new-btn" onclick="abrirForm()">+ Nueva consulta</button>
   </div>
 
-  <div class="new-form" id="newForm">
-    <h3>📱 Cuéntanos qué buscas</h3>
-    <div class="form-grid">
-      <div class="form-item"><label>💰 Presupuesto</label><input type="text" id="f_presupuesto" placeholder="ej. 300€" /></div>
-      <div class="form-item"><label>📱 Móvil actual</label><input type="text" id="f_movil_actual" placeholder="ej. Redmi Note 10" /></div>
-      <div class="form-item"><label>⭐ Marca preferida</label><input type="text" id="f_marca_pref" placeholder="Sin preferencia" /></div>
-      <div class="form-item"><label>🚫 Marca que NO quieres</label><input type="text" id="f_marca_no" placeholder="ej. Apple" /></div>
-      <div class="form-item"><label>🛡️ Garantía España</label><select id="f_garantia"><option value="Sí">Sí</option><option value="No">No</option></select></div>
-      <div class="form-item"><label>📅 Modelos</label><select id="f_modelos"><option value="Actuales">Actuales</option><option value="Puede ser antiguo">Puede ser antiguo</option></select></div>
-      <div class="form-item full"><label>🎯 Uso principal</label><input type="text" id="f_uso" placeholder="ej. WhatsApp, fotos, redes..." /></div>
-      <div class="form-item"><label>📏 Tamaño pantalla</label><select id="f_tamano"><option value="Sin preferencia">Sin preferencia</option><option value="Pequeño &lt;6&quot;">Pequeño &lt;6"</option><option value="Normal 6-6.5&quot;">Normal 6-6.5"</option><option value="Grande &gt;6.5&quot;">Grande &gt;6.5"</option></select></div>
-      <div class="form-item"><label>🎮 ¿Juegas?</label><select id="f_juegos"><option value="No">No</option><option value="Algún casual">Algún casual</option><option value="Sí, bastante">Sí, bastante</option></select></div>
-      <div class="form-item"><label>📸 ¿Usas mucho la cámara?</label><select id="f_camara"><option value="No mucho">No mucho</option><option value="Sí, importante">Sí, importante</option></select></div>
-      <div class="form-item"><label>🔋 ¿Mucha batería?</label><select id="f_bateria"><option value="Normal">Normal</option><option value="Sí, prioritaria">Sí, prioritaria</option></select></div>
-      <div class="form-item"><label>⚡ ¿Carga rápida?</label><select id="f_carga"><option value="No necesaria">No necesaria</option><option value="Sí">Sí</option></select></div>
-      <div class="form-item full"><label>📝 Algo más</label><textarea id="f_extra" placeholder="Cualquier detalle adicional..."></textarea></div>
-    </div>
-    <div class="form-footer">
-      <button class="btn-cancel" onclick="cerrarForm()">Cancelar</button>
-      <button class="btn-submit" id="btnPublicar" onclick="publicarHilo()">📢 Publicar consulta</button>
+  <!-- Formulario nueva consulta -->
+  <div id="newForm" style="display:none;">
+    <div class="form-card">
+      <h3 style="margin-bottom:20px;">📱 Cuéntanos qué buscas</h3>
+      <div class="form-grid">
+        <div class="form-field"><label>💰 Presupuesto</label><input type="text" id="f_presupuesto" placeholder="ej. 300€" /></div>
+        <div class="form-field"><label>📱 Móvil actual</label><input type="text" id="f_movil_actual" placeholder="ej. Redmi Note 10" /></div>
+        <div class="form-field"><label>⭐ Marca preferida</label><input type="text" id="f_marca_pref" placeholder="Sin preferencia" /></div>
+        <div class="form-field"><label>🚫 Marca que NO quieres</label><input type="text" id="f_marca_no" placeholder="ej. Apple" /></div>
+        <div class="form-field"><label>🛡️ Garantía España</label><select id="f_garantia"><option value="Sí">Sí</option><option value="No">No</option></select></div>
+        <div class="form-field"><label>📅 Modelos</label><select id="f_modelos"><option value="Actuales">Actuales</option><option value="Puede ser antiguo">Puede ser antiguo</option></select></div>
+        <div class="form-field full-width"><label>🎯 Uso principal</label><input type="text" id="f_uso" placeholder="ej. WhatsApp, fotos, redes..." /></div>
+        <div class="form-field"><label>📏 Tamaño pantalla</label><select id="f_tamano"><option value="Sin preferencia">Sin preferencia</option><option value="Pequeño &lt;6&quot;">Pequeño &lt;6"</option><option value="Normal 6-6.5&quot;">Normal 6-6.5"</option><option value="Grande &gt;6.5&quot;">Grande &gt;6.5"</option></select></div>
+        <div class="form-field"><label>🎮 ¿Juegas?</label><select id="f_juegos"><option value="No">No</option><option value="Algún casual">Algún casual</option><option value="Sí, bastante">Sí, bastante</option></select></div>
+        <div class="form-field"><label>📸 ¿Usas mucho la cámara?</label><select id="f_camara"><option value="No mucho">No mucho</option><option value="Sí, importante">Sí, importante</option></select></div>
+        <div class="form-field"><label>🔋 ¿Mucha batería?</label><select id="f_bateria"><option value="Normal">Normal</option><option value="Sí, prioritaria">Sí, prioritaria</option></select></div>
+        <div class="form-field"><label>⚡ ¿Carga rápida?</label><select id="f_carga"><option value="No necesaria">No necesaria</option><option value="Sí">Sí</option></select></div>
+        <div class="form-field full-width"><label>📝 Algo más</label><textarea id="f_extra" placeholder="Cualquier detalle adicional..."></textarea></div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-cancel" onclick="cerrarForm()">Cancelar</button>
+        <button class="btn-submit" onclick="publicarHilo()">Publicar consulta</button>
+      </div>
     </div>
   </div>
 
-  <div id="hilosList">
-    <div class="loading">Cargando consultas...</div>
-  </div>
+  <!-- Lista de hilos -->
+  <div id="hilosList"></div>
   <div id="pagination" class="pagination"></div>
 </div>
 
@@ -520,7 +765,7 @@ const SUPABASE_KEY = 'sb_publishable_AH7nQIp9WPOqUowcPi3W4Q_djmApiMF';
 const { createClient } = supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// NOMBRES PROHIBIDOS (en minúsculas para comparar)
+// Nombres prohibidos (en minúsculas)
 const FORBIDDEN_NAMES = [
   'admin', 'administrador', 'administradora', 'moderador', 'moderadora', 'mod', 
   'staff', 'dueño', 'dueña', 'creador', 'creadora', 'soporte', 'asistencia', 
@@ -535,27 +780,133 @@ let tabActual = 'abiertas';
 let hilosData = [];
 let currentPage = 1;
 const ITEMS_PER_PAGE = 5;
-let codigoGenerado = null;
 
 // ============================================================
-// FUNCIÓN PARA CAPITALIZAR NICKNAME (mostrar bonito)
+// UTILIDADES
 // ============================================================
 function capitalizarNickname(nick) {
   if (!nick) return '';
   return nick.charAt(0).toUpperCase() + nick.slice(1);
 }
 
-// ============================================================
-// FUNCIONES DE AUTENTICACIÓN
-// ============================================================
-
 function generarCodigoAleatorio() {
-  const caracteres = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let codigo = '';
-  for (let i = 0; i < 6; i++) {
-    codigo += caracteres[Math.floor(Math.random() * caracteres.length)];
-  }
+  for (let i = 0; i < 6; i++) codigo += chars[Math.floor(Math.random() * chars.length)];
   return codigo;
+}
+
+function timeAgo(timestamp) {
+  const diff = (Date.now() - new Date(timestamp)) / 1000;
+  if (diff < 60) return 'ahora';
+  if (diff < 3600) return `hace ${Math.floor(diff/60)} min`;
+  if (diff < 86400) return `hace ${Math.floor(diff/3600)} h`;
+  return `hace ${Math.floor(diff/86400)} d`;
+}
+
+// ============================================================
+// AVATAR Y BADGES
+// ============================================================
+const AVATAR_COLORS = [
+  { bg: '#EFF6FF', color: '#1E40AF' }, { bg: '#ECFDF5', color: '#065F46' },
+  { bg: '#FFFBEB', color: '#B45309' }, { bg: '#FEF2F2', color: '#991B1B' },
+  { bg: '#F5F3FF', color: '#5B21B6' }, { bg: '#FDF2F8', color: '#9D174D' }
+];
+
+function getAvatarColor(nick) {
+  let hash = 0;
+  for (let i = 0; i < nick.length; i++) hash = ((hash << 5) - hash) + nick.charCodeAt(i);
+  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
+}
+
+function getBadge(puntos, rol) {
+  if (rol === 'admin') return '<span class="badge badge-admin">👑 Admin</span>';
+  if (puntos >= 50) return '<span class="badge badge-expert">🏆 Experto</span>';
+  if (puntos >= 10) return '<span class="badge badge-trusted">⭐ Confiable</span>';
+  return '<span class="badge badge-new">🆕 Nuevo</span>';
+}
+
+// ============================================================
+// AUTENTICACIÓN
+// ============================================================
+async function procesarAcceso() {
+  const nickOriginal = document.getElementById('nicknameInput').value.trim();
+  const codigo = document.getElementById('codigoInput').value.trim();
+  const rememberMe = document.getElementById('rememberMe').checked;
+  const errDiv = document.getElementById('authError');
+  
+  if (!nickOriginal || nickOriginal.length < 3) {
+    errDiv.textContent = '❌ El nickname debe tener al menos 3 caracteres';
+    return;
+  }
+  if (!/^[a-zA-Z0-9_\-\.]+$/.test(nickOriginal)) {
+    errDiv.textContent = '❌ Solo letras, números, _ y -';
+    return;
+  }
+  
+  const nickLower = nickOriginal.toLowerCase();
+  if (FORBIDDEN_NAMES.includes(nickLower)) {
+    errDiv.textContent = '❌ Este nombre no está permitido';
+    return;
+  }
+  
+  const { data: existe } = await db.from('usuarios').select('*').eq('nickname', nickLower).single();
+  
+  if (existe) {
+    if (!codigo) {
+      document.getElementById('codigoInput').style.display = 'block';
+      errDiv.textContent = '🔐 Introduce tu código secreto';
+      return;
+    }
+    if (existe.codigo_acceso !== codigo) {
+      errDiv.textContent = '❌ Código incorrecto';
+      return;
+    }
+    usuario = existe;
+    if (rememberMe) {
+      localStorage.setItem('moviles_nick', nickLower);
+      localStorage.setItem('moviles_codigo', codigo);
+    }
+    cerrarModalAutenticacion();
+    mostrarUsuario();
+    cargarHilos();
+    cargarStats();
+  } else {
+    const nuevoCodigo = generarCodigoAleatorio();
+    const { data: nuevoUsuario, error } = await db.from('usuarios').insert({
+      nickname: nickLower,
+      puntos: 0,
+      codigo_acceso: nuevoCodigo,
+      rol: 'usuario'
+    }).select().single();
+    
+    if (error) {
+      errDiv.textContent = 'Error: ' + error.message;
+      return;
+    }
+    
+    usuario = nuevoUsuario;
+    if (rememberMe) {
+      localStorage.setItem('moviles_nick', nickLower);
+      localStorage.setItem('moviles_codigo', nuevoCodigo);
+    }
+    cerrarModalAutenticacion();
+    mostrarUsuario();
+    mostrarCodeModal(nuevoCodigo);
+    cargarHilos();
+    cargarStats();
+  }
+}
+
+function cerrarModalAutenticacion() {
+  document.getElementById('authModal').classList.add('hidden');
+  document.getElementById('nicknameInput').value = '';
+  document.getElementById('codigoInput').value = '';
+  document.getElementById('codigoInput').style.display = 'none';
+}
+
+function mostrarModalAutenticacion() {
+  document.getElementById('authModal').classList.remove('hidden');
 }
 
 function mostrarCodeModal(codigo) {
@@ -565,138 +916,30 @@ function mostrarCodeModal(codigo) {
 
 function cerrarCodeModal() {
   document.getElementById('codeModal').classList.add('hidden');
-  cargarHilos();
-  cargarStats();
 }
 
-async function procesarAcceso() {
-  const nickOriginal = document.getElementById('nicknameInput').value.trim();
-  const codigo = document.getElementById('codigoInput').value.trim();
-  const rememberMe = document.getElementById('rememberMe').checked;
-  const errDiv = document.getElementById('authError');
-  
-  // Validaciones básicas
-  if (!nickOriginal || nickOriginal.length < 3) {
-    errDiv.textContent = '❌ El nickname debe tener al menos 3 caracteres';
-    return;
-  }
-  
-  // Validar formato
-  if (!/^[a-zA-Z0-9_\-\.]+$/.test(nickOriginal)) {
-    errDiv.textContent = '❌ Solo letras, números, _ y - están permitidos';
-    return;
-  }
-  
-  // Convertir a minúsculas para guardar y comparar
-  const nickLower = nickOriginal.toLowerCase();
-  
-  // Validar nombres prohibidos (comparar en minúsculas)
-  if (FORBIDDEN_NAMES.includes(nickLower)) {
-    errDiv.textContent = '❌ Este nombre no está permitido. Elige otro.';
-    return;
-  }
-  
-  // Buscar si el usuario existe (buscando por nickname en minúsculas)
-  const { data: existe } = await db.from('usuarios')
-    .select('*')
-    .eq('nickname', nickLower)
-    .single();
-  
-  if (existe) {
-    // USUARIO EXISTE - verificar código
-    if (!codigo) {
-      document.getElementById('codigoInput').style.display = 'block';
-      document.getElementById('codigoInput').placeholder = '🔑 Introduce tu código de acceso';
-      errDiv.textContent = '🔐 Este nickname ya existe. Introduce tu código.';
-      return;
-    }
-    
-    if (existe.codigo_acceso !== codigo) {
-      errDiv.textContent = '❌ Código incorrecto. No puedes usar este nickname.';
-      return;
-    }
-    
-    // Código correcto - iniciar sesión
-    usuario = existe;
-    if (rememberMe) {
-      localStorage.setItem('moviles_nick', nickLower);
-      localStorage.setItem('moviles_codigo', codigo);
-    }
-    cerrarModalAutenticacion();
-    mostrarNick();
-    cargarHilos();
-    cargarStats();
-  } else {
-    // USUARIO NUEVO - generar código aleatorio
-    const nuevoCodigo = generarCodigoAleatorio();
-    
-    // Crear usuario en BD (guardamos nickname en minúsculas)
-    const { data: nuevoUsuario, error } = await db.from('usuarios').insert({ 
-      nickname: nickLower,
-      puntos: 0,
-      codigo_acceso: nuevoCodigo,
-      rol: 'usuario'
-    }).select().single();
-    
-    if (error) {
-      errDiv.textContent = '❌ Error al crear usuario: ' + error.message;
-      return;
-    }
-    
-    usuario = nuevoUsuario;
-    
-    if (rememberMe) {
-      localStorage.setItem('moviles_nick', nickLower);
-      localStorage.setItem('moviles_codigo', nuevoCodigo);
-    }
-    
-    cerrarModalAutenticacion();
-    mostrarNick();
-    
-    // Mostrar modal con el código generado
-    mostrarCodeModal(nuevoCodigo);
-  }
-}
-
-function cerrarModalAutenticacion() {
-  document.getElementById('authModal').classList.add('hidden');
-}
-
-function mostrarModalAutenticacion() {
-  document.getElementById('authModal').classList.remove('hidden');
-  document.getElementById('nicknameInput').value = '';
-  document.getElementById('codigoInput').value = '';
-  document.getElementById('codigoInput').style.display = 'none';
-  document.getElementById('authError').textContent = '';
-}
-
-async function verificarSesionGuardada() {
-  const nickGuardado = localStorage.getItem('moviles_nick');
-  const codigoGuardado = localStorage.getItem('moviles_codigo');
-  
-  if (nickGuardado && codigoGuardado) {
-    const { data } = await db.from('usuarios')
-      .select('*')
-      .eq('nickname', nickGuardado)
-      .single();
-    if (data && data.codigo_acceso === codigoGuardado) {
+async function verificarSesion() {
+  const nick = localStorage.getItem('moviles_nick');
+  const codigo = localStorage.getItem('moviles_codigo');
+  if (nick && codigo) {
+    const { data } = await db.from('usuarios').select('*').eq('nickname', nick).single();
+    if (data && data.codigo_acceso === codigo) {
       usuario = data;
-      mostrarNick();
+      mostrarUsuario();
       cargarHilos();
       cargarStats();
       return true;
     }
   }
+  mostrarModalAutenticacion();
   return false;
 }
 
-function mostrarNick() {
-  const esAdmin = usuario?.rol === 'admin';
-  const adminIcon = esAdmin ? ' 👑' : '';
-  const nickMostrar = capitalizarNickname(usuario?.nickname || '');
-  document.getElementById('nickDisplay').innerHTML = usuario 
-    ? `👤 <b>${nickMostrar}</b> · ${usuario.puntos || 0}pts${adminIcon}` 
-    : '👤 Invitado';
+function mostrarUsuario() {
+  if (!usuario) return;
+  const nombreMostrar = capitalizarNickname(usuario.nickname);
+  const adminIcon = usuario.rol === 'admin' ? ' 👑' : '';
+  document.getElementById('userInfo').innerHTML = `👤 ${nombreMostrar} · ${usuario.puntos || 0} pts${adminIcon}`;
 }
 
 function esAdmin() {
@@ -704,69 +947,31 @@ function esAdmin() {
 }
 
 // ============================================================
-// AVATARES Y BADGES
+// DETECTAR MÓVIL
 // ============================================================
-const AVATAR_COLORS = [
-  { bg: '#E6F1FB', color: '#185FA5' }, { bg: '#E1F5EE', color: '#0F6E56' },
-  { bg: '#FAEEDA', color: '#854F0B' }, { bg: '#FAECE7', color: '#993C1D' },
-  { bg: '#EEEDFE', color: '#3C3489' }, { bg: '#FCEBEB', color: '#A32D2D' }
-];
+const MOVILES = ['iPhone 16','iPhone 15','iPhone 14','Samsung Galaxy S24','Samsung Galaxy S23','Xiaomi 14','Redmi Note 13 Pro','POCO X6 Pro','Google Pixel 9','OnePlus 12'];
 
-function avatarColor(nick) {
-  let h = 0; for (let c of nick) h = (h * 31 + c.charCodeAt(0)) & 0xFFFF;
-  return AVATAR_COLORS[h % AVATAR_COLORS.length];
-}
-function initials(nick) { 
-  const nickCapitalized = capitalizarNickname(nick);
-  return nickCapitalized.substring(0, 2).toUpperCase(); 
-}
-function avatarEl(nick) { 
-  const c = avatarColor(nick); 
-  const nickMostrar = capitalizarNickname(nick);
-  return `<div class="avatar" style="background:${c.bg};color:${c.color}" title="${nickMostrar}">${initials(nick)}</div>`;
-}
-
-function badgeHtml(puntos, nickname, rol) {
-  if (rol === 'admin') return '<span class="badge badge-admin">👑 Admin</span>';
-  if (puntos >= 50) return '<span class="badge badge-expert">🏆 Experto</span>';
-  if (puntos >= 10) return '<span class="badge badge-trusted">⭐ De confianza</span>';
-  return '<span class="badge badge-new">🆕 Nuevo</span>';
-}
-
-function timeAgo(ts) {
-  const diff = (Date.now() - new Date(ts)) / 1000;
-  if (diff < 60) return 'ahora';
-  if (diff < 3600) return `hace ${Math.floor(diff/60)}min`;
-  if (diff < 86400) return `hace ${Math.floor(diff/3600)}h`;
-  return `hace ${Math.floor(diff/86400)}d`;
-}
-
-// ============================================================
-// DETECCIÓN DE MÓVILES
-// ============================================================
-const MOVILES = ['iPhone 16','iPhone 15','iPhone 14','iPhone 13','Samsung Galaxy S24','Samsung Galaxy S23','Samsung Galaxy A55','Xiaomi 14','Redmi Note 13 Pro','POCO X6 Pro','Google Pixel 9','Google Pixel 8','OnePlus 12'];
 function detectarMovil(texto) {
-  const t = texto.toLowerCase();
-  for (const m of MOVILES) if (t.includes(m.toLowerCase())) return m;
+  for (const m of MOVILES) {
+    if (texto.toLowerCase().includes(m.toLowerCase())) return m;
+  }
   return null;
 }
 
 // ============================================================
-// ESTADÍSTICAS
+// STATS
 // ============================================================
 async function cargarStats() {
-  const { count: totalHilos } = await db.from('hilos').select('*', { count: 'exact', head: true });
-  const { count: resueltos } = await db.from('hilos').select('*', { count: 'exact', head: true }).eq('resuelto', true);
+  const { count: total } = await db.from('hilos').select('*', { count: 'exact', head: true });
+  const { count: resueltas } = await db.from('hilos').select('*', { count: 'exact', head: true }).eq('resuelto', true);
   const { count: miembros } = await db.from('usuarios').select('*', { count: 'exact', head: true });
-  document.getElementById('statsBar').innerHTML = `
-    <div class="stat-pill">📋 <b>${totalHilos || 0}</b> consultas</div>
-    <div class="stat-pill">✅ <b>${resueltos || 0}</b> resueltas</div>
-    <div class="stat-pill">👥 <b>${miembros || 0}</b> miembros</div>
-  `;
+  document.getElementById('totalConsultas').innerText = total || 0;
+  document.getElementById('resueltasCount').innerText = resueltas || 0;
+  document.getElementById('miembrosCount').innerText = miembros || 0;
 }
 
 // ============================================================
-// TABS Y PAGINACIÓN
+// TABS
 // ============================================================
 function setTab(tab, el) {
   tabActual = tab;
@@ -776,28 +981,25 @@ function setTab(tab, el) {
   cargarHilos();
 }
 
+// ============================================================
+// CARGAR HILOS
+// ============================================================
 async function cargarHilos() {
   if (!usuario) return;
   
-  document.getElementById('hilosList').innerHTML = '<div class="loading">📱 Cargando consultas...</div>';
+  document.getElementById('hilosList').innerHTML = '<div class="loading">🔄 Cargando...</div>';
   
-  let query = db.from('hilos').select(`*, respuestas(count)`);
-  
+  let query = db.from('hilos').select('*, respuestas(count)');
   if (tabActual === 'abiertas') query = query.eq('resuelto', false);
   else if (tabActual === 'mis_abiertas') query = query.eq('nickname', usuario.nickname).eq('resuelto', false);
   else if (tabActual === 'mis_cerradas') query = query.eq('nickname', usuario.nickname).eq('resuelto', true);
   
   query = query.order('created_at', { ascending: false });
-  
   const { data: hilos } = await query;
   hilosData = hilos || [];
   
-  if (!hilosData.length) {
-    let msg = '';
-    if (tabActual === 'mis_abiertas') msg = 'No tienes consultas abiertas';
-    else if (tabActual === 'mis_cerradas') msg = 'No tienes consultas cerradas';
-    else msg = 'Sé el primero en preguntar 👆';
-    document.getElementById('hilosList').innerHTML = `<div class="empty"><b>📭 No hay consultas</b>${msg}</div>`;
+  if (hilosData.length === 0) {
+    document.getElementById('hilosList').innerHTML = '<div class="empty-state">📭 No hay consultas que mostrar</div>';
     document.getElementById('pagination').innerHTML = '';
     return;
   }
@@ -816,53 +1018,62 @@ async function cargarHilos() {
 function renderPagination() {
   const totalPages = Math.ceil(hilosData.length / ITEMS_PER_PAGE);
   if (totalPages <= 1) { document.getElementById('pagination').innerHTML = ''; return; }
-  let pagesHtml = '';
-  for (let i = 1; i <= totalPages; i++) pagesHtml += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
-  document.getElementById('pagination').innerHTML = pagesHtml;
+  let html = '';
+  for (let i = 1; i <= totalPages; i++) {
+    html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+  }
+  document.getElementById('pagination').innerHTML = html;
 }
 
 function goToPage(page) { currentPage = page; cargarHilos(); }
 
 async function renderHilo(h) {
-  const { data: u } = await db.from('usuarios').select('puntos, rol').eq('nickname', h.nickname).single();
-  const puntos = u ? u.puntos : 0;
-  const rol = u ? u.rol : 'usuario';
+  const { data: userData } = await db.from('usuarios').select('puntos, rol').eq('nickname', h.nickname).single();
+  const puntos = userData?.puntos || 0;
+  const rol = userData?.rol || 'usuario';
   const replyCount = h.respuestas?.[0]?.count || 0;
-  const hasReply = replyCount > 0;
+  const avatarColor = getAvatarColor(h.nickname);
+  const nombreMostrar = capitalizarNickname(h.nickname);
   
-  const campos = [
-    { label: '💰 Presupuesto', val: h.presupuesto }, { label: '📱 Móvil actual', val: h.movil_actual },
-    { label: '🛡️ Garantía ES', val: h.garantia_espana }, { label: '🎯 Uso', val: h.uso_principal },
-    { label: '🔋 Batería', val: h.bateria }, { label: '📸 Cámara', val: h.camara },
-    { label: '📏 Pantalla', val: h.tamano_pantalla }, { label: '🎮 Juegos', val: h.juegos }
-  ].filter(c => c.val && !['Sin preferencia', 'No', 'No mucho', 'Normal', 'No necesaria'].includes(c.val));
-  
-  const plantillaHtml = campos.map(c => `<div class="p-item"><div class="p-label">${c.label}</div><div class="p-value">${c.val}</div></div>`).join('');
+  const specs = [
+    { label: '💰 Presupuesto', val: h.presupuesto },
+    { label: '📱 Móvil actual', val: h.movil_actual },
+    { label: '🛡️ Garantía ES', val: h.garantia_espana },
+    { label: '🎯 Uso', val: h.uso_principal },
+    { label: '🔋 Batería', val: h.bateria },
+    { label: '📸 Cámara', val: h.camara }
+  ].filter(s => s.val && !['Sin preferencia', 'No', 'Normal', 'No necesaria'].includes(s.val));
   
   const puedeCerrar = usuario && (usuario.nickname === h.nickname || esAdmin());
-  const estaResuelta = h.resuelto;
-  const replyIcon = hasReply && tabActual === 'mis_abiertas' ? '<span class="has-reply-icon">💬</span>' : '';
-  
-  // Mostrar nickname capitalizado
-  const nickMostrar = capitalizarNickname(h.nickname);
   
   return `
-    <div class="thread" id="thread_${h.id}">
+    <div class="thread-card" id="thread_${h.id}">
       <div class="thread-header">
         <div class="thread-meta">
-          ${avatarEl(h.nickname)}
-          <div><span class="username">${nickMostrar}</span>${badgeHtml(puntos, h.nickname, rol)}</div>
-          <span class="timestamp">${timeAgo(h.created_at)}</span>
+          <div class="avatar" style="background:${avatarColor.bg}; color:${avatarColor.color};">${nombreMostrar.substring(0,2).toUpperCase()}</div>
+          <div class="author-info">
+            <div class="author-name">${nombreMostrar} ${getBadge(puntos, rol)}</div>
+          </div>
+          <div class="timestamp">${timeAgo(h.created_at)}</div>
         </div>
-        <div class="plantilla">${plantillaHtml}</div>
-        ${h.datos_extra ? `<div style="margin-top:8px;font-size:12px;color:var(--text2);font-style:italic;">📝 ${h.datos_extra}</div>` : ''}
+        <div class="specs-grid">
+          ${specs.map(s => `<div class="spec-item"><div class="spec-label">${s.label}</div><div class="spec-value">${s.val}</div></div>`).join('')}
+        </div>
+        ${h.datos_extra ? `<div class="extra-note">📝 ${h.datos_extra}</div>` : ''}
       </div>
       <div class="thread-actions">
-        <div class="reply-count">💬 <span>${replyCount}</span> ${replyCount === 1 ? 'respuesta' : 'respuestas'} ${replyIcon}</div>
-        ${estaResuelta ? '<div class="resolved-badge">✅ Resuelta</div>' : (puedeCerrar ? `<button class="btn-resolve" onclick="marcarResuelta('${h.id}')">🔒 Marcar como resuelta</button>` : '')}
+        <div class="reply-count">💬 <span>${replyCount}</span> respuestas</div>
+        ${h.resuelto ? '<div class="resolved-badge">✅ Resuelta</div>' : (puedeCerrar ? `<button class="resolve-btn" onclick="marcarResuelta('${h.id}')">🔒 Marcar como resuelta</button>` : '')}
       </div>
-      <div class="replies" id="replies_${h.id}"><div class="loading" style="padding:1rem 0;font-size:12px;">Cargando respuestas...</div></div>
-      ${!estaResuelta ? `<div class="reply-box"><textarea class="reply-input" id="rinput_${h.id}" placeholder="💬 Escribe tu recomendación..." rows="1" oninput="autoResize(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarRespuesta('${h.id}')}"></textarea><button class="reply-send" onclick="enviarRespuesta('${h.id}')">➤</button></div>` : ''}
+      <div class="replies-section" id="replies_${h.id}">
+        <div style="padding:16px 0; text-align:center; color:#9CA3AF;">Cargando respuestas...</div>
+      </div>
+      ${!h.resuelto ? `
+        <div class="reply-box">
+          <textarea class="reply-input" id="rinput_${h.id}" placeholder="Escribe tu recomendación..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarRespuesta('${h.id}')}"></textarea>
+          <button class="send-btn" onclick="enviarRespuesta('${h.id}')">➤</button>
+        </div>
+      ` : ''}
     </div>
   `;
 }
@@ -877,28 +1088,47 @@ async function marcarResuelta(hiloId) {
   }
 }
 
-function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 120) + 'px'; }
-
 async function cargarRespuestas(hiloId) {
   const { data: respuestas } = await db.from('respuestas').select('*').eq('hilo_id', hiloId).order('created_at', { ascending: true });
   const container = document.getElementById(`replies_${hiloId}`);
   if (!container) return;
-  if (!respuestas || !respuestas.length) { container.innerHTML = '<div style="padding:0.75rem 0;font-size:12px;color:var(--text3);border-top:1px solid var(--border);">💬 Sé el primero en recomendar</div>'; return; }
+  
+  if (!respuestas || respuestas.length === 0) {
+    container.innerHTML = '<div style="padding:16px 0; text-align:center; color:#9CA3AF; border-top:1px solid #F0F2F5;">💬 Sé el primero en recomendar</div>';
+    return;
+  }
   
   let votosUsuario = {};
   if (usuario) {
-    const { data: vots } = await db.from('votos').select('respuesta_id, tipo').eq('usuario_id', usuario.id).in('respuesta_id', respuestas.map(r=>r.id));
+    const { data: vots } = await db.from('votos').select('respuesta_id, tipo').eq('usuario_id', usuario.id).in('respuesta_id', respuestas.map(r => r.id));
     if (vots) vots.forEach(v => votosUsuario[v.respuesta_id] = v.tipo);
   }
   
   let html = '';
   for (const r of respuestas) {
-    const { data: u } = await db.from('usuarios').select('puntos, rol').eq('nickname', r.nickname).single();
-    const puntos = u ? u.puntos : 0;
-    const rol = u ? u.rol : 'usuario';
+    const { data: userData } = await db.from('usuarios').select('puntos, rol').eq('nickname', r.nickname).single();
+    const avatarColor = getAvatarColor(r.nickname);
+    const nombreMostrar = capitalizarNickname(r.nickname);
     const miVoto = votosUsuario[r.id];
-    const nickMostrar = capitalizarNickname(r.nickname);
-    html += `<div class="reply" id="reply_${r.id}"><div class="reply-meta">${avatarEl(r.nickname)}<span class="username" style="font-size:12px;">${nickMostrar}</span>${badgeHtml(puntos, r.nickname, rol)}<span class="timestamp" style="font-size:11px;">${timeAgo(r.created_at)}</span></div><div class="reply-body">${r.contenido}${r.movil_detectado ? `<div><span class="phone-tag">📱 ${r.movil_detectado}</span></div>` : ''}</div><div class="reply-actions"><button class="vote-btn ${miVoto === 'util' ? 'voted-util' : ''}" onclick="votar('${r.id}', 'util', '${hiloId}', '${r.nickname}')">👍 ${r.votos_util || 0}</button><button class="vote-btn ${miVoto === 'noutil' ? 'voted-noutil' : ''}" onclick="votar('${r.id}', 'noutil', '${hiloId}', '${r.nickname}')">👎 ${r.votos_noutil || 0}</button></div></div>`;
+    
+    html += `
+      <div class="reply-item">
+        <div class="reply-header">
+          <div class="reply-avatar" style="background:${avatarColor.bg}; color:${avatarColor.color};">${nombreMostrar.substring(0,2).toUpperCase()}</div>
+          <span class="reply-author">${nombreMostrar}</span>
+          ${getBadge(userData?.puntos || 0, userData?.rol || 'usuario')}
+          <span class="reply-time">${timeAgo(r.created_at)}</span>
+        </div>
+        <div class="reply-content">
+          ${r.contenido}
+          ${r.movil_detectado ? `<div><span class="phone-tag">📱 ${r.movil_detectado}</span></div>` : ''}
+        </div>
+        <div class="reply-actions">
+          <button class="vote-btn ${miVoto === 'util' ? 'voted-util' : ''}" onclick="votar('${r.id}', 'util', '${hiloId}', '${r.nickname}')">👍 ${r.votos_util || 0}</button>
+          <button class="vote-btn ${miVoto === 'noutil' ? 'voted-noutil' : ''}" onclick="votar('${r.id}', 'noutil', '${hiloId}', '${r.nickname}')">👎 ${r.votos_noutil || 0}</button>
+        </div>
+      </div>
+    `;
   }
   container.innerHTML = html;
 }
@@ -908,12 +1138,20 @@ async function enviarRespuesta(hiloId) {
   const input = document.getElementById(`rinput_${hiloId}`);
   const texto = input.value.trim();
   if (!texto) return;
+  
   const movil = detectarMovil(texto);
-  await db.from('respuestas').insert({ hilo_id: hiloId, usuario_id: usuario.id, nickname: usuario.nickname, contenido: texto, movil_detectado: movil });
+  await db.from('respuestas').insert({
+    hilo_id: hiloId,
+    usuario_id: usuario.id,
+    nickname: usuario.nickname,
+    contenido: texto,
+    movil_detectado: movil
+  });
+  
   await db.from('usuarios').update({ puntos: (usuario.puntos || 0) + 2 }).eq('id', usuario.id);
   usuario.puntos = (usuario.puntos || 0) + 2;
-  mostrarNick();
-  input.value = ''; input.style.height = 'auto';
+  mostrarUsuario();
+  input.value = '';
   cargarRespuestas(hiloId);
   cargarHilos();
 }
@@ -922,10 +1160,12 @@ async function votar(respuestaId, tipo, hiloId, nickAsesor) {
   if (!usuario) { mostrarModalAutenticacion(); return; }
   const { data: yaVoto } = await db.from('votos').select('id').eq('respuesta_id', respuestaId).eq('usuario_id', usuario.id).single();
   if (yaVoto) return;
+  
   await db.from('votos').insert({ respuesta_id: respuestaId, usuario_id: usuario.id, tipo });
   const campo = tipo === 'util' ? 'votos_util' : 'votos_noutil';
   const { data: resp } = await db.from('respuestas').select(campo).eq('id', respuestaId).single();
   await db.from('respuestas').update({ [campo]: (resp[campo] || 0) + 1 }).eq('id', respuestaId);
+  
   if (tipo === 'util') {
     const { data: asesor } = await db.from('usuarios').select('puntos').eq('nickname', nickAsesor).single();
     if (asesor) await db.from('usuarios').update({ puntos: asesor.puntos + 3 }).eq('nickname', nickAsesor);
@@ -935,10 +1175,10 @@ async function votar(respuestaId, tipo, hiloId, nickAsesor) {
 
 async function publicarHilo() {
   if (!usuario) { mostrarModalAutenticacion(); return; }
-  const btn = document.getElementById('btnPublicar');
-  btn.disabled = true; btn.textContent = 'Publicando...';
+  
   const { error } = await db.from('hilos').insert({
-    usuario_id: usuario.id, nickname: usuario.nickname,
+    usuario_id: usuario.id,
+    nickname: usuario.nickname,
     presupuesto: document.getElementById('f_presupuesto').value,
     movil_actual: document.getElementById('f_movil_actual').value,
     marca_preferida: document.getElementById('f_marca_pref').value,
@@ -951,34 +1191,38 @@ async function publicarHilo() {
     camara: document.getElementById('f_camara').value,
     bateria: document.getElementById('f_bateria').value,
     carga_rapida: document.getElementById('f_carga').value,
-    datos_extra: document.getElementById('f_extra').value,
+    datos_extra: document.getElementById('f_extra').value
   });
-  btn.disabled = false; btn.textContent = '📢 Publicar consulta';
-  if (!error) { cerrarForm(); cargarHilos(); cargarStats(); }
-  else alert('Error: ' + error.message);
-}
-
-function abrirForm() { if (!usuario) mostrarModalAutenticacion(); else document.getElementById('newForm').classList.add('open'); }
-function cerrarForm() { document.getElementById('newForm').classList.remove('open'); }
-
-// ============================================================
-// INICIALIZACIÓN
-// ============================================================
-async function init() {
-  const tieneSesion = await verificarSesionGuardada();
-  if (!tieneSesion) {
-    mostrarModalAutenticacion();
+  
+  if (!error) {
+    cerrarForm();
+    cargarHilos();
+    cargarStats();
+  } else {
+    alert('Error: ' + error.message);
   }
 }
 
-document.getElementById('nicknameInput')?.addEventListener('keydown', e => {
-  if (e.key === 'Enter') procesarAcceso();
-});
-document.getElementById('codigoInput')?.addEventListener('keydown', e => {
-  if (e.key === 'Enter') procesarAcceso();
-});
+function abrirForm() {
+  if (!usuario) { mostrarModalAutenticacion(); return; }
+  document.getElementById('newForm').style.display = 'block';
+  document.getElementById('newForm').scrollIntoView({ behavior: 'smooth' });
+}
 
-init();
+function cerrarForm() {
+  document.getElementById('newForm').style.display = 'none';
+  document.querySelectorAll('#newForm input, #newForm textarea, #newForm select').forEach(el => el.value = '');
+  document.getElementById('f_garantia').value = 'Sí';
+  document.getElementById('f_modelos').value = 'Actuales';
+  document.getElementById('f_tamano').value = 'Sin preferencia';
+  document.getElementById('f_juegos').value = 'No';
+  document.getElementById('f_camara').value = 'No mucho';
+  document.getElementById('f_bateria').value = 'Normal';
+  document.getElementById('f_carga').value = 'No necesaria';
+}
+
+// INICIALIZAR
+verificarSesion();
 </script>
 </body>
 </html>
