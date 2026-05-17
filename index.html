@@ -200,7 +200,6 @@
   }
   .remember-check input { width: auto; margin: 0; }
 
-  /* Modal de código generado */
   .code-modal .generated-code {
     background: var(--accent-bg);
     border: 2px dashed var(--accent);
@@ -521,7 +520,7 @@ const SUPABASE_KEY = 'sb_publishable_AH7nQIp9WPOqUowcPi3W4Q_djmApiMF';
 const { createClient } = supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// NOMBRES PROHIBIDOS (nadie puede usarlos)
+// NOMBRES PROHIBIDOS (en minúsculas para comparar)
 const FORBIDDEN_NAMES = [
   'admin', 'administrador', 'administradora', 'moderador', 'moderadora', 'mod', 
   'staff', 'dueño', 'dueña', 'creador', 'creadora', 'soporte', 'asistencia', 
@@ -536,7 +535,15 @@ let tabActual = 'abiertas';
 let hilosData = [];
 let currentPage = 1;
 const ITEMS_PER_PAGE = 5;
-let codigoGenerado = null; // Guardar código temporal antes de guardar en BD
+let codigoGenerado = null;
+
+// ============================================================
+// FUNCIÓN PARA CAPITALIZAR NICKNAME (mostrar bonito)
+// ============================================================
+function capitalizarNickname(nick) {
+  if (!nick) return '';
+  return nick.charAt(0).toUpperCase() + nick.slice(1);
+}
 
 // ============================================================
 // FUNCIONES DE AUTENTICACIÓN
@@ -558,42 +565,46 @@ function mostrarCodeModal(codigo) {
 
 function cerrarCodeModal() {
   document.getElementById('codeModal').classList.add('hidden');
-  // Recargar hilos después de cerrar
   cargarHilos();
   cargarStats();
 }
 
 async function procesarAcceso() {
-  const nick = document.getElementById('nicknameInput').value.trim();
+  const nickOriginal = document.getElementById('nicknameInput').value.trim();
   const codigo = document.getElementById('codigoInput').value.trim();
   const rememberMe = document.getElementById('rememberMe').checked;
   const errDiv = document.getElementById('authError');
   
   // Validaciones básicas
-  if (!nick || nick.length < 3) {
+  if (!nickOriginal || nickOriginal.length < 3) {
     errDiv.textContent = '❌ El nickname debe tener al menos 3 caracteres';
     return;
   }
   
   // Validar formato
-  if (!/^[a-zA-Z0-9_\-\.]+$/.test(nick)) {
+  if (!/^[a-zA-Z0-9_\-\.]+$/.test(nickOriginal)) {
     errDiv.textContent = '❌ Solo letras, números, _ y - están permitidos';
     return;
   }
   
-  // Validar nombres prohibidos
-  if (FORBIDDEN_NAMES.includes(nick.toLowerCase())) {
+  // Convertir a minúsculas para guardar y comparar
+  const nickLower = nickOriginal.toLowerCase();
+  
+  // Validar nombres prohibidos (comparar en minúsculas)
+  if (FORBIDDEN_NAMES.includes(nickLower)) {
     errDiv.textContent = '❌ Este nombre no está permitido. Elige otro.';
     return;
   }
   
-  // Buscar si el usuario existe
-  const { data: existe } = await db.from('usuarios').select('*').eq('nickname', nick).single();
+  // Buscar si el usuario existe (buscando por nickname en minúsculas)
+  const { data: existe } = await db.from('usuarios')
+    .select('*')
+    .eq('nickname', nickLower)
+    .single();
   
   if (existe) {
     // USUARIO EXISTE - verificar código
     if (!codigo) {
-      // Mostrar campo de código
       document.getElementById('codigoInput').style.display = 'block';
       document.getElementById('codigoInput').placeholder = '🔑 Introduce tu código de acceso';
       errDiv.textContent = '🔐 Este nickname ya existe. Introduce tu código.';
@@ -608,7 +619,7 @@ async function procesarAcceso() {
     // Código correcto - iniciar sesión
     usuario = existe;
     if (rememberMe) {
-      localStorage.setItem('moviles_nick', nick);
+      localStorage.setItem('moviles_nick', nickLower);
       localStorage.setItem('moviles_codigo', codigo);
     }
     cerrarModalAutenticacion();
@@ -619,9 +630,9 @@ async function procesarAcceso() {
     // USUARIO NUEVO - generar código aleatorio
     const nuevoCodigo = generarCodigoAleatorio();
     
-    // Crear usuario en BD
+    // Crear usuario en BD (guardamos nickname en minúsculas)
     const { data: nuevoUsuario, error } = await db.from('usuarios').insert({ 
-      nickname: nick, 
+      nickname: nickLower,
       puntos: 0,
       codigo_acceso: nuevoCodigo,
       rol: 'usuario'
@@ -635,7 +646,7 @@ async function procesarAcceso() {
     usuario = nuevoUsuario;
     
     if (rememberMe) {
-      localStorage.setItem('moviles_nick', nick);
+      localStorage.setItem('moviles_nick', nickLower);
       localStorage.setItem('moviles_codigo', nuevoCodigo);
     }
     
@@ -664,7 +675,10 @@ async function verificarSesionGuardada() {
   const codigoGuardado = localStorage.getItem('moviles_codigo');
   
   if (nickGuardado && codigoGuardado) {
-    const { data } = await db.from('usuarios').select('*').eq('nickname', nickGuardado).single();
+    const { data } = await db.from('usuarios')
+      .select('*')
+      .eq('nickname', nickGuardado)
+      .single();
     if (data && data.codigo_acceso === codigoGuardado) {
       usuario = data;
       mostrarNick();
@@ -679,8 +693,9 @@ async function verificarSesionGuardada() {
 function mostrarNick() {
   const esAdmin = usuario?.rol === 'admin';
   const adminIcon = esAdmin ? ' 👑' : '';
+  const nickMostrar = capitalizarNickname(usuario?.nickname || '');
   document.getElementById('nickDisplay').innerHTML = usuario 
-    ? `👤 <b>${usuario.nickname}</b> · ${usuario.puntos || 0}pts${adminIcon}` 
+    ? `👤 <b>${nickMostrar}</b> · ${usuario.puntos || 0}pts${adminIcon}` 
     : '👤 Invitado';
 }
 
@@ -701,8 +716,15 @@ function avatarColor(nick) {
   let h = 0; for (let c of nick) h = (h * 31 + c.charCodeAt(0)) & 0xFFFF;
   return AVATAR_COLORS[h % AVATAR_COLORS.length];
 }
-function initials(nick) { return nick.substring(0, 2).toUpperCase(); }
-function avatarEl(nick) { const c = avatarColor(nick); return `<div class="avatar" style="background:${c.bg};color:${c.color}">${initials(nick)}</div>`; }
+function initials(nick) { 
+  const nickCapitalized = capitalizarNickname(nick);
+  return nickCapitalized.substring(0, 2).toUpperCase(); 
+}
+function avatarEl(nick) { 
+  const c = avatarColor(nick); 
+  const nickMostrar = capitalizarNickname(nick);
+  return `<div class="avatar" style="background:${c.bg};color:${c.color}" title="${nickMostrar}">${initials(nick)}</div>`;
+}
 
 function badgeHtml(puntos, nickname, rol) {
   if (rol === 'admin') return '<span class="badge badge-admin">👑 Admin</span>';
@@ -821,12 +843,15 @@ async function renderHilo(h) {
   const estaResuelta = h.resuelto;
   const replyIcon = hasReply && tabActual === 'mis_abiertas' ? '<span class="has-reply-icon">💬</span>' : '';
   
+  // Mostrar nickname capitalizado
+  const nickMostrar = capitalizarNickname(h.nickname);
+  
   return `
     <div class="thread" id="thread_${h.id}">
       <div class="thread-header">
         <div class="thread-meta">
           ${avatarEl(h.nickname)}
-          <div><span class="username">${h.nickname}</span>${badgeHtml(puntos, h.nickname, rol)}</div>
+          <div><span class="username">${nickMostrar}</span>${badgeHtml(puntos, h.nickname, rol)}</div>
           <span class="timestamp">${timeAgo(h.created_at)}</span>
         </div>
         <div class="plantilla">${plantillaHtml}</div>
@@ -860,11 +885,6 @@ async function cargarRespuestas(hiloId) {
   if (!container) return;
   if (!respuestas || !respuestas.length) { container.innerHTML = '<div style="padding:0.75rem 0;font-size:12px;color:var(--text3);border-top:1px solid var(--border);">💬 Sé el primero en recomendar</div>'; return; }
   
-  // Calcular consenso
-  const conteo = {};
-  for (const r of respuestas) if (r.movil_detectado) conteo[r.movil_detectado] = (conteo[r.movil_detectado] || 0) + 1;
-  const topMovil = Object.entries(conteo).sort((a,b)=>b[1]-a[1])[0];
-  
   let votosUsuario = {};
   if (usuario) {
     const { data: vots } = await db.from('votos').select('respuesta_id, tipo').eq('usuario_id', usuario.id).in('respuesta_id', respuestas.map(r=>r.id));
@@ -877,7 +897,8 @@ async function cargarRespuestas(hiloId) {
     const puntos = u ? u.puntos : 0;
     const rol = u ? u.rol : 'usuario';
     const miVoto = votosUsuario[r.id];
-    html += `<div class="reply" id="reply_${r.id}"><div class="reply-meta">${avatarEl(r.nickname)}<span class="username" style="font-size:12px;">${r.nickname}</span>${badgeHtml(puntos, r.nickname, rol)}<span class="timestamp" style="font-size:11px;">${timeAgo(r.created_at)}</span></div><div class="reply-body">${r.contenido}${r.movil_detectado ? `<div><span class="phone-tag">📱 ${r.movil_detectado}</span></div>` : ''}</div><div class="reply-actions"><button class="vote-btn ${miVoto === 'util' ? 'voted-util' : ''}" onclick="votar('${r.id}', 'util', '${hiloId}', '${r.nickname}')">👍 ${r.votos_util || 0}</button><button class="vote-btn ${miVoto === 'noutil' ? 'voted-noutil' : ''}" onclick="votar('${r.id}', 'noutil', '${hiloId}', '${r.nickname}')">👎 ${r.votos_noutil || 0}</button></div></div>`;
+    const nickMostrar = capitalizarNickname(r.nickname);
+    html += `<div class="reply" id="reply_${r.id}"><div class="reply-meta">${avatarEl(r.nickname)}<span class="username" style="font-size:12px;">${nickMostrar}</span>${badgeHtml(puntos, r.nickname, rol)}<span class="timestamp" style="font-size:11px;">${timeAgo(r.created_at)}</span></div><div class="reply-body">${r.contenido}${r.movil_detectado ? `<div><span class="phone-tag">📱 ${r.movil_detectado}</span></div>` : ''}</div><div class="reply-actions"><button class="vote-btn ${miVoto === 'util' ? 'voted-util' : ''}" onclick="votar('${r.id}', 'util', '${hiloId}', '${r.nickname}')">👍 ${r.votos_util || 0}</button><button class="vote-btn ${miVoto === 'noutil' ? 'voted-noutil' : ''}" onclick="votar('${r.id}', 'noutil', '${hiloId}', '${r.nickname}')">👎 ${r.votos_noutil || 0}</button></div></div>`;
   }
   container.innerHTML = html;
 }
@@ -950,7 +971,6 @@ async function init() {
   }
 }
 
-// Evento Enter en nickname
 document.getElementById('nicknameInput')?.addEventListener('keydown', e => {
   if (e.key === 'Enter') procesarAcceso();
 });
