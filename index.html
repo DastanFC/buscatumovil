@@ -70,31 +70,24 @@
 
   /* Stats Cards */
   .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
     gap: 12px;
     margin-bottom: 24px;
+    flex-wrap: wrap;
   }
 
-  .stat-card {
+  .stat-pill {
     background: white;
-    border-radius: 20px;
-    padding: 16px;
-    text-align: center;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    border: 1px solid rgba(0,0,0,0.05);
-  }
-
-  .stat-number {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #2A5298;
-  }
-
-  .stat-label {
-    font-size: 0.75rem;
+    border-radius: 40px;
+    padding: 8px 18px;
+    font-size: 0.8rem;
     color: #666;
-    margin-top: 4px;
+    border: 1px solid #E1E4E8;
+  }
+
+  .stat-pill b {
+    color: #2A5298;
+    font-weight: 700;
   }
 
   /* Tabs */
@@ -103,6 +96,7 @@
     gap: 8px;
     margin-bottom: 20px;
     flex-wrap: wrap;
+    align-items: center;
   }
 
   .tab {
@@ -305,8 +299,8 @@
 
   /* Specs Grid */
   .specs-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: 12px;
     margin-top: 12px;
   }
@@ -315,6 +309,7 @@
     background: #F8FAFE;
     padding: 10px 12px;
     border-radius: 14px;
+    min-width: 100px;
   }
 
   .spec-label {
@@ -576,7 +571,7 @@
   }
 
   .code-display .code {
-    font-family: monospace;
+    font-family: 'DM Mono', monospace;
     font-size: 2rem;
     font-weight: 700;
     letter-spacing: 4px;
@@ -595,8 +590,14 @@
   .remember-check {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     margin: 16px 0;
+  }
+
+  .remember-check input {
+    width: 18px;
+    height: 18px;
+    margin: 0;
   }
 
   /* Paginación */
@@ -645,11 +646,7 @@
       grid-column: span 1;
     }
     .stats-grid {
-      grid-template-columns: repeat(3, 1fr);
       gap: 8px;
-    }
-    .stat-number {
-      font-size: 1.3rem;
     }
     .thread-header {
       padding: 16px;
@@ -660,6 +657,12 @@
     .reply-box {
       padding: 12px 16px 20px;
     }
+    .reply-content {
+      margin-left: 0;
+    }
+    .reply-actions {
+      margin-left: 0;
+    }
   }
 </style>
 </head>
@@ -669,17 +672,22 @@
 <div class="modal-overlay" id="authModal">
   <div class="modal">
     <h2>✨ Identifícate</h2>
-    <p style="color:#666; margin-bottom:8px;">Elige un nombre único para la comunidad</p>
-    <input type="text" id="nicknameInput" placeholder="Ej. Juanillo_tech" autocomplete="off" />
+    <p style="color: #6B7280; margin-bottom: 20px;">Elige un nombre único para la comunidad</p>
+    
+    <input type="text" id="nicknameInput" placeholder="Tu nombre" autocomplete="off" />
     <input type="password" id="codigoInput" placeholder="Código secreto" style="display:none;" />
-    <div class="remember-check">
+    
+    <label class="remember-check">
       <input type="checkbox" id="rememberMe" checked />
-      <label>🔐 Recordarme en este dispositivo</label>
-    </div>
+      <span>🔐 Recordarme en este dispositivo</span>
+    </label>
+    
     <div id="authError" style="color:#DC2626; font-size:0.8rem; margin:8px 0;"></div>
-    <button class="btn-submit" style="width:100%;" onclick="procesarAcceso()">Continuar</button>
-    <p style="font-size:0.7rem; color:#9CA3AF; text-align:center; margin-top:16px;">
-      💡 Sin correo ni contraseña. Guarda tu código secreto.
+    
+    <button class="btn-submit" style="width:100%; justify-content:center;" onclick="procesarAcceso()">Continuar</button>
+    
+    <p style="font-size:0.7rem; color:#9CA3AF; text-align:center; margin-top:20px;">
+      💡 Sin correo ni contraseña. El sistema te dará un código que debes guardar.
     </p>
   </div>
 </div>
@@ -698,7 +706,7 @@
       • <strong>Si pierdes este código, pierdes tu cuenta</strong><br/>
       • 📸 Haz una captura de pantalla ahora
     </div>
-    <button class="btn-submit" style="width:100%;" onclick="cerrarCodeModal()">✅ Entendido, lo guardé</button>
+    <button class="btn-submit" style="width:100%; justify-content:center;" onclick="cerrarCodeModal()">✅ Entendido, lo guardé</button>
   </div>
 </div>
 
@@ -710,11 +718,7 @@
 
 <div class="container">
   <!-- Stats -->
-  <div class="stats-grid" id="statsGrid">
-    <div class="stat-card"><div class="stat-number" id="totalConsultas">0</div><div class="stat-label">Consultas</div></div>
-    <div class="stat-card"><div class="stat-number" id="resueltasCount">0</div><div class="stat-label">Resueltas</div></div>
-    <div class="stat-card"><div class="stat-number" id="miembrosCount">0</div><div class="stat-label">Miembros</div></div>
-  </div>
+  <div class="stats-grid" id="statsGrid"></div>
 
   <!-- Tabs -->
   <div class="tabs-container">
@@ -836,7 +840,7 @@ async function procesarAcceso() {
   const errDiv = document.getElementById('authError');
   
   if (!nickOriginal || nickOriginal.length < 3) {
-    errDiv.textContent = '❌ El nickname debe tener al menos 3 caracteres';
+    errDiv.textContent = '❌ El nombre debe tener al menos 3 caracteres';
     return;
   }
   if (!/^[a-zA-Z0-9_\-\.]+$/.test(nickOriginal)) {
@@ -965,9 +969,12 @@ async function cargarStats() {
   const { count: total } = await db.from('hilos').select('*', { count: 'exact', head: true });
   const { count: resueltas } = await db.from('hilos').select('*', { count: 'exact', head: true }).eq('resuelto', true);
   const { count: miembros } = await db.from('usuarios').select('*', { count: 'exact', head: true });
-  document.getElementById('totalConsultas').innerText = total || 0;
-  document.getElementById('resueltasCount').innerText = resueltas || 0;
-  document.getElementById('miembrosCount').innerText = miembros || 0;
+  
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat-pill">📋 <b>${total || 0}</b> consultas abiertas</div>
+    <div class="stat-pill">✅ <b>${resueltas || 0}</b> resueltas</div>
+    <div class="stat-pill">👥 <b>${miembros || 0}</b> miembros</div>
+  `;
 }
 
 // ============================================================
@@ -999,7 +1006,11 @@ async function cargarHilos() {
   hilosData = hilos || [];
   
   if (hilosData.length === 0) {
-    document.getElementById('hilosList').innerHTML = '<div class="empty-state">📭 No hay consultas que mostrar</div>';
+    let msg = '';
+    if (tabActual === 'mis_abiertas') msg = 'No tienes consultas abiertas';
+    else if (tabActual === 'mis_cerradas') msg = 'No tienes consultas cerradas';
+    else msg = 'Sé el primero en preguntar 👆';
+    document.getElementById('hilosList').innerHTML = `<div class="empty-state">📭 ${msg}</div>`;
     document.getElementById('pagination').innerHTML = '';
     return;
   }
@@ -1038,11 +1049,16 @@ async function renderHilo(h) {
   const specs = [
     { label: '💰 Presupuesto', val: h.presupuesto },
     { label: '📱 Móvil actual', val: h.movil_actual },
+    { label: '⭐ Marca preferida', val: h.marca_preferida },
+    { label: '🚫 Marca no', val: h.marca_no_quiere },
     { label: '🛡️ Garantía ES', val: h.garantia_espana },
     { label: '🎯 Uso', val: h.uso_principal },
+    { label: '📏 Pantalla', val: h.tamano_pantalla },
+    { label: '🎮 Juegos', val: h.juegos },
+    { label: '📸 Cámara', val: h.camara },
     { label: '🔋 Batería', val: h.bateria },
-    { label: '📸 Cámara', val: h.camara }
-  ].filter(s => s.val && !['Sin preferencia', 'No', 'Normal', 'No necesaria'].includes(s.val));
+    { label: '⚡ Carga rápida', val: h.carga_rapida }
+  ].filter(s => s.val && !['Sin preferencia', 'No', 'No mucho', 'Normal', 'No necesaria', ''].includes(s.val));
   
   const puedeCerrar = usuario && (usuario.nickname === h.nickname || esAdmin());
   
@@ -1070,7 +1086,7 @@ async function renderHilo(h) {
       </div>
       ${!h.resuelto ? `
         <div class="reply-box">
-          <textarea class="reply-input" id="rinput_${h.id}" placeholder="Escribe tu recomendación..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarRespuesta('${h.id}')}"></textarea>
+          <textarea class="reply-input" id="rinput_${h.id}" placeholder="Añade tu recomendación..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarRespuesta('${h.id}')}"></textarea>
           <button class="send-btn" onclick="enviarRespuesta('${h.id}')">➤</button>
         </div>
       ` : ''}
