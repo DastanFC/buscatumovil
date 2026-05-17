@@ -497,10 +497,34 @@ const SUPABASE_KEY = 'sb_publishable_AH7nQIp9WPOqUowcPi3W4Q_djmApiMF';
 const { createClient } = supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const FORBIDDEN_NAMES = ['admin', 'moderador', 'mod', 'administrador', 'staff', 'owner', 'superadmin'];
-const ADMIN_EMAILS = ['admin@recomiendame.com'];
+// ============================================================
+// 👇 CAMBIA ESTO POR TU NICKNAME PARA SER ADMINISTRADOR 👇
+// ============================================================
+const ADMIN_NICKNAME = 'Dastan';  // <--- ESCRIBE AQUÍ TU NICKNAME EXACTO
+// ============================================================
+
+// Lista de nombres que NADIE puede usar (ni siquiera tú)
+cconst FORBIDDEN_NAMES = [
+  // --- Español ---
+  'admin', 'administrador', 'administradora', 'moderador', 'moderadora', 'mod', 
+  'staff', 'dueño', 'dueña', 'creador', 'creadora', 'soporte', 'asistencia', 
+  'sistema', 'oficial', 'ayuda', 'webmaster', 'coordinador', 'coordinadora',
+  
+  // --- Inglés ---
+  'owner', 'creator', 'superadmin', 'root', 'support', 'system', 'official', 
+  'help', 'manager', 'adminis', 'sysadmin', 'developer', 'dev',
+  
+  // --- Variantes comunes / Intentos de engaño (Leet speak) ---
+  'adm1n', '4dmin', 'm0d', 'staf', 'soport', 's0porte', 'sys', '0wner', 'cr3ator'
+];
+
+// 👇 CAMBIA ESTO POR TU NICKNAME PARA SER ADMIN 👇
+const ADMIN_NICKNAME = 'Dastan';
+
 let esAdmin = false;
 
+// En init() después de cargar el usuario:
+esAdmin = (usuario?.nickname === ADMIN_NICKNAME);
 const AVATAR_COLORS = [
   { bg: '#E6F1FB', color: '#185FA5' }, { bg: '#E1F5EE', color: '#0F6E56' },
   { bg: '#FAEEDA', color: '#854F0B' }, { bg: '#FAECE7', color: '#993C1D' },
@@ -515,7 +539,7 @@ function initials(nick) { return nick.substring(0, 2).toUpperCase(); }
 function avatarEl(nick) { const c = avatarColor(nick); return `<div class="avatar" style="background:${c.bg};color:${c.color}">${initials(nick)}</div>`; }
 
 function badgeHtml(puntos, nickname) {
-  if (nickname === 'Admin' || esAdmin) return '<span class="badge badge-admin">👑 Admin</span>';
+  if (nickname === ADMIN_NICKNAME) return '<span class="badge badge-admin">👑 Admin</span>';
   if (puntos >= 50) return '<span class="badge badge-expert">Experto</span>';
   if (puntos >= 10) return '<span class="badge badge-trusted">De confianza</span>';
   return '<span class="badge badge-new">Nuevo</span>';
@@ -546,15 +570,19 @@ async function init() {
   const nickGuardado = localStorage.getItem('moviles_nick');
   if (nickGuardado) {
     const { data } = await db.from('usuarios').select('*').eq('nickname', nickGuardado).single();
-    if (data) { usuario = data; esAdmin = ADMIN_EMAILS.includes(data.email || ''); }
+    if (data) { usuario = data; }
   }
   if (usuario) document.getElementById('nickModal').classList.add('hidden');
+  esAdmin = (usuario?.nickname === ADMIN_NICKNAME);
   mostrarNick();
   cargarStats();
   cargarHilos();
 }
 
-function mostrarNick() { document.getElementById('nickDisplay').innerHTML = usuario ? `Hola, <b>${usuario.nickname}</b> · ${usuario.puntos}pts` : 'Invitado'; }
+function mostrarNick() { 
+  const adminText = esAdmin ? ' 👑' : '';
+  document.getElementById('nickDisplay').innerHTML = usuario ? `Hola, <b>${usuario.nickname}</b> · ${usuario.puntos}pts${adminText}` : 'Invitado'; 
+}
 
 async function registrarNick() {
   const nick = document.getElementById('nickInput').value.trim();
@@ -569,7 +597,7 @@ async function registrarNick() {
     const { data } = await db.from('usuarios').insert({ nickname: nick, puntos: 0 }).select().single();
     usuario = data;
   }
-  esAdmin = ADMIN_EMAILS.includes(usuario?.email || '');
+  esAdmin = (usuario.nickname === ADMIN_NICKNAME);
   localStorage.setItem('moviles_nick', nick);
   mostrarNick();
   document.getElementById('nickModal').classList.add('hidden');
@@ -581,8 +609,8 @@ document.getElementById('nickInput').addEventListener('keydown', e => { if (e.ke
 async function cargarStats() {
   const { count: totalHilos } = await db.from('hilos').select('*', { count: 'exact', head: true });
   const { count: resueltos } = await db.from('hilos').select('*', { count: 'exact', head: true }).eq('resuelto', true);
-  const { count: asesores } = await db.from('usuarios').select('*', { count: 'exact', head: true });
-  document.getElementById('statsBar').innerHTML = `<div class="stat-pill"><b>${totalHilos || 0}</b> consultas</div><div class="stat-pill"><b>${resueltos || 0}</b> resueltas</div><div class="stat-pill"><b>${asesores || 0}</b> asesores</div>`;
+  const { count: miembros } = await db.from('usuarios').select('*', { count: 'exact', head: true });
+  document.getElementById('statsBar').innerHTML = `<div class="stat-pill"><b>${totalHilos || 0}</b> consultas</div><div class="stat-pill"><b>${resueltos || 0}</b> resueltas</div><div class="stat-pill"><b>${miembros || 0}</b> miembros</div>`;
 }
 
 function setTab(tab, el) {
