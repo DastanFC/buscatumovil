@@ -1344,7 +1344,77 @@ body {
   margin-right: 4px;
 }
 
-/* ─── PANEL ADMIN ─── */
+/* ─── SPECS NUEVO DISEÑO ─── */
+.specs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0;
+  margin: 12px 0 4px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.spec-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--surface-3);
+  background: var(--surface);
+  transition: background 0.15s;
+}
+.spec-row:last-child { border-bottom: none; }
+.spec-row:hover { background: var(--surface-2); }
+
+.spec-row-icon {
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+}
+
+.spec-row-label {
+  font-size: 0.72rem;
+  color: var(--text-3);
+  flex-shrink: 0;
+  min-width: 80px;
+}
+
+.spec-row-val {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* Nota libre del usuario */
+.extra-note-clean {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 12px 14px;
+  background: var(--surface-2);
+  border-radius: 12px;
+  border-left: 3px solid var(--blue);
+}
+
+.extra-note-lead {
+  font-size: 1rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.extra-note-clean span:last-child {
+  font-size: 0.85rem;
+  color: var(--text-2);
+  line-height: 1.55;
+}
+
+@media (max-width: 600px) {
+  .specs-grid { grid-template-columns: 1fr; }
+}
+</style>
 #adminPanel {
   display: none;
   background: var(--surface);
@@ -1625,7 +1695,7 @@ body {
     <button class="tab active" onclick="setTab('abiertas', this)">📋 Consultas abiertas</button>
     <button class="tab" onclick="setTab('mis_abiertas', this)">📝 Mis consultas</button>
     <button class="tab" onclick="setTab('mis_cerradas', this)">✅ Cerradas</button>
-
+    <button class="new-btn" onclick="abrirForm()"><span>✏️</span> Nueva consulta</button>
   </div>
 
   <!-- Form -->
@@ -1689,11 +1759,6 @@ body {
   <button class="cookie-btn" onclick="aceptarCookies()">Entendido</button>
 </div>
 
-<!-- FAB -->
-<button class="fab" onclick="abrirForm()" title="Nueva consulta">
-  <span class="fab-icon">✏️</span>
-  <span class="fab-label">Nueva consulta</span>
-</button>
 
 <!-- MODAL LOGIN -->
 <div class="modal-overlay" id="authModal">
@@ -2504,11 +2569,22 @@ async function renderHilo(h) {
           </div>
           <div class="thread-time">${timeAgo(h.created_at)}</div>
         </div>
+
         ${specs.length ? `
-          <div class="specs-wrap">
-            ${specs.map(s => `<div class="spec-tag">${s.icon} ${s.label}: <span class="spec-val">${s.val}</span></div>`).join('')}
+          <div class="specs-grid">
+            ${specs.map(s => `
+              <div class="spec-row">
+                <span class="spec-row-icon">${s.icon}</span>
+                <span class="spec-row-label">${s.label}</span>
+                <span class="spec-row-val">${s.val}</span>
+              </div>`).join('')}
           </div>` : ''}
-        ${h.datos_extra ? `<div class="extra-note">📝 ${h.datos_extra}</div>` : ''}
+
+        ${h.datos_extra ? `
+          <div class="extra-note-clean">
+            <span class="extra-note-lead">💬</span>
+            <span>${h.datos_extra}</span>
+          </div>` : ''}
       </div>
 
       <div id="topRec_${h.id}"></div>
