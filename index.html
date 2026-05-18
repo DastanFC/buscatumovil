@@ -2263,29 +2263,29 @@ async function publicarHilo() {
 // INIT
 // ═══════════════════════════════════════════
 async function init() {
-    // 1. Miramos si hay un token guardado a tu manera tradicional
     const token = leerToken();
     console.log("TOKEN manual en localStorage:", token ? "encontrado" : "no encontrado");
 
     if (token) {
-        // 2. Usamos 'db' (que es tu variable real de Supabase) para comprobar la sesión
         const { data: sesion, error: errorSesion } = await db.from('sesiones').select('*').eq('token', token).single();
         console.log("SESION en DB:", JSON.stringify(sesion), "ERR:", errorSesion);
 
         if (sesion) {
-            // 3. Si la sesión existe en tu tabla, buscamos tu usuario
             const { data: usuario, error: errorUsuario } = await db.from('usuarios').select('*').eq('nickname', sesion.nickname).single();
             console.log("USER en DB:", JSON.stringify(usuario), "ERR:", errorUsuario);
 
             if (usuario) {
-                // 🎉 ¡AQUÍ ESTÁ LA MAGIA REAL! Usamos tu función verdadera para cerrar el cartel:
+                // 1. Cerramos el cartel flotante
                 cerrarModalAuth();
-                return; // Cortamos aquí para que no ejecute el mostrarModal de abajo
+                
+                // 🌟 ¡EL REMATE! Avisamos a la web para que pinte tu nombre, puntos y rol de admin
+                onLogin();
+                
+                return; 
             }
         }
     }
 
-    // Si no hay token, o no hay sesión, o no hay usuario... se queda el login puesto
     mostrarModal();
 }
 
