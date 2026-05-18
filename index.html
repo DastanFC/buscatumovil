@@ -1606,12 +1606,15 @@ body {
   <div id="adminPanel">
     <div class="admin-header" onclick="toggleAdminBody()">
       <div class="admin-header-title">👑 Panel de Administración</div>
-      <span class="admin-header-toggle" id="adminToggleIcon">▾</span>
+      <span class="admin-header-toggle" id="adminToggleIcon">▴</span>
     </div>
     <div class="admin-body" id="adminBody">
       <div class="admin-tab-row">
         <button class="admin-tab active" onclick="adminSetTab('usuarios', this)">👥 Usuarios</button>
-        <button class="admin-tab" onclick="adminSetTab('posts', this)">📋 Posts / Hilos</button>
+        <button class="admin-tab" onclick="adminSetTab('posts', this)">📋 Hilos</button>
+        <button class="admin-tab" onclick="adminSetTab('respuestas', this)">💬 Respuestas</button>
+        <button class="admin-tab" onclick="adminSetTab('stats', this)">📊 Estadísticas</button>
+        <button class="admin-tab" onclick="adminSetTab('config', this)">⚙️ Config</button>
       </div>
       <div id="adminContent"><div class="admin-loading">⏳ Cargando...</div></div>
     </div>
@@ -1751,7 +1754,7 @@ const FORBIDDEN_NAMES = [
   'dev','adm1n','4dmin','m0d','staf','soport','s0porte','sys','0wner','cr3ator'
 ];
 
-const RANGOS = [
+const RANGOS = window.RANGOS = [
   { id: 'nuevo', label: 'Nuevo', icon: '🌱', min: 0, max: 19, perk: 'Acceso básico a la comunidad', locked: false },
   { id: 'aprendiz', label: 'Aprendiz', icon: '📚', min: 20, max: 49, perk: 'Badge especial en tus respuestas', locked: false },
   { id: 'confiable', label: 'Confiable', icon: '⭐', min: 50, max: 79, perk: 'Tus recomendaciones se destacan primero', locked: false },
@@ -2807,7 +2810,7 @@ async function publicarHilo() {
 }
 
 // ═══════════════════════════════════════════
-// PANEL ADMIN
+// PANEL ADMIN COMPLETO
 // ═══════════════════════════════════════════
 const ADMIN_NICK = 'dastan';
 let adminTabActual = 'usuarios';
@@ -2817,16 +2820,11 @@ function mostrarAdminPanel() {
   if (!usuario) return;
   const nick = (usuario.nickname || '').toLowerCase().trim();
   if (nick !== ADMIN_NICK) return;
-  // Mostrar botón 👑 en topbar
   const btn = document.getElementById('adminBtn');
   if (btn) btn.style.display = 'flex';
-  // Mostrar panel con pequeño delay para asegurar DOM listo
   setTimeout(() => {
     const panel = document.getElementById('adminPanel');
-    if (panel) {
-      panel.style.display = 'block';
-      cargarAdminContent();
-    }
+    if (panel) { panel.style.display = 'block'; cargarAdminContent(); }
   }, 300);
 }
 
@@ -2838,10 +2836,7 @@ function emergenciaAdmin() {
   if (!panel) return;
   const visible = panel.style.display === 'block';
   panel.style.display = visible ? 'none' : 'block';
-  if (!visible) {
-    cargarAdminContent();
-    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
+  if (!visible) { cargarAdminContent(); panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
 }
 
 function toggleAdminBody() {
@@ -2860,123 +2855,239 @@ function adminSetTab(tab, el) {
 async function cargarAdminContent() {
   document.getElementById('adminContent').innerHTML = '<div class="admin-loading">⏳ Cargando...</div>';
   if (adminTabActual === 'usuarios') await renderAdminUsuarios();
-  else await renderAdminPosts();
+  else if (adminTabActual === 'posts') await renderAdminPosts();
+  else if (adminTabActual === 'respuestas') await renderAdminRespuestas();
+  else if (adminTabActual === 'stats') await renderAdminStats();
+  else if (adminTabActual === 'config') renderAdminConfig();
 }
 
+// ── 1. USUARIOS ──────────────────────────────
 async function renderAdminUsuarios() {
   const { data: users } = await db.from('usuarios').select('*').order('puntos', { ascending: false });
-  if (!users || users.length === 0) {
-    document.getElementById('adminContent').innerHTML = '<div class="admin-empty">Sin usuarios</div>';
-    return;
-  }
+  if (!users || users.length === 0) { document.getElementById('adminContent').innerHTML = '<div class="admin-empty">Sin usuarios</div>'; return; }
 
   let html = `
     <div class="admin-section-title">👥 Todos los usuarios (${users.length})</div>
     <table class="admin-table">
-      <thead>
-        <tr>
-          <th>Usuario</th>
-          <th>Puntos</th>
-          <th>Rol</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-  `;
+      <thead><tr><th>Usuario</th><th>Puntos</th><th>Estado</th><th>Acciones</th></tr></thead>
+      <tbody>`;
 
   for (const u of users) {
-    const rolBadge = u.rol === 'admin'
+    const badge = u.rol === 'admin'
       ? `<span class="admin-badge admin-badge-admin">👑 Admin</span>`
-      : u.baneado
-        ? `<span class="admin-badge admin-badge-baneado">🚫 Baneado</span>`
-        : `<span class="admin-badge admin-badge-usuario">👤 Usuario</span>`;
+      : u.baneado ? `<span class="admin-badge admin-badge-baneado">🚫 Baneado</span>`
+      : `<span class="admin-badge admin-badge-usuario">👤 Usuario</span>`;
 
-    html += `
-      <tr>
-        <td><div class="admin-nick">${cap(u.nickname)}</div></td>
-        <td>
-          <input class="admin-inline-input" type="number" value="${u.puntos || 0}" id="pts_${u.nickname}" style="width:60px;" />
-          <button class="admin-btn admin-btn-blue" style="margin-left:4px;" onclick="adminAjustarPuntos('${u.nickname}')">✔</button>
-        </td>
-        <td>${rolBadge}</td>
-        <td>
-          <div class="admin-actions-row">
-            ${u.nickname !== ADMIN_NICK ? `
-              <select class="admin-select" id="rol_${u.nickname}">
-                <option value="usuario" ${u.rol === 'usuario' ? 'selected' : ''}>Usuario</option>
-                <option value="admin" ${u.rol === 'admin' ? 'selected' : ''}>Admin</option>
-              </select>
-              <button class="admin-btn admin-btn-gray" onclick="adminCambiarRol('${u.nickname}')">Cambiar rol</button>
-              <button class="admin-btn admin-btn-red" onclick="adminBanear('${u.nickname}', ${!u.baneado})">${u.baneado ? '✅ Desbanear' : '🚫 Banear'}</button>
-            ` : `<span style="font-size:0.68rem;color:var(--text-3);">— eres tú —</span>`}
-          </div>
-        </td>
-      </tr>
-    `;
+    html += `<tr>
+      <td><div class="admin-nick">${cap(u.nickname)}</div></td>
+      <td>
+        <input class="admin-inline-input" type="number" value="${u.puntos||0}" id="pts_${u.nickname}" />
+        <button class="admin-btn admin-btn-blue" onclick="adminAjustarPuntos('${u.nickname}')">✔</button>
+      </td>
+      <td>${badge}</td>
+      <td><div class="admin-actions-row">
+        ${u.nickname !== ADMIN_NICK ? `
+          <select class="admin-select" id="rol_${u.nickname}">
+            <option value="usuario" ${u.rol==='usuario'?'selected':''}>Usuario</option>
+            <option value="mod" ${u.rol==='mod'?'selected':''}>Mod</option>
+            <option value="admin" ${u.rol==='admin'?'selected':''}>Admin</option>
+          </select>
+          <button class="admin-btn admin-btn-gray" onclick="adminCambiarRol('${u.nickname}')">Cambiar rol</button>
+          <button class="admin-btn admin-btn-red" onclick="adminBanear('${u.nickname}',${!u.baneado})">${u.baneado?'✅ Desbanear':'🚫 Banear'}</button>
+          <button class="admin-btn admin-btn-gray" onclick="adminResetCodigo('${u.nickname}')">🔑 Reset código</button>
+        ` : `<span style="font-size:0.68rem;color:var(--text-3);">— eres tú —</span>`}
+      </div></td>
+    </tr>`;
   }
-
   html += `</tbody></table>`;
   document.getElementById('adminContent').innerHTML = html;
 }
 
+// ── 2. HILOS ─────────────────────────────────
 async function renderAdminPosts() {
-  const { data: hilos } = await db.from('hilos').select('*').order('created_at', { ascending: false }).limit(50);
-  if (!hilos || hilos.length === 0) {
-    document.getElementById('adminContent').innerHTML = '<div class="admin-empty">Sin hilos</div>';
-    return;
-  }
+  const { data: hilos } = await db.from('hilos').select('*').order('created_at', { ascending: false }).limit(100);
+  if (!hilos || hilos.length === 0) { document.getElementById('adminContent').innerHTML = '<div class="admin-empty">Sin hilos</div>'; return; }
 
   let html = `
-    <div class="admin-section-title">📋 Hilos recientes (${hilos.length})</div>
+    <div class="admin-section-title">📋 Hilos (${hilos.length})</div>
     <table class="admin-table">
-      <thead>
-        <tr>
-          <th>Autor</th>
-          <th>Consulta</th>
-          <th>Estado</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-  `;
+      <thead><tr><th>Autor</th><th>Consulta</th><th>Estado</th><th>Acciones</th></tr></thead>
+      <tbody>`;
 
   for (const h of hilos) {
     const resumen = [h.presupuesto, h.uso_principal, h.datos_extra].filter(Boolean).join(' · ') || 'Sin detalle';
-    html += `
-      <tr>
-        <td style="font-weight:600;font-size:0.78rem;">${cap(h.nickname)}</td>
-        <td><div class="admin-hilo-title" title="${resumen}">${resumen}</div></td>
-        <td>
-          ${h.resuelto
-            ? `<span style="color:var(--green);font-size:0.72rem;font-weight:600;">✅ Resuelta</span>`
-            : `<span style="color:var(--accent);font-size:0.72rem;font-weight:600;">🟡 Abierta</span>`}
-        </td>
-        <td>
-          <div class="admin-actions-row">
-            ${!h.resuelto ? `<button class="admin-btn admin-btn-green" onclick="adminCerrarHilo('${h.id}')">🔒 Cerrar</button>` : ''}
-            <button class="admin-btn admin-btn-red" onclick="adminEliminarHilo('${h.id}')">🗑 Eliminar</button>
-          </div>
-        </td>
-      </tr>
-    `;
+    const fijado = h.fijado ? '📌 ' : '';
+    html += `<tr>
+      <td style="font-weight:600;font-size:0.78rem;">${cap(h.nickname)}</td>
+      <td><div class="admin-hilo-title" title="${resumen}">${fijado}${resumen}</div></td>
+      <td>
+        ${h.resuelto
+          ? `<span style="color:var(--green);font-size:0.72rem;font-weight:600;">✅ Resuelta</span>`
+          : `<span style="color:var(--accent);font-size:0.72rem;font-weight:600;">🟡 Abierta</span>`}
+      </td>
+      <td><div class="admin-actions-row">
+        <button class="admin-btn ${h.fijado?'admin-btn-blue':'admin-btn-gray'}" onclick="adminFijarHilo('${h.id}',${!h.fijado})">${h.fijado?'📌 Desfijar':'📌 Fijar'}</button>
+        ${!h.resuelto?`<button class="admin-btn admin-btn-green" onclick="adminCerrarHilo('${h.id}')">🔒 Cerrar</button>`:''}
+        <button class="admin-btn admin-btn-red" onclick="adminEliminarHilo('${h.id}')">🗑 Eliminar</button>
+      </div></td>
+    </tr>`;
   }
-
   html += `</tbody></table>`;
   document.getElementById('adminContent').innerHTML = html;
 }
 
+// ── 3. RESPUESTAS ─────────────────────────────
+async function renderAdminRespuestas() {
+  const { data: resps } = await db.from('respuestas').select('*').order('created_at', { ascending: false }).limit(80);
+  if (!resps || resps.length === 0) { document.getElementById('adminContent').innerHTML = '<div class="admin-empty">Sin respuestas</div>'; return; }
+
+  let html = `
+    <div class="admin-section-title">💬 Respuestas recientes (${resps.length})</div>
+    <table class="admin-table">
+      <thead><tr><th>Autor</th><th>Contenido</th><th>Votos</th><th>Acciones</th></tr></thead>
+      <tbody>`;
+
+  for (const r of resps) {
+    const preview = (r.contenido || '').slice(0, 90) + ((r.contenido||'').length > 90 ? '…' : '');
+    html += `<tr>
+      <td style="font-weight:600;font-size:0.78rem;white-space:nowrap;">${cap(r.nickname)}</td>
+      <td style="font-size:0.75rem;color:var(--text-2);max-width:260px;">${preview}</td>
+      <td style="white-space:nowrap;font-size:0.75rem;">👍${r.votos_util||0} 👎${r.votos_noutil||0}</td>
+      <td><div class="admin-actions-row">
+        <button class="admin-btn admin-btn-blue" onclick="adminVotoExtra('${r.id}','${r.nickname}')">⭐ +Voto útil</button>
+        <button class="admin-btn admin-btn-red" onclick="adminEliminarRespuesta('${r.id}','${r.hilo_id}')">🗑 Eliminar</button>
+      </div></td>
+    </tr>`;
+  }
+  html += `</tbody></table>`;
+  document.getElementById('adminContent').innerHTML = html;
+}
+
+// ── 4. ESTADÍSTICAS ───────────────────────────
+async function renderAdminStats() {
+  const [
+    { count: totalHilos },
+    { count: hilosAbiertos },
+    { count: hilosCerrados },
+    { count: totalRespuestas },
+    { count: totalUsuarios },
+    { data: topUsuarios },
+    { data: ultimasResps },
+  ] = await Promise.all([
+    db.from('hilos').select('*', { count: 'exact', head: true }),
+    db.from('hilos').select('*', { count: 'exact', head: true }).eq('resuelto', false),
+    db.from('hilos').select('*', { count: 'exact', head: true }).eq('resuelto', true),
+    db.from('respuestas').select('*', { count: 'exact', head: true }),
+    db.from('usuarios').select('*', { count: 'exact', head: true }),
+    db.from('usuarios').select('nickname,puntos,rol').order('puntos', { ascending: false }).limit(10),
+    db.from('respuestas').select('created_at').order('created_at', { ascending: false }).limit(200),
+  ]);
+
+  // Horas pico
+  const horaCounts = Array(24).fill(0);
+  (ultimasResps || []).forEach(r => {
+    const h = new Date(r.created_at).getHours();
+    horaCounts[h]++;
+  });
+  const maxHora = Math.max(...horaCounts);
+  const horasPicoHtml = horaCounts.map((c, h) => {
+    const pct = maxHora > 0 ? Math.round((c / maxHora) * 100) : 0;
+    return `<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
+      <span style="font-size:0.65rem;color:var(--text-3);width:28px;text-align:right;">${h}h</span>
+      <div style="flex:1;height:10px;background:var(--surface-3);border-radius:999px;overflow:hidden;">
+        <div style="width:${pct}%;height:100%;background:var(--blue);border-radius:999px;"></div>
+      </div>
+      <span style="font-size:0.65rem;color:var(--text-3);width:18px;">${c}</span>
+    </div>`;
+  }).join('');
+
+  // Top usuarios tabla
+  const topHtml = (topUsuarios || []).map((u, i) => `
+    <tr>
+      <td style="font-size:0.75rem;">${i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`}</td>
+      <td style="font-weight:600;font-size:0.78rem;">${cap(u.nickname)}</td>
+      <td style="font-size:0.75rem;">${u.puntos||0} pts</td>
+      <td>${u.rol==='admin'?'<span class="admin-badge admin-badge-admin">👑 Admin</span>':'<span class="admin-badge admin-badge-usuario">👤</span>'}</td>
+    </tr>`).join('');
+
+  document.getElementById('adminContent').innerHTML = `
+    <div class="admin-section-title">📊 Dashboard general</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:20px;">
+      ${[
+        ['📋','Hilos totales', totalHilos||0,'var(--blue)'],
+        ['🟡','Abiertas', hilosAbiertos||0,'var(--accent)'],
+        ['✅','Resueltas', hilosCerrados||0,'var(--green)'],
+        ['💬','Respuestas', totalRespuestas||0,'#8B5CF6'],
+        ['👥','Miembros', totalUsuarios||0,'#EC4899'],
+      ].map(([ic,lb,val,col]) => `
+        <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:14px;padding:14px;text-align:center;">
+          <div style="font-size:1.4rem;margin-bottom:4px;">${ic}</div>
+          <div style="font-size:1.3rem;font-weight:800;color:${col};font-family:'Syne',sans-serif;">${val}</div>
+          <div style="font-size:0.65rem;color:var(--text-3);margin-top:2px;">${lb}</div>
+        </div>`).join('')}
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;flex-wrap:wrap;">
+      <div>
+        <div class="admin-section-title">🏆 Top usuarios</div>
+        <table class="admin-table">
+          <thead><tr><th>#</th><th>Usuario</th><th>Pts</th><th>Rol</th></tr></thead>
+          <tbody>${topHtml}</tbody>
+        </table>
+      </div>
+      <div>
+        <div class="admin-section-title">⏰ Horas pico (últimas 200 resp.)</div>
+        <div style="padding:4px 0;">${horasPicoHtml}</div>
+      </div>
+    </div>
+  `;
+}
+
+// ── 5. CONFIGURACIÓN ──────────────────────────
+function renderAdminConfig() {
+  document.getElementById('adminContent').innerHTML = `
+    <div class="admin-section-title">🎖️ Rangos — puntos mínimos</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-bottom:20px;">
+      ${window.RANGOS.map(r => `
+        <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:12px;">
+          <div style="font-size:1rem;margin-bottom:4px;">${r.icon} <b>${r.label}</b></div>
+          <div style="display:flex;align-items:center;gap:6px;margin-top:6px;">
+            <input class="admin-inline-input" type="number" value="${r.min}" id="rango_min_${r.id}" style="width:70px;" />
+            <button class="admin-btn admin-btn-blue" onclick="adminActualizarRango('${r.id}')">✔</button>
+          </div>
+        </div>`).join('')}
+    </div>
+
+    <div class="admin-section-title">📢 Notificación masiva</div>
+    <div style="margin-bottom:20px;">
+      <textarea id="adminMsgMasivo" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:12px;font-size:0.82rem;font-family:'DM Sans',sans-serif;resize:vertical;min-height:70px;" placeholder="Mensaje a mostrar a todos los usuarios como toast..."></textarea>
+      <div style="margin-top:8px;display:flex;gap:8px;">
+        <button class="admin-btn admin-btn-blue" onclick="adminEnviarMasivo()">📢 Enviar a todos</button>
+        <span style="font-size:0.7rem;color:var(--text-3);align-self:center;">(Se guardará en DB y se mostrará al cargar)</span>
+      </div>
+    </div>
+
+    <div class="admin-section-title">💾 Backup de datos</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="admin-btn admin-btn-blue" onclick="adminBackup('json')">⬇️ Exportar JSON</button>
+      <button class="admin-btn admin-btn-green" onclick="adminBackup('csv')">⬇️ Exportar CSV</button>
+    </div>
+  `;
+}
+
+// ── ACCIONES ──────────────────────────────────
 async function adminAjustarPuntos(nick) {
   const val = parseInt(document.getElementById(`pts_${nick}`).value);
   if (isNaN(val) || val < 0) { toast('❌ Valor no válido'); return; }
   await db.from('usuarios').update({ puntos: val }).eq('nickname', nick);
-  toast(`✅ Puntos de ${cap(nick)} actualizados a ${val}`);
+  toast(`✅ Puntos de ${cap(nick)} → ${val}`);
   cargarAdminContent();
 }
 
 async function adminCambiarRol(nick) {
-  const nuevoRol = document.getElementById(`rol_${nick}`).value;
-  await db.from('usuarios').update({ rol: nuevoRol }).eq('nickname', nick);
-  toast(`✅ Rol de ${cap(nick)} → ${nuevoRol}`);
+  const rol = document.getElementById(`rol_${nick}`).value;
+  await db.from('usuarios').update({ rol }).eq('nickname', nick);
+  toast(`✅ Rol de ${cap(nick)} → ${rol}`);
   cargarAdminContent();
 }
 
@@ -2984,6 +3095,22 @@ async function adminBanear(nick, banear) {
   await db.from('usuarios').update({ baneado: banear }).eq('nickname', nick);
   toast(banear ? `🚫 ${cap(nick)} baneado` : `✅ ${cap(nick)} desbaneado`);
   cargarAdminContent();
+}
+
+async function adminResetCodigo(nick) {
+  if (!confirm(`¿Generar nuevo código secreto para ${cap(nick)}? El anterior quedará inválido.`)) return;
+  const nuevoCodigo = generarCodigo();
+  await db.from('usuarios').update({ codigo_acceso: nuevoCodigo }).eq('nickname', nick);
+  toast(`🔑 Nuevo código de ${cap(nick)}: ${nuevoCodigo}`, 8000);
+  // Mostrar el código en pantalla claramente
+  setTimeout(() => alert(`🔑 Nuevo código secreto de ${cap(nick)}:\n\n${nuevoCodigo}\n\nComunícaselo al usuario.`), 100);
+}
+
+async function adminFijarHilo(hiloId, fijar) {
+  await db.from('hilos').update({ fijado: fijar }).eq('id', hiloId);
+  toast(fijar ? '📌 Hilo fijado' : '📌 Hilo desfijado');
+  cargarAdminContent();
+  cargarHilos();
 }
 
 async function adminCerrarHilo(hiloId) {
@@ -3003,6 +3130,78 @@ async function adminEliminarHilo(hiloId) {
   cargarHilos();
   cargarStats();
 }
+
+async function adminEliminarRespuesta(respId, hiloId) {
+  if (!confirm('¿Eliminar esta respuesta?')) return;
+  await db.from('votos').delete().eq('respuesta_id', respId);
+  await db.from('respuestas').delete().eq('id', respId);
+  toast('🗑 Respuesta eliminada');
+  cargarAdminContent();
+  cargarRespuestas(hiloId);
+}
+
+async function adminVotoExtra(respId, nickAsesor) {
+  const { data: r } = await db.from('respuestas').select('votos_util').eq('id', respId).single();
+  await db.from('respuestas').update({ votos_util: (r?.votos_util || 0) + 1 }).eq('id', respId);
+  const { data: u } = await db.from('usuarios').select('puntos').eq('nickname', nickAsesor).single();
+  if (u) await db.from('usuarios').update({ puntos: (u.puntos || 0) + 3 }).eq('nickname', nickAsesor);
+  toast(`⭐ Voto útil añadido a ${cap(nickAsesor)}`);
+  cargarAdminContent();
+}
+
+function adminActualizarRango(rangoId) {
+  const r = window.RANGOS.find(x => x.id === rangoId);
+  if (!r) return;
+  const nuevoMin = parseInt(document.getElementById(`rango_min_${rangoId}`).value);
+  if (isNaN(nuevoMin) || nuevoMin < 0) { toast('❌ Valor inválido'); return; }
+  r.min = nuevoMin;
+  toast(`✅ Rango ${r.label} actualizado a ${nuevoMin} pts mínimos (sesión actual)`);
+}
+
+async function adminEnviarMasivo() {
+  const msg = document.getElementById('adminMsgMasivo').value.trim();
+  if (!msg) { toast('❌ Escribe un mensaje'); return; }
+  try {
+    await db.from('configuracion').upsert({ clave: 'mensaje_masivo', valor: msg });
+    toast('📢 Mensaje guardado — se mostrará a todos al cargar');
+  } catch(e) {
+    // Si no existe la tabla configuracion, mostrar igualmente como toast local
+    toast('📢 ' + msg, 6000);
+  }
+}
+
+async function adminBackup(formato) {
+  const [{ data: hilos }, { data: usuarios }, { data: respuestas }] = await Promise.all([
+    db.from('hilos').select('*'),
+    db.from('usuarios').select('nickname,puntos,rol,created_at'),
+    db.from('respuestas').select('*'),
+  ]);
+
+  let contenido, tipo, ext;
+
+  if (formato === 'json') {
+    contenido = JSON.stringify({ hilos, usuarios, respuestas }, null, 2);
+    tipo = 'application/json';
+    ext = 'json';
+  } else {
+    // CSV simple de usuarios
+    const cabecera = 'nickname,puntos,rol,created_at';
+    const filas = (usuarios || []).map(u => `${u.nickname},${u.puntos||0},${u.rol},${u.created_at||''}`);
+    contenido = [cabecera, ...filas].join('\n');
+    tipo = 'text/csv';
+    ext = 'csv';
+  }
+
+  const blob = new Blob([contenido], { type: tipo });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `backup_movilweb_${new Date().toISOString().slice(0,10)}.${ext}`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast(`⬇️ Backup ${ext.toUpperCase()} descargado`);
+}
+
 
 // ═══════════════════════════════════════════
 // INIT
