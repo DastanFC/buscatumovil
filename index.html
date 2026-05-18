@@ -2265,16 +2265,14 @@ async function publicarHilo() {
 async function init() {
   cargarStats();
   const token = leerToken();
-  if (!token) {
-    mostrarModalAuth();
-    return;
-  }
+  console.log('TOKEN:', token ? 'encontrado' : 'null');
+  if (!token) { mostrarModalAuth(); return; }
   try {
     const { data: sesion, error: err1 } = await db.from('sesiones')
       .select('nickname, expires_at')
       .eq('token', token)
       .single();
-
+    console.log('SESION:', JSON.stringify(sesion), 'ERR:', JSON.stringify(err1));
     if (err1 || !sesion) { borrarToken(); mostrarModalAuth(); return; }
     if (new Date(sesion.expires_at) <= new Date()) { borrarToken(); mostrarModalAuth(); return; }
 
@@ -2282,12 +2280,13 @@ async function init() {
       .select('*')
       .eq('nickname', sesion.nickname)
       .single();
-
+    console.log('USER:', JSON.stringify(user), 'ERR:', JSON.stringify(err2));
     if (err2 || !user) { borrarToken(); mostrarModalAuth(); return; }
 
     usuario = user;
     onLogin();
   } catch(e) {
+    console.log('CATCH ERROR:', e.message);
     mostrarModalAuth();
   }
 }
