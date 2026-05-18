@@ -1977,7 +1977,7 @@ async function renderHilo(h) {
             <button class="quote-clear" onclick="clearCita('${h.id}')">✕</button>
           </div>
           <div class="reply-input-row">
-            <textarea class="reply-input" id="rinput_${h.id}" placeholder="Escribe tu recomendación… usa @nombre para mencionar"
+            <textarea class="reply-input" id="rinput_${h.id}" placeholder="Escribe o usa @nombre para mencionar"
               rows="1"
               onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarRespuesta('${h.id}')}"
               oninput="autoResize(this)"
