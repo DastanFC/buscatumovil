@@ -7,6 +7,16 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+/* Estilo para Colaborador TOP */
+.rank-colaborador_top {
+  background: linear-gradient(135deg, #FFD700 0%, #DAA520 100%);
+  color: #3d2a00;
+  border: 1px solid #FFD700;
+  font-weight: 700;
+  text-shadow: none;
+}
+
 <style>
 :root {
   --navy: #0F1B2D;
@@ -495,8 +505,8 @@ body {
 .rank-aprendiz { background: #EDE9FE; color: #6D28D9; }
 .rank-confiable { background: #D1FAE5; color: #065F46; }
 .rank-experto { background: #FEF3C7; color: #B45309; }
-.rank-leyenda { background: #FEE2E2; color: #991B1B; }
-.rank-leyenda { background: #fcd52a; color: #991B1B; }
+.rank-colaborador_top { background: #FEE2E2; color: #991B1B; }
+.rank-leyenda { background: #fcd52a; color: #aa5a04; }
 .rank-admin { background: var(--navy); color: #93C5FD; }
 
 .thread-time {
@@ -1498,12 +1508,12 @@ const FORBIDDEN_NAMES = [
 ];
 
 const RANGOS = [
-  { id: 'nuevo',     label: 'Nuevo',      icon: '🌱', min: 0,   max: 9,   perk: 'Acceso básico a la comunidad', locked: false },
-  { id: 'aprendiz',  label: 'Aprendiz',   icon: '📚', min: 10,  max: 24,  perk: 'Badge especial en tus respuestas', locked: false },
-  { id: 'confiable', label: 'Confiable',  icon: '⭐', min: 25,  max: 49,  perk: 'Tus recomendaciones se destacan primero', locked: false },
-  { id: 'experto',   label: 'Experto',    icon: '🏆', min: 50,  max: 99,  perk: 'Acceso al canal #expertos (próximamente)', locked: true },
-  { id: 'leyenda',   label: 'Leyenda',    icon: '🔥', min: 100, max: 999, perk: 'Insignia dorada + voto doble en valoraciones', locked: true },
-  { id: 'colaborador_top',   label: 'Colaborador TOP',    icon: '⭐', min: 100, max: 1000, perk: 'Insignia dorada + voto doble en valoraciones', locked: true },
+  { id: 'nuevo', label: 'Nuevo', icon: '🌱', min: 0, max: 9, perk: 'Acceso básico a la comunidad', locked: false },
+  { id: 'aprendiz', label: 'Aprendiz', icon: '📚', min: 10, max: 24, perk: 'Badge especial en tus respuestas', locked: false },
+  { id: 'confiable', label: 'Confiable', icon: '⭐', min: 25, max: 49, perk: 'Tus recomendaciones se destacan primero', locked: false },
+  { id: 'experto', label: 'Experto', icon: '🏆', min: 50, max: 99, perk: 'Acceso al canal #expertos (próximamente)', locked: true },
+  { id: 'colaborador_top', label: 'Colaborador TOP', icon: '🏅', min: 100, max: 199, perk: 'Insignia dorada + voto doble', locked: false },
+  { id: 'leyenda', label: 'Leyenda', icon: '🔥', min: 200, max: 999, perk: 'Insignia legendaria', locked: true },
 ];
 
 let usuario = null;
@@ -1636,9 +1646,11 @@ function avatarColor(nick) {
 }
 
 function getRango(puntos, rol) {
-  if (rol === 'admin') return { label: 'Admin', icon: '👑', id: 'admin' };
-  for (let i = RANGOS.length - 1; i >= 0; i--) {
-    if (puntos >= RANGOS[i].min) return RANGOS[i];
+  if (rol === 'admin') return { label: 'Admin', icon: '👑', id: 'admin', min: 0, max: 0 };
+  // Ordenar de mayor a menor para que el primero que cumpla sea el más alto
+  const sorted = [...RANGOS].sort((a, b) => b.min - a.min);
+  for (let i = 0; i < sorted.length; i++) {
+    if (puntos >= sorted[i].min) return sorted[i];
   }
   return RANGOS[0];
 }
