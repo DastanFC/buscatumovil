@@ -1186,6 +1186,48 @@ body {
 
 /* Rank info in topbar chip */
 .chip-rank { font-size: 0.6rem; opacity: 0.6; }
+
+/* Arreglo total anti-deslizamiento horizontal en móviles */
+@media (max-width: 480px) {
+    /* Forzamos a que nada en la web pueda salirse del ancho de la pantalla */
+    html, body {
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Corregimos la cabecera para que meta los márgenes hacia dentro */
+    .header {
+        width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 10px 12px !important;
+        gap: 8px !important;
+    }
+
+    /* Ajustamos el contenedor principal de la web */
+    .container {
+        width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 10px !important;
+    }
+
+    /* Compactamos la tarjeta de usuario o el botón de Invitado */
+    .user-badge, #loginBtn {
+        padding: 6px 10px !important;
+        font-size: 0.85rem !important;
+        max-width: 160px !important;
+    }
+
+    /* Si estás logueado como dastan, aseguramos que el texto no empuje la pantalla */
+    #usernameDisplay {
+        max-width: 70px !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+    }
+}
+
 </style>
 </head>
 <body>
