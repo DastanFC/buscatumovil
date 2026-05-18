@@ -1554,7 +1554,8 @@ async function cargarNotificaciones() {
   
   const hilosIds = misHilos.map(h => h.id);
   const vistoKey = `notif_visto_${usuario.nickname}`;
-  const visto = JSON.parse(storageGet(vistoKey) || '{}');
+  let visto = {};
+  try { visto = JSON.parse(localStorage.getItem(vistoKey) || '{}'); } catch(e) {}
   
   // Respuestas a mis hilos
   const { data: respuestas } = await db.from('respuestas')
@@ -1628,9 +1629,10 @@ async function cargarNotificaciones() {
 
 function irAHilo(hiloId, notifId) {
   const vistoKey = `notif_visto_${usuario.nickname}`;
-  const visto = JSON.parse(storageGet(vistoKey) || '{}');
+  let visto = {};
+  try { visto = JSON.parse(localStorage.getItem(vistoKey) || '{}'); } catch(e) {}
   visto[notifId] = true;
-  storageSet(vistoKey, JSON.stringify(visto));
+  try { localStorage.setItem(vistoKey, JSON.stringify(visto)); } catch(e) {}
   toggleNotifPanel();
   const el = document.getElementById(`thread_${hiloId}`);
   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1640,13 +1642,13 @@ function irAHilo(hiloId, notifId) {
 function marcarTodasLeidas() {
   if (!usuario) return;
   const vistoKey = `notif_visto_${usuario.nickname}`;
-  const items = document.querySelectorAll('.notif-item');
-  const visto = JSON.parse(storageGet(vistoKey) || '{}');
-  items.forEach(el => {
+  let visto = {};
+  try { visto = JSON.parse(localStorage.getItem(vistoKey) || '{}'); } catch(e) {}
+  document.querySelectorAll('.notif-item').forEach(el => {
     const match = el.getAttribute('onclick')?.match(/'([^']+)', '([^']+)'/);
     if (match) visto[match[2]] = true;
   });
-  storageSet(vistoKey, JSON.stringify(visto));
+  try { localStorage.setItem(vistoKey, JSON.stringify(visto)); } catch(e) {}
   cargarNotificaciones();
   toggleNotifPanel();
 }
