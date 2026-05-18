@@ -2263,32 +2263,30 @@ async function publicarHilo() {
 // INIT
 // ═══════════════════════════════════════════
 async function init() {
-  cargarStats();
-  const token = leerToken();
-  console.log('TOKEN:', token ? 'encontrado' : 'null');
-  if (!token) { mostrarModalAuth(); return; }
-  try {
-    const { data: sesion, error: err1 } = await db.from('sesiones')
-      .select('nickname, expires_at')
-      .eq('token', token)
-      .single();
-    console.log('SESION:', JSON.stringify(sesion), 'ERR:', JSON.stringify(err1));
-    if (err1 || !sesion) { borrarToken(); mostrarModalAuth(); return; }
-    if (new Date(sesion.expires_at) <= new Date()) { borrarToken(); mostrarModalAuth(); return; }
+    const token = leerToken();
+    console.log("TOKEN:", token ? "encontrado" : "no encontrado");
 
-    const { data: user, error: err2 } = await db.from('usuarios')
-      .select('*')
-      .eq('nickname', sesion.nickname)
-      .single();
-    console.log('USER:', JSON.stringify(user), 'ERR:', JSON.stringify(err2));
-    if (err2 || !user) { borrarToken(); mostrarModalAuth(); return; }
+    if (token) {
+        const { data: sesion, error: errorSesion } = await consultarSesionSupabase(token);
+        console.log("SESION:", JSON.stringify(sesion), "ERR:", errorSesion);
 
-    usuario = user;
-    onLogin();
-  } catch(e) {
-    console.log('CATCH ERROR:', e.message);
-    mostrarModalAuth();
-  }
+        if (sesion) {
+            const { data: usuario, error: errorUsuario } = await consultarUsuarioSupabase(sesion.nickname);
+            console.log("USER:", JSON.stringify(usuario), "ERR:", errorUsuario);
+            
+            if (usuario) {
+                // 🌟 ¡AQUÍ ESTÁ EL TRUCO! 🌟
+                // Como todo está bien, le ordenamos al cartel que se esconda:
+                ocultarModal(); 
+            } else {
+                mostrarModal();
+            }
+        } else {
+            mostrarModal();
+        }
+    } else {
+        mostrarModal();
+    }
 }
 
 window.addEventListener('load', init);
