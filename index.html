@@ -2267,12 +2267,16 @@ async function init() {
     supabaseClient.auth.onAuthStateChange((event, sesion) => {
         console.log("Supabase dice - Evento de sesión:", event);
 
-        // ¡Ahora todo en español para que no haya fallos!
         if (sesion) {
             console.log("¡Sesión detectada automáticamente por el escuchador!", sesion);
             
-            // Cerramos el cartel flotante en cuanto Supabase despierte
-            cerrarModal();
+            // 🔥 ¡EL TRUCO A LO BRUTO! 🔥
+            // Buscamos el cartel flotante por su nombre real y lo escondemos a la fuerza
+            const cartel = document.getElementById('modalAuth');
+            if (cartel) {
+                cartel.style.display = 'none'; // Le decimos: ¡Desaparece de la pantalla!
+                console.log("¡Cartel ocultado con éxito a la fuerza!");
+            }
             
             // Buscamos tus datos de fondo
             consultarUsuarioSupabase("dastan").then(({ data }) => {
@@ -2280,7 +2284,8 @@ async function init() {
             });
         } else {
             console.log("No hay sesión. Hay que mostrar el login.");
-            mostrarModal();
+            const cartel = document.getElementById('modalAuth');
+            if (cartel) cartel.style.display = 'flex'; // Si no hay sesión, se muestra
         }
     });
 
