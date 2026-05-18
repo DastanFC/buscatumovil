@@ -40,7 +40,6 @@ body {
   min-height: 100vh;
 }
 
-/* ─── TOPBAR ─── */
 .topbar {
   background: var(--navy);
   padding: 0 20px;
@@ -79,10 +78,7 @@ body {
   flex-shrink: 0;
 }
 
-.logo em {
-  color: var(--accent);
-  font-style: normal;
-}
+.logo em { color: var(--accent); font-style: normal; }
 
 .topbar-right {
   display: flex;
@@ -93,8 +89,8 @@ body {
 
 @media (max-width: 480px) {
   .topbar { padding: 0 12px; }
-  .logo { font-size: 0.85rem; gap: 5px; }
-  .logo-icon { width: 28px; height: 28px; font-size: 0.8rem; }
+  .logo { font-size: 0.85rem; }
+  .logo-icon { width: 28px; height: 28px; }
 }
 
 .notif-btn {
@@ -176,7 +172,6 @@ body {
   white-space: nowrap;
 }
 
-/* ─── HERO STRIP (simplificado, más compacto) ─── */
 .hero-strip {
   background: var(--navy);
   padding: 12px 20px 8px;
@@ -204,7 +199,6 @@ body {
 }
 .stat-chip b { color: white; font-weight: 700; }
 
-/* BARRA DE PROGRESO DE RANGO mejorada */
 .rank-progress {
   margin-top: 10px;
   margin-bottom: 6px;
@@ -218,7 +212,6 @@ body {
 
 .rank-icon {
   font-size: 1.2rem;
-  background: var(--accent);
   width: 28px;
   height: 28px;
   border-radius: 50%;
@@ -254,9 +247,7 @@ body {
   align-items: center;
   gap: 4px;
 }
-.rank-next span { font-size: 0.9rem; }
 
-/* ─── CONTAINER ─── */
 .container {
   max-width: 1100px;
   margin: 0 auto;
@@ -267,7 +258,6 @@ body {
   .container { max-width: 1200px; }
 }
 
-/* ─── TABS ─── */
 .tabs-bar {
   display: flex;
   align-items: center;
@@ -317,7 +307,6 @@ body {
 }
 .new-btn:hover { background: var(--blue-light); transform: translateY(-1px); }
 
-/* ─── FORM CARD ─── */
 .form-card {
   background: var(--surface);
   border-radius: var(--radius);
@@ -327,7 +316,95 @@ body {
   box-shadow: var(--shadow);
 }
 
-/* ─── THREAD CARD (ESTILO FORO, más ancho) ─── */
+.form-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: var(--navy);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-field.full { grid-column: span 2; }
+
+.form-field label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-3);
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  padding: 10px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-family: 'DM Sans', sans-serif;
+  background: var(--surface-2);
+  color: var(--text);
+  transition: all 0.18s;
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  outline: none;
+  border-color: var(--blue);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(29,111,232,0.08);
+}
+
+.form-field textarea { resize: vertical; min-height: 72px; }
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
+.btn-cancel {
+  padding: 9px 18px;
+  background: var(--surface-3);
+  border: none;
+  border-radius: 999px;
+  font-weight: 500;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.btn-submit {
+  padding: 9px 22px;
+  background: var(--navy);
+  color: white;
+  border: none;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.btn-submit:hover { background: var(--blue); }
+
+@media (max-width: 600px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .form-field.full { grid-column: span 1; }
+}
+
 .thread-card {
   background: var(--surface);
   border-radius: var(--radius);
@@ -335,7 +412,6 @@ body {
   border: 1px solid var(--border);
   box-shadow: var(--shadow);
   transition: box-shadow 0.2s;
-  overflow: visible;
 }
 .thread-card:hover { box-shadow: var(--shadow-lg); }
 
@@ -394,7 +470,6 @@ body {
   flex-shrink: 0;
 }
 
-/* Specs en grid más ordenado */
 .specs-wrap {
   display: flex;
   flex-wrap: wrap;
@@ -429,7 +504,6 @@ body {
   margin-top: 12px;
 }
 
-/* Top recommendation highlight */
 .top-rec {
   margin: 0 24px 16px;
   padding: 12px 18px;
@@ -443,7 +517,6 @@ body {
 .top-rec-text { font-size: 0.75rem; color: rgba(255,255,255,0.6); }
 .top-rec-model { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; color: var(--accent); }
 
-/* Thread footer bar */
 .thread-bar {
   padding: 14px 24px;
   display: flex;
@@ -498,7 +571,6 @@ body {
   font-weight: 600;
 }
 
-/* ─── REPLIES ─── */
 .replies-section {
   padding: 0 24px;
   border-top: 1px solid var(--border);
@@ -591,7 +663,6 @@ body {
 }
 .cite-btn:hover { background: var(--surface-3); }
 
-/* Reply box */
 .reply-box {
   padding: 16px 24px 20px;
   border-top: 1px solid var(--border);
@@ -643,14 +714,13 @@ body {
   margin-bottom: 12px;
   font-size: 0.75rem;
   display: none;
-  align-items: flex-start;
-  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
   border-radius: 8px;
 }
 .quote-preview.active { display: flex; }
-.quote-clear { background: none; border: none; cursor: pointer; color: var(--text-3); }
+.quote-clear { background: none; border: none; cursor: pointer; color: var(--text-3); font-size: 1rem; }
 
-/* FOOTER */
 .footer {
   background: var(--navy);
   margin-top: 40px;
@@ -667,7 +737,6 @@ body {
 }
 .footer-text strong { color: var(--accent); font-weight: 600; }
 
-/* Cookie consent */
 .cookie-consent {
   position: fixed;
   bottom: 20px;
@@ -698,26 +767,190 @@ body {
   font-size: 0.7rem;
   white-space: nowrap;
 }
-.cookie-consent button:hover { background: var(--blue-light); color: white; }
 
-/* otros */
 .empty-state { text-align: center; padding: 60px 20px; background: var(--surface); border-radius: var(--radius); color: var(--text-3); }
 .loading { text-align: center; padding: 60px; color: var(--text-3); }
 .pagination { display: flex; justify-content: center; gap: 8px; margin-top: 24px; }
 .page-btn { width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--border); background: white; cursor: pointer; font-weight: 500; }
 .page-btn.active { background: var(--navy); color: white; border-color: var(--navy); }
-.fab { position: fixed; bottom: 24px; right: 24px; background: var(--blue); color: white; border: none; border-radius: 999px; height: 54px; padding: 0 22px; display: flex; align-items: center; gap: 10px; cursor: pointer; box-shadow: 0 4px 20px rgba(29,111,232,0.5); font-weight: 600; z-index: 400; }
+
+.fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--blue);
+  color: white;
+  border: none;
+  border-radius: 999px;
+  height: 54px;
+  padding: 0 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(29,111,232,0.5);
+  font-weight: 600;
+  z-index: 400;
+  font-family: 'DM Sans', sans-serif;
+}
 @media (max-width: 480px) { .fab-label { display: none; } .fab { width: 54px; padding: 0; justify-content: center; border-radius: 50%; } }
-.send-toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--navy); color: white; padding: 10px 20px; border-radius: 999px; font-size: 0.8rem; opacity: 0; transition: opacity 0.3s; z-index: 999; pointer-events: none; }
+
+.send-toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--navy);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 999;
+  pointer-events: none;
+}
 .send-toast.show { opacity: 1; }
-.modal-overlay { position: fixed; inset: 0; background: rgba(15,27,45,0.7); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 500; padding: 20px; }
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15,27,45,0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 500;
+  padding: 20px;
+}
 .modal-overlay.hidden { display: none; }
-.modal { background: white; border-radius: 28px; padding: 28px; max-width: 400px; width: 100%; }
-.notif-panel { position: absolute; top: 60px; right: 16px; width: 320px; background: white; border-radius: 20px; box-shadow: var(--shadow-lg); z-index: 300; display: none; overflow: hidden; }
+.modal {
+  background: white;
+  border-radius: 28px;
+  padding: 28px;
+  max-width: 400px;
+  width: 100%;
+}
+.modal-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+.modal-sub {
+  font-size: 0.75rem;
+  color: var(--text-3);
+  margin-bottom: 20px;
+}
+.modal-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+.modal-input:focus {
+  outline: none;
+  border-color: var(--blue);
+}
+.modal-error {
+  color: var(--accent-red);
+  font-size: 0.75rem;
+  margin-bottom: 12px;
+  min-height: 18px;
+}
+.modal-btn {
+  width: 100%;
+  padding: 12px;
+  background: var(--navy);
+  color: white;
+  border: none;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.modal-btn:hover { background: var(--blue); }
+.code-box {
+  background: var(--navy);
+  border-radius: 16px;
+  padding: 22px;
+  text-align: center;
+  margin: 16px 0;
+}
+.code-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 6px;
+}
+
+.notif-panel {
+  position: absolute;
+  top: 60px;
+  right: 16px;
+  width: 320px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: var(--shadow-lg);
+  z-index: 300;
+  display: none;
+  overflow: hidden;
+}
 .notif-panel.open { display: block; }
-.perks-panel { background: var(--surface); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; display: none; }
+.notif-panel-header {
+  padding: 14px 16px;
+  font-weight: 700;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+}
+.notif-item {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--surface-3);
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+.notif-item:hover { background: var(--surface-2); }
+
+.perks-banner {
+  background: linear-gradient(135deg, #0F1B2D, #1A3558);
+  border-radius: var(--radius);
+  padding: 14px 20px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  border: 1px solid rgba(29,111,232,0.3);
+}
+.perks-banner-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+}
+.perks-banner-sub { font-size: 0.7rem; color: rgba(255,255,255,0.5); }
+.perks-panel {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 20px;
+  display: none;
+}
 .perks-panel.open { display: block; }
-.perks-banner { background: linear-gradient(135deg, #0F1B2D, #1A3558); border-radius: var(--radius); padding: 14px 20px; margin-bottom: 16px; cursor: pointer; border: 1px solid rgba(29,111,232,0.3); }
+.ranks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+.rank-card {
+  background: var(--surface-2);
+  border-radius: 12px;
+  padding: 12px;
+  border: 1px solid var(--border);
+}
+.rank-card.unlocked { border-color: var(--green); background: #F0FDF4; }
 </style>
 </head>
 <body>
@@ -726,7 +959,7 @@ body {
   <div class="logo"><div class="logo-icon">📱</div>Recomiéndame un <em>móvil</em></div>
   <div class="topbar-right">
     <button class="notif-btn" id="notifBtn" onclick="toggleNotifPanel()">🔔<span class="notif-badge" id="notifBadge"></span></button>
-    <div class="user-chip" id="userChip" onclick="toggleUserMenu()">
+    <div class="user-chip" id="userChip">
       <div class="user-chip-avatar" id="chipAvatar">👤</div>
       <span class="user-chip-name" id="chipName">Invitado</span>
       <span class="user-chip-pts" id="chipPts"></span>
@@ -734,7 +967,10 @@ body {
   </div>
 </div>
 
-<div class="notif-panel" id="notifPanel"><div class="notif-panel-header">Notificaciones<button onclick="marcarTodasLeidas()" style="background:none;border:none;color:var(--blue);cursor:pointer;">Marcar leídas</button></div><div id="notifList"></div></div>
+<div class="notif-panel" id="notifPanel">
+  <div class="notif-panel-header">Notificaciones<button onclick="marcarTodasLeidas()" style="background:none;border:none;color:var(--blue);cursor:pointer;">Marcar leídas</button></div>
+  <div id="notifList"><div class="notif-empty">Sin notificaciones</div></div>
+</div>
 
 <div class="hero-strip">
   <div class="stats-row" id="statsRow"><div class="stat-chip">⏳ Cargando...</div></div>
@@ -746,84 +982,338 @@ body {
 </div>
 
 <div class="container">
-  <div class="perks-banner" onclick="togglePerks()"><div class="perks-banner-title">🏆 Rangos y ventajas <span style="margin-left:auto;">▾</span></div><div class="perks-banner-sub">Gana puntos respondiendo · Desbloquea rangos</div></div>
-  <div class="perks-panel" id="perksPanel"><div style="font-weight:700;">Sistema de rangos</div><div class="ranks-grid" id="ranksGrid"></div></div>
+  <div class="perks-banner" onclick="togglePerks()">
+    <div class="perks-banner-title">🏆 Rangos y ventajas <span>▾</span></div>
+    <div class="perks-banner-sub">Gana puntos respondiendo · Desbloquea rangos</div>
+  </div>
+  <div class="perks-panel" id="perksPanel">
+    <div style="font-weight:700;">Sistema de rangos</div>
+    <div class="ranks-grid" id="ranksGrid"></div>
+  </div>
 
   <div class="tabs-bar">
     <button class="tab active" onclick="setTab('abiertas', this)">📋 Consultas abiertas</button>
     <button class="tab" onclick="setTab('mis_abiertas', this)">📝 Mis consultas</button>
     <button class="tab" onclick="setTab('mis_cerradas', this)">✅ Cerradas</button>
-    <button class="new-btn" onclick="abrirForm()">✏️ Nueva consulta</button>
   </div>
 
-  <div id="newForm" style="display:none;"><div class="form-card"><div class="form-title">📱 Cuéntanos qué buscas</div><div class="form-grid">...</div><div class="form-actions"><button class="btn-cancel" onclick="cerrarForm()">Cancelar</button><button class="btn-submit" onclick="publicarHilo()">Publicar</button></div></div></div>
-  <div id="hilosList"></div><div id="pagination" class="pagination"></div>
+  <div id="newForm" style="display:none;">
+    <div class="form-card">
+      <div class="form-title">📱 Cuéntanos qué buscas</div>
+      <div class="form-grid">
+        <div class="form-field"><label>💰 Presupuesto</label><input type="text" id="f_presupuesto" placeholder="ej. 300€" /></div>
+        <div class="form-field"><label>📱 Móvil actual</label><input type="text" id="f_movil_actual" placeholder="ej. Redmi Note 10" /></div>
+        <div class="form-field"><label>⭐ Marca preferida</label><input type="text" id="f_marca_pref" placeholder="Sin preferencia" /></div>
+        <div class="form-field"><label>🚫 Marca que NO quieres</label><input type="text" id="f_marca_no" placeholder="ej. Apple" /></div>
+        <div class="form-field"><label>🛡️ Garantía España</label><select id="f_garantia"><option value="Sí">Sí</option><option value="No">No</option></select></div>
+        <div class="form-field"><label>📅 Modelos</label><select id="f_modelos"><option value="Actuales">Actuales</option><option value="Puede ser antiguo">Puede ser antiguo</option></select></div>
+        <div class="form-field full"><label>🎯 Uso principal</label><input type="text" id="f_uso" placeholder="ej. WhatsApp, fotos, redes..." /></div>
+        <div class="form-field"><label>📏 Tamaño pantalla</label><select id="f_tamano"><option value="Sin preferencia">Sin preferencia</option><option value='Pequeño <6"'>Pequeño &lt;6"</option><option value='Normal 6-6.5"'>Normal 6-6.5"</option><option value='Grande >6.5"'>Grande &gt;6.5"</option></select></div>
+        <div class="form-field"><label>🎮 ¿Juegas?</label><select id="f_juegos"><option value="No">No</option><option value="Algún casual">Algún casual</option><option value="Sí, bastante">Sí, bastante</option></select></div>
+        <div class="form-field"><label>📸 ¿Usas mucho la cámara?</label><select id="f_camara"><option value="No mucho">No mucho</option><option value="Sí, importante">Sí, importante</option></select></div>
+        <div class="form-field"><label>🔋 ¿Mucha batería?</label><select id="f_bateria"><option value="Normal">Normal</option><option value="Sí, prioritaria">Sí, prioritaria</option></select></div>
+        <div class="form-field"><label>⚡ ¿Carga rápida?</label><select id="f_carga"><option value="No necesaria">No necesaria</option><option value="Sí">Sí</option></select></div>
+        <div class="form-field full"><label>📝 Algo más</label><textarea id="f_extra" placeholder="Cualquier detalle adicional..."></textarea></div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-cancel" onclick="cerrarForm()">Cancelar</button>
+        <button class="btn-submit" onclick="publicarHilo()">Publicar consulta</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="hilosList"></div>
+  <div id="pagination" class="pagination"></div>
 </div>
 
 <div class="send-toast" id="sendToast"></div>
 <button class="fab" onclick="abrirForm()"><span class="fab-icon">✏️</span><span class="fab-label">Nueva consulta</span></button>
 
-<div class="modal-overlay" id="authModal"><div class="modal"><div class="modal-title">✨ Identifícate</div><input class="modal-input" id="nicknameInput" placeholder="Nombre de usuario" /><input class="modal-input" id="codigoInput" placeholder="Código secreto" /><div class="modal-error" id="authError"></div><button class="modal-btn" onclick="procesarAcceso()">Continuar →</button></div></div>
-<div class="modal-overlay hidden" id="codeModal"><div class="modal"><div class="modal-title">🔑 Guarda este código</div><div class="code-box"><div class="code-val" id="generatedCodeValue"></div></div><button class="modal-btn" onclick="cerrarCodeModal()">✅ Lo guardé</button></div></div>
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <div class="modal-title">✨ Identifícate</div>
+    <div class="modal-sub">Elige un nombre único. Sin correo, sin contraseña.</div>
+    <input class="modal-input" id="nicknameInput" placeholder="Tu nombre de usuario" autocomplete="off" />
+    <input class="modal-input" id="codigoInput" placeholder="Código secreto (si ya tienes cuenta)" autocomplete="off" />
+    <div class="modal-error" id="authError"></div>
+    <button class="modal-btn" onclick="procesarAcceso()">Continuar →</button>
+    <p style="font-size:0.65rem;color:var(--text-3);text-align:center;margin-top:14px;">Primera vez? Se creará una cuenta y recibirás un código único.</p>
+  </div>
+</div>
+
+<div class="modal-overlay hidden" id="codeModal">
+  <div class="modal">
+    <div class="modal-title">🔑 ¡Guarda este código!</div>
+    <div class="code-box"><div class="code-val" id="generatedCodeValue">XXXXXX</div></div>
+    <div class="warn-box" style="background:#FFFBEB;padding:12px;border-radius:12px;font-size:0.7rem;margin-bottom:16px;">⚠️ IMPORTANTE: Haz una captura. Si lo pierdes, pierdes el acceso.</div>
+    <button class="modal-btn" onclick="cerrarCodeModal()">✅ Lo guardé, continuar</button>
+  </div>
+</div>
 
 <div class="footer"><div class="footer-text"><strong>🔒 Privacidad total</strong> · No recopilamos contraseñas ni correos. Solo usamos un nombre único y un código aleatorio de seguridad para tu sesión.</div></div>
 <div id="cookieConsent" class="cookie-consent" style="display:none;"><span>🍪 Usamos cookies esenciales para tu sesión.</span><button onclick="aceptarCookies()">Aceptar</button></div>
 
 <script>
+// CONFIGURACIÓN COMPLETA
 const SUPABASE_URL = 'https://eqtjsgqascldwhqomncu.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_AH7nQIp9WPOqUowcPi3W4Q_djmApiMF';
 const { createClient } = supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_KEY);
-const FORBIDDEN_NAMES = ['admin','administrador','mod','staff'];
-const RANGOS = [{ id:'nuevo',label:'Nuevo',icon:'🌱',min:0,max:9,perk:'Acceso básico'},{id:'aprendiz',label:'Aprendiz',icon:'📚',min:10,max:24,perk:'Badge especial'},{id:'confiable',label:'Confiable',icon:'⭐',min:25,max:49,perk:'Recomendaciones destacadas'},{id:'experto',label:'Experto',icon:'🏆',min:50,max:99,perk:'Canal experto'},{id:'leyenda',label:'Leyenda',icon:'🔥',min:100,max:999,perk:'Insignia dorada'}];
-let usuario = null, tabActual = 'abiertas', hilosData = [], currentPage = 1, ITEMS_PER_PAGE = 5, quoteActiva = null;
 
-function cap(n) { return n.charAt(0).toUpperCase()+n.slice(1); }
-function timeAgo(ts){ let d=(Date.now()-new Date(ts))/1000; if(d<60) return 'ahora'; if(d<3600) return `hace ${Math.floor(d/60)} min`; if(d<86400) return `hace ${Math.floor(d/3600)} h`; return new Date(ts).toLocaleDateString('es-ES'); }
-function toast(m){ let t=document.getElementById('sendToast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
-function getRango(p,rol){ if(rol==='admin') return {label:'Admin',icon:'👑'}; for(let i=RANGOS.length-1;i>=0;i--) if(p>=RANGOS[i].min) return RANGOS[i]; return RANGOS[0]; }
-function avatarColor(n){ let h=0; for(let i=0;i<n.length;i++) h=((h<<5)-h)+n.charCodeAt(i); let cols=[{bg:'#EFF6FF',color:'#1E40AF'},{bg:'#ECFDF5',color:'#065F46'}]; return cols[Math.abs(h)%cols.length]; }
-function esAdmin(){ return usuario?.rol==='admin'; }
+const FORBIDDEN_NAMES = ['admin','administrador','moderador','staff','soporte','sistema'];
+const RANGOS = [
+  { id: 'nuevo', label: 'Nuevo', icon: '🌱', min: 0, max: 9, perk: 'Acceso básico a la comunidad' },
+  { id: 'aprendiz', label: 'Aprendiz', icon: '📚', min: 10, max: 24, perk: 'Badge especial en tus respuestas' },
+  { id: 'confiable', label: 'Confiable', icon: '⭐', min: 25, max: 49, perk: 'Tus recomendaciones se destacan primero' },
+  { id: 'experto', label: 'Experto', icon: '🏆', min: 50, max: 99, perk: 'Acceso a canal exclusivo (próximamente)' },
+  { id: 'leyenda', label: 'Leyenda', icon: '🔥', min: 100, max: 999, perk: 'Insignia dorada + voto doble' },
+];
 
-async function cargarHilos(){ if(!usuario) return; let q=db.from('hilos').select('*, respuestas(count)'); if(tabActual==='abiertas') q=q.eq('resuelto',false); else if(tabActual==='mis_abiertas') q=q.eq('nickname',usuario.nickname).eq('resuelto',false); else if(tabActual==='mis_cerradas') q=q.eq('nickname',usuario.nickname).eq('resuelto',true); q=q.order('created_at',{ascending:false}); let {data}=await q; hilosData=data||[]; renderHilos(); }
-function renderHilos(){ if(!hilosData.length){ document.getElementById('hilosList').innerHTML='<div class="empty-state">📭 Sin consultas</div>'; return; } let start=(currentPage-1)*ITEMS_PER_PAGE, pag=hilosData.slice(start,start+ITEMS_PER_PAGE); Promise.all(pag.map(h=>renderHilo(h))).then(htmls=>{ document.getElementById('hilosList').innerHTML=htmls.join(''); pag.forEach(h=>cargarRespuestas(h.id)); }); }
-async function renderHilo(h){ let {data:u}=await db.from('usuarios').select('puntos,rol').eq('nickname',h.nickname).single(); let pts=u?.puntos||0, rol=u?.rol||'usuario', ac=avatarColor(h.nickname); return `<div class="thread-card" id="thread_${h.id}"><div class="thread-header"><div class="thread-meta"><div class="avatar" style="background:${ac.bg};color:${ac.color};">${cap(h.nickname).substring(0,2)}</div><div class="author-block"><div class="author-name">${cap(h.nickname)} <span class="author-rank rank-${getRango(pts,rol).id}">${getRango(pts,rol).icon} ${getRango(pts,rol).label}</span></div></div><div class="thread-time">${timeAgo(h.created_at)}</div></div><div class="specs-wrap">${h.presupuesto?`<div class="spec-tag">💰 ${h.presupuesto}</div>`:''}${h.movil_actual?`<div class="spec-tag">📱 ${h.movil_actual}</div>`:''}${h.uso_principal?`<div class="spec-tag">🎯 ${h.uso_principal}</div>`:''}</div>${h.datos_extra?`<div class="extra-note">📝 ${h.datos_extra}</div>`:''}</div><div id="topRec_${h.id}"></div><div class="thread-bar"><button class="reply-count-btn" onclick="toggleReplies('${h.id}')">💬 <span class="cnt" id="rcnt_${h.id}"></span> respuestas</button>${h.resuelto?'<div class="resolved-pill">✅ Resuelta</div>':(usuario?.nickname===h.nickname||esAdmin())?`<button class="resolve-btn" onclick="marcarResuelta('${h.id}')">🔒 Marcar resuelta</button>`:''}</div><div class="replies-section" id="replies_${h.id}" style="display:none;"></div>${!h.resuelto?`<div class="reply-box" id="replybox_${h.id}" style="display:none;"><div class="quote-preview" id="qpreview_${h.id}"><span class="quote-preview-text"></span><button class="quote-clear" onclick="clearCita('${h.id}')">✕</button></div><div class="reply-input-row"><textarea class="reply-input" id="rinput_${h.id}" placeholder="Escribe o usa @nombre" rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarRespuesta('${h.id}')}" oninput="autoResize(this)"></textarea><button class="send-btn" onclick="enviarRespuesta('${h.id}')">➤</button></div></div>`:''}</div>`; }
-function toggleReplies(id){ let r=document.getElementById(`replies_${id}`), b=document.getElementById(`replybox_${id}`); if(r.style.display!=='none'){ r.style.display='none'; if(b) b.style.display='none'; }else{ r.style.display='block'; if(b) b.style.display='block'; if(!r.innerHTML) cargarRespuestas(id); } }
-async function cargarRespuestas(hiloId){ let container=document.getElementById(`replies_${hiloId}`); if(!container) return; let {data:resp}=await db.from('respuestas').select('*').eq('hilo_id',hiloId).order('created_at'); if(!resp?.length){ container.innerHTML='<div class="replies-empty">💬 Sé el primero en recomendar</div>'; document.getElementById(`topRec_${hiloId}`).innerHTML=''; return; } document.getElementById(`rcnt_${hiloId}`).innerText=resp.length; let html=''; for(let r of resp){ let {data:u}=await db.from('usuarios').select('puntos,rol').eq('nickname',r.nickname).single(); let ac=avatarColor(r.nickname); html+=`<div class="reply-item"><div class="reply-header"><div class="reply-avatar" style="background:${ac.bg};color:${ac.color};">${cap(r.nickname).substring(0,2)}</div><span class="reply-author">${cap(r.nickname)}</span><span class="author-rank rank-${getRango(u?.puntos||0,u?.rol||'usuario').id}">${getRango(u?.puntos||0,u?.rol||'usuario').icon} ${getRango(u?.puntos||0,u?.rol||'usuario').label}</span><span class="reply-time">${timeAgo(r.created_at)}</span></div><div class="reply-content">${r.contenido.replace(/@([a-zA-Z0-9_\-\.]+)/g,'<span class="mention">@$1</span>')}</div><div class="reply-actions"><button class="vote-btn" onclick="votar('${r.id}','util','${hiloId}','${r.nickname}')">👍 ${r.votos_util||0}</button><button class="vote-btn" onclick="votar('${r.id}','noutil','${hiloId}','${r.nickname}')">👎 ${r.votos_noutil||0}</button><button class="cite-btn" onclick="setCita('${hiloId}','${r.id}','${r.nickname}',${JSON.stringify(r.contenido)})">↩ Citar</button></div></div>`; } container.innerHTML=html; }
-function setCita(hiloId,replyId,autor,texto){ quoteActiva={hiloId,replyId,autor,texto}; let p=document.getElementById(`qpreview_${hiloId}`); if(p){ p.classList.add('active'); p.querySelector('.quote-preview-text').innerHTML=`${cap(autor)}: "${texto.slice(0,80)}..."`; document.getElementById(`rinput_${hiloId}`).focus(); } }
-function clearCita(id){ quoteActiva=null; let p=document.getElementById(`qpreview_${id}`); if(p) p.classList.remove('active'); }
-async function enviarRespuesta(hiloId){ if(!usuario){ mostrarModalAuth(); return; } let input=document.getElementById(`rinput_${hiloId}`), txt=input.value.trim(); if(!txt) return; let data={hilo_id:hiloId,usuario_id:usuario.id,nickname:usuario.nickname,contenido:txt}; if(quoteActiva&&quoteActiva.hiloId===hiloId) data.cita_id=quoteActiva.replyId; await db.from('respuestas').insert(data); let newPts=(usuario.puntos||0)+2; await db.from('usuarios').update({puntos:newPts}).eq('id',usuario.id); usuario.puntos=newPts; actualizarBarraRango(); input.value=''; clearCita(hiloId); cargarRespuestas(hiloId); toast('✅ +2 pts'); }
-async function votar(respId,tipo,hiloId,nickAsesor){ if(!usuario){ mostrarModalAuth(); return; } let {data:ya}=await db.from('votos').select('id').eq('respuesta_id',respId).eq('usuario_id',usuario.id).single(); if(ya){ toast('Ya votaste'); return; } await db.from('votos').insert({respuesta_id:respId,usuario_id:usuario.id,tipo}); let campo=tipo==='util'?'votos_util':'votos_noutil'; let {data:r}=await db.from('respuestas').select(campo).eq('id',respId).single(); await db.from('respuestas').update({[campo]:(r[campo]||0)+1}).eq('id',respId); if(tipo==='util'){ let {data:a}=await db.from('usuarios').select('puntos').eq('nickname',nickAsesor).single(); if(a) await db.from('usuarios').update({puntos:(a.puntos||0)+3}).eq('nickname',nickAsesor); } cargarRespuestas(hiloId); }
-async function marcarResuelta(id){ let {data:h}=await db.from('hilos').select('nickname').eq('id',id).single(); if(h&&(usuario?.nickname===h.nickname||esAdmin())){ await db.from('hilos').update({resuelto:true}).eq('id',id); cargarHilos(); toast('✅ Marcada resuelta'); } }
-function abrirForm(){ if(!usuario) mostrarModalAuth(); else document.getElementById('newForm').style.display='block'; }
-function cerrarForm(){ document.getElementById('newForm').style.display='none'; }
-async function publicarHilo(){ if(!usuario) return; await db.from('hilos').insert({usuario_id:usuario.id,nickname:usuario.nickname,presupuesto:document.getElementById('f_presupuesto')?.value||'',movil_actual:document.getElementById('f_movil_actual')?.value||''}); let newPts=(usuario.puntos||0)+1; await db.from('usuarios').update({puntos:newPts}).eq('id',usuario.id); usuario.puntos=newPts; actualizarBarraRango(); cerrarForm(); cargarHilos(); toast('📱 Publicada +1 pt'); }
-function actualizarBarraRango(){ if(!usuario) return; let pts=usuario.puntos||0; let wrap=document.getElementById('rankProgressWrap'); wrap.style.display='flex'; let rango=getRango(pts,usuario.rol); document.getElementById('rankIcon').innerHTML=rango.icon; if(usuario.rol==='admin'||rango.id==='leyenda'){ document.getElementById('rankBarFill').style.width='100%'; document.getElementById('rankNextLabel').innerHTML='👑 Máximo'; return; } let next=RANGOS.find(r=>r.min>pts); if(next){ let pct=((pts-rango.min)/(next.min-rango.min))*100; document.getElementById('rankBarFill').style.width=`${pct}%`; document.getElementById('rankNextLabel').innerHTML=`${next.icon} ${next.label} a ${next.min-pts} pts`; } }
-function togglePerks(){ document.getElementById('perksPanel').classList.toggle('open'); renderRangos(); }
-function renderRangos(){ let pts=usuario?.puntos||0; document.getElementById('ranksGrid').innerHTML=RANGOS.map(r=>`<div class="rank-card ${pts>=r.min?'unlocked':''}"><div>${r.icon} ${r.label}</div><div>${r.min}+ pts</div><div>${r.perk}</div></div>`).join(''); }
-function setTab(tab,el){ tabActual=tab; currentPage=1; document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); el.classList.add('active'); cargarHilos(); }
-function autoResize(el){ el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,120)+'px'; }
+let usuario = null;
+let tabActual = 'abiertas';
+let hilosData = [];
+let currentPage = 1;
+const ITEMS_PER_PAGE = 5;
+let quoteActiva = null;
+
+function cap(nick) { return nick ? nick.charAt(0).toUpperCase() + nick.slice(1) : ''; }
+function timeAgo(ts) { let d = (Date.now() - new Date(ts)) / 1000; if (d < 60) return 'ahora'; if (d < 3600) return `hace ${Math.floor(d/60)} min`; if (d < 86400) return `hace ${Math.floor(d/3600)} h`; return new Date(ts).toLocaleDateString('es-ES'); }
+function toast(msg) { let t = document.getElementById('sendToast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
+function getRango(puntos, rol) { if (rol === 'admin') return { label: 'Admin', icon: '👑', id: 'admin' }; for (let i = RANGOS.length-1; i>=0; i--) if (puntos >= RANGOS[i].min) return RANGOS[i]; return RANGOS[0]; }
+function esAdmin() { return usuario?.rol === 'admin'; }
+
+const AVATAR_COLORS = [{bg:'#EFF6FF',color:'#1E40AF'},{bg:'#ECFDF5',color:'#065F46'},{bg:'#FFFBEB',color:'#B45309'},{bg:'#FEF2F2',color:'#991B1B'}];
+function avatarColor(nick) { let h = 0; for (let i=0; i<nick.length; i++) h = ((h<<5)-h) + nick.charCodeAt(i); return AVATAR_COLORS[Math.abs(h) % AVATAR_COLORS.length]; }
 
 // AUTH
-function generarCodigo(){ let c=''; for(let i=0;i<6;i++) c+='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.floor(Math.random()*32)]; return c; }
-function guardarToken(t){ try{ localStorage.setItem('moviles_token',t); sessionStorage.setItem('moviles_token',t); }catch(e){} }
-function leerToken(){ return localStorage.getItem('moviles_token')||sessionStorage.getItem('moviles_token')||null; }
-async function procesarAcceso(){ let nick=document.getElementById('nicknameInput').value.trim(), cod=document.getElementById('codigoInput').value.trim(), err=document.getElementById('authError'); if(!nick||nick.length<3){ err.textContent='❌ Min 3 caracteres'; return; } let {data:existe}=await db.from('usuarios').select('*').eq('nickname',nick).single(); if(existe){ if(!cod){ err.textContent='🔐 Introduce tu código'; return; } if(existe.codigo_acceso!==cod){ err.textContent='❌ Código incorrecto'; return; } usuario=existe; await crearSesion(nick); cerrarModalAuth(); onLogin(); }else{ let nuevoCod=generarCodigo(); let {data:nuevo}=await db.from('usuarios').insert({nickname:nick,puntos:0,codigo_acceso:nuevoCod,rol:'usuario'}).select().single(); if(nuevo){ usuario=nuevo; await crearSesion(nick); cerrarModalAuth(); onLogin(); mostrarCodeModal(nuevoCod); } } }
-async function crearSesion(nick){ let token=Math.random().toString(36)+Date.now(); await db.from('sesiones').insert({token,nickname:nick}); guardarToken(token); }
-async function verificarSesion(){ let token=leerToken(); if(token){ let {data:s}=await db.from('sesiones').select('nickname').eq('token',token).single(); if(s){ let {data:u}=await db.from('usuarios').select('*').eq('nickname',s.nickname).single(); if(u){ usuario=u; onLogin(); return; } } } mostrarModalAuth(); }
-function onLogin(){ mostrarUsuario(); cargarHilos(); cargarStats(); actualizarBarraRango(); }
-function mostrarUsuario(){ if(!usuario) return; let ac=avatarColor(usuario.nickname); document.getElementById('chipAvatar').style.background=ac.bg; document.getElementById('chipAvatar').textContent=cap(usuario.nickname).substring(0,2); document.getElementById('chipName').innerHTML=cap(usuario.nickname)+(esAdmin()?' 👑':''); document.getElementById('chipPts').innerHTML=`${getRango(usuario.puntos||0,usuario.rol).icon} ${usuario.puntos||0}pts`; }
-function cerrarModalAuth(){ document.getElementById('authModal').classList.add('hidden'); }
-function mostrarModalAuth(){ document.getElementById('authModal').classList.remove('hidden'); }
-function mostrarCodeModal(c){ document.getElementById('generatedCodeValue').innerText=c; document.getElementById('codeModal').classList.remove('hidden'); }
-function cerrarCodeModal(){ document.getElementById('codeModal').classList.add('hidden'); }
-async function cargarStats(){ let {count:a}=await db.from('hilos').select('*',{count:'exact',head:true}).eq('resuelto',false); let {count:b}=await db.from('hilos').select('*',{count:'exact',head:true}).eq('resuelto',true); let {count:c}=await db.from('usuarios').select('*',{count:'exact',head:true}); document.getElementById('statsRow').innerHTML=`<div class="stat-chip">📋 <b>${a||0}</b> abiertas</div><div class="stat-chip">✅ <b>${b||0}</b> resueltas</div><div class="stat-chip">👥 <b>${c||0}</b> miembros</div>`; }
+function generarCodigo() { let c='', chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; for(let i=0;i<6;i++) c+=chars[Math.floor(Math.random()*chars.length)]; return c; }
+function guardarToken(token) { localStorage.setItem('moviles_token', token); sessionStorage.setItem('moviles_token', token); }
+function leerToken() { return localStorage.getItem('moviles_token') || sessionStorage.getItem('moviles_token'); }
+async function crearSesion(nickname) { let token = Math.random().toString(36)+Date.now()+Math.random(); await db.from('sesiones').insert({ token, nickname, expires_at: new Date(Date.now()+365*864e5) }); guardarToken(token); }
+async function procesarAcceso() {
+  let nick = document.getElementById('nicknameInput').value.trim().toLowerCase();
+  let cod = document.getElementById('codigoInput').value.trim();
+  let err = document.getElementById('authError');
+  if (!nick || nick.length<3) { err.textContent='❌ Mínimo 3 caracteres'; return; }
+  if (!/^[a-zA-Z0-9_\-\.]+$/.test(nick)) { err.textContent='❌ Solo letras, números, _ y -'; return; }
+  if (FORBIDDEN_NAMES.includes(nick)) { err.textContent='❌ Nombre no permitido'; return; }
+  
+  let { data: existe } = await db.from('usuarios').select('*').eq('nickname', nick).single();
+  if (existe) {
+    if (!cod) { err.textContent='🔐 Introduce tu código secreto'; return; }
+    if (existe.codigo_acceso !== cod) { err.textContent='❌ Código incorrecto'; return; }
+    usuario = existe;
+    await crearSesion(nick);
+    cerrarModalAuth();
+    onLogin();
+  } else {
+    let nuevoCod = generarCodigo();
+    let { data: nuevo, error } = await db.from('usuarios').insert({ nickname: nick, puntos: 0, codigo_acceso: nuevoCod, rol: 'usuario' }).select().single();
+    if (error) { err.textContent='⚠️ Error: '+error.message; return; }
+    usuario = nuevo;
+    await crearSesion(nick);
+    cerrarModalAuth();
+    onLogin();
+    document.getElementById('generatedCodeValue').textContent = nuevoCod;
+    document.getElementById('codeModal').classList.remove('hidden');
+  }
+}
+async function verificarSesion() {
+  let token = leerToken();
+  if (token) {
+    let { data: sesion } = await db.from('sesiones').select('nickname').eq('token', token).single();
+    if (sesion) {
+      let { data: user } = await db.from('usuarios').select('*').eq('nickname', sesion.nickname).single();
+      if (user) { usuario = user; onLogin(); return; }
+    }
+  }
+  mostrarModalAuth();
+}
+function cerrarModalAuth() { document.getElementById('authModal').classList.add('hidden'); }
+function mostrarModalAuth() { document.getElementById('authModal').classList.remove('hidden'); }
+function cerrarCodeModal() { document.getElementById('codeModal').classList.add('hidden'); }
+function onLogin() { mostrarUsuario(); cargarStats(); cargarHilos(); actualizarBarraRango(); renderRangos(); }
+function mostrarUsuario() {
+  if (!usuario) return;
+  let ac = avatarColor(usuario.nickname);
+  document.getElementById('chipAvatar').style.background = ac.bg;
+  document.getElementById('chipAvatar').style.color = ac.color;
+  document.getElementById('chipAvatar').textContent = cap(usuario.nickname).substring(0,2);
+  document.getElementById('chipName').textContent = cap(usuario.nickname);
+  let r = getRango(usuario.puntos||0, usuario.rol);
+  document.getElementById('chipPts').textContent = `${r.icon} ${usuario.puntos||0}pts`;
+}
+function actualizarBarraRango() {
+  if (!usuario) return;
+  let pts = usuario.puntos||0;
+  let wrap = document.getElementById('rankProgressWrap');
+  wrap.style.display = 'flex';
+  let rango = getRango(pts, usuario.rol);
+  document.getElementById('rankIcon').innerHTML = rango.icon;
+  if (usuario.rol === 'admin' || rango.id === 'leyenda') {
+    document.getElementById('rankBarFill').style.width = '100%';
+    document.getElementById('rankNextLabel').innerHTML = '👑 Máximo rango';
+    return;
+  }
+  let next = RANGOS.find(r => r.min > pts);
+  if (next) {
+    let pct = ((pts - rango.min) / (next.min - rango.min)) * 100;
+    document.getElementById('rankBarFill').style.width = `${Math.min(100,pct)}%`;
+    document.getElementById('rankNextLabel').innerHTML = `${next.icon} ${next.label} a ${next.min-pts} pts`;
+  }
+}
+function renderRangos() {
+  let pts = usuario?.puntos||0;
+  let grid = document.getElementById('ranksGrid');
+  if(!grid) return;
+  grid.innerHTML = RANGOS.map(r => `<div class="rank-card ${pts>=r.min?'unlocked':''}"><div>${r.icon} ${r.label}</div><div>${r.min}+ pts</div><div>${r.perk}</div></div>`).join('');
+}
+function togglePerks() { document.getElementById('perksPanel').classList.toggle('open'); renderRangos(); }
+
+// STATS
+async function cargarStats() {
+  let { count: a } = await db.from('hilos').select('*', {count:'exact', head:true}).eq('resuelto',false);
+  let { count: b } = await db.from('hilos').select('*', {count:'exact', head:true}).eq('resuelto',true);
+  let { count: c } = await db.from('usuarios').select('*', {count:'exact', head:true});
+  document.getElementById('statsRow').innerHTML = `<div class="stat-chip">📋 <b>${a||0}</b> abiertas</div><div class="stat-chip">✅ <b>${b||0}</b> resueltas</div><div class="stat-chip">👥 <b>${c||0}</b> miembros</div>`;
+}
+
+// HILOS
+async function cargarHilos() {
+  if (!usuario) return;
+  document.getElementById('hilosList').innerHTML = '<div class="loading">⏳ Cargando...</div>';
+  let query = db.from('hilos').select('*, respuestas(count)');
+  if (tabActual === 'abiertas') query = query.eq('resuelto', false);
+  else if (tabActual === 'mis_abiertas') query = query.eq('nickname', usuario.nickname).eq('resuelto', false);
+  else if (tabActual === 'mis_cerradas') query = query.eq('nickname', usuario.nickname).eq('resuelto', true);
+  query = query.order('created_at', { ascending: false });
+  let { data } = await query;
+  hilosData = data || [];
+  renderizarListaHilos();
+}
+function renderizarListaHilos() {
+  if (hilosData.length === 0) {
+    let msgs = { abiertas: 'No hay consultas abiertas', mis_abiertas: 'No tienes consultas abiertas', mis_cerradas: 'No tienes consultas cerradas' };
+    document.getElementById('hilosList').innerHTML = `<div class="empty-state">📭 ${msgs[tabActual]}</div>`;
+    document.getElementById('pagination').innerHTML = '';
+    return;
+  }
+  let totalPages = Math.ceil(hilosData.length / ITEMS_PER_PAGE);
+  let start = (currentPage-1)*ITEMS_PER_PAGE;
+  let pag = hilosData.slice(start, start+ITEMS_PER_PAGE);
+  Promise.all(pag.map(h => renderHilo(h))).then(htmls => {
+    document.getElementById('hilosList').innerHTML = htmls.join('');
+    pag.forEach(h => cargarRespuestas(h.id));
+  });
+  let pagHtml = '';
+  for (let i=1; i<=totalPages; i++) pagHtml += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goToPage(${i})">${i}</button>`;
+  document.getElementById('pagination').innerHTML = pagHtml;
+}
+function goToPage(p) { currentPage = p; renderizarListaHilos(); }
+async function renderHilo(h) {
+  let { data: u } = await db.from('usuarios').select('puntos,rol').eq('nickname', h.nickname).single();
+  let pts = u?.puntos||0, rol = u?.rol||'usuario';
+  let ac = avatarColor(h.nickname);
+  let rango = getRango(pts, rol);
+  let puedeCerrar = usuario && (usuario.nickname === h.nickname || esAdmin());
+  let specs = [
+    h.presupuesto && `<div class="spec-tag">💰 <span class="spec-val">${h.presupuesto}</span></div>`,
+    h.movil_actual && `<div class="spec-tag">📱 <span class="spec-val">${h.movil_actual}</span></div>`,
+    h.marca_preferida && h.marca_preferida!=='Sin preferencia' && `<div class="spec-tag">⭐ <span class="spec-val">${h.marca_preferida}</span></div>`,
+    h.marca_no_quiere && `<div class="spec-tag">🚫 <span class="spec-val">${h.marca_no_quiere}</span></div>`,
+    h.uso_principal && `<div class="spec-tag">🎯 <span class="spec-val">${h.uso_principal}</span></div>`,
+    h.camara && h.camara!=='No mucho' && `<div class="spec-tag">📸 <span class="spec-val">${h.camara}</span></div>`,
+    h.bateria && h.bateria!=='Normal' && `<div class="spec-tag">🔋 <span class="spec-val">${h.bateria}</span></div>`,
+  ].filter(Boolean);
+  return `<div class="thread-card" id="thread_${h.id}"><div class="thread-header"><div class="thread-meta"><div class="avatar" style="background:${ac.bg};color:${ac.color};">${cap(h.nickname).substring(0,2)}</div><div class="author-block"><div class="author-name">${cap(h.nickname)} <span class="author-rank rank-${rango.id}">${rango.icon} ${rango.label}</span></div></div><div class="thread-time">${timeAgo(h.created_at)}</div></div>${specs.length?`<div class="specs-wrap">${specs.join('')}</div>`:''}${h.datos_extra?`<div class="extra-note">📝 ${h.datos_extra}</div>`:''}</div><div id="topRec_${h.id}"></div><div class="thread-bar"><button class="reply-count-btn" onclick="toggleReplies('${h.id}')">💬 <span class="cnt" id="rcnt_${h.id}">0</span> respuestas</button>${h.resuelto?'<div class="resolved-pill">✅ Resuelta</div>':(puedeCerrar?`<button class="resolve-btn" onclick="marcarResuelta('${h.id}')">🔒 Marcar resuelta</button>`:'')}</div><div class="replies-section" id="replies_${h.id}" style="display:none;"></div>${!h.resuelto?`<div class="reply-box" id="replybox_${h.id}" style="display:none;"><div class="quote-preview" id="qpreview_${h.id}"><span class="quote-preview-text"></span><button class="quote-clear" onclick="clearCita('${h.id}')">✕</button></div><div class="reply-input-row"><textarea class="reply-input" id="rinput_${h.id}" placeholder="Escribe o usa @nombre" rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarRespuesta('${h.id}')}" oninput="autoResize(this)"></textarea><button class="send-btn" onclick="enviarRespuesta('${h.id}')">➤</button></div></div>`:''}</div>`;
+}
+function autoResize(el) { el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,120)+'px'; }
+function toggleReplies(id) { let r=document.getElementById(`replies_${id}`), b=document.getElementById(`replybox_${id}`); if(r.style.display!=='none'){ r.style.display='none'; if(b) b.style.display='none'; }else{ r.style.display='block'; if(b) b.style.display='block'; if(r.innerHTML==='') cargarRespuestas(id); } }
+async function cargarRespuestas(hiloId) {
+  let container = document.getElementById(`replies_${hiloId}`);
+  if(!container) return;
+  let { data: resp } = await db.from('respuestas').select('*').eq('hilo_id', hiloId).order('created_at');
+  document.getElementById(`rcnt_${hiloId}`).innerText = resp?.length||0;
+  if(!resp?.length){ container.innerHTML='<div class="replies-empty">💬 Sé el primero en recomendar</div>'; return; }
+  let html = '';
+  for(let r of resp){
+    let {data:u}=await db.from('usuarios').select('puntos,rol').eq('nickname',r.nickname).single();
+    let ac=avatarColor(r.nickname);
+    let rango=getRango(u?.puntos||0,u?.rol||'usuario');
+    html+=`<div class="reply-item"><div class="reply-header"><div class="reply-avatar" style="background:${ac.bg};color:${ac.color};">${cap(r.nickname).substring(0,2)}</div><span class="reply-author">${cap(r.nickname)}</span><span class="author-rank rank-${rango.id}">${rango.icon} ${rango.label}</span><span class="reply-time">${timeAgo(r.created_at)}</span></div><div class="reply-content">${r.contenido.replace(/@([a-zA-Z0-9_\-\.]+)/g,'<span class="mention">@$1</span>')}</div><div class="reply-actions"><button class="vote-btn" onclick="votar('${r.id}','util','${hiloId}','${r.nickname}')">👍 ${r.votos_util||0}</button><button class="vote-btn" onclick="votar('${r.id}','noutil','${hiloId}','${r.nickname}')">👎 ${r.votos_noutil||0}</button><button class="cite-btn" onclick="setCita('${hiloId}','${r.id}','${r.nickname}',${JSON.stringify(r.contenido)})">↩ Citar</button></div></div>`;
+  }
+  container.innerHTML = html;
+}
+function setCita(hiloId,replyId,autor,texto){ quoteActiva={hiloId,replyId,autor,texto}; let p=document.getElementById(`qpreview_${hiloId}`); if(p){ p.classList.add('active'); p.querySelector('.quote-preview-text').innerHTML=`${cap(autor)}: "${texto.slice(0,80)}..."`; document.getElementById(`rinput_${hiloId}`).focus(); } }
+function clearCita(id){ quoteActiva=null; let p=document.getElementById(`qpreview_${id}`); if(p) p.classList.remove('active'); }
+async function enviarRespuesta(hiloId){
+  if(!usuario){ mostrarModalAuth(); return; }
+  let input=document.getElementById(`rinput_${hiloId}`), txt=input.value.trim();
+  if(!txt) return;
+  let data={hilo_id:hiloId,usuario_id:usuario.id,nickname:usuario.nickname,contenido:txt};
+  if(quoteActiva&&quoteActiva.hiloId===hiloId) data.cita_id=quoteActiva.replyId;
+  await db.from('respuestas').insert(data);
+  let newPts=(usuario.puntos||0)+2;
+  await db.from('usuarios').update({puntos:newPts}).eq('id',usuario.id);
+  usuario.puntos=newPts;
+  actualizarBarraRango();
+  input.value=''; clearCita(hiloId);
+  cargarRespuestas(hiloId);
+  toast('✅ +2 pts');
+}
+async function votar(respId,tipo,hiloId,nickAsesor){
+  if(!usuario){ mostrarModalAuth(); return; }
+  let {data:ya}=await db.from('votos').select('id').eq('respuesta_id',respId).eq('usuario_id',usuario.id).single();
+  if(ya){ toast('Ya votaste'); return; }
+  await db.from('votos').insert({respuesta_id:respId,usuario_id:usuario.id,tipo});
+  let campo=tipo==='util'?'votos_util':'votos_noutil';
+  let {data:r}=await db.from('respuestas').select(campo).eq('id',respId).single();
+  await db.from('respuestas').update({[campo]:(r[campo]||0)+1}).eq('id',respId);
+  if(tipo==='util'){
+    let {data:a}=await db.from('usuarios').select('puntos').eq('nickname',nickAsesor).single();
+    if(a) await db.from('usuarios').update({puntos:(a.puntos||0)+3}).eq('nickname',nickAsesor);
+  }
+  cargarRespuestas(hiloId);
+}
+async function marcarResuelta(id){
+  let {data:h}=await db.from('hilos').select('nickname').eq('id',id).single();
+  if(h&&(usuario?.nickname===h.nickname||esAdmin())){ await db.from('hilos').update({resuelto:true}).eq('id',id); cargarHilos(); toast('✅ Marcada resuelta'); }
+}
+function abrirForm(){ if(!usuario) mostrarModalAuth(); else document.getElementById('newForm').style.display='block'; document.getElementById('newForm').scrollIntoView({behavior:'smooth'}); }
+function cerrarForm(){ document.getElementById('newForm').style.display='none'; }
+async function publicarHilo(){
+  if(!usuario) return;
+  let data = {
+    usuario_id: usuario.id, nickname: usuario.nickname,
+    presupuesto: document.getElementById('f_presupuesto')?.value||'',
+    movil_actual: document.getElementById('f_movil_actual')?.value||'',
+    marca_preferida: document.getElementById('f_marca_pref')?.value||'',
+    marca_no_quiere: document.getElementById('f_marca_no')?.value||'',
+    garantia_espana: document.getElementById('f_garantia')?.value||'Sí',
+    modelos: document.getElementById('f_modelos')?.value||'Actuales',
+    uso_principal: document.getElementById('f_uso')?.value||'',
+    tamano_pantalla: document.getElementById('f_tamano')?.value||'Sin preferencia',
+    juegos: document.getElementById('f_juegos')?.value||'No',
+    camara: document.getElementById('f_camara')?.value||'No mucho',
+    bateria: document.getElementById('f_bateria')?.value||'Normal',
+    carga_rapida: document.getElementById('f_carga')?.value||'No necesaria',
+    datos_extra: document.getElementById('f_extra')?.value||''
+  };
+  await db.from('hilos').insert(data);
+  let newPts=(usuario.puntos||0)+1;
+  await db.from('usuarios').update({puntos:newPts}).eq('id',usuario.id);
+  usuario.puntos=newPts;
+  actualizarBarraRango();
+  cerrarForm();
+  cargarHilos();
+  cargarStats();
+  toast('📱 Consulta publicada · +1 pt');
+}
+function setTab(tab,el){ tabActual=tab; currentPage=1; document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); el.classList.add('active'); cargarHilos(); }
 function toggleNotifPanel(){ document.getElementById('notifPanel').classList.toggle('open'); }
 function marcarTodasLeidas(){}
-function toggleUserMenu(){}
 function aceptarCookies(){ localStorage.setItem('cookies_aceptadas','true'); document.getElementById('cookieConsent').style.display='none'; }
-function initCookies(){ if(!localStorage.getItem('cookies_aceptadas')) document.getElementById('cookieConsent').style.display='flex'; }
-window.addEventListener('load',()=>{ verificarSesion(); initCookies(); });
+window.addEventListener('load', () => { verificarSesion(); if(!localStorage.getItem('cookies_aceptadas')) document.getElementById('cookieConsent').style.display='flex'; });
 </script>
 </body>
 </html>
