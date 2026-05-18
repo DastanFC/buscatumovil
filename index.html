@@ -2263,48 +2263,30 @@ async function publicarHilo() {
 // INIT
 // ═══════════════════════════════════════════
 async function init() {
-    // Ponemos al "escuchador" de Supabase a vigilar todo el rato
-    supabaseClient.auth.onAuthStateChange((event, sesion) => {
-        console.log("Supabase dice - Evento de sesión:", event);
+    // 1. Miramos si hay un token guardado a tu manera tradicional
+    const token = leerToken();
+    console.log("TOKEN manual en localStorage:", token ? "encontrado" : "no encontrado");
+
+    if (token) {
+        // 2. Usamos 'db' (que es tu variable real de Supabase) para comprobar la sesión
+        const { data: sesion, error: errorSesion } = await db.from('sesiones').select('*').eq('token', token).single();
+        console.log("SESION en DB:", JSON.stringify(sesion), "ERR:", errorSesion);
 
         if (sesion) {
-            console.log("¡Sesión detectada automáticamente por el escuchador!", sesion);
-            
-            // 🔥 ¡EL TRUCO A LO BRUTO! 🔥
-            // Buscamos el cartel flotante por su nombre real y lo escondemos a la fuerza
-            const cartel = document.getElementById('modalAuth');
-            if (cartel) {
-                cartel.style.display = 'none'; // Le decimos: ¡Desaparece de la pantalla!
-                console.log("¡Cartel ocultado con éxito a la fuerza!");
-            }
-            
-            // Buscamos tus datos de fondo
-            consultarUsuarioSupabase("dastan").then(({ data }) => {
-                console.log("Datos de dastan:", JSON.stringify(data));
-            });
-        } else {
-            console.log("No hay sesión. Hay que mostrar el login.");
-            const cartel = document.getElementById('modalAuth');
-            if (cartel) cartel.style.display = 'flex'; // Si no hay sesión, se muestra
-        }
-    });
+            // 3. Si la sesión existe en tu tabla, buscamos tu usuario
+            const { data: usuario, error: errorUsuario } = await db.from('usuarios').select('*').eq('nickname', sesion.nickname).single();
+            console.log("USER en DB:", JSON.stringify(usuario), "ERR:", errorUsuario);
 
-    // Tu fiel chivato de la hora
-    const ahora = new Date();
-    const horaTexto = ahora.toLocaleTimeString();
-    const chivato = document.createElement('div');
-    chivato.innerHTML = `🔄 Versión cargada a las: <b>${horaTexto}</b>`;
-    chivato.style.position = 'fixed';
-    chivato.style.bottom = '10px';
-    chivato.style.right = '10px';
-    chivato.style.background = '#333';
-    chivato.style.color = '#fff';
-    chivato.style.padding = '8px 12px';
-    chivato.style.borderRadius = '5px';
-    chivato.style.fontSize = '12px';
-    chivato.style.zIndex = '99999';
-    chivato.style.fontFamily = 'sans-serif';
-    document.body.appendChild(chivato);
+            if (usuario) {
+                // 🎉 ¡AQUÍ ESTÁ LA MAGIA REAL! Usamos tu función verdadera para cerrar el cartel:
+                cerrarModalAuth();
+                return; // Cortamos aquí para que no ejecute el mostrarModal de abajo
+            }
+        }
+    }
+
+    // Si no hay token, o no hay sesión, o no hay usuario... se queda el login puesto
+    mostrarModal();
 }
 
 window.addEventListener('load', init);
