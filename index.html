@@ -1344,17 +1344,213 @@ body {
   margin-right: 4px;
 }
 
+/* ─── PANEL ADMIN ─── */
+#adminPanel {
+  display: none;
+  background: var(--surface);
+  border: 2px solid var(--navy);
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.admin-header {
+  background: var(--navy);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.admin-header-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-header-toggle {
+  color: rgba(255,255,255,0.5);
+  font-size: 0.75rem;
+}
+
+.admin-body {
+  padding: 20px;
+}
+
+.admin-section-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-3);
+  margin: 16px 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.admin-section-title:first-child { margin-top: 0; }
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+}
+
+.admin-table th {
+  text-align: left;
+  padding: 6px 8px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-3);
+  border-bottom: 1px solid var(--border);
+}
+
+.admin-table td {
+  padding: 8px 8px;
+  border-bottom: 1px solid var(--surface-3);
+  vertical-align: middle;
+  color: var(--text-2);
+}
+
+.admin-table tr:last-child td { border-bottom: none; }
+.admin-table tr:hover td { background: var(--surface-2); }
+
+.admin-inline-input {
+  padding: 4px 8px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-family: 'DM Sans', sans-serif;
+  width: 70px;
+  color: var(--text);
+  background: var(--surface-2);
+}
+.admin-inline-input:focus { outline: none; border-color: var(--blue); }
+
+.admin-btn {
+  padding: 4px 10px;
+  border: none;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.18s;
+  white-space: nowrap;
+}
+
+.admin-btn-blue  { background: var(--blue); color: white; }
+.admin-btn-blue:hover  { background: var(--blue-light); }
+.admin-btn-red   { background: var(--accent-red); color: white; }
+.admin-btn-red:hover   { background: #c9302c; }
+.admin-btn-gray  { background: var(--surface-3); color: var(--text-2); }
+.admin-btn-gray:hover  { background: var(--border); }
+.admin-btn-green { background: var(--green); color: white; }
+.admin-btn-green:hover { background: #0d9f6e; }
+
+.admin-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 700;
+}
+.admin-badge-admin   { background: var(--navy); color: #93C5FD; }
+.admin-badge-usuario { background: var(--surface-3); color: var(--text-2); }
+.admin-badge-baneado { background: #FEE2E2; color: #991B1B; }
+
+.admin-select {
+  padding: 3px 6px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.72rem;
+  font-family: 'DM Sans', sans-serif;
+  background: var(--surface-2);
+  color: var(--text);
+  cursor: pointer;
+}
+.admin-select:focus { outline: none; border-color: var(--blue); }
+
+.admin-nick {
+  font-weight: 600;
+  color: var(--text);
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.admin-empty {
+  text-align: center;
+  padding: 20px;
+  color: var(--text-3);
+  font-size: 0.8rem;
+}
+
+.admin-hilo-title {
+  font-size: 0.75rem;
+  color: var(--text);
+  font-weight: 500;
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-actions-row {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.admin-tab-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.admin-tab {
+  padding: 5px 14px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text-2);
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.18s;
+}
+.admin-tab.active { background: var(--navy); color: white; border-color: var(--navy); }
+
+.admin-loading {
+  text-align: center;
+  padding: 20px;
+  color: var(--text-3);
+  font-size: 0.78rem;
+}
 </style>
 </head>
 <body>
 
 <!-- TOPBAR -->
 <div class="topbar">
-  <div class="logo">
+  <div class="logo" ondblclick="emergenciaAdmin()">
     <div class="logo-icon">📱</div>
     Recomiéndame un <em>móvil</em>
   </div>
   <div class="topbar-right">
+    <button class="notif-btn" id="adminBtn" onclick="emergenciaAdmin()" title="Panel Admin" style="display:none;background:rgba(245,166,35,0.2);border:1px solid rgba(245,166,35,0.4);">👑</button>
     <button class="notif-btn" id="notifBtn" onclick="toggleNotifPanel()">
       🔔
       <span class="notif-badge" id="notifBadge"></span>
@@ -1404,6 +1600,21 @@ body {
     <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;margin-bottom:4px;">Sistema de rangos</div>
     <div style="font-size:0.75rem;color:var(--text-3);margin-bottom:0;">Ganas 2 pts por responder · 3 pts cuando votan útil tu respuesta · 1 pt por nueva consulta</div>
     <div class="ranks-grid" id="ranksGrid"></div>
+  </div>
+
+  <!-- PANEL ADMIN (solo visible para dastan) -->
+  <div id="adminPanel">
+    <div class="admin-header" onclick="toggleAdminBody()">
+      <div class="admin-header-title">👑 Panel de Administración</div>
+      <span class="admin-header-toggle" id="adminToggleIcon">▾</span>
+    </div>
+    <div class="admin-body" id="adminBody">
+      <div class="admin-tab-row">
+        <button class="admin-tab active" onclick="adminSetTab('usuarios', this)">👥 Usuarios</button>
+        <button class="admin-tab" onclick="adminSetTab('posts', this)">📋 Posts / Hilos</button>
+      </div>
+      <div id="adminContent"><div class="admin-loading">⏳ Cargando...</div></div>
+    </div>
   </div>
 
   <!-- Tabs -->
@@ -2176,6 +2387,7 @@ function onLogin() {
   cargarStats();
   cargarNotificaciones();
   actualizarBarraRango();
+  mostrarAdminPanel();
 }
 
 function mostrarUsuario() {
@@ -2592,6 +2804,204 @@ async function publicarHilo() {
   } else {
     toast('⚠️ Error: ' + error.message);
   }
+}
+
+// ═══════════════════════════════════════════
+// PANEL ADMIN
+// ═══════════════════════════════════════════
+const ADMIN_NICK = 'dastan';
+let adminTabActual = 'usuarios';
+let adminBodyOpen = true;
+
+function mostrarAdminPanel() {
+  if (!usuario) return;
+  const nick = (usuario.nickname || '').toLowerCase().trim();
+  if (nick !== ADMIN_NICK) return;
+  // Mostrar botón 👑 en topbar
+  const btn = document.getElementById('adminBtn');
+  if (btn) btn.style.display = 'flex';
+  // Mostrar panel con pequeño delay para asegurar DOM listo
+  setTimeout(() => {
+    const panel = document.getElementById('adminPanel');
+    if (panel) {
+      panel.style.display = 'block';
+      cargarAdminContent();
+    }
+  }, 300);
+}
+
+function emergenciaAdmin() {
+  if (!usuario) return;
+  const nick = (usuario.nickname || '').toLowerCase().trim();
+  if (nick !== ADMIN_NICK) return;
+  const panel = document.getElementById('adminPanel');
+  if (!panel) return;
+  const visible = panel.style.display === 'block';
+  panel.style.display = visible ? 'none' : 'block';
+  if (!visible) {
+    cargarAdminContent();
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function toggleAdminBody() {
+  adminBodyOpen = !adminBodyOpen;
+  document.getElementById('adminBody').style.display = adminBodyOpen ? 'block' : 'none';
+  document.getElementById('adminToggleIcon').textContent = adminBodyOpen ? '▴' : '▾';
+}
+
+function adminSetTab(tab, el) {
+  adminTabActual = tab;
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  cargarAdminContent();
+}
+
+async function cargarAdminContent() {
+  document.getElementById('adminContent').innerHTML = '<div class="admin-loading">⏳ Cargando...</div>';
+  if (adminTabActual === 'usuarios') await renderAdminUsuarios();
+  else await renderAdminPosts();
+}
+
+async function renderAdminUsuarios() {
+  const { data: users } = await db.from('usuarios').select('*').order('puntos', { ascending: false });
+  if (!users || users.length === 0) {
+    document.getElementById('adminContent').innerHTML = '<div class="admin-empty">Sin usuarios</div>';
+    return;
+  }
+
+  let html = `
+    <div class="admin-section-title">👥 Todos los usuarios (${users.length})</div>
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Usuario</th>
+          <th>Puntos</th>
+          <th>Rol</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  for (const u of users) {
+    const rolBadge = u.rol === 'admin'
+      ? `<span class="admin-badge admin-badge-admin">👑 Admin</span>`
+      : u.baneado
+        ? `<span class="admin-badge admin-badge-baneado">🚫 Baneado</span>`
+        : `<span class="admin-badge admin-badge-usuario">👤 Usuario</span>`;
+
+    html += `
+      <tr>
+        <td><div class="admin-nick">${cap(u.nickname)}</div></td>
+        <td>
+          <input class="admin-inline-input" type="number" value="${u.puntos || 0}" id="pts_${u.nickname}" style="width:60px;" />
+          <button class="admin-btn admin-btn-blue" style="margin-left:4px;" onclick="adminAjustarPuntos('${u.nickname}')">✔</button>
+        </td>
+        <td>${rolBadge}</td>
+        <td>
+          <div class="admin-actions-row">
+            ${u.nickname !== ADMIN_NICK ? `
+              <select class="admin-select" id="rol_${u.nickname}">
+                <option value="usuario" ${u.rol === 'usuario' ? 'selected' : ''}>Usuario</option>
+                <option value="admin" ${u.rol === 'admin' ? 'selected' : ''}>Admin</option>
+              </select>
+              <button class="admin-btn admin-btn-gray" onclick="adminCambiarRol('${u.nickname}')">Cambiar rol</button>
+              <button class="admin-btn admin-btn-red" onclick="adminBanear('${u.nickname}', ${!u.baneado})">${u.baneado ? '✅ Desbanear' : '🚫 Banear'}</button>
+            ` : `<span style="font-size:0.68rem;color:var(--text-3);">— eres tú —</span>`}
+          </div>
+        </td>
+      </tr>
+    `;
+  }
+
+  html += `</tbody></table>`;
+  document.getElementById('adminContent').innerHTML = html;
+}
+
+async function renderAdminPosts() {
+  const { data: hilos } = await db.from('hilos').select('*').order('created_at', { ascending: false }).limit(50);
+  if (!hilos || hilos.length === 0) {
+    document.getElementById('adminContent').innerHTML = '<div class="admin-empty">Sin hilos</div>';
+    return;
+  }
+
+  let html = `
+    <div class="admin-section-title">📋 Hilos recientes (${hilos.length})</div>
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Autor</th>
+          <th>Consulta</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  for (const h of hilos) {
+    const resumen = [h.presupuesto, h.uso_principal, h.datos_extra].filter(Boolean).join(' · ') || 'Sin detalle';
+    html += `
+      <tr>
+        <td style="font-weight:600;font-size:0.78rem;">${cap(h.nickname)}</td>
+        <td><div class="admin-hilo-title" title="${resumen}">${resumen}</div></td>
+        <td>
+          ${h.resuelto
+            ? `<span style="color:var(--green);font-size:0.72rem;font-weight:600;">✅ Resuelta</span>`
+            : `<span style="color:var(--accent);font-size:0.72rem;font-weight:600;">🟡 Abierta</span>`}
+        </td>
+        <td>
+          <div class="admin-actions-row">
+            ${!h.resuelto ? `<button class="admin-btn admin-btn-green" onclick="adminCerrarHilo('${h.id}')">🔒 Cerrar</button>` : ''}
+            <button class="admin-btn admin-btn-red" onclick="adminEliminarHilo('${h.id}')">🗑 Eliminar</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }
+
+  html += `</tbody></table>`;
+  document.getElementById('adminContent').innerHTML = html;
+}
+
+async function adminAjustarPuntos(nick) {
+  const val = parseInt(document.getElementById(`pts_${nick}`).value);
+  if (isNaN(val) || val < 0) { toast('❌ Valor no válido'); return; }
+  await db.from('usuarios').update({ puntos: val }).eq('nickname', nick);
+  toast(`✅ Puntos de ${cap(nick)} actualizados a ${val}`);
+  cargarAdminContent();
+}
+
+async function adminCambiarRol(nick) {
+  const nuevoRol = document.getElementById(`rol_${nick}`).value;
+  await db.from('usuarios').update({ rol: nuevoRol }).eq('nickname', nick);
+  toast(`✅ Rol de ${cap(nick)} → ${nuevoRol}`);
+  cargarAdminContent();
+}
+
+async function adminBanear(nick, banear) {
+  await db.from('usuarios').update({ baneado: banear }).eq('nickname', nick);
+  toast(banear ? `🚫 ${cap(nick)} baneado` : `✅ ${cap(nick)} desbaneado`);
+  cargarAdminContent();
+}
+
+async function adminCerrarHilo(hiloId) {
+  await db.from('hilos').update({ resuelto: true }).eq('id', hiloId);
+  toast('🔒 Hilo cerrado');
+  cargarAdminContent();
+  cargarHilos();
+  cargarStats();
+}
+
+async function adminEliminarHilo(hiloId) {
+  if (!confirm('¿Eliminar este hilo y todas sus respuestas?')) return;
+  await db.from('respuestas').delete().eq('hilo_id', hiloId);
+  await db.from('hilos').delete().eq('id', hiloId);
+  toast('🗑 Hilo eliminado');
+  cargarAdminContent();
+  cargarHilos();
+  cargarStats();
 }
 
 // ═══════════════════════════════════════════
