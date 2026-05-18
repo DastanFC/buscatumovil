@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>Recomiéndame un móvil</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
@@ -58,7 +58,7 @@ body {
 }
 
 .logo {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 0.92rem;
   font-weight: 700;
   color: white;
@@ -223,7 +223,7 @@ body {
 }
 
 .hero-tagline {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 1.1rem;
   font-weight: 800;
   color: white;
@@ -301,7 +301,7 @@ body {
   cursor: pointer;
   transition: all 0.18s;
   white-space: nowrap;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 .tab:hover { border-color: var(--blue); color: var(--blue); }
 .tab.active {
@@ -322,7 +322,7 @@ body {
   font-size: 0.78rem;
   cursor: pointer;
   transition: all 0.18s;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   white-space: nowrap;
   display: flex;
   align-items: center;
@@ -341,7 +341,7 @@ body {
 }
 
 .form-title {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 1.05rem;
   font-weight: 700;
   margin-bottom: 20px;
@@ -377,7 +377,7 @@ body {
   border: 1.5px solid var(--border);
   border-radius: var(--radius-sm);
   font-size: 0.85rem;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   background: var(--surface-2);
   color: var(--text);
   transition: all 0.18s;
@@ -409,7 +409,7 @@ body {
   font-weight: 500;
   font-size: 0.82rem;
   cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
 .btn-submit {
@@ -421,7 +421,7 @@ body {
   font-weight: 600;
   font-size: 0.82rem;
   cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   transition: all 0.18s;
 }
 .btn-submit:hover { background: var(--blue); }
@@ -436,7 +436,7 @@ body {
   background: var(--surface);
   border-radius: var(--radius);
   margin-bottom: 20px;
-  border: 1px solid var(--border);
+border: 1.5px solid var(--blue);
   box-shadow: var(--shadow);
   overflow: visible;
   transition: box-shadow 0.2s, transform 0.15s;
@@ -453,7 +453,7 @@ body {
 }
 
 .thread-card > *:first-child { border-radius: var(--radius) var(--radius) 0 0; }
-.thread-card > *:last-child { border-radius: 0 0 var(--radius) var(--radius); overflow: hidden; }
+.thread-card > *:last-child { border-radius: 0 0 var(--radius) var(--radius); }
 
 .thread-meta {
   display: flex;
@@ -550,6 +550,7 @@ body {
   background: var(--surface-2);
   border-top: 1px solid var(--border);
   gap: 10px;
+  border-radius: 0 0 var(--radius) var(--radius);  /* ← añade esto */
 }
 
 @media (max-width: 600px) {
@@ -568,7 +569,7 @@ body {
   align-items: center;
   gap: 6px;
   padding: 6px 14px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   transition: all 0.18s;
 }
 .reply-count-btn:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-pale); }
@@ -587,7 +588,7 @@ body {
   font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   transition: all 0.18s;
 }
 .resolve-btn:hover { background: var(--green); color: white; }
@@ -746,7 +747,7 @@ body {
   align-items: center;
   gap: 4px;
   transition: all 0.18s;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 .vote-btn:hover { border-color: var(--blue); color: var(--blue); }
 .vote-btn.voted-util { background: var(--blue-pale); border-color: var(--blue); color: var(--blue); }
@@ -760,7 +761,7 @@ body {
   cursor: pointer;
   padding: 3px 6px;
   border-radius: 6px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   transition: all 0.18s;
 }
 .cite-btn:hover { background: var(--surface-3); color: var(--text-2); }
@@ -821,7 +822,7 @@ body {
   border: 1.5px solid var(--border);
   border-radius: 16px;
   font-size: 16px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   resize: none;
   background: var(--surface-2);
   transition: all 0.18s;
@@ -918,7 +919,7 @@ body {
 .perks-banner:hover { border-color: var(--blue); }
 
 .perks-banner-title {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 0.9rem;
   font-weight: 700;
   color: white;
@@ -963,7 +964,7 @@ body {
 .rank-card.current { border-color: var(--blue); background: var(--blue-pale); }
 
 .rank-card-icon { font-size: 1.4rem; margin-bottom: 6px; }
-.rank-card-name { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; margin-bottom: 2px; }
+.rank-card-name { font-family: 'Roboto', sans-serif; font-size: 0.82rem; font-weight: 700; margin-bottom: 2px; }
 .rank-card-pts { font-size: 0.68rem; color: var(--text-3); margin-bottom: 8px; }
 .rank-card-perk { font-size: 0.72rem; color: var(--text-2); }
 .rank-card-perk.locked { color: var(--text-3); filter: blur(3px); user-select: none; }
@@ -986,7 +987,7 @@ body {
 
 .notif-panel-header {
   padding: 14px 16px 10px;
-  font-family: 'Syne', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 700;
   font-size: 0.85rem;
   border-bottom: 1px solid var(--border);
@@ -1041,7 +1042,7 @@ body {
 }
 
 .modal-title {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 1.2rem;
   font-weight: 800;
   color: var(--navy);
@@ -1060,7 +1061,7 @@ body {
   border: 1.5px solid var(--border);
   border-radius: var(--radius-sm);
   font-size: 16px; /* 16px mínimo para evitar zoom en iOS */
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   margin-bottom: 12px;
   transition: all 0.18s;
   -webkit-appearance: none;
@@ -1097,7 +1098,7 @@ body {
   font-weight: 600;
   font-size: 0.88rem;
   cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   transition: all 0.18s;
 }
 .modal-btn:hover { background: var(--blue); }
@@ -1193,7 +1194,7 @@ body {
   gap: 8px;
   cursor: pointer;
   box-shadow: 0 4px 20px rgba(29,111,232,0.45);
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 600;
   font-size: 0.88rem;
   transition: all 0.2s;
@@ -1280,7 +1281,7 @@ body {
   font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   white-space: nowrap;
   transition: background 0.18s;
   flex-shrink: 0;
@@ -1299,7 +1300,7 @@ body {
 }
 .site-footer strong { color: rgba(255,255,255,0.7); }
 .site-footer .footer-logo {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 700;
   font-size: 0.82rem;
   color: white;
@@ -1380,7 +1381,7 @@ body {
   color: var(--navy);
 }
 
-/* Nota libre del usuario */
+/* Nota libre del usuario (tamaño texto cuadro texto)*/
 .extra-note-clean {
   display: flex;
   align-items: flex-start;
@@ -1399,7 +1400,7 @@ body {
 }
 
 .extra-note-clean span:last-child {
-  font-size: 0.85rem;
+  font-size: 1.10rem;
   color: var(--text-2);
   line-height: 1.55;
 }
@@ -1429,7 +1430,7 @@ body {
 }
 
 .admin-header-title {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 700;
   font-size: 0.9rem;
   color: white;
@@ -1448,7 +1449,7 @@ body {
 }
 
 .admin-section-title {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 700;
   font-size: 0.78rem;
   text-transform: uppercase;
@@ -1492,7 +1493,7 @@ body {
   border: 1.5px solid var(--border);
   border-radius: 8px;
   font-size: 0.75rem;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   width: 70px;
   color: var(--text);
   background: var(--surface-2);
@@ -1506,7 +1507,7 @@ body {
   font-size: 0.68rem;
   font-weight: 600;
   cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   transition: all 0.18s;
   white-space: nowrap;
 }
@@ -1538,7 +1539,7 @@ body {
   border: 1.5px solid var(--border);
   border-radius: 8px;
   font-size: 0.72rem;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   background: var(--surface-2);
   color: var(--text);
   cursor: pointer;
@@ -1592,7 +1593,7 @@ body {
   font-weight: 500;
   color: var(--text-2);
   cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   transition: all 0.18s;
 }
 .admin-tab.active { background: var(--navy); color: white; border-color: var(--navy); }
@@ -1611,7 +1612,7 @@ body {
 <div class="topbar">
   <div class="logo" ondblclick="emergenciaAdmin()">
     <div class="logo-icon">📱</div>
-    Recomiéndame un <em>móvil</em>
+    EL RECOMENDADOR DE<em>ANDROID</em>
   </div>
   <div class="topbar-right">
     <button class="notif-btn" id="adminBtn" onclick="emergenciaAdmin()" title="Panel Admin" style="display:none;background:rgba(245,166,35,0.2);border:1px solid rgba(245,166,35,0.4);">👑</button>
@@ -1638,7 +1639,7 @@ body {
 
 <!-- HERO -->
 <div class="hero-strip" id="heroStrip">
-  <div class="hero-sub">Sin publicidad. Sin afiliados. Solo recomendaciones reales.</div>
+  <div class="hero-sub">SOLO OPINIONES REALES.</div>
   <div class="stats-row" id="statsRow">
     <div class="stat-chip">⏳ Cargando...</div>
   </div>
@@ -1656,8 +1657,8 @@ body {
 
   <!-- Perks banner -->
   <div class="perks-banner" onclick="togglePerks()" id="perksBanner">
-    <div class="perks-banner-title">🏆 Rangos y ventajas <span style="margin-left:auto;font-size:0.75rem;opacity:0.4">▾</span></div>
-    <div class="perks-banner-sub">Gana puntos respondiendo · Desbloquea rangos · Accede a ventajas exclusivas</div>
+    <div class="perks-banner-title">🏆 RANGOS DE USUARIO <span style="margin-left:auto;font-size:0.75rem;opacity:0.4">▾</span></div>
+    <div class="perks-banner-sub">Gana puntos respondiendo a otros usuarios y sube de rango. </div>
   </div>
 
   <div class="perks-panel" id="perksPanel">
@@ -2689,7 +2690,7 @@ if (mejorRespuesta && maxVotos > 0) {
         <div>
           <div class="top-rec-text">Más votado por la comunidad (${maxVotos} 👍)</div>
           <div class="top-rec-model">${modeloTop}</div>
-          <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);">recomendado por ${cap(mejorRespuesta.nickname)}</div>
+          <div style="font-size:0.90rem;color:rgba(255,255,255);">Recomendado por ${cap(mejorRespuesta.nickname)}</div>
         </div>
       </div>
     `;
