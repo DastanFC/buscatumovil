@@ -2263,25 +2263,28 @@ async function publicarHilo() {
 // INIT
 // ═══════════════════════════════════════════
 async function init() {
-    // 1. Le preguntamos a Supabase si tiene la sesión guardada
+    // 1. Le preguntamos a Supabase si hay sesión activa
     const { data: { session } } = await supabaseClient.auth.getSession();
 
     if (session) {
         console.log("¡Supabase dice que la sesión está activa!", session);
-        const { data: usuario, error: errorUsuario } = await consultarUsuarioSupabase(session.user.user_metadata.nickname || "dastan");
-        console.log("USER:", JSON.stringify(usuario), "ERR:", errorUsuario);
         
-        // ✨ ¡AQUÍ ESTÁ EL CAMBIO! Usamos la palabra correcta:
+        // 2. Cerramos el cartel flotante directamente si hay sesión
         cerrarModal(); 
+        
+        // 3. Dejamos esto solo para ver en la consola qué está fallando con tu usuario
+        consultarUsuarioSupabase("dastan").then(({ data, error }) => {
+            console.log("DATOS DE DASTAN EN TABLA:", JSON.stringify(data), "ERR:", error);
+        });
+
     } else {
         console.log("No hay ninguna sesión guardada. Mostramos el login.");
         mostrarModal();
     }
 
-    // El chivato de la hora para que veas que cambia
+    // Tu chivato de la hora
     const ahora = new Date();
     const horaTexto = ahora.toLocaleTimeString();
-
     const chivato = document.createElement('div');
     chivato.innerHTML = `🔄 Versión cargada a las: <b>${horaTexto}</b>`;
     chivato.style.position = 'fixed';
@@ -2294,7 +2297,6 @@ async function init() {
     chivato.style.fontSize = '12px';
     chivato.style.zIndex = '99999';
     chivato.style.fontFamily = 'sans-serif';
-    
     document.body.appendChild(chivato);
 }
 
