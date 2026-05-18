@@ -1317,13 +1317,9 @@ body {
 <div class="modal-overlay" id="authModal">
   <div class="modal">
     <div class="modal-title">✨ Identifícate</div>
-    <div class="modal-sub">Elige un nombre único. Sin correo, sin contraseña.</div>
+    <div class="modal-sub">Elige un nombre único. Sin correo, sin contraseña. Tu sesión se guardará automáticamente.</div>
     <input class="modal-input" type="text" id="nicknameInput" placeholder="Tu nombre de usuario" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
     <input class="modal-input" type="text" id="codigoInput" placeholder="Código secreto (si ya tienes cuenta)" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="letter-spacing:2px;" />
-    <div class="remember-row">
-      <input type="checkbox" id="rememberMe" checked style="width:16px;height:16px;" />
-      <label for="rememberMe">Recordarme en este dispositivo</label>
-    </div>
     <div class="modal-error" id="authError"></div>
     <button class="modal-btn" onclick="procesarAcceso()">Continuar →</button>
     <p style="font-size:0.68rem;color:var(--text-3);text-align:center;margin-top:14px;">
@@ -1742,10 +1738,44 @@ function actualizarBarraRango() {
 // ═══════════════════════════════════════════
 // AUTH
 // ═══════════════════════════════════════════
+
+function generarToken() {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let t = '';
+  for (let i = 0; i < 48; i++) t += chars[Math.floor(Math.random() * chars.length)];
+  return t;
+}
+
+// Guarda el token en todos los sitios posibles
+function guardarToken(token) {
+  try { localStorage.setItem('moviles_token', token); } catch(e) {}
+  try { sessionStorage.setItem('moviles_token', token); } catch(e) {}
+  try {
+    const exp = new Date(Date.now() + 365 * 864e5).toUTCString();
+    document.cookie = `moviles_token=${token};expires=${exp};path=/;SameSite=Lax`;
+  } catch(e) {}
+}
+
+// Lee el token de donde sea que esté guardado
+function leerToken() {
+  try { const v = localStorage.getItem('moviles_token'); if (v) return v; } catch(e) {}
+  try { const v = sessionStorage.getItem('moviles_token'); if (v) return v; } catch(e) {}
+  try {
+    const m = document.cookie.match('(^|;)\\s*moviles_token\\s*=\\s*([^;]+)');
+    if (m) return m[2];
+  } catch(e) {}
+  return null;
+}
+
+function borrarToken() {
+  try { localStorage.removeItem('moviles_token'); } catch(e) {}
+  try { sessionStorage.removeItem('moviles_token'); } catch(e) {}
+  try { document.cookie = 'moviles_token=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/'; } catch(e) {}
+}
+
 async function procesarAcceso() {
   const nickOrig = document.getElementById('nicknameInput').value.trim();
   const codigo = document.getElementById('codigoInput').value.trim();
-  const remember = document.getElementById('rememberMe').checked;
   const errDiv = document.getElementById('authError');
   errDiv.textContent = '';
 
@@ -1760,7 +1790,7 @@ async function procesarAcceso() {
     if (!codigo) { errDiv.textContent = '🔐 Este usuario ya existe. Introduce tu código secreto.'; return; }
     if (existe.codigo_acceso !== codigo) { errDiv.textContent = '❌ Código incorrecto'; return; }
     usuario = existe;
-    if (remember) { storageSet('moviles_nick', nickLower); storageSet('moviles_codigo', codigo); }
+    await crearSesion(nickLower);
     cerrarModalAuth();
     onLogin();
   } else {
@@ -1770,11 +1800,42 @@ async function procesarAcceso() {
     }).select().single();
     if (error) { errDiv.textContent = '⚠️ Error: ' + error.message; return; }
     usuario = nuevo;
-    if (remember) { storageSet('moviles_nick', nickLower); storageSet('moviles_codigo', nuevoCodigo); }
+    await crearSesion(nickLower);
     cerrarModalAuth();
     onLogin();
     mostrarCodeModal(nuevoCodigo);
   }
+}
+
+async function crearSesion(nickname) {
+  const token = generarToken();
+  await db.from('sesiones').insert({ token, nickname });
+  guardarToken(token);
+}
+
+async function verificarSesion() {
+  const token = leerToken();
+  if (token) {
+    try {
+      const { data: sesion } = await db.from('sesiones')
+        .select('nickname, expires_at')
+        .eq('token', token)
+        .single();
+      if (sesion && new Date(sesion.expires_at) > new Date()) {
+        const { data: user } = await db.from('usuarios')
+          .select('*')
+          .eq('nickname', sesion.nickname)
+          .single();
+        if (user) {
+          usuario = user;
+          onLogin();
+          return;
+        }
+      }
+    } catch(e) {}
+    borrarToken();
+  }
+  mostrarModalAuth();
 }
 
 function cerrarModalAuth() {
@@ -1803,40 +1864,6 @@ function onLogin() {
   cargarStats();
   cargarNotificaciones();
   actualizarBarraRango();
-}
-
-function storageGet(key) {
-  try { return localStorage.getItem(key); } catch(e) {}
-  try { return sessionStorage.getItem(key); } catch(e) {}
-  return null;
-}
-
-function storageSet(key, val) {
-  try { localStorage.setItem(key, val); return; } catch(e) {}
-  try { sessionStorage.setItem(key, val); } catch(e) {}
-}
-
-function storageRemove(key) {
-  try { localStorage.removeItem(key); } catch(e) {}
-  try { sessionStorage.removeItem(key); } catch(e) {}
-}
-
-async function verificarSesion() {
-  const nick = storageGet('moviles_nick');
-  const codigo = storageGet('moviles_codigo');
-  if (nick && codigo) {
-    try {
-      const { data } = await db.from('usuarios').select('*').eq('nickname', nick).single();
-      if (data && data.codigo_acceso === codigo) {
-        usuario = data;
-        onLogin();
-        return;
-      }
-    } catch(e) {}
-    storageRemove('moviles_nick');
-    storageRemove('moviles_codigo');
-  }
-  mostrarModalAuth();
 }
 
 function mostrarUsuario() {
@@ -1977,7 +2004,7 @@ async function renderHilo(h) {
             <button class="quote-clear" onclick="clearCita('${h.id}')">✕</button>
           </div>
           <div class="reply-input-row">
-            <textarea class="reply-input" id="rinput_${h.id}" placeholder="Escribe o usa @nombre para mencionar"
+            <textarea class="reply-input" id="rinput_${h.id}" placeholder="Escribe o usa @nombre"
               rows="1"
               onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarRespuesta('${h.id}')}"
               oninput="autoResize(this)"
