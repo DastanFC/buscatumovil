@@ -1356,7 +1356,7 @@ body {
 </button>
 
 <!-- MODAL LOGIN -->
-<<div class="modal-overlay" id="authModal">
+<div class="modal-overlay" id="authModal" 
   <div class="modal">
     <div class="modal-title">✨ Identifícate</div>
     <div class="modal-sub">Elige un nombre único. Sin correo, sin contraseña. Tu sesión se guardará automáticamente.</div>
@@ -2317,23 +2317,26 @@ async function init() {
             console.log("USER en DB:", JSON.stringify(usuarioDB), "ERR:", errorUsuario);
 
             if (usuarioDB) {
-                // 1. Guardamos los datos en la variable global de tu web para que sepa quién eres
+                // 1. Guardamos el usuario en la variable global de tu aplicación
                 usuario = usuarioDB; 
                 
-                // 2. Cerramos el cartel flotante por si acaso se hubiera quedado abierto
-                cerrarModalAuth();
-                
-                // 3. Avisamos a la web para que pinte tu nombre de admin y tus 15 puntos arriba
-                onLogin();
+                // 2. Ejecutamos TU función real que actualiza el menú superior y oculta el cartel
+                actualizarUIAuth();
                 
                 return; 
             }
         }
     }
 
-    // Si de verdad no hay sesión ni token, entonces sí mostramos el login
-    mostrarModal();
+    // Si de verdad no hay token ni sesión válida, forzamos que se vea el login
+    const modal = document.getElementById('authModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        modal.style.display = 'flex';
+    }
 }
+
+window.addEventListener('load', init);
 </script>
 </body>
 </html>
