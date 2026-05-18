@@ -421,14 +421,18 @@ body {
   margin-bottom: 16px;
   border: 1px solid var(--border);
   box-shadow: var(--shadow);
-  overflow: hidden;
+  overflow: visible;
   transition: box-shadow 0.2s;
 }
 .thread-card:hover { box-shadow: var(--shadow-lg); }
 
 .thread-header {
   padding: 18px 20px 14px;
+  border-radius: var(--radius) var(--radius) 0 0;
 }
+
+.thread-card > *:first-child { border-radius: var(--radius) var(--radius) 0 0; }
+.thread-card > *:last-child { border-radius: 0 0 var(--radius) var(--radius); overflow: hidden; }
 
 .thread-meta {
   display: flex;
@@ -738,8 +742,10 @@ body {
 
 /* ─── REPLY BOX ─── */
 .reply-box {
-  padding: 14px 20px 18px;
+  padding: 12px 16px 16px;
   border-top: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 0 0 var(--radius) var(--radius);
 }
 
 .quote-preview {
@@ -771,8 +777,9 @@ body {
 
 .reply-input-row {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   align-items: flex-end;
+  width: 100%;
 }
 
 .reply-input {
@@ -780,13 +787,15 @@ body {
   padding: 10px 14px;
   border: 1.5px solid var(--border);
   border-radius: 16px;
-  font-size: 0.83rem;
+  font-size: 16px;
   font-family: 'DM Sans', sans-serif;
   resize: none;
   background: var(--surface-2);
   transition: all 0.18s;
-  min-height: 40px;
+  min-height: 44px;
   max-height: 120px;
+  width: 0;
+  -webkit-appearance: none;
 }
 .reply-input:focus {
   outline: none;
@@ -949,14 +958,17 @@ body {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15,27,45,0.6);
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(15,27,45,0.65);
   backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 500;
-  padding: 16px;
+  padding: 20px;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .modal-overlay.hidden { display: none; }
@@ -965,12 +977,13 @@ body {
   background: white;
   border-radius: 24px;
   padding: 24px 20px;
-  max-width: 400px;
   width: 100%;
-  max-width: min(400px, calc(100vw - 32px));
+  max-width: 400px;
   max-height: calc(100vh - 40px);
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   position: relative;
+  box-sizing: border-box;
 }
 
 .modal-title {
@@ -1545,7 +1558,7 @@ async function cargarNotificaciones() {
   
   const hilosIds = misHilos.map(h => h.id);
   const vistoKey = `notif_visto_${usuario.nickname}`;
-  const visto = JSON.parse(localStorage.getItem(vistoKey) || '{}');
+  const visto = JSON.parse(storageGet(vistoKey) || '{}');
   
   // Respuestas a mis hilos
   const { data: respuestas } = await db.from('respuestas')
@@ -1619,11 +1632,10 @@ async function cargarNotificaciones() {
 
 function irAHilo(hiloId, notifId) {
   const vistoKey = `notif_visto_${usuario.nickname}`;
-  const visto = JSON.parse(localStorage.getItem(vistoKey) || '{}');
+  const visto = JSON.parse(storageGet(vistoKey) || '{}');
   visto[notifId] = true;
-  localStorage.setItem(vistoKey, JSON.stringify(visto));
+  storageSet(vistoKey, JSON.stringify(visto));
   toggleNotifPanel();
-  
   const el = document.getElementById(`thread_${hiloId}`);
   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   cargarNotificaciones();
@@ -1633,13 +1645,12 @@ function marcarTodasLeidas() {
   if (!usuario) return;
   const vistoKey = `notif_visto_${usuario.nickname}`;
   const items = document.querySelectorAll('.notif-item');
-  const visto = JSON.parse(localStorage.getItem(vistoKey) || '{}');
-  // Extraer ids de onclick
+  const visto = JSON.parse(storageGet(vistoKey) || '{}');
   items.forEach(el => {
     const match = el.getAttribute('onclick')?.match(/'([^']+)', '([^']+)'/);
     if (match) visto[match[2]] = true;
   });
-  localStorage.setItem(vistoKey, JSON.stringify(visto));
+  storageSet(vistoKey, JSON.stringify(visto));
   cargarNotificaciones();
   toggleNotifPanel();
 }
@@ -1749,7 +1760,7 @@ async function procesarAcceso() {
     if (!codigo) { errDiv.textContent = '🔐 Este usuario ya existe. Introduce tu código secreto.'; return; }
     if (existe.codigo_acceso !== codigo) { errDiv.textContent = '❌ Código incorrecto'; return; }
     usuario = existe;
-    if (remember) { localStorage.setItem('moviles_nick', nickLower); localStorage.setItem('moviles_codigo', codigo); }
+    if (remember) { storageSet('moviles_nick', nickLower); storageSet('moviles_codigo', codigo); }
     cerrarModalAuth();
     onLogin();
   } else {
@@ -1759,7 +1770,7 @@ async function procesarAcceso() {
     }).select().single();
     if (error) { errDiv.textContent = '⚠️ Error: ' + error.message; return; }
     usuario = nuevo;
-    if (remember) { localStorage.setItem('moviles_nick', nickLower); localStorage.setItem('moviles_codigo', nuevoCodigo); }
+    if (remember) { storageSet('moviles_nick', nickLower); storageSet('moviles_codigo', nuevoCodigo); }
     cerrarModalAuth();
     onLogin();
     mostrarCodeModal(nuevoCodigo);
@@ -1794,19 +1805,36 @@ function onLogin() {
   actualizarBarraRango();
 }
 
+function storageGet(key) {
+  try { return localStorage.getItem(key); } catch(e) {}
+  try { return sessionStorage.getItem(key); } catch(e) {}
+  return null;
+}
+
+function storageSet(key, val) {
+  try { localStorage.setItem(key, val); return; } catch(e) {}
+  try { sessionStorage.setItem(key, val); } catch(e) {}
+}
+
+function storageRemove(key) {
+  try { localStorage.removeItem(key); } catch(e) {}
+  try { sessionStorage.removeItem(key); } catch(e) {}
+}
+
 async function verificarSesion() {
-  const nick = localStorage.getItem('moviles_nick');
-  const codigo = localStorage.getItem('moviles_codigo');
+  const nick = storageGet('moviles_nick');
+  const codigo = storageGet('moviles_codigo');
   if (nick && codigo) {
-    const { data } = await db.from('usuarios').select('*').eq('nickname', nick).single();
-    if (data && data.codigo_acceso === codigo) {
-      usuario = data;
-      onLogin();
-      return;
-    }
-    // Limpiar si el código no cuadra
-    localStorage.removeItem('moviles_nick');
-    localStorage.removeItem('moviles_codigo');
+    try {
+      const { data } = await db.from('usuarios').select('*').eq('nickname', nick).single();
+      if (data && data.codigo_acceso === codigo) {
+        usuario = data;
+        onLogin();
+        return;
+      }
+    } catch(e) {}
+    storageRemove('moviles_nick');
+    storageRemove('moviles_codigo');
   }
   mostrarModalAuth();
 }
