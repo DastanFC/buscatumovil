@@ -2271,14 +2271,17 @@ async function init() {
         console.log("SESION en DB:", JSON.stringify(sesion), "ERR:", errorSesion);
 
         if (sesion) {
-            const { data: usuario, error: errorUsuario } = await db.from('usuarios').select('*').eq('nickname', sesion.nickname).single();
-            console.log("USER en DB:", JSON.stringify(usuario), "ERR:", errorUsuario);
+            const { data: usuarioDB, error: errorUsuario } = await db.from('usuarios').select('*').eq('nickname', sesion.nickname).single();
+            console.log("USER en DB:", JSON.stringify(usuarioDB), "ERR:", errorUsuario);
 
-            if (usuario) {
-                // 1. Cerramos el cartel flotante
+            if (usuarioDB) {
+                // 1. Guardamos los datos en la variable global de tu web para que sepa quién eres
+                usuario = usuarioDB; 
+                
+                // 2. Cerramos el cartel flotante por si acaso se hubiera quedado abierto
                 cerrarModalAuth();
                 
-                // 🌟 ¡EL REMATE! Avisamos a la web para que pinte tu nombre, puntos y rol de admin
+                // 3. Avisamos a la web para que pinte tu nombre de admin y tus 15 puntos arriba
                 onLogin();
                 
                 return; 
@@ -2286,6 +2289,7 @@ async function init() {
         }
     }
 
+    // Si de verdad no hay sesión ni token, entonces sí mostramos el login
     mostrarModal();
 }
 
