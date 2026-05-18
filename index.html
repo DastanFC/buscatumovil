@@ -2260,8 +2260,37 @@ async function publicarHilo() {
 // ═══════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════
-cargarStats();
-verificarSesion();
+async function init() {
+  cargarStats();
+  const token = leerToken();
+  if (!token) {
+    mostrarModalAuth();
+    return;
+  }
+  try {
+    const { data: sesion, error: err1 } = await db.from('sesiones')
+      .select('nickname, expires_at')
+      .eq('token', token)
+      .single();
+
+    if (err1 || !sesion) { borrarToken(); mostrarModalAuth(); return; }
+    if (new Date(sesion.expires_at) <= new Date()) { borrarToken(); mostrarModalAuth(); return; }
+
+    const { data: user, error: err2 } = await db.from('usuarios')
+      .select('*')
+      .eq('nickname', sesion.nickname)
+      .single();
+
+    if (err2 || !user) { borrarToken(); mostrarModalAuth(); return; }
+
+    usuario = user;
+    onLogin();
+  } catch(e) {
+    mostrarModalAuth();
+  }
+}
+
+document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>
