@@ -19,1301 +19,225 @@
   --green: #10B981;
   --surface: #FFFFFF;
   --surface-2: #F7F9FC;
-  --surface-3: #EFF2F7;
+  --surface-3: #E4E9F2;
+  --text-1: #0F1B2D;
+  --text-2: #4A5A70;
+  --text-3: #7E8E9F;
   --border: #E4E9F2;
-  --text: #0F1B2D;
-  --text-2: #4A5568;
-  --text-3: #9AA5B4;
-  --radius: 20px;
-  --radius-sm: 12px;
-  --shadow: 0 2px 12px rgba(15,27,45,0.08);
-  --shadow-lg: 0 8px 32px rgba(15,27,45,0.12);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 24px;
+  --shadow-sm: 0 2px 8px rgba(15,27,45,0.04);
+  --shadow-md: 0 8px 24px rgba(15,27,45,0.06);
+  --font-sans: 'DM Sans', sans-serif;
+  --font-title: 'Syne', sans-serif;
+  --font-mono: 'DM Mono', monospace;
 }
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
+* { box-sizing: border-box; margin: 0; padding: 0; }
 body {
-  font-family: 'DM Sans', -apple-system, sans-serif;
   background: var(--surface-2);
-  color: var(--text);
-  line-height: 1.5;
-  min-height: 100vh;
-}
-
-/* ─── TOPBAR ─── */
-.topbar {
-  background: var(--navy);
-  padding: 0 16px;
-  height: 52px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 200;
-  gap: 8px;
-}
-
-.logo {
-  font-family: 'Syne', sans-serif;
-  font-size: 0.92rem;
-  font-weight: 700;
-  color: white;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  letter-spacing: -0.3px;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.logo-icon {
-  width: 26px;
-  height: 26px;
-  background: var(--blue);
-  border-radius: 7px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.85rem;
-  flex-shrink: 0;
-}
-
-.logo em {
-  color: var(--accent);
-  font-style: normal;
-}
-
-.topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-@media (max-width: 400px) {
-  .logo-text-secondary { display: none; }
-}
-
-.notif-btn {
-  position: relative;
-  background: rgba(255,255,255,0.1);
-  border: none;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: white;
-  font-size: 1rem;
-  transition: background 0.2s;
-}
-.notif-btn:hover { background: rgba(255,255,255,0.18); }
-
-.notif-badge {
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  background: var(--accent-red);
-  color: white;
-  font-size: 0.55rem;
-  font-weight: 700;
-  min-width: 16px;
-  height: 16px;
-  border-radius: 999px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 3px;
-  border: 2px solid var(--navy);
-  display: none;
-}
-.notif-badge.visible { display: flex; }
-
-.user-chip {
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 999px;
-  padding: 4px 10px 4px 5px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  transition: background 0.2s;
-  max-width: 140px;
-}
-.user-chip:hover { background: rgba(255,255,255,0.18); }
-
-.user-chip-avatar {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.55rem;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-
-.user-chip-name {
-  font-size: 0.72rem;
-  font-weight: 500;
-  color: white;
-  max-width: 60px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.user-chip-pts {
-  font-size: 0.62rem;
-  color: var(--accent);
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-/* ─── HERO STRIP ─── */
-.hero-strip {
-  background: var(--navy);
-  padding: 16px 20px 18px;
-  position: relative;
-  overflow: hidden;
-}
-
-.hero-strip::before {
-  content: '';
-  position: absolute;
-  top: -40px;
-  right: -40px;
-  width: 200px;
-  height: 200px;
-  background: radial-gradient(circle, rgba(29,111,232,0.3) 0%, transparent 70%);
-  pointer-events: none;
-}
-
-.hero-strip::after {
-  content: '';
-  position: absolute;
-  bottom: -20px;
-  left: 20%;
-  width: 120px;
-  height: 120px;
-  background: radial-gradient(circle, rgba(245,166,35,0.15) 0%, transparent 70%);
-  pointer-events: none;
-}
-
-.hero-tagline {
-  font-family: 'Syne', sans-serif;
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: white;
-  line-height: 1.25;
-  margin-bottom: 3px;
-}
-
-.hero-tagline em {
-  color: var(--accent);
-  font-style: normal;
-}
-
-.hero-sub {
-  font-size: 0.72rem;
-  color: rgba(255,255,255,0.45);
-  margin-bottom: 12px;
-}
-
-.stats-row {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.stat-chip {
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 999px;
-  padding: 4px 10px;
-  font-size: 0.68rem;
-  color: rgba(255,255,255,0.7);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.stat-chip b { color: white; font-weight: 700; }
-
-@media (max-width: 600px) {
-  .hero-strip { padding: 10px 16px 12px; }
-  .hero-tagline { font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .hero-sub { display: none; }
-  .stats-row { gap: 6px; }
-  .stat-chip { font-size: 0.63rem; padding: 3px 8px; }
-}
-
-/* ─── CONTAINER ─── */
-.container {
-  max-width: 860px;
-  margin: 0 auto;
-  padding: 20px 16px 100px;
-}
-
-/* ─── TABS ─── */
-.tabs-bar {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 20px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: 2px;
-}
-.tabs-bar::-webkit-scrollbar { display: none; }
-
-.tab {
-  flex-shrink: 0;
-  padding: 8px 16px;
-  border: 1.5px solid var(--border);
-  background: var(--surface);
-  border-radius: 999px;
-  font-size: 0.78rem;
-  font-weight: 500;
-  color: var(--text-2);
-  cursor: pointer;
-  transition: all 0.18s;
-  white-space: nowrap;
-  font-family: 'DM Sans', sans-serif;
-}
-.tab:hover { border-color: var(--blue); color: var(--blue); }
-.tab.active {
-  background: var(--navy);
-  color: white;
-  border-color: var(--navy);
-}
-
-.new-btn {
-  flex-shrink: 0;
-  margin-left: auto;
-  background: var(--blue);
-  color: white;
-  border: none;
-  padding: 8px 18px;
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: 0.78rem;
-  cursor: pointer;
-  transition: all 0.18s;
-  font-family: 'DM Sans', sans-serif;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-.new-btn:hover { background: var(--blue-light); transform: translateY(-1px); }
-
-/* ─── FORM CARD ─── */
-.form-card {
-  background: var(--surface);
-  border-radius: var(--radius);
-  padding: 24px;
-  margin-bottom: 20px;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-}
-
-.form-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 1.05rem;
-  font-weight: 700;
-  margin-bottom: 20px;
-  color: var(--navy);
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 14px;
-}
-
-.form-field {
+  color: var(--text-1);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  padding-bottom: 0;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  min-height: 100vh;
 }
-
-.form-field.full { grid-column: span 2; }
-
-.form-field label {
-  font-size: 0.68rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-  color: var(--text-3);
-}
-
-.form-field input,
-.form-field select,
-.form-field textarea {
-  padding: 10px 12px;
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-size: 0.85rem;
-  font-family: 'DM Sans', sans-serif;
-  background: var(--surface-2);
-  color: var(--text);
-  transition: all 0.18s;
-}
-
-.form-field input:focus,
-.form-field select:focus,
-.form-field textarea:focus {
-  outline: none;
-  border-color: var(--blue);
-  background: white;
-  box-shadow: 0 0 0 3px rgba(29,111,232,0.08);
-}
-
-.form-field textarea { resize: vertical; min-height: 72px; }
-
-.form-actions {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-  margin-top: 18px;
-}
-
-.btn-cancel {
-  padding: 9px 18px;
-  background: var(--surface-3);
-  border: none;
-  border-radius: 999px;
-  font-weight: 500;
-  font-size: 0.82rem;
-  cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
-}
-
-.btn-submit {
-  padding: 9px 22px;
-  background: var(--navy);
-  color: white;
-  border: none;
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: 0.82rem;
-  cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
-  transition: all 0.18s;
-}
-.btn-submit:hover { background: var(--blue); }
-
-@media (max-width: 600px) {
-  .form-grid { grid-template-columns: 1fr; }
-  .form-field.full { grid-column: span 1; }
-}
-
-/* ─── THREAD CARD ─── */
-.thread-card {
+.header {
   background: var(--surface);
-  border-radius: var(--radius);
-  margin-bottom: 16px;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-  overflow: visible;
-  transition: box-shadow 0.2s;
-}
-.thread-card:hover { box-shadow: var(--shadow-lg); }
-
-.thread-header {
-  padding: 18px 20px 14px;
-  border-radius: var(--radius) var(--radius) 0 0;
-}
-
-.thread-card > *:first-child { border-radius: var(--radius) var(--radius) 0 0; }
-.thread-card > *:last-child { border-radius: 0 0 var(--radius) var(--radius); overflow: hidden; }
-
-.thread-meta {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
-}
-
-.avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 0.85rem;
-  flex-shrink: 0;
-}
-
-.author-block { flex: 1; min-width: 0; }
-
-.author-name {
-  font-weight: 600;
-  font-size: 0.88rem;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.author-rank {
-  font-size: 0.65rem;
-  padding: 2px 7px;
-  border-radius: 999px;
-  font-weight: 600;
-}
-
-.rank-nuevo { background: #F3F4F6; color: #6B7280; }
-.rank-aprendiz { background: #EDE9FE; color: #6D28D9; }
-.rank-confiable { background: #D1FAE5; color: #065F46; }
-.rank-experto { background: #FEF3C7; color: #B45309; }
-.rank-leyenda { background: #FEE2E2; color: #991B1B; }
-.rank-admin { background: var(--navy); color: #93C5FD; }
-
-.thread-time {
-  font-size: 0.68rem;
-  color: var(--text-3);
-  flex-shrink: 0;
-}
-
-/* Specs */
-.specs-wrap {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 10px;
-}
-
-.spec-tag {
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 5px 10px;
-  font-size: 0.72rem;
-  color: var(--text-2);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.spec-tag .spec-val {
-  font-weight: 600;
-  color: var(--text);
-}
-
-.extra-note {
-  background: var(--blue-pale);
-  border-radius: 10px;
-  padding: 9px 12px;
-  font-size: 0.78rem;
-  color: #1E40AF;
-  font-style: italic;
-  margin-top: 10px;
-}
-
-/* Thread footer bar */
-.thread-bar {
-  padding: 10px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: var(--surface-2);
-  border-top: 1px solid var(--border);
-  gap: 10px;
-}
-
-.reply-count-btn {
-  background: none;
-  border: none;
-  font-size: 0.75rem;
-  color: var(--text-2);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 0;
-  font-family: 'DM Sans', sans-serif;
-}
-
-.reply-count-btn .cnt {
-  font-weight: 700;
-  color: var(--blue);
-}
-
-.resolve-btn {
-  background: none;
-  border: 1.5px solid var(--green);
-  color: var(--green);
-  padding: 5px 12px;
-  border-radius: 999px;
-  font-size: 0.68rem;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
-  transition: all 0.18s;
-}
-.resolve-btn:hover { background: var(--green); color: white; }
-
-.resolved-pill {
-  background: #D1FAE5;
-  color: #065F46;
-  padding: 5px 12px;
-  border-radius: 999px;
-  font-size: 0.68rem;
-  font-weight: 600;
-}
-
-/* Top recommendation highlight */
-.top-rec {
-  margin: 0 20px 0;
-  padding: 10px 14px;
-  background: linear-gradient(135deg, #0F1B2D 0%, #1A2D45 100%);
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-
-.top-rec-icon { font-size: 1.1rem; }
-
-.top-rec-text {
-  font-size: 0.75rem;
-  color: rgba(255,255,255,0.6);
-}
-
-.top-rec-model {
-  font-family: 'Syne', sans-serif;
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--accent);
-}
-
-/* ─── REPLIES ─── */
-.replies-section {
-  padding: 0 20px;
-  border-top: 1px solid var(--border);
-}
-
-.reply-item {
-  padding: 14px 0;
-  border-bottom: 1px solid var(--surface-3);
-  animation: fadeIn 0.25s ease;
-}
-.reply-item:last-child { border-bottom: none; }
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.reply-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-  flex-wrap: wrap;
-}
-
-.reply-avatar {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.62rem;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-
-.reply-author {
-  font-weight: 600;
-  font-size: 0.78rem;
-}
-
-.reply-time {
-  font-size: 0.63rem;
-  color: var(--text-3);
-  margin-left: auto;
-}
-
-/* Quote block */
-.quote-block {
-  background: var(--surface-2);
-  border-left: 3px solid var(--blue);
-  border-radius: 0 8px 8px 0;
-  padding: 7px 10px;
-  margin-bottom: 8px;
-  font-size: 0.75rem;
-  color: var(--text-2);
-  font-style: italic;
-}
-
-.quote-block .quote-author {
-  font-style: normal;
-  font-weight: 600;
-  font-size: 0.68rem;
-  color: var(--blue);
-  margin-bottom: 3px;
-}
-
-.reply-content {
-  font-size: 0.83rem;
-  color: var(--text-2);
-  line-height: 1.55;
-  margin-left: 36px;
-}
-
-.mention {
-  color: var(--blue);
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.phone-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  background: var(--navy);
-  color: var(--accent);
-  font-size: 0.68rem;
-  font-weight: 600;
-  padding: 3px 10px;
-  border-radius: 999px;
-  margin-top: 7px;
-  font-family: 'DM Mono', monospace;
-}
-
-.reply-actions {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-left: 36px;
-  margin-top: 8px;
-}
-
-.vote-btn {
-  background: none;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 3px 10px;
-  font-size: 0.7rem;
-  color: var(--text-3);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  transition: all 0.18s;
-  font-family: 'DM Sans', sans-serif;
-}
-.vote-btn:hover { border-color: var(--blue); color: var(--blue); }
-.vote-btn.voted-util { background: var(--blue-pale); border-color: var(--blue); color: var(--blue); }
-.vote-btn.voted-noutil { background: #FEF2F2; border-color: #EF4444; color: #EF4444; }
-
-.cite-btn {
-  background: none;
-  border: none;
-  font-size: 0.68rem;
-  color: var(--text-3);
-  cursor: pointer;
-  padding: 3px 6px;
-  border-radius: 6px;
-  font-family: 'DM Sans', sans-serif;
-  transition: all 0.18s;
-}
-.cite-btn:hover { background: var(--surface-3); color: var(--text-2); }
-
-/* Empty replies */
-.replies-empty {
-  padding: 18px 0;
-  text-align: center;
-  color: var(--text-3);
-  font-size: 0.8rem;
-}
-
-/* ─── REPLY BOX ─── */
-.reply-box {
-  padding: 12px 16px 16px;
-  border-top: 1px solid var(--border);
-  background: var(--surface);
-  border-radius: 0 0 var(--radius) var(--radius);
-}
-
-.quote-preview {
-  background: var(--surface-2);
-  border-left: 3px solid var(--blue);
-  border-radius: 0 8px 8px 0;
-  padding: 7px 10px;
-  margin-bottom: 10px;
-  font-size: 0.75rem;
-  color: var(--text-2);
-  display: none;
-  align-items: flex-start;
-  gap: 8px;
-}
-
-.quote-preview.active { display: flex; }
-
-.quote-preview-text { flex: 1; font-style: italic; }
-
-.quote-clear {
-  background: none;
-  border: none;
-  color: var(--text-3);
-  cursor: pointer;
-  font-size: 0.9rem;
-  line-height: 1;
-  padding: 0;
-}
-
-.reply-input-row {
-  display: flex;
-  gap: 8px;
-  align-items: flex-end;
-  width: 100%;
-}
-
-.reply-input {
-  flex: 1;
-  padding: 10px 14px;
-  border: 1.5px solid var(--border);
-  border-radius: 16px;
-  font-size: 16px;
-  font-family: 'DM Sans', sans-serif;
-  resize: none;
-  background: var(--surface-2);
-  transition: all 0.18s;
-  min-height: 44px;
-  max-height: 120px;
-  width: 0;
-  -webkit-appearance: none;
-}
-.reply-input:focus {
-  outline: none;
-  border-color: var(--blue);
-  background: white;
-  box-shadow: 0 0 0 3px rgba(29,111,232,0.07);
-}
-
-.send-btn {
-  background: var(--navy);
-  color: white;
-  border: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.18s;
-  flex-shrink: 0;
-  font-size: 1rem;
-}
-.send-btn:hover { background: var(--blue); transform: scale(1.05); }
-.send-btn.sending { opacity: 0.6; pointer-events: none; }
-
-/* ─── RANK PROGRESS BAR ─── */
-.rank-progress {
-  margin: 6px 0 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.rank-bar-wrap {
-  flex: 1;
-  height: 3px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 999px;
-  overflow: hidden;
-}
-
-.rank-bar-fill {
-  height: 100%;
-  background: var(--accent);
-  border-radius: 999px;
-  transition: width 0.5s ease;
-}
-
-.rank-next {
-  font-size: 0.62rem;
-  color: rgba(255,255,255,0.4);
-  white-space: nowrap;
-}
-
-/* ─── RANGOS PANEL (oculto para niveles bajos) ─── */
-.perks-banner {
-  background: linear-gradient(135deg, #0F1B2D, #1A3558);
-  border-radius: var(--radius);
-  padding: 18px 20px;
-  margin-bottom: 16px;
-  border: 1px solid rgba(29,111,232,0.3);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.perks-banner:hover { border-color: var(--blue); }
-
-.perks-banner-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: white;
-  margin-bottom: 4px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.perks-banner-sub {
-  font-size: 0.72rem;
-  color: rgba(255,255,255,0.45);
-}
-
-.perks-panel {
-  background: var(--surface);
-  border-radius: var(--radius);
-  padding: 20px;
-  margin-bottom: 16px;
-  border: 1px solid var(--border);
-  display: none;
-}
-
-.perks-panel.open { display: block; }
-
-.ranks-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 10px;
-  margin-top: 14px;
-}
-
-.rank-card {
-  background: var(--surface-2);
-  border-radius: 14px;
-  padding: 14px;
-  border: 1.5px solid var(--border);
-  transition: all 0.18s;
-}
-
-.rank-card.unlocked { border-color: var(--green); background: #F0FDF4; }
-.rank-card.current { border-color: var(--blue); background: var(--blue-pale); }
-
-.rank-card-icon { font-size: 1.4rem; margin-bottom: 6px; }
-.rank-card-name { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; margin-bottom: 2px; }
-.rank-card-pts { font-size: 0.68rem; color: var(--text-3); margin-bottom: 8px; }
-.rank-card-perk { font-size: 0.72rem; color: var(--text-2); }
-.rank-card-perk.locked { color: var(--text-3); filter: blur(3px); user-select: none; }
-
-/* ─── NOTIFICATIONS PANEL ─── */
-.notif-panel {
-  position: absolute;
-  top: 56px;
-  right: 16px;
-  width: 300px;
-  background: white;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-lg);
-  border: 1px solid var(--border);
-  z-index: 300;
-  display: none;
-  overflow: hidden;
-}
-.notif-panel.open { display: block; }
-
-.notif-panel-header {
-  padding: 14px 16px 10px;
-  font-family: 'Syne', sans-serif;
-  font-weight: 700;
-  font-size: 0.85rem;
   border-bottom: 1px solid var(--border);
+  padding: 16px 24px;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-}
-
-.notif-item {
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--surface-3);
-  font-size: 0.78rem;
-  color: var(--text-2);
-  cursor: pointer;
-  transition: background 0.15s;
-}
-.notif-item:hover { background: var(--surface-2); }
-.notif-item.unread { background: var(--blue-pale); }
-.notif-item .notif-bold { font-weight: 600; color: var(--text); }
-.notif-empty { padding: 20px 16px; text-align: center; color: var(--text-3); font-size: 0.8rem; }
-
-/* ─── MODALS ─── */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(15,27,45,0.65);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  display: flex;
   align-items: center;
-  justify-content: center;
-  z-index: 500;
-  padding: 20px;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
 }
-
-.modal-overlay.hidden { display: none; }
-
-.modal {
-  background: white;
-  border-radius: 24px;
-  padding: 24px 20px;
-  width: 100%;
-  max-width: 400px;
-  max-height: calc(100vh - 40px);
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  position: relative;
-  box-sizing: border-box;
-}
-
-.modal-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 1.2rem;
-  font-weight: 800;
-  color: var(--navy);
-  margin-bottom: 6px;
-}
-
-.modal-sub {
-  font-size: 0.78rem;
-  color: var(--text-3);
-  margin-bottom: 20px;
-}
-
-.modal-input {
-  width: 100%;
-  padding: 12px 14px;
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-size: 16px; /* 16px mínimo para evitar zoom en iOS */
-  font-family: 'DM Sans', sans-serif;
-  margin-bottom: 12px;
-  transition: all 0.18s;
-  -webkit-appearance: none;
-}
-.modal-input:focus {
-  outline: none;
-  border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(29,111,232,0.08);
-}
-
-.modal-error {
-  color: var(--accent-red);
-  font-size: 0.75rem;
-  margin-bottom: 12px;
-  min-height: 18px;
-}
-
-.remember-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 16px;
-  font-size: 0.78rem;
-  color: var(--text-2);
-}
-
-.modal-btn {
-  width: 100%;
-  padding: 12px;
-  background: var(--navy);
-  color: white;
-  border: none;
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: 0.88rem;
-  cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
-  transition: all 0.18s;
-}
-.modal-btn:hover { background: var(--blue); }
-
-.code-box {
-  background: var(--navy);
-  border-radius: 16px;
-  padding: 22px;
-  text-align: center;
-  margin: 16px 0;
-}
-
-.code-val {
-  font-family: 'DM Mono', monospace;
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--accent);
-  letter-spacing: 6px;
-}
-
-.code-sub {
-  font-size: 0.68rem;
-  color: rgba(255,255,255,0.4);
-  margin-top: 4px;
-}
-
-.warn-box {
-  background: #FFFBEB;
-  border: 1px solid #FDE68A;
-  border-radius: 12px;
-  padding: 12px 14px;
-  font-size: 0.75rem;
-  color: #92400E;
-  margin-bottom: 14px;
-  line-height: 1.6;
-}
-
-/* ─── MISC ─── */
-.empty-state {
-  text-align: center;
-  padding: 50px 20px;
-  background: var(--surface);
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  color: var(--text-3);
-  font-size: 0.85rem;
-}
-
-.empty-state-icon { font-size: 2rem; margin-bottom: 10px; }
-
-.loading {
-  text-align: center;
-  padding: 40px;
-  color: var(--text-3);
-  font-size: 0.85rem;
-}
-
-.pagination {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  margin-top: 20px;
-}
-
-.page-btn {
+.logo-area { display: flex; align-items: center; gap: 10px; }
+.logo-icon {
+  background: linear-gradient(135deg, var(--blue), var(--blue-light));
+  color: #fff;
   width: 36px;
   height: 36px;
-  border-radius: 50%;
-  border: 1.5px solid var(--border);
-  background: white;
-  cursor: pointer;
-  font-size: 0.78rem;
-  font-weight: 500;
-  transition: all 0.18s;
-}
-.page-btn.active { background: var(--navy); color: white; border-color: var(--navy); }
-.page-btn:hover:not(.active) { border-color: var(--blue); color: var(--blue); }
-
-/* ─── FAB ─── */
-.fab {
-  position: fixed;
-  bottom: 24px;
-  right: 20px;
-  z-index: 400;
-  background: var(--blue);
-  color: white;
-  border: none;
-  border-radius: 999px;
-  height: 52px;
-  padding: 0 20px 0 16px;
+  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  box-shadow: 0 4px 20px rgba(29,111,232,0.45);
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 600;
-  font-size: 0.88rem;
-  transition: all 0.2s;
+  justify-content: center;
+  font-weight: 700;
+  font-family: var(--font-title);
+  box-shadow: 0 4px 12px rgba(29,111,232,0.2);
 }
+.logo-text { font-family: var(--font-title); font-weight: 700; font-size: 1.25rem; color: var(--text-1); }
 
-.fab:hover {
-  background: var(--blue-light);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(29,111,232,0.55);
+/* Contenedor optimizado para PC (Estilo foro expandido) */
+.container { max-width: 1000px; width: 100%; margin: 30px auto; padding: 0 20px; flex: 1; }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
 }
-
-.fab:active {
-  transform: scale(0.96);
+.card-title { font-family: var(--font-title); font-weight: 700; font-size: 1.2rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.form-group { margin-bottom: 20px; }
+.form-label { display: block; font-weight: 500; font-size: 0.9rem; color: var(--text-2); margin-bottom: 8px; }
+.select-wrapper { position: relative; }
+.form-select, .form-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  color: var(--text-1);
+  outline: none;
+  transition: all 0.2s ease;
+  -webkit-appearance: none;
 }
-
-.fab-icon { font-size: 1.1rem; line-height: 1; }
-.fab-label { white-space: nowrap; }
-
-/* En pantallas anchas queda bien expandido,
-   en móvil se puede colapsar a solo icono si se prefiere */
-@media (max-width: 380px) {
-  .fab-label { display: none; }
-  .fab { padding: 0; width: 52px; justify-content: center; border-radius: 50%; }
-}
-  position: fixed;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%) translateY(20px);
-  background: var(--navy);
-  color: white;
-  padding: 10px 20px;
-  border-radius: 999px;
-  font-size: 0.8rem;
+.form-select:focus, .form-input:focus { border-color: var(--blue); background: var(--surface); box-shadow: 0 0 0 3px var(--blue-pale); }
+.btn {
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  padding: 14px 24px;
+  font-family: var(--font-sans);
   font-weight: 500;
-  opacity: 0;
-  transition: all 0.3s;
-  z-index: 999;
-  pointer-events: none;
+  font-size: 1rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
 }
-.send-toast.show {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
+.btn:hover { background: var(--blue-light); transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
 
-/* Rank info in topbar chip */
-.chip-rank { font-size: 0.6rem; opacity: 0.6; }
+/* Diseño del foro Premium tipo Tarjetas estiradas */
+.hilos-container { display: flex; flex-direction: column; gap: 18px; }
+.hilo-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+}
+.hilo-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--blue-light); }
+.hilo-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 12px; }
+.hilo-meta { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-3); }
+.user-badge-hilo { background: var(--surface-2); padding: 4px 10px; border-radius: 6px; font-weight: 500; color: var(--text-2); display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--border); }
+.hilo-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.tag { font-size: 0.8rem; padding: 5px 10px; border-radius: 6px; font-weight: 500; border: 1px solid transparent; }
+.tag-presupuesto { background: #EDF9F5; color: var(--green); border-color: #D1FAE5; }
+.tag-uso { background: var(--blue-pale); color: var(--blue); border-color: #DBEAFE; }
+.tag-preferencia { background: #FFF6E6; color: var(--accent); border-color: #FEF3C7; }
+.hilo-titulo { font-family: var(--font-title); font-weight: 700; font-size: 1.25rem; color: var(--text-1); margin-bottom: 8px; line-height: 1.4; }
+.hilo-desc { font-size: 0.95rem; color: var(--text-2); line-height: 1.6; margin-bottom: 16px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.hilo-footer { border-top: 1px solid var(--border); padding-top: 14px; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: var(--text-3); }
+.hilo-respuestas { display: flex; align-items: center; gap: 6px; font-weight: 600; color: var(--blue); background: var(--blue-pale); padding: 6px 14px; border-radius: 20px; transition: all 0.2s; }
+.hilo-card:hover .hilo-respuestas { background: var(--blue); color: #fff; }
+
+/* Rejilla de Estadísticas adaptada y balanceada */
+.stats-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; background: var(--surface); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: 24px; box-shadow: var(--shadow-sm); }
+.stat-item { display: flex; flex-direction: column; gap: 4px; text-align: center; align-items: center; justify-content: center; }
+.stat-val { font-family: var(--font-title); font-weight: 800; font-size: 1.4rem; color: var(--blue); }
+.stat-lbl { font-size: 0.75rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; }
+
+.admin-badge { background: #FEE2E2 !important; color: #EF4444 !important; font-weight: 700 !important; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; margin-left: 4px; }
+.top-actions { display: flex; gap: 10px; align-items: center; }
+.user-badge { background: var(--surface); border: 1px solid var(--border); padding: 6px 14px; border-radius: 20px; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 500; color: var(--text-1); box-shadow: var(--shadow-sm); }
+.points-badge { background: linear-gradient(135deg, var(--accent), #F5B643); color: #fff; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; box-shadow: 0 2px 6px rgba(245,166,35,0.2); }
+.login-btn { background: var(--surface); border: 1px solid var(--blue); color: var(--blue); padding: 8px 16px; border-radius: 20px; font-family: var(--font-sans); font-weight: 500; font-size: 0.85rem; cursor: pointer; transition: all 0.2s ease; }
+.login-btn:hover { background: var(--blue-pale); }
+.admin-panel-card { border-color: var(--accent-red); background: #FFFDFD; }
+.admin-panel-card .card-title { color: var(--accent-red); }
+.btn-danger { background: var(--accent-red); }
+.btn-danger:hover { background: #D32F2F; }
+.hilo-card.fijado { border-color: var(--accent); background: #FFFDF6; }
+.pin-icon { color: var(--accent); font-size: 0.9rem; margin-right: 4px; }
+
+/* Gamificación: Sistema de Rango Dinámico */
+.rank-container { margin-bottom: 24px; background: var(--surface); padding: 14px 20px; border-radius: var(--radius-md); border: 1px solid var(--border); box-shadow: var(--shadow-sm); display: none; }
+.rank-header-info { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--text-2); }
+.rank-progress-bg { background: var(--surface-3); width: 100%; height: 8px; border-radius: 4px; overflow: hidden; position: relative; }
+.rank-progress-fill { background: linear-gradient(90deg, var(--blue), var(--blue-light)); width: 0%; height: 100%; border-radius: 4px; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+
+.toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 3000; pointer-events: none; }
+.send-toast { background: var(--navy); color: #fff; padding: 12px 24px; border-radius: 30px; font-size: 0.9rem; font-weight: 500; box-shadow: 0 10px 25px rgba(15,27,45,0.15); display: flex; align-items: center; gap: 8px; opacity: 0; transform: translateX(-50%) translateY(20px); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.send-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* MODAL INTERFACE */
+.modal-overlay {
+  position: fixed; top:0; left:0; width:100%; height:100%;
+  background: rgba(15,27,45,0.7); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center; z-index: 2000;
+}
+.modal {
+  background: var(--surface); border-radius: var(--radius-md);
+  padding: 28px; width: 90%; max-width: 400px; box-shadow: var(--shadow-md);
+  border: 1px solid var(--border); display: flex; flex-direction: column; gap: 16px;
+}
+.modal-title { font-family: var(--font-title); font-weight: 700; font-size: 1.3rem; color: var(--text-1); }
+.modal-sub { font-size: 0.88rem; color: var(--text-2); line-height: 1.4; }
+.modal-input {
+  width: 100%; padding: 12px 14px; border: 1px solid var(--border);
+  border-radius: var(--radius-sm); font-size: 0.95rem; background: var(--surface-2); outline: none;
+}
+.modal-input:focus { border-color: var(--blue); background: var(--surface); }
+.modal-error { color: var(--accent-red); font-size: 0.8rem; font-weight: 500; min-height: 18px; }
+.modal-btn {
+  background: var(--navy); color: #fff; border: none; padding: 12px;
+  border-radius: var(--radius-sm); font-weight: 500; font-size: 0.95rem; cursor: pointer;
+}
+.modal-btn:hover { background: #1A2D45; }
+
+/* Banner de Cookies con Estilo Cumplimiento */
+.cookie-banner { position: fixed; bottom: 20px; right: 20px; max-width: 350px; background: var(--navy); color: #fff; padding: 16px 20px; border-radius: var(--radius-md); box-shadow: var(--shadow-md); z-index: 2500; display: none; flex-direction: column; gap: 12px; border: 1px solid rgba(255,255,255,0.1); }
+.cookie-text { font-size: 0.82rem; line-height: 1.4; color: #cbd5e1; }
+.cookie-btn { background: var(--blue); color: #fff; border: none; padding: 8px 12px; font-size: 0.8rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s; align-self: flex-end; }
+.cookie-btn:hover { background: var(--blue-light); }
+
+/* Pie de página profesional sobre seguridad */
+.footer-foro { background: var(--surface); border-top: 1px solid var(--border); padding: 24px; text-align: center; font-size: 0.8rem; color: var(--text-3); margin-top: 40px; }
+.footer-info-seguridad { max-width: 600px; margin: 8px auto 0 auto; line-height: 1.5; color: var(--text-2); }
+
+/* Ajustes Quirúrgicos para evitar desbordamiento y optimizar Móviles */
+@media (max-width: 480px) {
+    .header { padding: 12px 16px; }
+    .logo-text { font-size: 1.05rem; }
+    .container { margin: 16px auto; }
+    .stats-bar { gap: 8px; padding: 12px; margin-bottom: 16px; }
+    .stat-val { font-size: 1.15rem; }
+    .stat-lbl { font-size: 0.65rem; letter-spacing: 0.3px; }
+    #usernameDisplay {
+        max-width: 75px !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+        display: inline-block !important;
+        vertical-align: middle;
+    }
+    .user-badge { padding: 4px 10px; gap: 6px; }
+}
 </style>
 </head>
 <body>
 
-<!-- TOPBAR -->
-<div class="topbar">
-  <div class="logo">
-    <div class="logo-icon">📱</div>
-    Recomiéndame un <em>móvil</em>
-  </div>
-  <div class="topbar-right">
-    <button class="notif-btn" id="notifBtn" onclick="toggleNotifPanel()">
-      🔔
-      <span class="notif-badge" id="notifBadge"></span>
-    </button>
-    <div class="user-chip" id="userChip" onclick="toggleUserMenu()">
-      <div class="user-chip-avatar" id="chipAvatar">👤</div>
-      <span class="user-chip-name" id="chipName">Invitado</span>
-      <span class="user-chip-pts" id="chipPts"></span>
-    </div>
-  </div>
+<div class="toast-container">
+  <div class="send-toast" id="globalToast">✨ Mensaje enviado</div>
 </div>
 
-<!-- NOTIF PANEL -->
-<div class="notif-panel" id="notifPanel">
-  <div class="notif-panel-header">
-    <span>Notificaciones</span>
-    <button onclick="marcarTodasLeidas()" style="background:none;border:none;font-size:0.7rem;color:var(--blue);cursor:pointer;font-family:'DM Sans',sans-serif;">Marcar leídas</button>
-  </div>
-  <div id="notifList"><div class="notif-empty">Sin notificaciones nuevas</div></div>
-</div>
-
-<!-- HERO -->
-<div class="hero-strip" id="heroStrip">
-  <div class="hero-tagline">La comunidad que te ayuda<br>a elegir tu próximo <em>móvil</em></div>
-  <div class="hero-sub">Sin publicidad. Sin afiliados. Solo recomendaciones reales.</div>
-  <div class="stats-row" id="statsRow">
-    <div class="stat-chip">⏳ Cargando...</div>
-  </div>
-  <div class="rank-progress" id="rankProgressWrap" style="display:none;">
-    <div class="rank-bar-wrap"><div class="rank-bar-fill" id="rankBarFill" style="width:0%"></div></div>
-    <span class="rank-next" id="rankNextLabel"></span>
-  </div>
-</div>
-
-<!-- MAIN -->
-<div class="container">
-
-  <!-- Perks banner -->
-  <div class="perks-banner" onclick="togglePerks()" id="perksBanner">
-    <div class="perks-banner-title">🏆 Rangos y ventajas <span style="margin-left:auto;font-size:0.75rem;opacity:0.4">▾</span></div>
-    <div class="perks-banner-sub">Gana puntos respondiendo · Desbloquea rangos · Accede a ventajas exclusivas</div>
-  </div>
-
-  <div class="perks-panel" id="perksPanel">
-    <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;margin-bottom:4px;">Sistema de rangos</div>
-    <div style="font-size:0.75rem;color:var(--text-3);margin-bottom:0;">Ganas 2 pts por responder · 3 pts cuando votan útil tu respuesta · 1 pt por nueva consulta</div>
-    <div class="ranks-grid" id="ranksGrid"></div>
-  </div>
-
-  <!-- Tabs -->
-  <div class="tabs-bar">
-    <button class="tab active" onclick="setTab('abiertas', this)">📋 Consultas abiertas</button>
-    <button class="tab" onclick="setTab('mis_abiertas', this)">📝 Mis consultas</button>
-    <button class="tab" onclick="setTab('mis_cerradas', this)">✅ Cerradas</button>
-
-  </div>
-
-  <!-- Form -->
-  <div id="newForm" style="display:none;">
-    <div class="form-card">
-      <div class="form-title">📱 Cuéntanos qué buscas</div>
-      <div class="form-grid">
-        <div class="form-field"><label>💰 Presupuesto</label><input type="text" id="f_presupuesto" placeholder="ej. 300€" /></div>
-        <div class="form-field"><label>📱 Móvil actual</label><input type="text" id="f_movil_actual" placeholder="ej. Redmi Note 10" /></div>
-        <div class="form-field"><label>⭐ Marca preferida</label><input type="text" id="f_marca_pref" placeholder="Sin preferencia" /></div>
-        <div class="form-field"><label>🚫 Marca que NO quieres</label><input type="text" id="f_marca_no" placeholder="ej. Apple" /></div>
-        <div class="form-field"><label>🛡️ Garantía España</label>
-          <select id="f_garantia"><option value="Sí">Sí</option><option value="No">No</option></select>
-        </div>
-        <div class="form-field"><label>📅 Modelos</label>
-          <select id="f_modelos"><option value="Actuales">Actuales</option><option value="Puede ser antiguo">Puede ser antiguo</option></select>
-        </div>
-        <div class="form-field full"><label>🎯 Uso principal</label><input type="text" id="f_uso" placeholder="ej. WhatsApp, fotos, redes..." /></div>
-        <div class="form-field"><label>📏 Tamaño pantalla</label>
-          <select id="f_tamano">
-            <option value="Sin preferencia">Sin preferencia</option>
-            <option value='Pequeño <6"'>Pequeño &lt;6"</option>
-            <option value='Normal 6-6.5"'>Normal 6-6.5"</option>
-            <option value='Grande >6.5"'>Grande &gt;6.5"</option>
-          </select>
-        </div>
-        <div class="form-field"><label>🎮 ¿Juegas?</label>
-          <select id="f_juegos"><option value="No">No</option><option value="Algún casual">Algún casual</option><option value="Sí, bastante">Sí, bastante</option></select>
-        </div>
-        <div class="form-field"><label>📸 ¿Usas mucho la cámara?</label>
-          <select id="f_camara"><option value="No mucho">No mucho</option><option value="Sí, importante">Sí, importante</option></select>
-        </div>
-        <div class="form-field"><label>🔋 ¿Mucha batería?</label>
-          <select id="f_bateria"><option value="Normal">Normal</option><option value="Sí, prioritaria">Sí, prioritaria</option></select>
-        </div>
-        <div class="form-field"><label>⚡ ¿Carga rápida?</label>
-          <select id="f_carga"><option value="No necesaria">No necesaria</option><option value="Sí">Sí</option></select>
-        </div>
-        <div class="form-field full"><label>📝 Algo más</label><textarea id="f_extra" placeholder="Cualquier detalle adicional..."></textarea></div>
-      </div>
-      <div class="form-actions">
-        <button class="btn-cancel" onclick="cerrarForm()">Cancelar</button>
-        <button class="btn-submit" onclick="publicarHilo()">Publicar consulta</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Threads -->
-  <div id="hilosList"></div>
-  <div id="pagination" class="pagination"></div>
-</div>
-
-<!-- TOAST -->
-<div class="send-toast" id="sendToast"></div>
-
-<!-- FAB -->
-<button class="fab" onclick="abrirForm()" title="Nueva consulta">
-  <span class="fab-icon">✏️</span>
-  <span class="fab-label">Nueva consulta</span>
-</button>
-
-<!-- MODAL LOGIN -->
 <div class="modal-overlay" id="authModal">
   <div class="modal">
     <div class="modal-title">✨ Identifícate</div>
@@ -1328,929 +252,391 @@ body {
   </div>
 </div>
 
-<!-- MODAL CÓDIGO -->
-<div class="modal-overlay hidden" id="codeModal">
-  <div class="modal">
-    <div class="modal-title">🔑 ¡Guarda este código!</div>
-    <p style="font-size:0.8rem;color:var(--text-2);margin-bottom:4px;">Es tu única forma de volver a entrar. No lo almacenamos.</p>
-    <div class="code-box">
-      <div class="code-val" id="generatedCodeValue">XXXXXX</div>
-      <div class="code-sub">tu código secreto</div>
-    </div>
-    <div class="warn-box">
-      ⚠️ <strong>IMPORTANTE</strong><br/>
-      Haz una captura ahora mismo. Si lo pierdes, pierdes el acceso a tu cuenta.
-    </div>
-    <button class="modal-btn" onclick="cerrarCodeModal()">✅ Lo guardé, continuar</button>
+<header class="header">
+  <div class="logo-area">
+    <div class="logo-icon">R</div>
+    <div class="logo-text">Recomiéndame un móvil</div>
   </div>
+  <div class="top-actions" id="topActionsArea">
+    <button class="login-btn" id="loginBtn" onclick="abrirModalAuth()">👤 Invitado</button>
+  </div>
+</header>
+
+<div class="container">
+  <div class="stats-bar">
+    <div class="stat-item"><div class="stat-val" id="statConsultas">0</div><div class="stat-lbl">Consultas</div></div>
+    <div class="stat-item"><div class="stat-val" id="statRespuestas">0</div><div class="stat-lbl">Respuestas</div></div>
+    <div class="stat-item"><div class="stat-val" id="statUsuarios">0</div><div class="stat-lbl">Usuarios</div></div>
+  </div>
+
+  <div class="rank-container" id="visualRankContainer">
+    <div class="rank-header-info">
+      <span id="lblCurrentRank">Rango: Iniciado</span>
+      <span id="lblNextRank">Siguiente: Experto 🚀</span>
+    </div>
+    <div class="rank-progress-bg">
+      <div class="rank-progress-fill" id="fillRankBar"></div>
+    </div>
+  </div>
+
+  <div class="card admin-panel-card" id="panelAdmin" style="display:none;">
+    <div class="card-title">⚙️ Panel de Administrador</div>
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <button class="btn btn-danger" onclick="limpiarTodaLaBaseDeDatos()">⚠️ Borrar todos los hilos del foro</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span>🚀</span> ¿Qué móvil buscas?</div>
+    <div class="form-group">
+      <label class="form-label">Presupuesto máximo</label>
+      <div class="select-wrapper">
+        <select class="form-select" id="filtroPresupuesto">
+          <option value="Menos de 200€">Menos de 200€ (Gama de entrada)</option>
+          <option value="200€ - 450€" selected>200€ - 450€ (Gama media calidad/precio)</option>
+          <option value="450€ - 800€">450€ - 800€ (Gama alta / Premium)</option>
+          <option value="Más de 800€">Más de 800€ (Flagships / Lo mejor de lo mejor)</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Uso principal del dispositivo</label>
+      <select class="form-select" id="filtroUso">
+        <option value="Fotografía y vídeo excelente" selected>📸 Fotografía y vídeo excelente</option>
+        <option value="Juegos pesados y rendimiento">🎮 Juegos pesados y máximo rendimiento</option>
+        <option value="Batería infinita y durabilidad">🔋 Batería de larga duración (2 días)</option>
+        <option value="Pantalla grande para multimedia">🎬 Pantalla excelente para películas/series</option>
+        <option value="Uso básico (WhatsApp, llamadas)">📱 Redes sociales y uso diario normal</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Preferencia de marca o ecosistema</label>
+      <select class="form-select" id="filtroPreferencia">
+        <option value="Me da igual la marca" selected>🤷‍♂️ Me da igual (Busco calidad/precio)</option>
+        <option value="Sólo Android (Xiaomi, Samsung, RealMe)">🤖 Android (Samsung, Xiaomi, Realme...)</option>
+        <option value="Sólo Apple (iOS)">🍏 Apple (iOS)</option>
+        <option value="Evitar marcas chinas">🇪🇺 Marcas tradicionales (Samsung / Google Pixel)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Detalles adicionales (Cuéntanos más)</label>
+      <input class="form-input" type="text" id="inputDetalles" placeholder="Ej: Que tenga jack de auriculares, carga inalámbrica, etc..." autocomplete="off" />
+    </div>
+    <button class="btn" onclick="crearConsulta()">Publicar mi consulta</button>
+  </div>
+
+  <div class="card-title" style="margin-top: 10px; margin-bottom: 16px;"><span>💬</span> Consultas de la comunidad</div>
+  <div class="hilos-container" id="foroHilos">
+    </div>
 </div>
 
+<div class="cookie-banner" id="bannerCookiesContainer">
+  <p class="cookie-text">Utilizamos cookies esenciales para guardar de forma local tu sesión y tus preferencias del foro. Al continuar navegando, aceptas su uso técnico.</p>
+  <button class="cookie-btn" onclick="aceptarCookiesTecnicas()">Entendido</button>
+</div>
+
+<footer class="footer-foro">
+  <div>© 2026 Recomiéndame un móvil · Foro de la Comunidad</div>
+  <p class="footer-info-seguridad">🛡️ <strong>Seguridad Absoluta:</strong> No recopilamos información privada tuya como correos electrónicos o contraseñas tradicionales. Usamos un sistema de inicio de sesión descentralizado basado únicamente en un alias y un código secreto aleatorio exclusivo.</p>
+</footer>
+
 <script>
-// ═══════════════════════════════════════════
-// CONFIG
-// ═══════════════════════════════════════════
-const SUPABASE_URL = 'https://eqtjsgqascldwhqomncu.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_AH7nQIp9WPOqUowcPi3W4Q_djmApiMF';
-const { createClient } = supabase;
-const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+// CONFIGURACIÓN DE SUPABASE
+const supabaseUrl = "https://wocbbywxlmpxgajvshiw.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndvY2JieXd4bG1weGdhanZzaGl3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA1MDQ5MDIsImV4cCI6MjA1NjA4MDkwMn0.55mB1P_iS8v-M5-04KkRoxH6p5_wZt_x49p9Nn_6XWs";
+const db = supabase.createClient(supabaseUrl, supabaseKey);
 
-const FORBIDDEN_NAMES = [
-  'admin','administrador','administradora','moderador','mod','staff','dueño',
-  'creador','soporte','sistema','oficial','ayuda','webmaster','owner','creator',
-  'superadmin','root','support','official','help','manager','sysadmin','developer',
-  'dev','adm1n','4dmin','m0d','staf','soport','s0porte','sys','0wner','cr3ator'
-];
+// Estado global de la sesión
+let usuario = null; 
 
-const RANGOS = [
-  { id: 'nuevo',     label: 'Nuevo',      icon: '🌱', min: 0,   max: 9,   perk: 'Acceso básico a la comunidad', locked: false },
-  { id: 'aprendiz',  label: 'Aprendiz',   icon: '📚', min: 10,  max: 24,  perk: 'Badge especial en tus respuestas', locked: false },
-  { id: 'confiable', label: 'Confiable',  icon: '⭐', min: 25,  max: 49,  perk: 'Tus recomendaciones se destacan primero', locked: false },
-  { id: 'experto',   label: 'Experto',    icon: '🏆', min: 50,  max: 99,  perk: 'Acceso al canal #expertos (próximamente)', locked: true },
-  { id: 'leyenda',   label: 'Leyenda',    icon: '🔥', min: 100, max: 999, perk: 'Insignia dorada + voto doble en valoraciones', locked: true },
-];
+function guardarToken(token) { localStorage.setItem('app_foro_token', token); }
+function leerToken() { return localStorage.getItem('app_foro_token'); }
+function borrarToken() { localStorage.removeItem('app_foro_token'); }
 
-let usuario = null;
-let tabActual = 'abiertas';
-let hilosData = [];
-let currentPage = 1;
-const ITEMS_PER_PAGE = 5;
-let quoteActiva = null; // { hiloId, replyId, autor, texto }
-let notifCount = 0;
-
-// ═══════════════════════════════════════════
-// DETECCIÓN DE MÓVILES (sistema colectivo)
-// ═══════════════════════════════════════════
-
-// Extrae posibles modelos de texto libre usando patrones
-function extraerModelos(texto) {
-  if (!texto) return [];
-  const lower = texto.toLowerCase();
-  
-  // Patrones de marcas conocidas seguidas de alfanumérico
-  const patrones = [
-    /\b(samsung\s+)?(galaxy\s+)?(s\d{2}\s*(ultra|plus|\+|fe)?)\b/gi,
-    /\b(samsung\s+)?(galaxy\s+)?(a\d{2}s?)\b/gi,
-    /\b(xiaomi\s+)?(\d{2}[st]?\s*(ultra|pro|lite)?)\b/gi,
-    /\b(redmi\s+note\s+\d{1,2}\s*(pro|s|t|ultra)?)\b/gi,
-    /\b(redmi\s+\d{1,2}[a-z]?\s*(pro|s|c)?)\b/gi,
-    /\b(poco\s+[xmfc]\d+\s*(pro|gt)?)\b/gi,
-    /\b(iphone\s+\d{1,2}\s*(pro\s*max|pro|plus|mini)?)\b/gi,
-    /\b(pixel\s+\d[a-z]?\s*(pro|xl|a)?)\b/gi,
-    /\b(oneplus\s+\d{1,2}\s*(pro|r|t|ultra)?)\b/gi,
-    /\b(motorola\s+)?(moto\s+)?([ge]\s*\d{2,3}\s*(plus|\+|power|play|s)?)\b/gi,
-    /\b(oppo\s+)?(reno\s*\d{1,2}\s*(pro|f|s)?|find\s+[xn]\d+\s*(pro)?)\b/gi,
-    /\b(realme\s+)?(gt\s*\d?\s*(pro|master|neo)?|c\d{2,3}|narzo\s+\d+)\b/gi,
-    /\b(sony\s+)?(xperia\s+[0-9]+\s*(v|iv|iii|ii|ultra)?)\b/gi,
-    /\b(huawei\s+)?(p\d{2}\s*(pro|lite)?|mate\s+\d{2}\s*(pro|x|rs)?)\b/gi,
-    /\b(nothing\s+phone\s*\(?[12]\)?)\b/gi,
-    /\b(asus\s+)?(zenfone\s+\d{1,2}|rog\s+phone\s+\d+)\b/gi,
-  ];
-
-  const encontrados = new Set();
-  for (const pat of patrones) {
-    const matches = texto.match(pat);
-    if (matches) matches.forEach(m => encontrados.add(m.trim().toLowerCase()));
-  }
-  return [...encontrados];
-}
-
-// Normaliza un modelo para comparación
-function normalizarModelo(m) {
-  return m.toLowerCase()
-    .replace(/\s+/g, ' ')
-    .replace(/galaxy\s*/g, '')
-    .replace(/samsung\s*/g, '')
-    .replace(/xiaomi\s*/g, '')
-    .replace(/motorola\s*/g, '')
-    .replace(/moto\s*/g, '')
-    .trim();
-}
-
-// Agrupa modelos similares y devuelve el más mencionado
-function modeloMasPopular(respuestas) {
-  const freq = {};
-  for (const r of respuestas) {
-    const modelos = extraerModelos(r.contenido);
-    for (const m of modelos) {
-      const key = normalizarModelo(m);
-      if (!freq[key]) freq[key] = { count: 0, original: m };
-      freq[key].count++;
-    }
-  }
-  const sorted = Object.values(freq).sort((a, b) => b.count - a.count);
-  if (sorted.length === 0) return null;
-  // Solo destacar si al menos 2 respuestas lo mencionan, o si hay al menos 1 mención clara
-  const top = sorted[0];
-  return top ? formatearModelo(top.original) : null;
-}
-
-function formatearModelo(raw) {
-  let m = raw.trim();
-  // Capitalizar correctamente
-  m = m.replace(/\b(samsung|xiaomi|redmi|poco|oneplus|motorola|moto|oppo|realme|sony|huawei|asus|nothing|google)\b/gi, w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
-  m = m.replace(/\b(galaxy|iphone|pixel|xperia|zenfone|rog|note|ultra|pro|plus|lite|mini|max|fe)\b/gi, w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
-  m = m.replace(/\bs(\d{2})\b/gi, (_, n) => `Galaxy S${n}`);
-  m = m.replace(/\ba(\d{2})\b/gi, (_, n) => `Galaxy A${n}`);
-  return m;
-}
-
-// ═══════════════════════════════════════════
-// UTILIDADES
-// ═══════════════════════════════════════════
-function cap(nick) {
-  if (!nick) return '';
-  return nick.charAt(0).toUpperCase() + nick.slice(1);
-}
-
-function timeAgo(ts) {
-  const diff = (Date.now() - new Date(ts)) / 1000;
-  if (diff < 60) return 'ahora';
-  if (diff < 3600) return `hace ${Math.floor(diff/60)} min`;
-  if (diff < 86400) return `hace ${Math.floor(diff/3600)} h`;
-  if (diff < 86400*7) return `hace ${Math.floor(diff/86400)} d`;
-  return new Date(ts).toLocaleDateString('es-ES', { day:'numeric', month:'short' });
-}
-
-function generarCodigo() {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let c = '';
-  for (let i = 0; i < 6; i++) c += chars[Math.floor(Math.random() * chars.length)];
-  return c;
-}
-
-function toast(msg, dur = 2500) {
-  const t = document.getElementById('sendToast');
-  t.textContent = msg;
+function toast(msg) {
+  const t = document.getElementById('globalToast');
+  if(!t) return;
+  t.innerText = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), dur);
+  setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-const AVATAR_COLORS = [
-  { bg: '#EFF6FF', color: '#1E40AF' }, { bg: '#ECFDF5', color: '#065F46' },
-  { bg: '#FFFBEB', color: '#B45309' }, { bg: '#FEF2F2', color: '#991B1B' },
-  { bg: '#F5F3FF', color: '#5B21B6' }, { bg: '#FDF2F8', color: '#9D174D' },
-  { bg: '#FFF7ED', color: '#C2410C' }, { bg: '#F0FDF4', color: '#166534' },
-];
-
-function avatarColor(nick) {
-  let h = 0;
-  for (let i = 0; i < nick.length; i++) h = ((h << 5) - h) + nick.charCodeAt(i);
-  return AVATAR_COLORS[Math.abs(h) % AVATAR_COLORS.length];
+function abrirModalAuth() {
+  const m = document.getElementById('authModal');
+  if(m) m.style.display = 'flex';
 }
 
-function getRango(puntos, rol) {
-  if (rol === 'admin') return { label: 'Admin', icon: '👑', id: 'admin' };
-  for (let i = RANGOS.length - 1; i >= 0; i--) {
-    if (puntos >= RANGOS[i].min) return RANGOS[i];
+function cerrarModalAuth() {
+  const m = document.getElementById('authModal');
+  if(m) m.style.display = 'none';
+}
+
+// Actualiza el sistema de gamificación basado en los puntos reales del perfil
+function actualizarBarraProgresoRangos(puntos) {
+  const contenedorBarra = document.getElementById('visualRankContainer');
+  const txtActual = document.getElementById('lblCurrentRank');
+  const txtSiguiente = document.getElementById('lblNextRank');
+  const rellenoBarra = document.getElementById('fillRankBar');
+  
+  if (!contenedorBarra || !rellenoBarra) return;
+  contenedorBarra.style.display = "block";
+  
+  let pts = puntos || 0;
+  let rango = "Iniciado 👤";
+  let siguienteRango = "Colaborador 🌟";
+  let minPts = 0;
+  let maxPts = 10;
+  
+  if (pts >= 30) {
+    rango = "Leyenda del Foro 👑";
+    siguienteRango = "Nivel Máximo 🎉";
+    minPts = 30;
+    maxPts = 100; // Cap estético
+  } else if (pts >= 15) {
+    rango = "Administrador / Maestro ⚙️";
+    siguienteRango = "Leyenda del Foro 👑";
+    minPts = 15;
+    maxPts = 30;
+  } else if (pts >= 10) {
+    rango = "Colaborador 🌟";
+    siguienteRango = "Maestro ⚙️";
+    minPts = 10;
+    maxPts = 15;
   }
-  return RANGOS[0];
+  
+  let porcentaje = ((pts - minPts) / (maxPts - minPts)) * 100;
+  if (porcentaje > 100) porcentaje = 100;
+  if (porcentaje < 0) porcentaje = 0;
+  
+  if (txtActual) txtActual.innerText = `Rango: ${rango} (${pts} pts)`;
+  if (txtSiguiente) txtSiguiente.innerText = (maxPts <= 30 || pts < 30) ? `Próximo Rango a los ${maxPts} pts` : siguienteRango;
+  rellenoBarra.style.width = `${porcentaje}%`;
 }
 
-function getBadgeHtml(puntos, rol) {
-  const r = getRango(puntos, rol);
-  if (rol === 'admin') return `<span class="author-rank rank-admin">👑 Admin</span>`;
-  const cls = `rank-${r.id}`;
-  return `<span class="author-rank ${cls}">${r.icon} ${r.label}</span>`;
-}
+// Actualiza la cabecera e interfaces según el estado de "usuario"
+function actualizarUIAuth() {
+  const area = document.getElementById('topActionsArea');
+  const panelAdmin = document.getElementById('panelAdmin');
+  if (!area) return;
 
-function esAdmin() { return usuario?.rol === 'admin'; }
-
-// ═══════════════════════════════════════════
-// MENTIONS & CITAS
-// ═══════════════════════════════════════════
-function renderizarContenido(texto) {
-  if (!texto) return '';
-  // @menciones
-  return texto.replace(/@([a-zA-Z0-9_\-\.]+)/g, '<span class="mention">@$1</span>');
-}
-
-function setCita(hiloId, replyId, autor, texto) {
-  quoteActiva = { hiloId, replyId, autor, texto };
-  const preview = document.getElementById(`qpreview_${hiloId}`);
-  if (!preview) return;
-  preview.classList.add('active');
-  preview.querySelector('.quote-preview-text').textContent = `${cap(autor)}: "${texto.slice(0, 80)}${texto.length > 80 ? '…' : ''}"`;
-  document.getElementById(`rinput_${hiloId}`).focus();
-}
-
-function clearCita(hiloId) {
-  quoteActiva = null;
-  const preview = document.getElementById(`qpreview_${hiloId}`);
-  if (preview) preview.classList.remove('active');
-}
-
-// ═══════════════════════════════════════════
-// NOTIFICACIONES
-// ═══════════════════════════════════════════
-async function cargarNotificaciones() {
-  if (!usuario) return;
-  
-  // Hilos propios
-  const { data: misHilos } = await db.from('hilos')
-    .select('id, datos_extra, created_at')
-    .eq('nickname', usuario.nickname);
-  
-  if (!misHilos || misHilos.length === 0) return;
-  
-  const hilosIds = misHilos.map(h => h.id);
-  const vistoKey = `notif_visto_${usuario.nickname}`;
-  let visto = {};
-  try { visto = JSON.parse(localStorage.getItem(vistoKey) || '{}'); } catch(e) {}
-  
-  // Respuestas a mis hilos
-  const { data: respuestas } = await db.from('respuestas')
-    .select('*, hilo_id')
-    .in('hilo_id', hilosIds)
-    .neq('nickname', usuario.nickname)
-    .order('created_at', { ascending: false })
-    .limit(20);
-
-  // Menciones a mí
-  const { data: menciones } = await db.from('respuestas')
-    .select('*, hilo_id')
-    .ilike('contenido', `%@${usuario.nickname}%`)
-    .neq('nickname', usuario.nickname)
-    .order('created_at', { ascending: false })
-    .limit(10);
-
-  const todas = [];
-  
-  if (respuestas) {
-    for (const r of respuestas) {
-      todas.push({
-        id: `resp_${r.id}`,
-        texto: `<span class="notif-bold">${cap(r.nickname)}</span> respondió en tu consulta`,
-        tiempo: timeAgo(r.created_at),
-        hiloId: r.hilo_id,
-        leido: !!visto[`resp_${r.id}`],
-      });
+  if (usuario) {
+    const esAdmin = (usuario.rol === 'admin' || usuario.nickname.toLowerCase() === 'dastan');
+    if (panelAdmin) {
+      panelAdmin.style.display = esAdmin ? 'block' : 'none';
     }
-  }
-
-  if (menciones) {
-    for (const m of menciones) {
-      if (!todas.find(t => t.id === `resp_${m.id}`)) {
-        todas.push({
-          id: `men_${m.id}`,
-          texto: `<span class="notif-bold">${cap(m.nickname)}</span> te mencionó`,
-          tiempo: timeAgo(m.created_at),
-          hiloId: m.hilo_id,
-          leido: !!visto[`men_${m.id}`],
-        });
-      }
-    }
-  }
-
-  todas.sort((a, b) => (a.leido === b.leido ? 0 : a.leido ? 1 : -1));
-
-  const noLeidas = todas.filter(n => !n.leido).length;
-  notifCount = noLeidas;
-  
-  const badge = document.getElementById('notifBadge');
-  if (noLeidas > 0) {
-    badge.textContent = noLeidas > 9 ? '9+' : noLeidas;
-    badge.classList.add('visible');
+    
+    let adminBadge = esAdmin ? ' <span class="admin-badge">Admin</span>' : '';
+    
+    area.innerHTML = `
+      <div class="user-badge">
+        <span>👤 <strong id="usernameDisplay">${usuario.nickname}</strong>${adminBadge}</span>
+        <span class="points-badge">${usuario.puntos || 0} pts</span>
+        <span style="cursor:pointer;margin-left:6px;opacity:0.5;" onclick="cerrarSesion()" title="Cerrar sesión">❌</span>
+      </div>
+    `;
+    actualizarBarraProgresoRangos(usuario.puntos);
+    cerrarModalAuth();
   } else {
-    badge.classList.remove('visible');
+    if (panelAdmin) panelAdmin.style.display = 'none';
+    const visualContainer = document.getElementById('visualRankContainer');
+    if (visualContainer) visualContainer.style.display = 'none';
+    area.innerHTML = `<button class="login-btn" id="loginBtn" onclick="abrirModalAuth()">👤 Invitado</button>`;
   }
+}
 
-  const list = document.getElementById('notifList');
-  if (todas.length === 0) {
-    list.innerHTML = '<div class="notif-empty">Sin notificaciones</div>';
+function cerrarSesion() {
+  borrarToken();
+  usuario = null;
+  actualizarUIAuth();
+  toast("Sesión cerrada");
+  abrirModalAuth();
+}
+
+// PROCESAR INGRESO / REGISTRO DESDE EL MODAL
+async function procesarAcceso() {
+  const nickInput = document.getElementById('nicknameInput');
+  const codInput = document.getElementById('codigoInput');
+  const errDiv = document.getElementById('authError');
+  if(!nickInput || !errDiv) return;
+
+  const nickname = nickInput.value.trim();
+  const codigo = codInput.value.trim();
+  errDiv.innerText = "";
+
+  if (!nickname) {
+    errDiv.innerText = "Introduce un nombre de usuario.";
     return;
   }
 
-  list.innerHTML = todas.slice(0, 10).map(n => `
-    <div class="notif-item ${n.leido ? '' : 'unread'}" onclick="irAHilo('${n.hiloId}', '${n.id}')">
-      ${n.texto} · <span style="color:var(--text-3)">${n.tiempo}</span>
-    </div>
-  `).join('');
-}
-
-function irAHilo(hiloId, notifId) {
-  const vistoKey = `notif_visto_${usuario.nickname}`;
-  let visto = {};
-  try { visto = JSON.parse(localStorage.getItem(vistoKey) || '{}'); } catch(e) {}
-  visto[notifId] = true;
-  try { localStorage.setItem(vistoKey, JSON.stringify(visto)); } catch(e) {}
-  toggleNotifPanel();
-  const el = document.getElementById(`thread_${hiloId}`);
-  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  cargarNotificaciones();
-}
-
-function marcarTodasLeidas() {
-  if (!usuario) return;
-  const vistoKey = `notif_visto_${usuario.nickname}`;
-  let visto = {};
-  try { visto = JSON.parse(localStorage.getItem(vistoKey) || '{}'); } catch(e) {}
-  document.querySelectorAll('.notif-item').forEach(el => {
-    const match = el.getAttribute('onclick')?.match(/'([^']+)', '([^']+)'/);
-    if (match) visto[match[2]] = true;
-  });
-  try { localStorage.setItem(vistoKey, JSON.stringify(visto)); } catch(e) {}
-  cargarNotificaciones();
-  toggleNotifPanel();
-}
-
-function toggleNotifPanel() {
-  const p = document.getElementById('notifPanel');
-  p.classList.toggle('open');
-  if (p.classList.contains('open')) {
-    setTimeout(() => document.addEventListener('click', cerrarNotifPanelFuera, { once: true }), 10);
-  }
-}
-
-function cerrarNotifPanelFuera(e) {
-  const p = document.getElementById('notifPanel');
-  const btn = document.getElementById('notifBtn');
-  if (!p.contains(e.target) && !btn.contains(e.target)) p.classList.remove('open');
-}
-
-// ═══════════════════════════════════════════
-// STATS
-// ═══════════════════════════════════════════
-async function cargarStats() {
-  const [{ count: abiertas }, { count: resueltas }, { count: miembros }] = await Promise.all([
-    db.from('hilos').select('*', { count: 'exact', head: true }).eq('resuelto', false),
-    db.from('hilos').select('*', { count: 'exact', head: true }).eq('resuelto', true),
-    db.from('usuarios').select('*', { count: 'exact', head: true }),
-  ]);
-
-  document.getElementById('statsRow').innerHTML = `
-    <div class="stat-chip">📋 <b>${abiertas || 0}</b> abiertas</div>
-    <div class="stat-chip">✅ <b>${resueltas || 0}</b> resueltas</div>
-    <div class="stat-chip">👥 <b>${miembros || 0}</b> miembros</div>
-  `;
-}
-
-// ═══════════════════════════════════════════
-// RANGOS PANEL
-// ═══════════════════════════════════════════
-function renderRangos() {
-  const pts = usuario?.puntos || 0;
-  const rol = usuario?.rol || 'usuario';
-  const grid = document.getElementById('ranksGrid');
-  
-  grid.innerHTML = RANGOS.map(r => {
-    const unlocked = pts >= r.min;
-    const current = pts >= r.min && pts <= r.max;
-    let cls = '';
-    if (current && rol !== 'admin') cls = 'current';
-    else if (unlocked) cls = 'unlocked';
+  if (codigo) {
+    const { data: userDB, error } = await db.from('usuarios').select('*').eq('nickname', nickname).eq('codigo_secreto', codigo).maybeSingle();
+    if (error || !userDB) {
+      errDiv.innerText = "El nombre o el código secreto no coinciden.";
+      return;
+    }
     
+    let token = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2);
+    const { data: nuevaSesion, error: errS } = await db.from('sesiones').insert([{ nickname: userDB.nickname, token: token }]).select().maybeSingle();
+    
+    if(errS) {
+      errDiv.innerText = "Error creando sesión: " + errS.message;
+      return;
+    }
+
+    guardarToken(token);
+    usuario = userDB;
+    actualizarUIAuth();
+    toast(`¡Bienvenido de nuevo, ${usuario.nickname}!`);
+    return;
+  }
+
+  const { data: existe } = await db.from('usuarios').select('nickname').eq('nickname', nickname).maybeSingle();
+  if (existe) {
+    errDiv.innerText = "Este nombre ya está registrado. Si es tuyo, pon tu código.";
+    return;
+  }
+
+  const nuevoCodigo = Math.random().toString(36).substring(2, 8).toUpperCase();
+  const esDastan = (nickname.toLowerCase() === 'dastan');
+  const nuevoRol = esDastan ? 'admin' : 'user';
+  const puntosIniciales = esDastan ? 15 : 0;
+
+  const { data: userCreado, error: errC } = await db.from('usuarios').insert([
+    { nickname: nickname, codigo_secreto: nuevoCodigo, puntos: puntosIniciales, rol: nuevoRol }
+  ]).select().maybeSingle();
+
+  if (errC || !userCreado) {
+    errDiv.innerText = "No se pudo registrar: " + (errC ? errC.message : "Error desconocido");
+    return;
+  }
+
+  let token = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2);
+  await db.from('sesiones').insert([{ nickname: userCreado.nickname, token: token }]);
+
+  guardarToken(token);
+  usuario = userCreado;
+  actualizarUIAuth();
+  
+  alert(`¡Cuenta creada con éxito!\n\nTu CÓDIGO SECRETO para volver a entrar es: ${nuevoCodigo}\n\nGuárdalo bien, no se te volverá a mostrar.`);
+}
+
+// LÓGICA DEL FORO
+async function cargarStats() {
+  try {
+    const { count: hilos } = await db.from('hilos').select('*', { count: 'exact', head: true });
+    const { data: respuestasData } = await db.from('hilos').select('respuestas');
+    const { count: users } = await db.from('usuarios').select('*', { count: 'exact', head: true });
+
+    let totalRespuestas = 0;
+    if(respuestasData) {
+      totalRespuestas = respuestasData.reduce((acc, curr) => acc + (Number(curr.respuestas) || 0), 0);
+    }
+
+    if(document.getElementById('statConsultas')) document.getElementById('statConsultas').innerText = hilos || 0;
+    if(document.getElementById('statRespuestas')) document.getElementById('statRespuestas').innerText = totalRespuestas;
+    if(document.getElementById('statUsuarios')) document.getElementById('statUsuarios').innerText = users || 0;
+  } catch(e) { console.error(e); }
+}
+
+async function cargarHilos() {
+  const contenedor = document.getElementById('foroHilos');
+  if(!contenedor) return;
+  
+  const { data: hilos, error } = await db.from('hilos').select('*').order('fijado', { ascending: false }).order('created_at', { ascending: false });
+  
+  if(error) {
+    contenedor.innerHTML = `<p style="color:var(--text-3);">Error cargando consultas.</p>`;
+    return;
+  }
+
+  if(!hilos || hilos.length === 0) {
+    contenedor.innerHTML = `<p style="color:var(--text-3); text-align:center; padding: 20px;">No hay consultas publicadas aún. ¡Sé el primero!</p>`;
+    return;
+  }
+
+  contenedor.innerHTML = hilos.map(h => {
+    const claseFijado = h.fijado ? 'fijado' : '';
+    const iconoFijado = h.fijado ? '📌 ' : '';
+    let btnFijar = '';
+    let btnBorrar = '';
+
+    if(usuario && (usuario.rol === 'admin' || usuario.nickname.toLowerCase() === 'dastan')) {
+      btnFijar = `<span style="color:var(--accent);cursor:pointer;font-weight:600;" onclick="event.stopPropagation(); alternarFijar('${h.id}', ${h.fijado})">${h.fijado ? '📌 Desfijar' : '📍 Fijar'}</span>`;
+      btnBorrar = `<span style="color:var(--accent-red);cursor:pointer;font-weight:600;" onclick="event.stopPropagation(); borrarHilo('${h.id}')">🗑️ Borrar</span>`;
+    }
+
+    const fecha = new Date(h.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+
     return `
-      <div class="rank-card ${cls}">
-        <div class="rank-card-icon">${r.icon}</div>
-        <div class="rank-card-name">${r.label}</div>
-        <div class="rank-card-pts">${r.min === 0 ? '0 pts' : `${r.min}+ pts`}</div>
-        <div class="rank-card-perk ${r.locked && !unlocked ? 'locked' : ''}">${r.perk}</div>
+      <div class="hilo-card ${claseFijado}" onclick="irAlHilo('${h.id}')">
+        <div class="hilo-header">
+          <div class="hilo-meta">
+            <span class="user-badge-hilo">👤 ${h.nickname}</span>
+            <span>•</span>
+            <span>${fecha}</span>
+          </div>
+          <div style="display:flex; gap:10px; font-size:0.8rem;">
+            ${btnFijar}
+            ${btnBorrar}
+          </div>
+        </div>
+        <div class="hilo-titulo">${iconoFijado}${h.titulo || 'Consulta de móvil'}</div>
+        <p class="hilo-desc">${h.detalles || 'Sin detalles adicionales.'}</p>
+        <div class="hilo-tags">
+          <span class="tag tag-presupuesto">💰 ${h.presupuesto}</span>
+          <span class="tag tag-uso">🎯 ${h.uso}</span>
+          <span class="tag tag-preferencia">📱 ${h.preferencia}</span>
+        </div>
+        <div class="hilo-footer">
+          <div></div>
+          <div class="hilo-respuestas">
+            <span>💬</span>
+            <span>${h.respuestas || 0} respuestas</span>
+          </div>
+        </div>
       </div>
     `;
   }).join('');
 }
 
-function togglePerks() {
-  const p = document.getElementById('perksPanel');
-  p.classList.toggle('open');
-  renderRangos();
+function irAlHilo(id) {
+  window.location.href = `hilo.html?id=${id}`;
 }
 
-function actualizarBarraRango() {
-  if (!usuario) return;
-  const pts = usuario.puntos || 0;
-  const wrap = document.getElementById('rankProgressWrap');
-  wrap.style.display = 'flex';
-  
-  const rango = getRango(pts, usuario.rol);
-  if (usuario.rol === 'admin' || rango.id === 'leyenda') {
-    document.getElementById('rankBarFill').style.width = '100%';
-    document.getElementById('rankNextLabel').textContent = '¡Máximo rango!';
-    return;
-  }
-  
-  const next = RANGOS.find(r => r.min > pts);
-  if (!next) return;
-  
-  const pct = Math.min(100, ((pts - rango.min) / (next.min - rango.min)) * 100);
-  document.getElementById('rankBarFill').style.width = `${pct}%`;
-  document.getElementById('rankNextLabel').textContent = `${next.icon} ${next.label} a ${next.min - pts} pts`;
-}
-
-// ═══════════════════════════════════════════
-// AUTH
-// ═══════════════════════════════════════════
-
-function generarToken() {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let t = '';
-  for (let i = 0; i < 48; i++) t += chars[Math.floor(Math.random() * chars.length)];
-  return t;
-}
-
-// Guarda el token en todos los sitios posibles
-function guardarToken(token) {
-  try { localStorage.setItem('moviles_token', token); } catch(e) {}
-  try { sessionStorage.setItem('moviles_token', token); } catch(e) {}
-  try {
-    const exp = new Date(Date.now() + 365 * 864e5).toUTCString();
-    document.cookie = `moviles_token=${token};expires=${exp};path=/;SameSite=Lax`;
-  } catch(e) {}
-}
-
-// Lee el token de donde sea que esté guardado
-function leerToken() {
-  try { const v = localStorage.getItem('moviles_token'); if (v) return v; } catch(e) {}
-  try { const v = sessionStorage.getItem('moviles_token'); if (v) return v; } catch(e) {}
-  try {
-    const m = document.cookie.match('(^|;)\\s*moviles_token\\s*=\\s*([^;]+)');
-    if (m) return m[2];
-  } catch(e) {}
-  return null;
-}
-
-function borrarToken() {
-  try { localStorage.removeItem('moviles_token'); } catch(e) {}
-  try { sessionStorage.removeItem('moviles_token'); } catch(e) {}
-  try { document.cookie = 'moviles_token=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/'; } catch(e) {}
-}
-
-async function procesarAcceso() {
-  const nickOrig = document.getElementById('nicknameInput').value.trim();
-  const codigo = document.getElementById('codigoInput').value.trim();
-  const errDiv = document.getElementById('authError');
-  errDiv.textContent = '';
-
-  if (!nickOrig || nickOrig.length < 3) { errDiv.textContent = '❌ Mínimo 3 caracteres'; return; }
-  if (!/^[a-zA-Z0-9_\-\.]+$/.test(nickOrig)) { errDiv.textContent = '❌ Solo letras, números, _ y -'; return; }
-  if (FORBIDDEN_NAMES.includes(nickOrig.toLowerCase())) { errDiv.textContent = '❌ Ese nombre no está permitido'; return; }
-
-  const nickLower = nickOrig.toLowerCase();
-  const { data: existe } = await db.from('usuarios').select('*').eq('nickname', nickLower).single();
-
-  if (existe) {
-    if (!codigo) { errDiv.textContent = '🔐 Este usuario ya existe. Introduce tu código secreto.'; return; }
-    if (existe.codigo_acceso !== codigo) { errDiv.textContent = '❌ Código incorrecto'; return; }
-    usuario = existe;
-    await crearSesion(nickLower);
-    cerrarModalAuth();
-    onLogin();
-  } else {
-    const nuevoCodigo = generarCodigo();
-    const { data: nuevo, error } = await db.from('usuarios').insert({
-      nickname: nickLower, puntos: 0, codigo_acceso: nuevoCodigo, rol: 'usuario'
-    }).select().single();
-    if (error) { errDiv.textContent = '⚠️ Error: ' + error.message; return; }
-    usuario = nuevo;
-    await crearSesion(nickLower);
-    cerrarModalAuth();
-    onLogin();
-    mostrarCodeModal(nuevoCodigo);
-  }
-}
-
-async function crearSesion(nickname) {
-  const token = generarToken();
-  await db.from('sesiones').insert({ token, nickname });
-  guardarToken(token);
-}
-
-async function verificarSesion() {
-  const token = leerToken();
-  if (token) {
-    try {
-      const { data: sesion } = await db.from('sesiones')
-        .select('nickname, expires_at')
-        .eq('token', token)
-        .single();
-      if (sesion && new Date(sesion.expires_at) > new Date()) {
-        const { data: user } = await db.from('usuarios')
-          .select('*')
-          .eq('nickname', sesion.nickname)
-          .single();
-        if (user) {
-          usuario = user;
-          onLogin();
-          return;
-        }
-      }
-    } catch(e) {}
-    borrarToken();
-  }
-  mostrarModalAuth();
-}
-
-function cerrarModalAuth() {
-  document.getElementById('authModal').classList.add('hidden');
-  document.getElementById('nicknameInput').value = '';
-  document.getElementById('codigoInput').value = '';
-  document.getElementById('authError').textContent = '';
-}
-
-function mostrarModalAuth() {
-  document.getElementById('authModal').classList.remove('hidden');
-}
-
-function mostrarCodeModal(codigo) {
-  document.getElementById('generatedCodeValue').textContent = codigo;
-  document.getElementById('codeModal').classList.remove('hidden');
-}
-
-function cerrarCodeModal() {
-  document.getElementById('codeModal').classList.add('hidden');
-}
-
-function onLogin() {
-  mostrarUsuario();
-  cargarHilos();
-  cargarStats();
-  cargarNotificaciones();
-  actualizarBarraRango();
-}
-
-function mostrarUsuario() {
-  if (!usuario) return;
-  const nombre = cap(usuario.nickname);
-  const rango = getRango(usuario.puntos || 0, usuario.rol);
-  const ac = avatarColor(usuario.nickname);
-  
-  document.getElementById('chipAvatar').style.background = ac.bg;
-  document.getElementById('chipAvatar').style.color = ac.color;
-  document.getElementById('chipAvatar').textContent = nombre.substring(0,2).toUpperCase();
-  document.getElementById('chipName').textContent = nombre + (esAdmin() ? ' 👑' : '');
-  document.getElementById('chipPts').textContent = `${rango.icon} ${usuario.puntos || 0}pts`;
-}
-
-function toggleUserMenu() {
-  if (!usuario) { mostrarModalAuth(); return; }
-  // Podría expandirse con un menú de usuario, por ahora muestra info
-}
-
-// ═══════════════════════════════════════════
-// TABS
-// ═══════════════════════════════════════════
-function setTab(tab, el) {
-  tabActual = tab;
-  currentPage = 1;
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  cargarHilos();
-}
-
-// ═══════════════════════════════════════════
-// HILOS
-// ═══════════════════════════════════════════
-async function cargarHilos() {
-  if (!usuario) return;
-  document.getElementById('hilosList').innerHTML = '<div class="loading">⏳ Cargando...</div>';
-
-  let query = db.from('hilos').select('*, respuestas(count)');
-  if (tabActual === 'abiertas') query = query.eq('resuelto', false);
-  else if (tabActual === 'mis_abiertas') query = query.eq('nickname', usuario.nickname).eq('resuelto', false);
-  else if (tabActual === 'mis_cerradas') query = query.eq('nickname', usuario.nickname).eq('resuelto', true);
-
-  query = query.order('created_at', { ascending: false });
-  const { data: hilos } = await query;
-  hilosData = hilos || [];
-
-  if (hilosData.length === 0) {
-    const msgs = { abiertas: 'Sé el primero en preguntar 👆', mis_abiertas: 'No tienes consultas abiertas', mis_cerradas: 'No tienes consultas cerradas' };
-    document.getElementById('hilosList').innerHTML = `
-      <div class="empty-state">
-        <div class="empty-state-icon">📭</div>
-        ${msgs[tabActual] || 'Sin resultados'}
-      </div>`;
-    document.getElementById('pagination').innerHTML = '';
+async function crearConsulta() {
+  if(!usuario) {
+    toast("⚠️ Debes identificarte para publicar.");
+    abrirModalAuth();
     return;
   }
 
-  renderPaginacion();
-  const start = (currentPage - 1) * ITEMS_PER_PAGE;
-  const pag = hilosData.slice(start, start + ITEMS_PER_PAGE);
+  const pres = document.getElementById('filtroPresupuesto').value;
+  const uso = document.getElementById('filtroUso').value;
+  const pref = document.getElementById('filtroPreferencia').value;
+  const det = document.getElementById('inputDetalles').value.trim();
 
-  let html = '';
-  for (const h of pag) html += await renderHilo(h);
-  document.getElementById('hilosList').innerHTML = html;
-  for (const h of pag) cargarRespuestas(h.id);
-}
+  const tituloForo = `Busco móvil por ${pres} para ${uso.split(' ').slice(1).join(' ')}`;
 
-function renderPaginacion() {
-  const total = Math.ceil(hilosData.length / ITEMS_PER_PAGE);
-  if (total <= 1) { document.getElementById('pagination').innerHTML = ''; return; }
-  let html = '';
-  for (let i = 1; i <= total; i++) {
-    html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
-  }
-  document.getElementById('pagination').innerHTML = html;
-}
-
-function goToPage(p) { currentPage = p; cargarHilos(); }
-
-async function renderHilo(h) {
-  const { data: uData } = await db.from('usuarios').select('puntos, rol').eq('nickname', h.nickname).single();
-  const pts = uData?.puntos || 0;
-  const rol = uData?.rol || 'usuario';
-  const replyCount = h.respuestas?.[0]?.count || 0;
-  const ac = avatarColor(h.nickname);
-  const nombre = cap(h.nickname);
-  const puedeCerrar = usuario && (usuario.nickname === h.nickname || esAdmin());
-
-  const specs = [
-    { label: 'Presupuesto', val: h.presupuesto, icon: '💰' },
-    { label: 'Móvil actual', val: h.movil_actual, icon: '📱' },
-    { label: 'Marca pref.', val: h.marca_preferida, icon: '⭐' },
-    { label: 'Marca NO', val: h.marca_no_quiere, icon: '🚫' },
-    { label: 'Garantía ES', val: h.garantia_espana, icon: '🛡️' },
-    { label: 'Uso', val: h.uso_principal, icon: '🎯' },
-    { label: 'Pantalla', val: h.tamano_pantalla, icon: '📏' },
-    { label: 'Juegos', val: h.juegos, icon: '🎮' },
-    { label: 'Cámara', val: h.camara, icon: '📸' },
-    { label: 'Batería', val: h.bateria, icon: '🔋' },
-    { label: 'Carga rápida', val: h.carga_rapida, icon: '⚡' },
-  ].filter(s => s.val && !['Sin preferencia','No','No mucho','Normal','No necesaria',''].includes(s.val));
-
-  return `
-    <div class="thread-card" id="thread_${h.id}">
-      <div class="thread-header">
-        <div class="thread-meta">
-          <div class="avatar" style="background:${ac.bg};color:${ac.color};">${nombre.substring(0,2).toUpperCase()}</div>
-          <div class="author-block">
-            <div class="author-name">${nombre} ${getBadgeHtml(pts, rol)}</div>
-          </div>
-          <div class="thread-time">${timeAgo(h.created_at)}</div>
-        </div>
-        ${specs.length ? `
-          <div class="specs-wrap">
-            ${specs.map(s => `<div class="spec-tag">${s.icon} ${s.label}: <span class="spec-val">${s.val}</span></div>`).join('')}
-          </div>` : ''}
-        ${h.datos_extra ? `<div class="extra-note">📝 ${h.datos_extra}</div>` : ''}
-      </div>
-
-      <div id="topRec_${h.id}"></div>
-
-      <div class="thread-bar">
-        <button class="reply-count-btn" onclick="toggleReplies('${h.id}')">
-          💬 <span class="cnt" id="rcnt_${h.id}">${replyCount}</span> respuestas
-        </button>
-        ${h.resuelto
-          ? '<div class="resolved-pill">✅ Resuelta</div>'
-          : (puedeCerrar ? `<button class="resolve-btn" onclick="marcarResuelta('${h.id}')">🔒 Marcar resuelta</button>` : '')}
-      </div>
-
-      <div class="replies-section" id="replies_${h.id}" style="display:none;"></div>
-
-      ${!h.resuelto ? `
-        <div class="reply-box" id="replybox_${h.id}" style="display:none;">
-          <div class="quote-preview" id="qpreview_${h.id}">
-            <span class="quote-preview-text"></span>
-            <button class="quote-clear" onclick="clearCita('${h.id}')">✕</button>
-          </div>
-          <div class="reply-input-row">
-            <textarea class="reply-input" id="rinput_${h.id}" placeholder="Escribe o usa @nombre"
-              rows="1"
-              onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarRespuesta('${h.id}')}"
-              oninput="autoResize(this)"
-            ></textarea>
-            <button class="send-btn" id="sendbtn_${h.id}" onclick="enviarRespuesta('${h.id}')">➤</button>
-          </div>
-        </div>` : ''}
-    </div>
-  `;
-}
-
-function autoResize(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
-}
-
-function toggleReplies(hiloId) {
-  const rep = document.getElementById(`replies_${hiloId}`);
-  const box = document.getElementById(`replybox_${hiloId}`);
-  const isOpen = rep.style.display !== 'none';
-  
-  if (isOpen) {
-    rep.style.display = 'none';
-    if (box) box.style.display = 'none';
-  } else {
-    rep.style.display = 'block';
-    if (box) box.style.display = 'block';
-    if (rep.innerHTML === '') cargarRespuestas(hiloId);
-  }
-}
-
-async function marcarResuelta(hiloId) {
-  if (!usuario) return;
-  const { data: hilo } = await db.from('hilos').select('nickname').eq('id', hiloId).single();
-  if (hilo && (usuario.nickname === hilo.nickname || esAdmin())) {
-    await db.from('hilos').update({ resuelto: true }).eq('id', hiloId);
-    cargarHilos();
-    cargarStats();
-    toast('✅ Consulta marcada como resuelta');
-  }
-}
-
-// ═══════════════════════════════════════════
-// RESPUESTAS
-// ═══════════════════════════════════════════
-async function cargarRespuestas(hiloId) {
-  const container = document.getElementById(`replies_${hiloId}`);
-  if (!container) return;
-
-  const { data: respuestas } = await db.from('respuestas')
-    .select('*')
-    .eq('hilo_id', hiloId)
-    .order('created_at', { ascending: true });
-
-  if (!respuestas || respuestas.length === 0) {
-    container.innerHTML = '<div class="replies-empty">💬 Sé el primero en recomendar</div>';
-    document.getElementById(`topRec_${hiloId}`).innerHTML = '';
-    return;
-  }
-
-  // Detectar modelo más recomendado colectivamente
-  const topModelo = modeloMasPopular(respuestas);
-  const topRecEl = document.getElementById(`topRec_${hiloId}`);
-  if (topModelo && topRecEl) {
-    topRecEl.innerHTML = `
-      <div class="top-rec">
-        <div class="top-rec-icon">🏅</div>
-        <div>
-          <div class="top-rec-text">Más recomendado</div>
-          <div class="top-rec-model">${topModelo}</div>
-        </div>
-      </div>
-    `;
-  } else if (topRecEl) {
-    topRecEl.innerHTML = '';
-  }
-
-  // Actualizar contador
-  const cntEl = document.getElementById(`rcnt_${hiloId}`);
-  if (cntEl) cntEl.textContent = respuestas.length;
-
-  let votosUsuario = {};
-  if (usuario) {
-    const { data: vots } = await db.from('votos')
-      .select('respuesta_id, tipo')
-      .eq('usuario_id', usuario.id)
-      .in('respuesta_id', respuestas.map(r => r.id));
-    if (vots) vots.forEach(v => votosUsuario[v.respuesta_id] = v.tipo);
-  }
-
-  let html = '';
-  for (const r of respuestas) {
-    const { data: uData } = await db.from('usuarios').select('puntos, rol').eq('nickname', r.nickname).single();
-    const ac = avatarColor(r.nickname);
-    const nombre = cap(r.nickname);
-    const miVoto = votosUsuario[r.id];
-    const modelos = extraerModelos(r.contenido);
-
-    // Cita si la tiene
-    let citaHtml = '';
-    if (r.cita_id) {
-      const citada = respuestas.find(rx => rx.id === r.cita_id);
-      if (citada) {
-        citaHtml = `
-          <div class="quote-block">
-            <div class="quote-author">↩ ${cap(citada.nickname)}</div>
-            ${citada.contenido.slice(0, 120)}${citada.contenido.length > 120 ? '…' : ''}
-          </div>`;
-      }
+  const { error } = await db.from('hilos').insert([
+    {
+      nickname: usuario.nickname,
+      titulo: tituloForo,
+      presupuesto: pres,
+      uso: uso,
+      preferencia: pref,
+      detalles: det || "Sin detalles adicionales.",
+      respuestas: 0,
+      fijado: false
     }
+  ]);
 
-    const contenidoHtml = renderizarContenido(r.contenido);
-
-    html += `
-      <div class="reply-item" id="reply_${r.id}">
-        <div class="reply-header">
-          <div class="reply-avatar" style="background:${ac.bg};color:${ac.color};">${nombre.substring(0,2).toUpperCase()}</div>
-          <span class="reply-author">${nombre}</span>
-          ${getBadgeHtml(uData?.puntos || 0, uData?.rol || 'usuario')}
-          <span class="reply-time">${timeAgo(r.created_at)}</span>
-        </div>
-        <div class="reply-content">
-          ${citaHtml}
-          ${contenidoHtml}
-          ${modelos.length > 0 ? modelos.map(m => `<div><span class="phone-tag">📱 ${formatearModelo(m)}</span></div>`).join('') : ''}
-        </div>
-        <div class="reply-actions">
-          <button class="vote-btn ${miVoto === 'util' ? 'voted-util' : ''}" onclick="votar('${r.id}','util','${hiloId}','${r.nickname}')">👍 ${r.votos_util || 0}</button>
-          <button class="vote-btn ${miVoto === 'noutil' ? 'voted-noutil' : ''}" onclick="votar('${r.id}','noutil','${hiloId}','${r.nickname}')">👎 ${r.votos_noutil || 0}</button>
-          <button class="cite-btn" onclick="setCita('${hiloId}','${r.id}','${r.nickname}',${JSON.stringify(r.contenido)})">↩ Citar</button>
-        </div>
-      </div>
-    `;
-  }
-
-  container.innerHTML = html;
-}
-
-async function enviarRespuesta(hiloId) {
-  if (!usuario) { mostrarModalAuth(); return; }
-  const input = document.getElementById(`rinput_${hiloId}`);
-  const texto = input.value.trim();
-  if (!texto) return;
-
-  const sendBtn = document.getElementById(`sendbtn_${hiloId}`);
-  sendBtn.classList.add('sending');
-
-  const insertData = {
-    hilo_id: hiloId,
-    usuario_id: usuario.id,
-    nickname: usuario.nickname,
-    contenido: texto,
-  };
-
-  // Adjuntar cita si existe
-  if (quoteActiva && quoteActiva.hiloId === hiloId) {
-    insertData.cita_id = quoteActiva.replyId;
-  }
-
-  await db.from('respuestas').insert(insertData);
-
-  // +2 pts por responder
-  const newPts = (usuario.puntos || 0) + 2;
-  await db.from('usuarios').update({ puntos: newPts }).eq('id', usuario.id);
-  usuario.puntos = newPts;
-  mostrarUsuario();
-  actualizarBarraRango();
-
-  input.value = '';
-  input.style.height = 'auto';
-  clearCita(hiloId);
-  sendBtn.classList.remove('sending');
-  toast('✅ Respuesta enviada · +2 pts');
-  
-  cargarRespuestas(hiloId);
-}
-
-async function votar(respuestaId, tipo, hiloId, nickAsesor) {
-  if (!usuario) { mostrarModalAuth(); return; }
-  const { data: yaVoto } = await db.from('votos')
-    .select('id').eq('respuesta_id', respuestaId).eq('usuario_id', usuario.id).single();
-  if (yaVoto) { toast('Ya votaste esta respuesta'); return; }
-
-  await db.from('votos').insert({ respuesta_id: respuestaId, usuario_id: usuario.id, tipo });
-  const campo = tipo === 'util' ? 'votos_util' : 'votos_noutil';
-  const { data: resp } = await db.from('respuestas').select(campo).eq('id', respuestaId).single();
-  await db.from('respuestas').update({ [campo]: (resp[campo] || 0) + 1 }).eq('id', respuestaId);
-
-  if (tipo === 'util') {
-    const { data: asesor } = await db.from('usuarios').select('puntos').eq('nickname', nickAsesor).single();
-    if (asesor) await db.from('usuarios').update({ puntos: (asesor.puntos || 0) + 3 }).eq('nickname', nickAsesor);
-  }
-
-  cargarRespuestas(hiloId);
-}
-
-// ═══════════════════════════════════════════
-// FORM NUEVA CONSULTA
-// ═══════════════════════════════════════════
-function abrirForm() {
-  if (!usuario) { mostrarModalAuth(); return; }
-  document.getElementById('newForm').style.display = 'block';
-  document.getElementById('newForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-function cerrarForm() {
-  document.getElementById('newForm').style.display = 'none';
-  document.querySelectorAll('#newForm input, #newForm textarea, #newForm select').forEach(el => {
-    if (el.tagName === 'SELECT') {
-      el.selectedIndex = 0;
-    } else {
-      el.value = '';
-    }
-  });
-}
-
-async function publicarHilo() {
-  if (!usuario) { mostrarModalAuth(); return; }
-  const { error } = await db.from('hilos').insert({
-    usuario_id: usuario.id,
-    nickname: usuario.nickname,
-    presupuesto: document.getElementById('f_presupuesto').value,
-    movil_actual: document.getElementById('f_movil_actual').value,
-    marca_preferida: document.getElementById('f_marca_pref').value,
-    marca_no_quiere: document.getElementById('f_marca_no').value,
-    garantia_espana: document.getElementById('f_garantia').value,
-    modelos: document.getElementById('f_modelos').value,
-    uso_principal: document.getElementById('f_uso').value,
-    tamano_pantalla: document.getElementById('f_tamano').value,
-    juegos: document.getElementById('f_juegos').value,
-    camara: document.getElementById('f_camara').value,
-    bateria: document.getElementById('f_bateria').value,
-    carga_rapida: document.getElementById('f_carga').value,
-    datos_extra: document.getElementById('f_extra').value,
-  });
-
-  if (!error) {
-    cerrarForm();
-    // +1 pt por nueva consulta
-    const newPts = (usuario.puntos || 0) + 1;
-    await db.from('usuarios').update({ puntos: newPts }).eq('id', usuario.id);
-    usuario.puntos = newPts;
-    mostrarUsuario();
-    actualizarBarraRango();
+  if(!error) {
+    document.getElementById('inputDetalles').value = "";
+    const nuevosPuntos = (usuario.puntos || 0) + 1;
+    await db.from('usuarios').update({ puntos: nuevosPuntos }).eq('nickname', usuario.nickname);
+    usuario.puntos = nuevosPuntos;
+    actualizarUIAuth();
+    
     cargarHilos();
     cargarStats();
     toast('📱 Consulta publicada · +1 pt');
@@ -2259,69 +645,91 @@ async function publicarHilo() {
   }
 }
 
-// ═══════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════
-async function init() {
-  cargarStats();
-  const token = leerToken();
-  console.log('TOKEN:', token ? 'encontrado' : 'null');
-  if (!token) { mostrarModalAuth(); return; }
-  try {
-    const { data: sesion, error: err1 } = await db.from('sesiones')
-      .select('nickname, expires_at')
-      .eq('token', token)
-      .single();
-    console.log('SESION:', JSON.stringify(sesion), 'ERR:', JSON.stringify(err1));
-    if (err1 || !sesion) { borrarToken(); mostrarModalAuth(); return; }
-    if (new Date(sesion.expires_at) <= new Date()) { borrarToken(); mostrarModalAuth(); return; }
+async function alternarFijar(id, estadoActual) {
+  const { error } = await db.from('hilos').update({ fijado: !estadoActual }).eq('id', id);
+  if(!error) { cargarHilos(); }
+}
 
-    const { data: user, error: err2 } = await db.from('usuarios')
-      .select('*')
-      .eq('nickname', sesion.nickname)
-      .single();
-    console.log('USER:', JSON.stringify(user), 'ERR:', JSON.stringify(err2));
-    if (err2 || !user) { borrarToken(); mostrarModalAuth(); return; }
-
-    usuario = user;
-    onLogin();
-  } catch(e) {
-    console.log('CATCH ERROR:', e.message);
-    mostrarModalAuth();
+async function borrarHilo(id) {
+  if(confirm("¿Seguro que quieres borrar esta consulta?")) {
+    const { error } = await db.from('hilos').delete().eq('id', id);
+    if(!error) { toast("Consulta eliminada"); cargarHilos(); cargarStats(); }
   }
 }
+
+async function limpiarTodaLaBaseDeDatos() {
+  if(confirm("🚨 ¡ATENCIÓN! Vas a borrar TODOS los hilos del foro. ¿Estás completamente seguro?")) {
+    const { error } = await db.from('hilos').delete().neq('presupuesto', 'ELIMINAR_TODO_FILTRO_FORCE');
+    if(!error) { toast("Foro completamente vaciado"); cargarHilos(); cargarStats(); } else { alert(error.message); }
+  }
+}
+
+// GESTIÓN TÉCNICA DEL AVISO DE COOKIES
+function verificarCookiesAceptadas() {
+  const b = document.getElementById('bannerCookiesContainer');
+  if (!b) return;
+  if (!localStorage.getItem('cookies_foro_aceptadas')) {
+    b.style.display = 'flex';
+  }
+}
+
+function aceptarCookiesTecnicas() {
+  localStorage.setItem('cookies_foro_aceptadas', 'true');
+  const b = document.getElementById('bannerCookiesContainer');
+  if (b) b.style.display = 'none';
+}
+
+// DETECTOR DE TECLA INTRO PARA ENTRAR RÁPIDO
+function activarDetectoresTeclaIntro() {
+  const inputs = ['nicknameInput', 'codigoInput'];
+  inputs.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          procesarAcceso();
+        }
+      });
+    }
+  });
+}
+
 // ═══════════════════════════════════════════
-// INIT
+// INIT CENTRALIZADO Y SIN DUPLICADOS
 // ═══════════════════════════════════════════
 async function init() {
     const token = leerToken();
     console.log("TOKEN manual en localStorage:", token ? "encontrado" : "no encontrado");
 
+    // Iniciar controladores de teclado y aviso de cookies
+    activarDetectoresTeclaIntro();
+    verificarCookiesAceptadas();
+
     if (token) {
-        const { data: sesion, error: errorSesion } = await db.from('sesiones').select('*').eq('token', token).single();
+        const { data: sesion, error: errorSesion } = await db.from('sesiones').select('*').eq('token', token).maybeSingle();
         console.log("SESION en DB:", JSON.stringify(sesion), "ERR:", errorSesion);
 
         if (sesion) {
-            const { data: usuarioDB, error: errorUsuario } = await db.from('usuarios').select('*').eq('nickname', sesion.nickname).single();
+            const { data: usuarioDB, error: errorUsuario } = await db.from('usuarios').select('*').eq('nickname', sesion.nickname).maybeSingle();
             console.log("USER en DB:", JSON.stringify(usuarioDB), "ERR:", errorUsuario);
 
             if (usuarioDB) {
-                // 1. Guardamos los datos en la variable global de tu web para que sepa quién eres
                 usuario = usuarioDB; 
-                
-                // 2. Cerramos el cartel flotante por si acaso se hubiera quedado abierto
-                cerrarModalAuth();
-                
-                // 3. Avisamos a la web para que pinte tu nombre de admin y tus 15 puntos arriba
-                onLogin();
-                
+                actualizarUIAuth();
+                cargarStats();
+                cargarHilos();
                 return; 
             }
         }
     }
 
-    // Si de verdad no hay sesión ni token, entonces sí mostramos el login
-    mostrarModal();
+    // Si no hay token válido en el sistema, forzar estado inicial de invitado
+    usuario = null;
+    actualizarUIAuth();
+    cargarStats();
+    cargarHilos();
+    abrirModalAuth();
 }
 
 window.addEventListener('load', init);
