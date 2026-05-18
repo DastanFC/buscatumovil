@@ -2263,17 +2263,18 @@ async function publicarHilo() {
 // INIT
 // ═══════════════════════════════════════════
 async function init() {
-    // Ponemos al "escuchador" de Supabase a vigilar la sesión todo el rato
-    supabaseClient.auth.onAuthStateChange((event, session) => {
+    // Ponemos al "escuchador" de Supabase a vigilar todo el rato
+    supabaseClient.auth.onAuthStateChange((event, sesion) => {
         console.log("Supabase dice - Evento de sesión:", event);
 
-        if (session) {
-            console.log("¡Sesión detectada automáticamente por el escuchador!", session);
+        // ¡Ahora todo en español para que no haya fallos!
+        if (sesion) {
+            console.log("¡Sesión detectada automáticamente por el escuchador!", sesion);
             
-            // Si Supabase detecta que estás dentro, cerramos el cartel sí o sí
+            // Cerramos el cartel flotante en cuanto Supabase despierte
             cerrarModal();
             
-            // Buscamos tus datos de dastan de fondo
+            // Buscamos tus datos de fondo
             consultarUsuarioSupabase("dastan").then(({ data }) => {
                 console.log("Datos de dastan:", JSON.stringify(data));
             });
@@ -2283,7 +2284,7 @@ async function init() {
         }
     });
 
-    // Tu chivato de la hora para saber que se ha guardado bien
+    // Tu fiel chivato de la hora
     const ahora = new Date();
     const horaTexto = ahora.toLocaleTimeString();
     const chivato = document.createElement('div');
