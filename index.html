@@ -2263,28 +2263,20 @@ async function publicarHilo() {
 // INIT
 // ═══════════════════════════════════════════
 async function init() {
-    const token = leerToken();
-    console.log("TOKEN:", token ? "encontrado" : "no encontrado");
+    // 1. Le preguntamos directamente a tu "supabaseClient" si tiene la sesión guardada
+    const { data: { session } } = await supabaseClient.auth.getSession();
 
-    if (token) {
-        const { data: sesion, error: errorSesion } = await consultarSesionSupabase(token);
-        console.log("SESION:", JSON.stringify(sesion), "ERR:", errorSesion);
-
-        if (sesion) {
-            const { data: usuario, error: errorUsuario } = await consultarUsuarioSupabase(sesion.nickname);
-            console.log("USER:", JSON.stringify(usuario), "ERR:", errorUsuario);
-            
-            if (usuario) {
-                // 🌟 ¡AQUÍ ESTÁ EL TRUCO! 🌟
-                // Como todo está bien, le ordenamos al cartel que se esconda:
-                ocultarModal(); 
-            } else {
-                mostrarModal();
-            }
-        } else {
-            mostrarModal();
-        }
+    if (session) {
+        console.log("¡Supabase dice que la sesión está activa!", session);
+        
+        // 2. Si hay sesión, buscamos tus datos (dastan) usando el nickname que guardó Supabase
+        const { data: usuario, error: errorUsuario } = await consultarUsuarioSupabase(session.user.user_metadata.nickname || "dastan");
+        console.log("USER:", JSON.stringify(usuario), "ERR:", errorUsuario);
+        
+        // 3. ¡La magia! Como ya estás dentro, escondemos el cartel flotante automáticamente
+        ocultarModal(); 
     } else {
+        console.log("No hay ninguna sesión guardada. Mostramos el login.");
         mostrarModal();
     }
 }
