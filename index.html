@@ -1753,6 +1753,50 @@ border: 1.5px solid var(--blue);
   }
 }
 
+/* ─── INDICADOR DE EDITADO ─── */
+.editado-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--surface-3);
+  color: var(--text-3);
+  font-size: 0.6rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin-left: 8px;
+  font-weight: 500;
+}
+
+.editado-badge i {
+  font-size: 0.65rem;
+}
+
+/* Botón editar en respuestas */
+.edit-reply-btn {
+  background: none;
+  border: none;
+  font-size: 0.68rem;
+  color: var(--text-3);
+  cursor: pointer;
+  padding: 3px 6px;
+  border-radius: 6px;
+  transition: all 0.18s;
+}
+.edit-reply-btn:hover { background: var(--surface-3); color: var(--blue); }
+
+/* Modal de edición */
+.edit-modal textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-family: 'DM Sans', sans-serif;
+  resize: vertical;
+  min-height: 100px;
+  margin-bottom: 16px;
+}
+
 </style>
 </head>
 <body>
@@ -2936,27 +2980,23 @@ async function cargarRespuestas(hiloId) {
     return;
   }
 
-// Calcular la respuesta con más votos útiles (que CONTENGA un modelo de móvil)
-let mejorRespuesta = null;
-let maxVotos = -1;
-
-for (const r of respuestas) {
+  // Calcular respuesta más votada
+  let mejorRespuesta = null;
+  let maxVotos = -1;
+  for (const r of respuestas) {
     const votosUtil = r.votos_util || 0;
     const tieneModelo = extraerModelos(r.contenido).length > 0;
-    
-    // Solo considerar respuestas que recomienden un móvil
     if (tieneModelo && votosUtil > maxVotos) {
-        maxVotos = votosUtil;
-        mejorRespuesta = r;
+      maxVotos = votosUtil;
+      mejorRespuesta = r;
     }
-}
+  }
 
-// Mostrar top recommendation general
-const topRecEl = document.getElementById(`topRec_${hiloId}`);
-if (mejorRespuesta && maxVotos > 0) {
+  // Top recommendation
+  const topRecEl = document.getElementById(`topRec_${hiloId}`);
+  if (mejorRespuesta && maxVotos > 0) {
     const modelos = extraerModelos(mejorRespuesta.contenido);
     const modeloTop = modelos.length > 0 ? formatearModelo(modelos[0]) : 'Respuesta útil';
-    
     topRecEl.innerHTML = `
       <div class="top-rec">
         <div class="top-rec-icon">🏅</div>
@@ -2967,12 +3007,12 @@ if (mejorRespuesta && maxVotos > 0) {
         </div>
       </div>
     `;
-} else {
+  } else {
     topRecEl.innerHTML = '';
-}
-// Actualizar contador
-const cntEl = document.getElementById(`rcnt_${hiloId}`);
-if (cntEl) cntEl.textContent = respuestas.length;
+  }
+
+  const cntEl = document.getElementById(`rcnt_${hiloId}`);
+  if (cntEl) cntEl.textContent = respuestas.length;
 
   let votosUsuario = {};
   if (usuario) {
@@ -2991,14 +3031,16 @@ if (cntEl) cntEl.textContent = respuestas.length;
     const miVoto = votosUsuario[r.id];
     const modelos = extraerModelos(r.contenido);
     const votosUtil = r.votos_util || 0;
-    
-    // === NUEVO: Determinar si es la más votada (y tiene al menos 1 voto) ===
     const esTopVotada = (mejorRespuesta && mejorRespuesta.id === r.id && maxVotos > 0);
-    
-    // Clase adicional para destacar
     const topClass = esTopVotada ? 'reply-item top-voted' : 'reply-item';
+    
+    // INDICADOR DE EDITADO
+    const editadoBadge = r.editado ? `<span class="editado-badge"><i>✏️</i> Editado ${r.editado_en ? timeAgo(r.editado_en) : ''}</span>` : '';
+    
+    // BOTÓN EDITAR (solo para el autor)
+    const editBtn = (usuario && usuario.nickname === r.nickname) ? 
+      `<button class="edit-reply-btn" onclick="abrirModalEditarRespuesta('${r.id}', ${JSON.stringify(r.contenido)})">✏️ Editar</button>` : '';
 
-    // Cita si la tiene
     let citaHtml = '';
     if (r.cita_id) {
       const citada = respuestas.find(rx => rx.id === r.cita_id);
@@ -3020,6 +3062,7 @@ if (cntEl) cntEl.textContent = respuestas.length;
           <span class="reply-author">${nombre}</span>
           ${getBadgeHtml(uData?.puntos || 0, uData?.rol || 'usuario')}
           ${esTopVotada ? `<span class="top-voted-badge">🏅 Más votada</span>` : ''}
+          ${editadoBadge}
           <span class="reply-time">${timeAgo(r.created_at)}</span>
         </div>
         <div class="reply-content">
@@ -3031,6 +3074,7 @@ if (cntEl) cntEl.textContent = respuestas.length;
           <button class="vote-btn ${miVoto === 'util' ? 'voted-util' : ''}" onclick="votar('${r.id}','util','${hiloId}','${r.nickname}')">👍 ${votosUtil}</button>
           <button class="vote-btn ${miVoto === 'noutil' ? 'voted-noutil' : ''}" onclick="votar('${r.id}','noutil','${hiloId}','${r.nickname}')">👎 ${r.votos_noutil || 0}</button>
           <button class="cite-btn" onclick="setCita('${hiloId}','${r.id}','${r.nickname}',${JSON.stringify(r.contenido)})">↩ Citar</button>
+          ${editBtn}
         </div>
       </div>
     `;
