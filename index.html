@@ -1760,8 +1760,9 @@ border: 1.5px solid var(--blue);
   cursor: pointer;
   align-items: center;
   justify-content: center;
+  display: flex;
   transition: transform 0.15s, box-shadow 0.15s;
-" onpointerdown="this.style.transform='scale(0.92)'" onpointerup="this.style.transform='scale(1)'">👑</button>
+">👑</button>
 
 <!-- TOAST -->
 <div class="send-toast" id="sendToast"></div>
@@ -2563,18 +2564,31 @@ function mostrarUsuario() {
   const rango = getRango(usuario.puntos || 0, usuario.rol);
   const ac = avatarColor(usuario.nickname);
   
-  document.getElementById('chipAvatar').style.background = ac.bg;
-  document.getElementById('chipAvatar').style.color = ac.color;
-  document.getElementById('chipAvatar').textContent = nombre.substring(0,2).toUpperCase();
-  document.getElementById('chipName').textContent = nombre + (esAdmin() ? ' 👑' : '');
-  document.getElementById('chipPts').textContent = `${rango.icon} ${usuario.puntos || 0}pts`;
+  const avatarEl = document.getElementById('chipAvatar');
+  if (avatarEl) {
+    avatarEl.style.background = ac.bg;
+    avatarEl.style.color = ac.color;
+    avatarEl.textContent = nombre.substring(0, 2).toUpperCase();
+  }
+  
+  const nameEl = document.getElementById('chipName');
+  if (nameEl) {
+    nameEl.textContent = nombre + (esAdmin() ? ' 👑' : '');
+  }
+  
+  const ptsEl = document.getElementById('chipPts');
+  if (ptsEl) {
+    ptsEl.textContent = `${rango.icon} ${usuario.puntos || 0}pts`;
+  }
 }
 
 function toggleUserMenu() {
-  if (!usuario) { mostrarModalAuth(); return; }
+  if (!usuario) { 
+    mostrarModalAuth(); 
+    return; 
+  }
   // Podría expandirse con un menú de usuario, por ahora muestra info
 }
-
 // ═══════════════════════════════════════════
 // TABS
 // ═══════════════════════════════════════════
@@ -2996,13 +3010,20 @@ const ADMIN_POR_PAG = 10;
 function mostrarAdminPanel() {
   if (!usuario) return;
   const nick = (usuario.nickname || '').toLowerCase().trim();
-  if (nick !== ADMIN_NICK) return;
   const btn = document.getElementById('adminBtn');
-  if (btn) btn.style.display = 'flex';
-  setTimeout(() => {
+  console.log('Admin check - nickname:', nick, 'esperado: dastan');
+  if (nick === 'dastan') {
+    if (btn) {
+      btn.style.display = 'flex';
+      console.log('✅ Botón admin visible');
+    }
+    // También mostrar el panel por si acaso
     const panel = document.getElementById('adminPanel');
-    if (panel) { panel.style.display = 'block'; cargarAdminContent(); }
-  }, 300);
+    if (panel) panel.style.display = 'block';
+  } else {
+    if (btn) btn.style.display = 'none';
+    console.log('❌ No eres admin');
+  }
 }
 
 function emergenciaAdmin() {
