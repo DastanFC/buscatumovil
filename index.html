@@ -1812,6 +1812,34 @@ border: 1.5px solid var(--blue);
   margin-bottom: 16px;
 }
 
+/* Estilos para el formulario de puntuaciones */
+.rec-form { background: var(--blue-pale); border-radius: 12px; padding: 12px; margin-bottom: 12px; border: 1px solid rgba(29,111,232,0.2); }
+.rec-form.hidden { display: none; }
+.rec-modelo-input { width: 100%; padding: 10px; border-radius: 10px; border: 1.5px solid var(--border); margin-bottom: 12px; background: white; }
+.rec-categorias { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
+.rec-cat-item { display: flex; justify-content: space-between; align-items: center; background: white; padding: 6px 10px; border-radius: 10px; }
+.rec-cat-select { width: 55px; padding: 4px; border-radius: 8px; }
+.rec-textarea { width: 100%; padding: 10px; border-radius: 10px; border: 1.5px solid var(--border); margin-bottom: 12px; resize: vertical; background: white; }
+.rec-form-actions { display: flex; gap: 8px; justify-content: flex-end; }
+.rec-submit-btn { background: var(--blue); color: white; border: none; padding: 8px 16px; border-radius: 999px; cursor: pointer; }
+.rec-cancel-btn { background: var(--surface-3); border: none; padding: 8px 16px; border-radius: 999px; cursor: pointer; }
+.rec-toggle-btn { background: none; border: 1px dashed var(--blue); color: var(--blue); padding: 8px; border-radius: 999px; font-size: 0.7rem; cursor: pointer; margin-bottom: 8px; width: 100%; }
+
+/* Estilos para mostrar puntuaciones */
+.score-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 10px 0; background: var(--surface-2); padding: 10px; border-radius: 12px; }
+.score-item { display: flex; align-items: center; gap: 8px; font-size: 0.7rem; }
+.score-label { min-width: 70px; }
+.score-bar { flex: 1; height: 6px; background: var(--surface-3); border-radius: 3px; overflow: hidden; }
+.score-fill { height: 100%; background: var(--accent); border-radius: 3px; }
+.score-value { min-width: 28px; text-align: right; font-weight: 600; color: var(--accent); }
+.rec-opinion { font-size: 0.85rem; color: var(--text-2); margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border); }
+
+/* Responsive */
+@media (max-width: 600px) {
+  .rec-categorias { grid-template-columns: 1fr; }
+  .score-grid { grid-template-columns: 1fr; }
+}
+
 </style>
 </head>
 <body>
@@ -2078,6 +2106,14 @@ const RANGOS = window.RANGOS = [
   { id: 'leyenda', label: 'Leyenda', icon: '🔥', min: 200, max: 999, perk: 'Insignia legendaria', locked: true },
 ];
 
+const CATEGORIAS = [
+  { id: 'pantalla', label: '📱 Pantalla' }, { id: 'potencia', label: '🚀 Potencia' },
+  { id: 'camara', label: '📸 Cámara' }, { id: 'video', label: '🎥 Vídeo' },
+  { id: 'bateria', label: '🔋 Batería' }, { id: 'carga', label: '⚡ Carga' },
+  { id: 'sonido', label: '📢 Sonido' }, { id: 'bloatware', label: '🧹 Bloatware' },
+  { id: 'actualizaciones', label: '🔄 Updates' }, { id: 'software', label: '💻 Software' }
+];
+
 let usuario = null;
 let tabActual = 'abiertas';
 let hilosData = [];
@@ -2087,195 +2123,340 @@ let quoteActiva = null; // { hiloId, replyId, autor, texto }
 let notifCount = 0;
 
 // ═══════════════════════════════════════════
-// DETECCIÓN DE MÓVILES (sistema colectivo)
+// LISTA MAESTRA DE MODELOS CONOCIDOS
 // ═══════════════════════════════════════════
 
-// Extrae posibles modelos de texto libre usando patrones
+const MODELOS_CONOCIDOS = [
+  // ── APPLE ──────────────────────────────────────────
+  { patron: 'iphone 15', variantes: ['15', 'iphone 15'] },
+  { patron: 'iphone 15 plus', variantes: ['15 plus', 'iphone 15 plus'] },
+  { patron: 'iphone 15 pro', variantes: ['15 pro', 'iphone 15 pro'] },
+  { patron: 'iphone 15 pro max', variantes: ['15 pro max', 'iphone 15 pro max'] },
+  { patron: 'iphone 16', variantes: ['16', 'iphone 16'] },
+  { patron: 'iphone 16 plus', variantes: ['16 plus', 'iphone 16 plus'] },
+  { patron: 'iphone 16 pro', variantes: ['16 pro', 'iphone 16 pro'] },
+  { patron: 'iphone 16 pro max', variantes: ['16 pro max', 'iphone 16 pro max'] },
+  { patron: 'iphone 16e', variantes: ['16e', 'iphone 16e'] },
+  { patron: 'iphone 17', variantes: ['17', 'iphone 17'] },
+  { patron: 'iphone 17 plus', variantes: ['17 plus', 'iphone 17 plus'] },
+  { patron: 'iphone 17 pro', variantes: ['17 pro', 'iphone 17 pro'] },
+  { patron: 'iphone 17 pro max', variantes: ['17 pro max', 'iphone 17 pro max'] },
+  { patron: 'iphone 17e', variantes: ['17e', 'iphone 17e'] },
+  { patron: 'iphone se', variantes: ['iphone se', 'se'] },
+  { patron: 'iphone xr', variantes: ['xr', 'iphone xr'] },
+  { patron: 'iphone xs', variantes: ['xs', 'iphone xs'] },
+  { patron: 'iphone xs max', variantes: ['xs max', 'iphone xs max'] },
+
+  // ── SAMSUNG ────────────────────────────────────────
+  { patron: 'galaxy s23', variantes: ['s23', 'galaxy s23'] },
+  { patron: 'galaxy s23+', variantes: ['s23+', 's23 plus', 'galaxy s23+'] },
+  { patron: 'galaxy s23 ultra', variantes: ['s23 ultra', 'galaxy s23 ultra'] },
+  { patron: 'galaxy s23 fe', variantes: ['s23 fe', 'galaxy s23 fe'] },
+  { patron: 'galaxy s24', variantes: ['s24', 'galaxy s24'] },
+  { patron: 'galaxy s24+', variantes: ['s24+', 's24 plus', 'galaxy s24+'] },
+  { patron: 'galaxy s24 ultra', variantes: ['s24 ultra', 'galaxy s24 ultra'] },
+  { patron: 'galaxy s24 fe', variantes: ['s24 fe', 'galaxy s24 fe'] },
+  { patron: 'galaxy s25', variantes: ['s25', 'galaxy s25'] },
+  { patron: 'galaxy s25+', variantes: ['s25+', 's25 plus', 'galaxy s25+'] },
+  { patron: 'galaxy s25 ultra', variantes: ['s25 ultra', 'galaxy s25 ultra'] },
+  { patron: 'galaxy s25 fe', variantes: ['s25 fe', 'galaxy s25 fe'] },
+  { patron: 'galaxy s26', variantes: ['s26', 'galaxy s26'] },
+  { patron: 'galaxy s26+', variantes: ['s26+', 's26 plus', 'galaxy s26+'] },
+  { patron: 'galaxy s26 ultra', variantes: ['s26 ultra', 'galaxy s26 ultra'] },
+  { patron: 'galaxy a15', variantes: ['a15', 'galaxy a15'] },
+  { patron: 'galaxy a16', variantes: ['a16', 'galaxy a16'] },
+  { patron: 'galaxy a25', variantes: ['a25', 'galaxy a25'] },
+  { patron: 'galaxy a26', variantes: ['a26', 'galaxy a26'] },
+  { patron: 'galaxy a35', variantes: ['a35', 'galaxy a35'] },
+  { patron: 'galaxy a36', variantes: ['a36', 'galaxy a36'] },
+  { patron: 'galaxy a55', variantes: ['a55', 'galaxy a55'] },
+  { patron: 'galaxy a56', variantes: ['a56', 'galaxy a56'] },
+  { patron: 'galaxy a57', variantes: ['a57', 'galaxy a57'] },
+  { patron: 'galaxy z fold 5', variantes: ['z fold 5', 'galaxy z fold 5', 'fold 5'] },
+  { patron: 'galaxy z flip 5', variantes: ['z flip 5', 'galaxy z flip 5', 'flip 5'] },
+  { patron: 'galaxy z fold 6', variantes: ['z fold 6', 'galaxy z fold 6', 'fold 6'] },
+  { patron: 'galaxy z flip 6', variantes: ['z flip 6', 'galaxy z flip 6', 'flip 6'] },
+  { patron: 'galaxy z fold 7', variantes: ['z fold 7', 'galaxy z fold 7', 'fold 7'] },
+  { patron: 'galaxy z flip 7', variantes: ['z flip 7', 'galaxy z flip 7', 'flip 7'] },
+  { patron: 'galaxy note 10', variantes: ['note 10', 'galaxy note 10'] },
+  { patron: 'galaxy note 10+', variantes: ['note 10+', 'note 10 plus', 'galaxy note 10+'] },
+  { patron: 'galaxy note 20', variantes: ['note 20', 'galaxy note 20'] },
+  { patron: 'galaxy note 20 ultra', variantes: ['note 20 ultra', 'galaxy note 20 ultra'] },
+
+  // ── GOOGLE PIXEL ───────────────────────────────────
+  { patron: 'pixel 8', variantes: ['pixel 8'] },
+  { patron: 'pixel 8 pro', variantes: ['pixel 8 pro', 'pixel8 pro'] },
+  { patron: 'pixel 8a', variantes: ['pixel 8a', 'pixel8a'] },
+  { patron: 'pixel 9', variantes: ['pixel 9'] },
+  { patron: 'pixel 9 pro', variantes: ['pixel 9 pro', 'pixel9 pro'] },
+  { patron: 'pixel 9 pro xl', variantes: ['pixel 9 pro xl', 'pixel9 pro xl'] },
+  { patron: 'pixel 9 pro fold', variantes: ['pixel 9 pro fold', 'pixel9 fold'] },
+  { patron: 'pixel 9a', variantes: ['pixel 9a', 'pixel9a'] },
+  { patron: 'pixel 10', variantes: ['pixel 10'] },
+  { patron: 'pixel 10 pro', variantes: ['pixel 10 pro', 'pixel10 pro'] },
+  { patron: 'pixel 10 pro xl', variantes: ['pixel 10 pro xl'] },
+  { patron: 'pixel 10 pro fold', variantes: ['pixel 10 pro fold'] },
+  { patron: 'pixel 10a', variantes: ['pixel 10a'] },
+
+  // ── XIAOMI ─────────────────────────────────────────
+  { patron: 'xiaomi 13', variantes: ['xiaomi 13', 'mi 13'] },
+  { patron: 'xiaomi 13 ultra', variantes: ['xiaomi 13 ultra', '13 ultra'] },
+  { patron: 'xiaomi 13t', variantes: ['xiaomi 13t', '13t'] },
+  { patron: 'xiaomi 13t pro', variantes: ['xiaomi 13t pro', '13t pro'] },
+  { patron: 'xiaomi 14', variantes: ['xiaomi 14', 'mi 14'] },
+  { patron: 'xiaomi 14 ultra', variantes: ['xiaomi 14 ultra', '14 ultra'] },
+  { patron: 'xiaomi 14t', variantes: ['xiaomi 14t', '14t'] },
+  { patron: 'xiaomi 14t pro', variantes: ['xiaomi 14t pro', '14t pro'] },
+  { patron: 'xiaomi 15', variantes: ['xiaomi 15', 'mi 15'] },
+  { patron: 'xiaomi 15 ultra', variantes: ['xiaomi 15 ultra', '15 ultra'] },
+  { patron: 'xiaomi 15t', variantes: ['xiaomi 15t', '15t'] },
+  { patron: 'xiaomi 15t pro', variantes: ['xiaomi 15t pro', '15t pro'] },
+  { patron: 'xiaomi 17', variantes: ['xiaomi 17', 'mi 17'] },
+  { patron: 'xiaomi 17 ultra', variantes: ['xiaomi 17 ultra', '17 ultra'] },
+  { patron: 'xiaomi mix flip', variantes: ['xiaomi mix flip', 'mix flip'] },
+  { patron: 'xiaomi mix fold 4', variantes: ['mix fold 4', 'xiaomi mix fold 4'] },
+  { patron: 'xiaomi mix fold 5', variantes: ['mix fold 5', 'xiaomi mix fold 5'] },
+
+  // ── REDMI ──────────────────────────────────────────
+  { patron: 'redmi note 13', variantes: ['redmi note 13', 'note 13'] },
+  { patron: 'redmi note 13 pro', variantes: ['redmi note 13 pro', 'note 13 pro'] },
+  { patron: 'redmi note 13 pro+', variantes: ['redmi note 13 pro+', 'note 13 pro+'] },
+  { patron: 'redmi note 14', variantes: ['redmi note 14', 'note 14'] },
+  { patron: 'redmi note 14 pro', variantes: ['redmi note 14 pro', 'note 14 pro'] },
+  { patron: 'redmi note 14 pro+', variantes: ['redmi note 14 pro+', 'note 14 pro+'] },
+  { patron: 'redmi note 15', variantes: ['redmi note 15', 'note 15'] },
+  { patron: 'redmi note 15 pro', variantes: ['redmi note 15 pro', 'note 15 pro'] },
+  { patron: 'redmi note 15 pro+', variantes: ['redmi note 15 pro+', 'note 15 pro+'] },
+  { patron: 'redmi 13', variantes: ['redmi 13'] },
+  { patron: 'redmi 14', variantes: ['redmi 14'] },
+  { patron: 'redmi 15', variantes: ['redmi 15'] },
+
+  // ── POCO ───────────────────────────────────────────
+  { patron: 'poco x6', variantes: ['poco x6'] },
+  { patron: 'poco x6 pro', variantes: ['poco x6 pro'] },
+  { patron: 'poco x7', variantes: ['poco x7'] },
+  { patron: 'poco x7 pro', variantes: ['poco x7 pro'] },
+  { patron: 'poco x8', variantes: ['poco x8'] },
+  { patron: 'poco x8 pro', variantes: ['poco x8 pro'] },
+  { patron: 'poco f6', variantes: ['poco f6'] },
+  { patron: 'poco f6 pro', variantes: ['poco f6 pro'] },
+  { patron: 'poco f7', variantes: ['poco f7'] },
+  { patron: 'poco f7 pro', variantes: ['poco f7 pro'] },
+  { patron: 'poco f7 ultra', variantes: ['poco f7 ultra'] },
+  { patron: 'poco f8', variantes: ['poco f8'] },
+  { patron: 'poco f8 pro', variantes: ['poco f8 pro'] },
+  { patron: 'poco f8 ultra', variantes: ['poco f8 ultra'] },
+  { patron: 'poco m7', variantes: ['poco m7'] },
+  { patron: 'poco m7 pro', variantes: ['poco m7 pro'] },
+
+  // ── ONEPLUS ────────────────────────────────────────
+  { patron: 'oneplus 12', variantes: ['oneplus 12', 'one plus 12'] },
+  { patron: 'oneplus 12r', variantes: ['oneplus 12r', 'one plus 12r'] },
+  { patron: 'oneplus 13', variantes: ['oneplus 13', 'one plus 13'] },
+  { patron: 'oneplus 13r', variantes: ['oneplus 13r', 'one plus 13r'] },
+  { patron: 'oneplus 15', variantes: ['oneplus 15', 'one plus 15'] },
+  { patron: 'oneplus 15r', variantes: ['oneplus 15r', 'one plus 15r'] },
+  { patron: 'oneplus nord 4', variantes: ['oneplus nord 4', 'nord 4'] },
+  { patron: 'oneplus nord ce 4', variantes: ['oneplus nord ce 4', 'nord ce 4'] },
+  { patron: 'oneplus open', variantes: ['oneplus open', 'oneplus fold'] },
+
+  // ── OPPO ───────────────────────────────────────────
+  { patron: 'oppo find x8', variantes: ['oppo find x8', 'find x8'] },
+  { patron: 'oppo find x8 pro', variantes: ['oppo find x8 pro', 'find x8 pro'] },
+  { patron: 'oppo find x9', variantes: ['oppo find x9', 'find x9'] },
+  { patron: 'oppo find x9 pro', variantes: ['oppo find x9 pro', 'find x9 pro'] },
+  { patron: 'oppo reno 13', variantes: ['oppo reno 13', 'reno 13'] },
+  { patron: 'oppo reno 13 pro', variantes: ['oppo reno 13 pro', 'reno 13 pro'] },
+  { patron: 'oppo reno 14', variantes: ['oppo reno 14', 'reno 14'] },
+
+  // ── REALME ─────────────────────────────────────────
+  { patron: 'realme gt 6', variantes: ['realme gt 6', 'gt 6'] },
+  { patron: 'realme gt 6t', variantes: ['realme gt 6t', 'gt 6t'] },
+  { patron: 'realme gt 7', variantes: ['realme gt 7', 'gt 7'] },
+  { patron: 'realme gt 7 pro', variantes: ['realme gt 7 pro', 'gt 7 pro'] },
+  { patron: 'realme gt 8', variantes: ['realme gt 8', 'gt 8'] },
+  { patron: 'realme gt 8 pro', variantes: ['realme gt 8 pro', 'gt 8 pro'] },
+  { patron: 'realme 13 pro', variantes: ['realme 13 pro'] },
+  { patron: 'realme 13 pro+', variantes: ['realme 13 pro+'] },
+  { patron: 'realme 14 pro', variantes: ['realme 14 pro'] },
+  { patron: 'realme 14 pro+', variantes: ['realme 14 pro+'] },
+
+  // ── HONOR ──────────────────────────────────────────
+  { patron: 'honor magic 7', variantes: ['honor magic 7', 'magic 7'] },
+  { patron: 'honor magic 7 pro', variantes: ['honor magic 7 pro', 'magic 7 pro'] },
+  { patron: 'honor magic 8', variantes: ['honor magic 8', 'magic 8'] },
+  { patron: 'honor magic 8 pro', variantes: ['honor magic 8 pro', 'magic 8 pro'] },
+  { patron: 'honor 400', variantes: ['honor 400'] },
+  { patron: 'honor 400 pro', variantes: ['honor 400 pro'] },
+  { patron: 'honor 600', variantes: ['honor 600'] },
+
+  // ── VIVO ───────────────────────────────────────────
+  { patron: 'vivo x200', variantes: ['vivo x200', 'x200'] },
+  { patron: 'vivo x200 pro', variantes: ['vivo x200 pro', 'x200 pro'] },
+  { patron: 'vivo x300', variantes: ['vivo x300', 'x300'] },
+  { patron: 'vivo x300 pro', variantes: ['vivo x300 pro', 'x300 pro'] },
+  { patron: 'iqoo 13', variantes: ['iqoo 13'] },
+  { patron: 'iqoo 13 pro', variantes: ['iqoo 13 pro'] },
+
+  // ── MOTOROLA ───────────────────────────────────────
+  { patron: 'moto edge 50', variantes: ['moto edge 50', 'edge 50'] },
+  { patron: 'moto edge 50 pro', variantes: ['moto edge 50 pro', 'edge 50 pro'] },
+  { patron: 'moto edge 50 ultra', variantes: ['moto edge 50 ultra', 'edge 50 ultra'] },
+  { patron: 'moto edge 70', variantes: ['moto edge 70', 'edge 70'] },
+  { patron: 'moto edge 70 pro', variantes: ['moto edge 70 pro', 'edge 70 pro'] },
+  { patron: 'moto razr 50', variantes: ['moto razr 50', 'razr 50'] },
+  { patron: 'moto razr 50 ultra', variantes: ['moto razr 50 ultra', 'razr 50 ultra'] },
+  { patron: 'moto g54', variantes: ['moto g54', 'g54'] },
+  { patron: 'moto g55', variantes: ['moto g55', 'g55'] },
+  { patron: 'moto g56', variantes: ['moto g56', 'g56'] },
+  { patron: 'moto g64', variantes: ['moto g64', 'g64'] },
+  { patron: 'moto g75', variantes: ['moto g75', 'g75'] },
+  { patron: 'moto g76', variantes: ['moto g76', 'g76'] },
+  { patron: 'moto g85', variantes: ['moto g85', 'g85'] },
+  { patron: 'moto g86', variantes: ['moto g86', 'g86'] },
+  { patron: 'moto g86 power', variantes: ['moto g86 power', 'g86 power'] },
+  { patron: 'moto g96', variantes: ['moto g96', 'g96'] },
+  { patron: 'moto g100', variantes: ['moto g100', 'g100'] },
+  { patron: 'moto g200', variantes: ['moto g200', 'g200'] },
+
+  // ── NOTHING ────────────────────────────────────────
+  { patron: 'nothing phone 1', variantes: ['nothing phone 1', 'nothing 1'] },
+  { patron: 'nothing phone 2', variantes: ['nothing phone 2', 'nothing 2'] },
+  { patron: 'nothing phone 2a', variantes: ['nothing phone 2a', 'nothing 2a'] },
+  { patron: 'nothing phone 3', variantes: ['nothing phone 3', 'nothing 3'] },
+  { patron: 'nothing phone 3a', variantes: ['nothing phone 3a', 'nothing 3a'] },
+  { patron: 'nothing phone 3a pro', variantes: ['nothing phone 3a pro', 'nothing 3a pro'] },
+  { patron: 'nothing phone 4a', variantes: ['nothing phone 4a', 'nothing 4a'] },
+
+  // ── CMF ────────────────────────────────────────────
+  { patron: 'cmf phone 1', variantes: ['cmf phone 1', 'cmf 1'] },
+  { patron: 'cmf phone 2', variantes: ['cmf phone 2', 'cmf 2'] },
+  { patron: 'cmf phone 2 pro', variantes: ['cmf phone 2 pro', 'cmf 2 pro'] },
+
+  // ── HUAWEI ─────────────────────────────────────────
+  { patron: 'huawei p60', variantes: ['huawei p60', 'p60'] },
+  { patron: 'huawei p60 pro', variantes: ['huawei p60 pro', 'p60 pro'] },
+  { patron: 'huawei p70', variantes: ['huawei p70', 'p70'] },
+  { patron: 'huawei p70 pro', variantes: ['huawei p70 pro', 'p70 pro'] },
+  { patron: 'huawei mate 60', variantes: ['huawei mate 60', 'mate 60'] },
+  { patron: 'huawei mate 60 pro', variantes: ['huawei mate 60 pro', 'mate 60 pro'] },
+  { patron: 'huawei nova 13', variantes: ['huawei nova 13', 'nova 13'] },
+  { patron: 'huawei nova 13 pro', variantes: ['huawei nova 13 pro', 'nova 13 pro'] },
+
+  // ── SONY ───────────────────────────────────────────
+  { patron: 'xperia 1 v', variantes: ['xperia 1 v', 'sony xperia 1 v'] },
+  { patron: 'xperia 1 vi', variantes: ['xperia 1 vi', 'sony xperia 1 vi'] },
+  { patron: 'xperia 5 v', variantes: ['xperia 5 v', 'sony xperia 5 v'] },
+  { patron: 'xperia 5 vi', variantes: ['xperia 5 vi', 'sony xperia 5 vi'] },
+  { patron: 'xperia 10 v', variantes: ['xperia 10 v', 'sony xperia 10 v'] },
+  { patron: 'xperia 10 vi', variantes: ['xperia 10 vi', 'sony xperia 10 vi'] },
+
+  // ── ASUS ───────────────────────────────────────────
+  { patron: 'rog phone 8', variantes: ['rog phone 8', 'asus rog 8'] },
+  { patron: 'rog phone 8 pro', variantes: ['rog phone 8 pro', 'asus rog 8 pro'] },
+  { patron: 'rog phone 9', variantes: ['rog phone 9', 'asus rog 9'] },
+  { patron: 'zenfone 11', variantes: ['zenfone 11', 'asus zenfone 11'] },
+  { patron: 'zenfone 11 ultra', variantes: ['zenfone 11 ultra', 'asus zenfone 11 ultra'] },
+
+  // ── TECNO ──────────────────────────────────────────
+  { patron: 'tecno spark 30', variantes: ['tecno spark 30', 'spark 30'] },
+  { patron: 'tecno camon 30', variantes: ['tecno camon 30', 'camon 30'] },
+  { patron: 'tecno camon 30 pro', variantes: ['tecno camon 30 pro', 'camon 30 pro'] },
+  { patron: 'tecno pova 6', variantes: ['tecno pova 6', 'pova 6'] },
+  { patron: 'tecno pova 6 pro', variantes: ['tecno pova 6 pro', 'pova 6 pro'] },
+
+  // ── INFINIX ────────────────────────────────────────
+  { patron: 'infinix note 40', variantes: ['infinix note 40', 'note 40'] },
+  { patron: 'infinix note 40 pro', variantes: ['infinix note 40 pro', 'note 40 pro'] },
+  { patron: 'infinix zero 40', variantes: ['infinix zero 40', 'zero 40'] },
+  { patron: 'infinix hot 50', variantes: ['infinix hot 50', 'hot 50'] },
+];
+
+// ═══════════════════════════════════════════
+// PATRONES GENÉRICOS (fallback para modelos no listados)
+// ═══════════════════════════════════════════
+
+const PATRONES_GENERICOS = [
+  /\b(iphone\s+\d+\s*(?:pro\s*max|pro\s*plus|pro|plus|mini|e)?)\b/gi,
+  /\b(galaxy\s+[sz]\d+\s*(?:ultra|plus|\+|fe)?)\b/gi,
+  /\b(pixel\s+\d+[a-z]?\s*(?:pro\s*(?:xl|fold)?|fold|xl)?)\b/gi,
+  /\b(xiaomi\s+\d+\s*(?:ultra|t\s*pro|t)?)\b/gi,
+  /\b(redmi\s+note\s+\d+\s*(?:pro\+?)?)\b/gi,
+  /\b(poco\s+[xfm]\d+\s*(?:pro|ultra)?)\b/gi,
+  /\b(oneplus\s+\d+\s*(?:pro|r)?)\b/gi,
+  /\b(realme\s+gt\s*\d+\s*(?:pro)?)\b/gi,
+  /\b(moto\s+(?:edge|razr|g)\s*\d+\s*(?:pro|ultra|power)?)\b/gi,
+  /\b(nothing\s+phone\s+\d+[a-z]?\s*(?:pro)?)\b/gi,
+];
+
+// ═══════════════════════════════════════════
+// EXTRACCIÓN DE MODELOS
+// ═══════════════════════════════════════════
+
 function extraerModelos(texto) {
   if (!texto) return [];
   const lower = texto.toLowerCase();
-  
-const patrones = [
-  // ==============================================
-  // XIAOMI - TODAS LAS VARIANTES
-  // ==============================================
-  // Xiaomi numeración estándar
-  /\b(xiaomi\s+(?:1[0-9]|[0-9]{1,2})\s*(?:ultra|pro|pro\+|plus|lite|t|t\s*pro|s|se|neo)?)\b/gi,
-  // Xiaomi Mix series
-  /\b(xiaomi\s+mix\s*(?:fold|[0-9]|4|3|2|1)?)\b/gi,
-  // Xiaomi Civi series
-  /\b(xiaomi\s+civi\s*(?:[0-9]|1s|2|3)?)\b/gi,
-  // Xiaomi Black Shark
-  /\b(black\s+shark\s*(?:[0-9]|pro|5|4|3|2|1)?)\b/gi,
-  
-  // ==============================================
-  // REDMI - TODAS LAS VARIANTES
-  // ==============================================
-  // Redmi Note series
-  /\b(redmi\s+note\s+(?:[0-9]{1,2}|pro|pro\+|plus|s|t|t\s*pro|ultra|5g)?)\b/gi,
-  // Redmi numeración estándar
-  /\b(redmi\s+(?:[0-9]{1,2}[a-z]?|a|y|go|c)\s*(?:pro|plus|prime|s|5g)?)\b/gi,
-  // Redmi K series
-  /\b(redmi\s+k(?:[0-9]{1,2}|pro|ultra|gaming)?)\b/gi,
-  // Redmi Turbo series
-  /\b(redmi\s+turbo\s*(?:[0-9]|3|2|1)?)\b/gi,
-  
-  // ==============================================
-  // POCO - TODAS LAS VARIANTES
-  // ==============================================
-  // POCO F series
-  /\b(poco\s+f(?:[0-9]|1|2|3|4|5|6|pro|gt|ultra)?)\b/gi,
-  // POCO X series
-  /\b(poco\s+x(?:[0-9]|1|2|3|4|5|6|pro|gt|neo)?)\b/gi,
-  // POCO M series
-  /\b(poco\s+m(?:[0-9]|1|2|3|4|5|6|pro|plus)?)\b/gi,
-  // POCO C series
-  /\b(poco\s+c(?:[0-9]|1|2|3|4|5|6|40|50|65)?)\b/gi,
-  
-  // ==============================================
-  // SAMSUNG - TODAS LAS VARIANTES
-  // ==============================================
-  // Galaxy S series
-  /\b(galaxy\s+s(?:[0-9]{2}|22|23|24|25)\s*(?:ultra|plus|fe|slim)?)\b/gi,
-  // Galaxy A series
-  /\b(galaxy\s+a(?:[0-9]{2}|05|15|25|35|45|55|73)\s*(?:[0-9]|5g)?)\b/gi,
-  // Galaxy Z Fold/Flip
-  /\b(galaxy\s+z\s*(?:fold|flip)\s*(?:[0-9]|3|4|5|6)?)\b/gi,
-  // Galaxy Note series
-  /\b(galaxy\s+note\s*(?:[0-9]{1,2}|20|10|9|8|ultra|plus|fe)?)\b/gi,
-  // Galaxy M series
-  /\b(galaxy\s+m(?:[0-9]{2}|05|15|25|35|53|62)?)\b/gi,
-  
-  // ==============================================
-  // APPLE IPHONE - TODAS
-  // ==============================================
-  /\b(iphone\s+(?:1[0-9]|[0-9]|se|xs|xr|x)\s*(?:pro\s*max|pro|plus|max|mini)?)\b/gi,
-  
-  // ==============================================
-  // GOOGLE PIXEL
-  // ==============================================
-  /\b(pixel\s+[0-9][a-z]?\s*(?:pro|xl|a|fold)?)\b/gi,
-  
-  // ==============================================
-  // NOTHING
-  // ==============================================
-  /\b(nothing\s+(?:phone|cmf)\s*(?:\(?[12]\)?|[0-9a-z]+)?)\b/gi,
-  
-  // ==============================================
-  // ONEPLUS
-  // ==============================================
-  /\b(oneplus\s+(?:[0-9]{1,2}|nord|ace|open)\s*(?:pro|r|t|n|ce)?)\b/gi,
-  
-  // ==============================================
-  // OPPO
-  // ==============================================
-  /\b(oppo\s+(?:find|reno|a|k)\s*[xn]?[0-9]+\s*(?:pro|neo|plus|lite)?)\b/gi,
-  
-  // ==============================================
-  // VIVO
-  // ==============================================
-  /\b(vivo\s+(?:x|v|y|t|s)\s*[0-9]{1,3}\s*(?:pro|plus|sport)?)\b/gi,
-  /\b(iqoo\s+(?:[0-9]{1,2}|neo|z|u)\s*(?:pro|plus|legend)?)\b/gi,  // Submarca gamer de Vivo
-  
-  // ==============================================
-  // REALME
-  // ==============================================
-  /\b(realme\s+(?:gt|c|narzo|v|x)\s*[0-9]{1,3}\s*(?:pro|neo|master|speed|plus)?)\b/gi,
-  
-  // ==============================================
-  // MOTOROLA
-  // ==============================================
-  /\b(motorola\s+(?:moto\s+)?(?:g|e|edge|razr)\s*[0-9]{1,2}\s*(?:plus|power|play|ultra|fusion|50|40|30)?)\b/gi,
-  
-  // ==============================================
-  // HUAWEI
-  // ==============================================
-  /\b(huawei\s+(?:p|mate|nova)\s*[0-9]{1,2}\s*(?:pro|pro\+|plus|lite|se|neo)?)\b/gi,
-  
-  // ==============================================
-  // SONY
-  // ==============================================
-  /\b(sony\s+xperia\s+[0-9]+[a-z]?\s*(?:v|iv|iii|ii|ultra|plus)?)\b/gi,
-  
-  // ==============================================
-  // HONOR
-  // ==============================================
-  /\b(荣耀|honor\s+(?:[0-9]{1,3}|magic|play|x)\s*(?:pro|plus|lite|ultra)?)\b/gi,
-  
-  // ==============================================
-  // ASUS
-  // ==============================================
-  /\b(asus\s+(?:zenfone|rog)\s*(?:phone\s+)?[0-9]{1,2}\s*(?:pro|ultimate)?)\b/gi,
-  
-  // ==============================================
-  // NOKIA
-  // ==============================================
-  /\b(nokia\s+[gx]?[0-9]{2,3}\s*(?:plus|power)?)\b/gi,
-  
-  // ==============================================
-  // TECNO - INFINIX - ITEL
-  // ==============================================
-  /\b(tecno\s+(?:spark|camon|pova|phantom)\s*[0-9]{1,2}\s*(?:pro|plus|air)?)\b/gi,
-  /\b(infinix\s+(?:note|zero|hot|smart)\s*[0-9]{1,2}\s*(?:pro|plus|s|x)?)\b/gi,
-  /\b(itel\s+(?:a|s|vision)\s*[0-9]{1,2}\s*(?:plus|pro)?)\b/gi,
-  
-  // ==============================================
-  // GOOGLE - ONE PLUS EXTRA
-  // ==============================================
-  /\b(google\s+pixel\s+[0-9][a-z]?\s*(?:pro|xl|a|fold)?)\b/gi,
-  
-  // ==============================================
-  // PATRÓN ULTRA GENÉRICO (catch-all)
-  // ==============================================
-  /\b(?:xiaomi|samsung|redmi|poco|realme|oneplus|oppo|vivo|iqoo|motorola|huawei|honor|nokia|asus|tecno|infinix|itel|google|nothing|sony)\s+([a-z0-9]+\s*(?:pro|plus|lite|ultra|max|se|neo|s|t|gt|fe|turbo|gaming|prime|power|play|c|sport|legend|master|speed|air|x|z|u|f|m|y|v|x|r|ce|n|open|fold|flip))\b/gi
-];
-
   const encontrados = new Set();
-  for (const pat of patrones) {
-    const matches = texto.match(pat);
-    if (matches) matches.forEach(m => encontrados.add(m.trim().toLowerCase()));
+
+  for (const modelo of MODELOS_CONOCIDOS) {
+    for (const variante of modelo.variantes) {
+      const regex = new RegExp(`(?:^|[\\s,.;:!?()])${variante.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?:$|[\\s,.;:!?()])`, 'i');
+      if (regex.test(lower)) {
+        encontrados.add(modelo.patron);
+        break;
+      }
+    }
   }
-  return [...encontrados];
+
+  // Fallback: patrones genéricos para modelos no listados
+  if (encontrados.size === 0) {
+    for (const patron of PATRONES_GENERICOS) {
+      const matches = [...lower.matchAll(patron)];
+      for (const m of matches) {
+        encontrados.add(m[1].trim().replace(/\s+/g, ' '));
+      }
+    }
+  }
+
+  return Array.from(encontrados);
 }
 
-// Normaliza un modelo para comparación
-function normalizarModelo(m) {
-  return m.toLowerCase()
-    .replace(/\s+/g, ' ')
-    .replace(/galaxy\s*/g, '')
-    .replace(/samsung\s*/g, '')
-    .replace(/xiaomi\s*/g, '')
-    .replace(/motorola\s*/g, '')
-    .replace(/moto\s*/g, '')
-    .trim();
+// ═══════════════════════════════════════════
+// FORMATEAR MODELO
+// ═══════════════════════════════════════════
+
+function formatearModelo(raw) {
+  if (!raw) return '';
+  let formatted = raw.replace(/\b\w/g, c => c.toUpperCase());
+  formatted = formatted
+    .replace(/Iphone/g, 'iPhone')
+    .replace(/Ipad/g, 'iPad')
+    .replace(/Poco/g, 'POCO')
+    .replace(/Oneplus/g, 'OnePlus')
+    .replace(/Realme/g, 'realme')
+    .replace(/Oppo/g, 'OPPO')
+    .replace(/Vivo/g, 'vivo')
+    .replace(/Iqoo/g, 'iQOO')
+    .replace(/Rog/g, 'ROG')
+    .replace(/Cmf/g, 'CMF');
+  return formatted;
 }
 
-// Agrupa modelos similares y devuelve el más mencionado
+// ═══════════════════════════════════════════
+// MODELO MÁS POPULAR
+// ═══════════════════════════════════════════
+
 function modeloMasPopular(respuestas) {
   const freq = {};
   for (const r of respuestas) {
     const modelos = extraerModelos(r.contenido);
     for (const m of modelos) {
-      const key = normalizarModelo(m);
-      if (!freq[key]) freq[key] = { count: 0, original: m };
-      freq[key].count++;
+      freq[m] = (freq[m] || 0) + 1;
     }
   }
-  const sorted = Object.values(freq).sort((a, b) => b.count - a.count);
-  if (sorted.length === 0) return null;
-  // Solo destacar si al menos 2 respuestas lo mencionan, o si hay al menos 1 mención clara
-  const top = sorted[0];
-  return top ? formatearModelo(top.original) : null;
-}
-
-function formatearModelo(raw) {
-  let m = raw.trim();
-  // Capitalizar correctamente
-  m = m.replace(/\b(samsung|xiaomi|redmi|poco|oneplus|motorola|moto|oppo|realme|sony|huawei|asus|nothing|google)\b/gi, w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
-  m = m.replace(/\b(galaxy|iphone|pixel|xperia|zenfone|rog|note|ultra|pro|plus|lite|mini|max|fe)\b/gi, w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
-  m = m.replace(/\bs(\d{2})\b/gi, (_, n) => `Galaxy S${n}`);
-  m = m.replace(/\ba(\d{2})\b/gi, (_, n) => `Galaxy A${n}`);
-  return m;
+  const sorted = Object.entries(freq).sort((a, b) => b[1] - a[1]);
+  if (!sorted.length) return null;
+  return sorted[0][1] >= 1 ? formatearModelo(sorted[0][0]) : null;
 }
 
 // ═══════════════════════════════════════════
@@ -2927,21 +3108,38 @@ async function renderHilo(h) {
 
       <div class="replies-section" id="replies_${h.id}" style="display:none;"></div>
 
-      ${!h.resuelto ? `
-        <div class="reply-box" id="replybox_${h.id}" style="display:none;">
-          <div class="quote-preview" id="qpreview_${h.id}">
-            <span class="quote-preview-text"></span>
-            <button class="quote-clear" onclick="clearCita('${h.id}')">✕</button>
-          </div>
-          <div class="reply-input-row">
-            <textarea class="reply-input" id="rinput_${h.id}" placeholder="Escribe o usa @nombre"
-              rows="1"
-              onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarRespuesta('${h.id}')}"
-              oninput="autoResize(this)"
-            ></textarea>
-            <button class="send-btn" id="sendbtn_${h.id}" onclick="enviarRespuesta('${h.id}')">➤</button>
-          </div>
-        </div>` : ''}
+${!h.resuelto ? `
+  <div class="reply-box" id="replybox_${h.id}" style="display:none;">
+    <div class="quote-preview" id="qpreview_${h.id}">
+      <span class="quote-preview-text"></span>
+      <button class="quote-clear" onclick="clearCita('${h.id}')">✕</button>
+    </div>
+    
+    <!-- FORMULARIO DE PUNTUACIONES (opcional) -->
+    <div class="rec-form hidden" id="recForm_${h.id}">
+      <input type="text" class="rec-modelo-input" id="modelo_${h.id}" list="modelos-lista" placeholder="📱 Modelo que recomiendas">
+      <datalist id="modelos-lista">
+        <option value="iPhone 15"><option value="iPhone 15 Pro"><option value="iPhone 16"><option value="Galaxy S24">
+        <option value="Galaxy S24 Ultra"><option value="Redmi Note 13"><option value="Redmi Note 13 Pro">
+        <option value="Poco F6"><option value="Pixel 8"><option value="Pixel 9"><option value="Xiaomi 14">
+      </datalist>
+      <div class="rec-categorias" id="categorias_${h.id}"></div>
+      <textarea class="rec-textarea" id="opinion_${h.id}" placeholder="💬 Tu opinión (opcional)"></textarea>
+      <div class="rec-form-actions">
+        <button class="rec-cancel-btn" onclick="toggleRecForm('${h.id}')">Cancelar</button>
+        <button class="rec-submit-btn" onclick="enviarRecomendacion('${h.id}')">📤 Publicar recomendación</button>
+      </div>
+    </div>
+    
+    <button class="rec-toggle-btn" onclick="toggleRecForm('${h.id}')">➕ Recomendar con puntuación (10 categorías)</button>
+    
+    <!-- RESPUESTA RÁPIDA (sin puntuaciones) -->
+    <div class="reply-input-row">
+      <textarea class="reply-input" id="rinput_${h.id}" placeholder="Respuesta rápida (sin puntuación)..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarRespuestaSimple('${h.id}')}" oninput="autoResize(this)"></textarea>
+      <button class="send-btn" onclick="enviarRespuestaSimple('${h.id}')">➤</button>
+    </div>
+  </div>` : ''}
+
     </div>
   `;
 }
@@ -3747,6 +3945,95 @@ async function guardarEdicionRespuesta(respuestaId) {
   if (resp) cargarRespuestas(resp.hilo_id);
 }
 
+// ========== FUNCIONES NUEVAS PARA PUNTUACIONES ==========
+
+function toggleRecForm(hiloId) {
+  const form = document.getElementById(`recForm_${hiloId}`);
+  if (form) form.classList.toggle('hidden');
+  if (!form.classList.contains('hidden')) {
+    const container = document.getElementById(`categorias_${hiloId}`);
+    if (container && container.innerHTML === '') {
+      let catsHtml = '';
+      for (const cat of CATEGORIAS) {
+        catsHtml += `<div class="rec-cat-item">
+          <span class="rec-cat-label">${cat.label}</span>
+          <select class="rec-cat-select" id="cat_${cat.id}_${hiloId}">
+            ${[...Array(10)].map((_, i) => `<option value="${i+1}">${i+1}</option>`).join('')}
+          </select>
+        </div>`;
+      }
+      container.innerHTML = catsHtml;
+    }
+  }
+}
+
+async function enviarRecomendacion(hiloId) {
+  if (!usuario) { mostrarModalAuth(); return; }
+  const modelo = document.getElementById(`modelo_${hiloId}`).value.trim();
+  if (!modelo) { toast('❌ Escribe el modelo que recomiendas'); return; }
+  
+  const puntuaciones = {};
+  for (const cat of CATEGORIAS) {
+    const select = document.getElementById(`cat_${cat.id}_${hiloId}`);
+    if (select) puntuaciones[cat.id] = parseInt(select.value);
+  }
+  const opinion = document.getElementById(`opinion_${hiloId}`).value.trim();
+  
+  const insertData = {
+    hilo_id: hiloId, usuario_id: usuario.id, nickname: usuario.nickname,
+    modelo_recomendado: modelo, contenido: opinion, ...puntuaciones
+  };
+  await db.from('respuestas').insert(insertData);
+  const newPts = (usuario.puntos || 0) + 2;
+  await db.from('usuarios').update({ puntos: newPts }).eq('id', usuario.id);
+  usuario.puntos = newPts;
+  mostrarUsuario();
+  actualizarBarraRango();
+  
+  document.getElementById(`modelo_${hiloId}`).value = '';
+  document.getElementById(`opinion_${hiloId}`).value = '';
+  for (const cat of CATEGORIAS) {
+    const select = document.getElementById(`cat_${cat.id}_${hiloId}`);
+    if (select) select.value = '5';
+  }
+  toggleRecForm(hiloId);
+  toast('✅ Recomendación publicada · +2 pts');
+  cargarRespuestas(hiloId);
+}
+
+async function enviarRespuestaSimple(hiloId) {
+  if (!usuario) { mostrarModalAuth(); return; }
+  const input = document.getElementById(`rinput_${hiloId}`);
+  const texto = input.value.trim();
+  if (!texto) return;
+  await db.from('respuestas').insert({ hilo_id: hiloId, usuario_id: usuario.id, nickname: usuario.nickname, contenido: texto });
+  const newPts = (usuario.puntos || 0) + 2;
+  await db.from('usuarios').update({ puntos: newPts }).eq('id', usuario.id);
+  usuario.puntos = newPts;
+  mostrarUsuario();
+  actualizarBarraRango();
+  input.value = '';
+  toast('✅ Respuesta rápida enviada · +2 pts');
+  cargarRespuestas(hiloId);
+}
+
+function renderPuntuacionesRespuesta(r) {
+  let html = '<div class="score-grid">';
+  for (const cat of CATEGORIAS) {
+    const val = r[cat.id];
+    if (val && val >= 1) {
+      html += `<div class="score-item">
+        <span class="score-label">${cat.label}</span>
+        <div class="score-bar"><div class="score-fill" style="width:${val * 10}%"></div></div>
+        <span class="score-value">${val}</span>
+      </div>`;
+    }
+  }
+  html += '</div>';
+  if (r.contenido && r.contenido.trim()) html += `<div class="rec-opinion">💬 ${r.contenido}</div>`;
+  return html;
+}
+
 // ═══════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════
@@ -3827,42 +4114,29 @@ async function guardarEdicionRespuesta(respuestaId) {
   if (resp) cargarRespuestas(resp.hilo_id);
 }
 
+
 // ═══════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════
 async function init() {
     const token = leerToken();
     console.log("TOKEN manual en localStorage:", token ? "encontrado" : "no encontrado");
-
     if (token) {
         const { data: sesion, error: errorSesion } = await db.from('sesiones').select('*').eq('token', token).single();
         console.log("SESION en DB:", JSON.stringify(sesion), "ERR:", errorSesion);
-
         if (sesion) {
             const { data: usuarioDB, error: errorUsuario } = await db.from('usuarios').select('*').eq('nickname', sesion.nickname).single();
             console.log("USER en DB:", JSON.stringify(usuarioDB), "ERR:", errorUsuario);
-
             if (usuarioDB) {
-                // 1. Guardamos los datos en la variable global de tu web para que sepa quién eres
                 usuario = usuarioDB; 
-                
-                // 2. Cerramos el cartel flotante por si acaso se hubiera quedado abierto
                 cerrarModalAuth();
-                
-                // 3. Avisamos a la web para que pinte tu nombre de admin y tus 15 puntos arriba
                 onLogin();
-                
                 return; 
             }
         }
     }
-
-    // Si de verdad no hay sesión ni token, entonces sí mostramos el login
-    mostrarModal();
+    mostrarModal();  // ❌ Esta línea da error porque mostrarModal no existe
 }
-
-
-
 window.addEventListener('load', init);
 
 // ═══════════════════════════════════════════
