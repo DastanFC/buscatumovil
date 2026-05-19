@@ -767,6 +767,20 @@ border: 1.5px solid var(--blue);
 }
 .cite-btn:hover { background: var(--surface-3); color: var(--text-2); }
 
+.delete-reply-btn {
+  background: none;
+  border: none;
+  font-size: 0.68rem;
+  color: #EF4444;
+  cursor: pointer;
+  padding: 3px 6px;
+  border-radius: 6px;
+  font-family: 'Roboto', sans-serif;
+  transition: all 0.18s;
+  opacity: 0.6;
+}
+.delete-reply-btn:hover { background: #FEF2F2; opacity: 1; }
+
 /* Empty replies */
 .replies-empty {
   padding: 18px 0;
@@ -826,14 +840,11 @@ border: 1.5px solid var(--blue);
   font-family: 'Roboto', sans-serif;
   resize: none;
   background: var(--surface-2);
-  transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
+  transition: all 0.18s;
   min-height: 44px;
-  max-height: 200px;
+  max-height: 120px;
   width: 0;
-  overflow: hidden;
-  overflow-y: hidden;
   -webkit-appearance: none;
-  line-height: 1.5;
 }
 .reply-input:focus {
   outline: none;
@@ -859,26 +870,6 @@ border: 1.5px solid var(--blue);
 }
 .send-btn:hover { background: var(--blue); transform: scale(1.05); }
 .send-btn.sending { opacity: 0.6; pointer-events: none; }
-
-.clear-btn {
-  background: none;
-  border: 1px solid var(--border);
-  color: var(--text-3);
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  cursor: pointer;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
-  flex-shrink: 0;
-  transition: all 0.15s;
-  align-self: flex-end;
-  margin-bottom: 4px;
-}
-.clear-btn:hover { background: #FEF2F2; border-color: #EF4444; color: #EF4444; }
-.clear-btn.visible { display: flex; }
 
 /* ─── RANK PROGRESS BAR ─── */
 .rank-progress {
@@ -2943,12 +2934,11 @@ async function renderHilo(h) {
             <button class="quote-clear" onclick="clearCita('${h.id}')">✕</button>
           </div>
           <div class="reply-input-row">
-            <textarea class="reply-input" id="rinput_${h.id}" placeholder="Escribe tu recomendación… (Enter para enviar, Shift+Enter para saltar línea)"
+            <textarea class="reply-input" id="rinput_${h.id}" placeholder="Escribe o usa @nombre"
               rows="1"
-              onkeydown="manejarTeclaRespuesta(event,'${h.id}')"
-              oninput="autoResizeConBorrar(this,'clearbtn_${h.id}')"
+              onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarRespuesta('${h.id}')}"
+              oninput="autoResize(this)"
             ></textarea>
-            <button class="clear-btn" id="clearbtn_${h.id}" onclick="limpiarRespuesta('${h.id}')" title="Borrar">✕</button>
             <button class="send-btn" id="sendbtn_${h.id}" onclick="enviarRespuesta('${h.id}')">➤</button>
           </div>
         </div>` : ''}
@@ -2958,30 +2948,7 @@ async function renderHilo(h) {
 
 function autoResize(el) {
   el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 200) + 'px';
-}
-
-function autoResizeConBorrar(el, clearBtnId) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 200) + 'px';
-  const btn = document.getElementById(clearBtnId);
-  if (btn) btn.classList.toggle('visible', el.value.length > 0);
-}
-
-function manejarTeclaRespuesta(event, hiloId) {
-  if (event.key === 'Enter' && !event.shiftKey) {
-    event.preventDefault();
-    enviarRespuesta(hiloId);
-  }
-  // Shift+Enter inserta salto de línea de forma natural (no se previene)
-}
-
-function limpiarRespuesta(hiloId) {
-  const input = document.getElementById(`rinput_${hiloId}`);
-  const btn = document.getElementById(`clearbtn_${hiloId}`);
-  if (input) { input.value = ''; input.style.height = 'auto'; input.focus(); }
-  if (btn) btn.classList.remove('visible');
-  clearCita(hiloId);
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
 }
 
 function toggleReplies(hiloId) {
@@ -3085,9 +3052,12 @@ async function cargarRespuestas(hiloId) {
     // INDICADOR DE EDITADO
     const editadoBadge = r.editado ? `<span class="editado-badge"><i>✏️</i> Editado ${r.editado_en ? timeAgo(r.editado_en) : ''}</span>` : '';
     
-    // BOTÓN EDITAR (solo para el autor)
-    const editBtn = (usuario && usuario.nickname === r.nickname) ? 
+    // BOTONES EDITAR Y BORRAR (solo para el autor)
+    const esAutor = usuario && usuario.nickname === r.nickname;
+    const editBtn = esAutor ?
       `<button class="edit-reply-btn" data-edit-id="${r.id}" data-edit-contenido="${r.contenido.replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/\n/g,' ')}">✏️ Editar</button>` : '';
+    const deleteBtn = esAutor ?
+      `<button class="delete-reply-btn" data-delete-id="${r.id}" data-delete-hilo="${hiloId}">🗑 Borrar</button>` : '';
 
     let citaHtml = '';
     if (r.cita_id) {
@@ -3123,6 +3093,7 @@ async function cargarRespuestas(hiloId) {
           <button class="vote-btn ${miVoto === 'noutil' ? 'voted-noutil' : ''}" onclick="votar('${r.id}','noutil','${hiloId}','${r.nickname}')">👎 ${r.votos_noutil || 0}</button>
           <button class="cite-btn" data-hilo="${hiloId}" data-reply="${r.id}" data-autor="${r.nickname}" data-contenido="${r.contenido.replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/\n/g,' ')}">↩ Citar</button>
           ${editBtn}
+          ${deleteBtn}
         </div>
       </div>
     `;
@@ -3145,6 +3116,11 @@ async function cargarRespuestas(hiloId) {
       const id = btn.dataset.editId;
       const contenido = btn.dataset.editContenido;
       abrirModalEditarRespuesta(id, contenido);
+    });
+  });
+  container.querySelectorAll('.delete-reply-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      borrarRespuestaPropia(btn.dataset.deleteId, btn.dataset.deleteHilo);
     });
   });
 }
@@ -3181,21 +3157,10 @@ async function enviarRespuesta(hiloId) {
 
   input.value = '';
   input.style.height = 'auto';
-  // Ocultar botón borrar
-  const clearBtn = document.getElementById(`clearbtn_${hiloId}`);
-  if (clearBtn) clearBtn.classList.remove('visible');
   clearCita(hiloId);
   sendBtn.classList.remove('sending');
   toast('✅ Respuesta enviada · +2 pts');
-
-  // Asegurarse de que el panel de respuestas está visible antes de recargar
-  const repContainer = document.getElementById(`replies_${hiloId}`);
-  const repBox = document.getElementById(`replybox_${hiloId}`);
-  if (repContainer && repContainer.style.display === 'none') {
-    repContainer.style.display = 'block';
-    if (repBox) repBox.style.display = 'block';
-  }
-
+  
   cargarRespuestas(hiloId);
 }
 
@@ -3645,6 +3610,24 @@ async function adminEliminarHilo(hiloId) {
   cargarAdminContent();
   cargarHilos();
   cargarStats();
+}
+
+async function borrarRespuestaPropia(respId, hiloId) {
+  if (!confirm('¿Borrar tu respuesta? Esta acción no se puede deshacer.')) return;
+  if (!usuario) return;
+  // Verificar que la respuesta pertenece al usuario antes de borrar
+  const { data: r } = await db.from('respuestas').select('nickname').eq('id', respId).single();
+  if (!r || r.nickname !== usuario.nickname) {
+    toast('❌ No puedes borrar esta respuesta');
+    return;
+  }
+  await db.from('votos').delete().eq('respuesta_id', respId);
+  await db.from('respuestas').delete().eq('id', respId);
+  // Restar 2 puntos al usuario por borrar su respuesta
+  const { data: u } = await db.from('usuarios').select('puntos').eq('nickname', usuario.nickname).single();
+  if (u) await db.from('usuarios').update({ puntos: Math.max(0, (u.puntos || 0) - 2) }).eq('nickname', usuario.nickname);
+  toast('🗑 Respuesta eliminada');
+  cargarRespuestas(hiloId);
 }
 
 async function adminEliminarRespuesta(respId, hiloId) {
