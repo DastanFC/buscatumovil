@@ -2754,7 +2754,8 @@ function onLogin() {
   cargarStats();
   cargarNotificaciones();
   actualizarBarraRango();
-  mostrarAdminPanel();
+  if (usuario) mostrarAdminPanel();  // ← AÑADE ESTA CONDICIÓN
+  renderRangos();
 }
 
 function mostrarUsuario() {
@@ -3207,33 +3208,49 @@ let adminPagina = 1;
 const ADMIN_POR_PAG = 10;
 
 function mostrarAdminPanel() {
-  if (!usuario) return;
+  // Si no hay usuario logueado, NO mostrar el botón
+  if (!usuario) {
+    const btn = document.getElementById('adminBtn');
+    if (btn) btn.style.display = 'none';
+    return;
+  }
+  
   const nick = (usuario.nickname || '').toLowerCase().trim();
   const btn = document.getElementById('adminBtn');
-  console.log('Admin check - nickname:', nick, 'esperado: dastan');
+  console.log('🔍 Verificando admin para:', nick);
+  
+  // Solo mostrar si el nickname es EXACTAMENTE "dastan"
   if (nick === 'dastan') {
     if (btn) {
       btn.style.display = 'flex';
-      console.log('✅ Botón admin visible');
+      console.log('✅ Botón admin VISIBLE');
     }
-    // También mostrar el panel por si acaso
-    const panel = document.getElementById('adminPanel');
-    if (panel) panel.style.display = 'block';
   } else {
-    if (btn) btn.style.display = 'none';
-    console.log('❌ No eres admin');
+    if (btn) {
+      btn.style.display = 'none';
+      console.log('❌ Botón admin OCULTO para', nick);
+    }
   }
 }
 
 function emergenciaAdmin() {
-  if (!usuario) return;
+  if (!usuario) {
+    toast('⚠️ Inicia sesión primero');
+    return;
+  }
   const nick = (usuario.nickname || '').toLowerCase().trim();
-  if (nick !== ADMIN_NICK) return;
+  if (nick !== 'dastan') {
+    toast('⛔ Acceso denegado');
+    return;
+  }
   const panel = document.getElementById('adminPanel');
   if (!panel) return;
   const visible = panel.style.display === 'block';
   panel.style.display = visible ? 'none' : 'block';
-  if (!visible) { cargarAdminContent(); panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  if (!visible) { 
+    if (typeof cargarAdminContent === 'function') cargarAdminContent();
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 }
 
 function toggleAdminBody() {
