@@ -437,7 +437,7 @@ body {
   background: var(--surface);
   border-radius: var(--radius);
   margin-bottom: 20px;
-border: 1.5px solid var(--blue);
+  border: 1.5px solid var(--blue);
   box-shadow: var(--shadow);
   overflow: visible;
   transition: box-shadow 0.2s, transform 0.15s;
@@ -497,7 +497,7 @@ border: 1.5px solid var(--blue);
 .rank-aprendiz { background: #EDE9FE; color: #6D28D9; }
 .rank-confiable { background: #D1FAE5; color: #065F46; }
 .rank-experto { background: #FEF3C7; color: #B45309; }
-.rank-colaborador_top { background: #FEE2E2; color: #991B1B; }
+.rank-colaborador_top { background: linear-gradient(135deg, #FFD700 0%, #DAA520 100%); color: #3d2a00; border: 1px solid #FFD700; font-weight: 700; }
 .rank-leyenda { background: #fcd52a; color: #aa5a04; }
 .rank-admin { background: var(--navy); color: #93C5FD; }
 
@@ -551,7 +551,7 @@ border: 1.5px solid var(--blue);
   background: var(--surface-2);
   border-top: 1px solid var(--border);
   gap: 10px;
-  border-radius: 0 0 var(--radius) var(--radius);  /* ← añade esto */
+  border-radius: 0 0 var(--radius) var(--radius);
 }
 
 @media (max-width: 600px) {
@@ -734,6 +734,7 @@ border: 1.5px solid var(--blue);
   gap: 6px;
   margin-left: 36px;
   margin-top: 8px;
+  flex-wrap: wrap;
 }
 
 .vote-btn {
@@ -766,6 +767,30 @@ border: 1.5px solid var(--blue);
   transition: all 0.18s;
 }
 .cite-btn:hover { background: var(--surface-3); color: var(--text-2); }
+
+.edit-reply-btn {
+  background: none;
+  border: none;
+  font-size: 0.68rem;
+  color: var(--text-3);
+  cursor: pointer;
+  padding: 3px 6px;
+  border-radius: 6px;
+  transition: all 0.18s;
+}
+.edit-reply-btn:hover { background: var(--surface-3); color: var(--blue); }
+
+.delete-reply-btn {
+  background: none;
+  border: none;
+  font-size: 0.68rem;
+  color: var(--accent-red);
+  cursor: pointer;
+  padding: 3px 6px;
+  border-radius: 6px;
+  transition: all 0.18s;
+}
+.delete-reply-btn:hover { background: #FEF2F2; color: #dc2626; }
 
 /* Empty replies */
 .replies-empty {
@@ -930,7 +955,7 @@ border: 1.5px solid var(--blue);
   color: rgba(255,255,255,0.35);
 }
 
-/* ─── RANGOS PANEL (oculto para niveles bajos) ─── */
+/* ─── RANGOS PANEL ─── */
 .perks-banner {
   background: linear-gradient(135deg, #0F1B2D, #1A3558);
   border-radius: var(--radius);
@@ -1084,7 +1109,7 @@ border: 1.5px solid var(--blue);
   padding: 12px 14px;
   border: 1.5px solid var(--border);
   border-radius: var(--radius-sm);
-  font-size: 16px; /* 16px mínimo para evitar zoom en iOS */
+  font-size: 16px;
   font-family: 'Roboto', sans-serif;
   margin-bottom: 12px;
   transition: all 0.18s;
@@ -1338,15 +1363,6 @@ border: 1.5px solid var(--blue);
   margin-bottom: 6px;
 }
 
-/* Estilo para Colaborador TOP */
-.rank-colaborador_top {
-  background: linear-gradient(135deg, #FFD700 0%, #DAA520 100%);
-  color: #3d2a00;
-  border: 1px solid #FFD700;
-  font-weight: 700;
-  text-shadow: none;
-}
-
 /* Respuesta más votada destacada */
 .reply-item.top-voted {
   background: linear-gradient(135deg, rgba(255, 215, 0, 0.08) 0%, rgba(218, 165, 32, 0.05) 100%);
@@ -1376,7 +1392,7 @@ border: 1.5px solid var(--blue);
   margin-right: 4px;
 }
 
-/* ─── SPECS NUEVO DISEÑO ─── */
+/* Specs chips */
 .specs-chips {
   display: flex;
   flex-wrap: wrap;
@@ -1412,7 +1428,7 @@ border: 1.5px solid var(--blue);
   color: var(--navy);
 }
 
-/* Nota libre del usuario (tamaño texto cuadro texto)*/
+/* Nota libre del usuario */
 .extra-note-clean {
   display: flex;
   align-items: flex-start;
@@ -1441,6 +1457,7 @@ border: 1.5px solid var(--blue);
   .spec-chip-label { display: none; }
 }
 
+/* Admin Panel */
 #adminPanel {
   display: none;
   background: var(--surface);
@@ -1636,62 +1653,7 @@ border: 1.5px solid var(--blue);
   font-size: 0.78rem;
 }
 
-/* ─── RESPONSIVE ADMIN PANEL ─── */
-@media (max-width: 768px) {
-  .admin-table {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-    -webkit-overflow-scrolling: touch;
-  }
-  
-  .admin-table th,
-  .admin-table td {
-    padding: 8px 6px;
-    font-size: 0.7rem;
-  }
-  
-  .admin-inline-input {
-    width: 55px;
-    padding: 3px 5px;
-  }
-  
-  .admin-actions-row {
-    flex-direction: column;
-    gap: 4px;
-  }
-  
-  .admin-btn {
-    padding: 3px 8px;
-    font-size: 0.6rem;
-  }
-  
-  .admin-hilo-title {
-    max-width: 150px;
-    white-space: normal;
-    word-break: break-word;
-  }
-  
-  .ranks-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .admin-tab-row {
-    flex-wrap: wrap;
-  }
-  
-  .admin-tab {
-    padding: 4px 10px;
-    font-size: 0.65rem;
-  }
-  
-  #adminContent > div[style*="display:grid"] {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 8px;
-  }
-}
-
-/* ─── RESPONSIVE ADMIN PANEL ─── */
+/* Responsive Admin */
 @media (max-width: 768px) {
   .admin-table {
     display: block;
@@ -1747,7 +1709,6 @@ border: 1.5px solid var(--blue);
 }
 
 #adminBtn {
-  display: none;
   position: fixed;
   bottom: 24px;
   left: 20px;
@@ -1763,7 +1724,7 @@ border: 1.5px solid var(--blue);
   cursor: pointer;
   align-items: center;
   justify-content: center;
-  display: flex;
+  display: none;
   transition: transform 0.15s, box-shadow 0.15s;
 }
 
@@ -1777,7 +1738,7 @@ border: 1.5px solid var(--blue);
   }
 }
 
-/* ─── INDICADOR DE EDITADO ─── */
+/* Edit badge */
 .editado-badge {
   display: inline-flex;
   align-items: center;
@@ -1795,19 +1756,6 @@ border: 1.5px solid var(--blue);
   font-size: 0.65rem;
 }
 
-/* Botón editar en respuestas */
-.edit-reply-btn {
-  background: none;
-  border: none;
-  font-size: 0.68rem;
-  color: var(--text-3);
-  cursor: pointer;
-  padding: 3px 6px;
-  border-radius: 6px;
-  transition: all 0.18s;
-}
-.edit-reply-btn:hover { background: var(--surface-3); color: var(--blue); }
-
 /* Modal de edición */
 .edit-modal textarea {
   width: 100%;
@@ -1820,7 +1768,6 @@ border: 1.5px solid var(--blue);
   min-height: 100px;
   margin-bottom: 16px;
 }
-
 </style>
 </head>
 <body>
@@ -1874,7 +1821,7 @@ border: 1.5px solid var(--blue);
   <!-- Perks banner -->
   <div class="perks-banner" onclick="togglePerks()" id="perksBanner">
     <div class="perks-banner-title">🏆 RANGOS DE USUARIO <span style="margin-left:auto;font-size:0.75rem;opacity:0.4">▾</span></div>
-    <div class="perks-banner-sub">Gana puntos respondiendo a otros usuarios y sube de rango. </div>
+    <div class="perks-banner-sub">Gana puntos respondiendo a otros usuarios y sube de rango.</div>
   </div>
 
   <div class="perks-panel" id="perksPanel">
@@ -1960,25 +1907,7 @@ border: 1.5px solid var(--blue);
 </div>
 
 <!-- BOTÓN ADMIN FLOTANTE (solo dastan) -->
-<button id="adminBtn" onclick="emergenciaAdmin()" style="
-  display: none;
-  position: fixed;
-  bottom: 24px;
-  left: 20px;
-  z-index: 999;
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  border: none;
-  background: linear-gradient(135deg, #F5A623, #E8890A);
-  color: white;
-  font-size: 1.4rem;
-  box-shadow: 0 4px 16px rgba(245,166,35,0.5);
-  cursor: pointer;
-  align-items: center;
-  justify-content: content;
-  transition: transform 0.15s, box-shadow 0.15s;
-">👑</button>
+<button id="adminBtn" onclick="emergenciaAdmin()">👑</button>
 
 <!-- TOAST -->
 <div class="send-toast" id="sendToast"></div>
@@ -1996,7 +1925,6 @@ border: 1.5px solid var(--blue);
   </div>
   <button class="cookie-btn" onclick="aceptarCookies()">Entendido</button>
 </div>
-
 
 <!-- MODAL LOGIN -->
 <div class="modal-overlay" id="authModal">
@@ -2092,150 +2020,53 @@ let tabActual = 'abiertas';
 let hilosData = [];
 let currentPage = 1;
 const ITEMS_PER_PAGE = 5;
-let quoteActiva = null; // { hiloId, replyId, autor, texto }
+let quoteActiva = null;
 let notifCount = 0;
 
 // ═══════════════════════════════════════════
-// DETECCIÓN DE MÓVILES (sistema colectivo)
+// DETECCIÓN DE MÓVILES
 // ═══════════════════════════════════════════
 
-// Extrae posibles modelos de texto libre usando patrones
 function extraerModelos(texto) {
   if (!texto) return [];
   const lower = texto.toLowerCase();
   
 const patrones = [
-  // ==============================================
-  // XIAOMI - TODAS LAS VARIANTES
-  // ==============================================
-  // Xiaomi numeración estándar
   /\b(xiaomi\s+(?:1[0-9]|[0-9]{1,2})\s*(?:ultra|pro|pro\+|plus|lite|t|t\s*pro|s|se|neo)?)\b/gi,
-  // Xiaomi Mix series
   /\b(xiaomi\s+mix\s*(?:fold|[0-9]|4|3|2|1)?)\b/gi,
-  // Xiaomi Civi series
   /\b(xiaomi\s+civi\s*(?:[0-9]|1s|2|3)?)\b/gi,
-  // Xiaomi Black Shark
   /\b(black\s+shark\s*(?:[0-9]|pro|5|4|3|2|1)?)\b/gi,
-  
-  // ==============================================
-  // REDMI - TODAS LAS VARIANTES
-  // ==============================================
-  // Redmi Note series
   /\b(redmi\s+note\s+(?:[0-9]{1,2}|pro|pro\+|plus|s|t|t\s*pro|ultra|5g)?)\b/gi,
-  // Redmi numeración estándar
   /\b(redmi\s+(?:[0-9]{1,2}[a-z]?|a|y|go|c)\s*(?:pro|plus|prime|s|5g)?)\b/gi,
-  // Redmi K series
   /\b(redmi\s+k(?:[0-9]{1,2}|pro|ultra|gaming)?)\b/gi,
-  // Redmi Turbo series
   /\b(redmi\s+turbo\s*(?:[0-9]|3|2|1)?)\b/gi,
-  
-  // ==============================================
-  // POCO - TODAS LAS VARIANTES
-  // ==============================================
-  // POCO F series
   /\b(poco\s+f(?:[0-9]|1|2|3|4|5|6|pro|gt|ultra)?)\b/gi,
-  // POCO X series
   /\b(poco\s+x(?:[0-9]|1|2|3|4|5|6|pro|gt|neo)?)\b/gi,
-  // POCO M series
   /\b(poco\s+m(?:[0-9]|1|2|3|4|5|6|pro|plus)?)\b/gi,
-  // POCO C series
   /\b(poco\s+c(?:[0-9]|1|2|3|4|5|6|40|50|65)?)\b/gi,
-  
-  // ==============================================
-  // SAMSUNG - TODAS LAS VARIANTES
-  // ==============================================
-  // Galaxy S series
   /\b(galaxy\s+s(?:[0-9]{2}|22|23|24|25)\s*(?:ultra|plus|fe|slim)?)\b/gi,
-  // Galaxy A series
   /\b(galaxy\s+a(?:[0-9]{2}|05|15|25|35|45|55|73)\s*(?:[0-9]|5g)?)\b/gi,
-  // Galaxy Z Fold/Flip
   /\b(galaxy\s+z\s*(?:fold|flip)\s*(?:[0-9]|3|4|5|6)?)\b/gi,
-  // Galaxy Note series
   /\b(galaxy\s+note\s*(?:[0-9]{1,2}|20|10|9|8|ultra|plus|fe)?)\b/gi,
-  // Galaxy M series
   /\b(galaxy\s+m(?:[0-9]{2}|05|15|25|35|53|62)?)\b/gi,
-  
-  // ==============================================
-  // APPLE IPHONE - TODAS
-  // ==============================================
   /\b(iphone\s+(?:1[0-9]|[0-9]|se|xs|xr|x)\s*(?:pro\s*max|pro|plus|max|mini)?)\b/gi,
-  
-  // ==============================================
-  // GOOGLE PIXEL
-  // ==============================================
   /\b(pixel\s+[0-9][a-z]?\s*(?:pro|xl|a|fold)?)\b/gi,
-  
-  // ==============================================
-  // NOTHING
-  // ==============================================
   /\b(nothing\s+(?:phone|cmf)\s*(?:\(?[12]\)?|[0-9a-z]+)?)\b/gi,
-  
-  // ==============================================
-  // ONEPLUS
-  // ==============================================
   /\b(oneplus\s+(?:[0-9]{1,2}|nord|ace|open)\s*(?:pro|r|t|n|ce)?)\b/gi,
-  
-  // ==============================================
-  // OPPO
-  // ==============================================
   /\b(oppo\s+(?:find|reno|a|k)\s*[xn]?[0-9]+\s*(?:pro|neo|plus|lite)?)\b/gi,
-  
-  // ==============================================
-  // VIVO
-  // ==============================================
   /\b(vivo\s+(?:x|v|y|t|s)\s*[0-9]{1,3}\s*(?:pro|plus|sport)?)\b/gi,
-  /\b(iqoo\s+(?:[0-9]{1,2}|neo|z|u)\s*(?:pro|plus|legend)?)\b/gi,  // Submarca gamer de Vivo
-  
-  // ==============================================
-  // REALME
-  // ==============================================
+  /\b(iqoo\s+(?:[0-9]{1,2}|neo|z|u)\s*(?:pro|plus|legend)?)\b/gi,
   /\b(realme\s+(?:gt|c|narzo|v|x)\s*[0-9]{1,3}\s*(?:pro|neo|master|speed|plus)?)\b/gi,
-  
-  // ==============================================
-  // MOTOROLA
-  // ==============================================
   /\b(motorola\s+(?:moto\s+)?(?:g|e|edge|razr)\s*[0-9]{1,2}\s*(?:plus|power|play|ultra|fusion|50|40|30)?)\b/gi,
-  
-  // ==============================================
-  // HUAWEI
-  // ==============================================
   /\b(huawei\s+(?:p|mate|nova)\s*[0-9]{1,2}\s*(?:pro|pro\+|plus|lite|se|neo)?)\b/gi,
-  
-  // ==============================================
-  // SONY
-  // ==============================================
   /\b(sony\s+xperia\s+[0-9]+[a-z]?\s*(?:v|iv|iii|ii|ultra|plus)?)\b/gi,
-  
-  // ==============================================
-  // HONOR
-  // ==============================================
   /\b(荣耀|honor\s+(?:[0-9]{1,3}|magic|play|x)\s*(?:pro|plus|lite|ultra)?)\b/gi,
-  
-  // ==============================================
-  // ASUS
-  // ==============================================
   /\b(asus\s+(?:zenfone|rog)\s*(?:phone\s+)?[0-9]{1,2}\s*(?:pro|ultimate)?)\b/gi,
-  
-  // ==============================================
-  // NOKIA
-  // ==============================================
   /\b(nokia\s+[gx]?[0-9]{2,3}\s*(?:plus|power)?)\b/gi,
-  
-  // ==============================================
-  // TECNO - INFINIX - ITEL
-  // ==============================================
   /\b(tecno\s+(?:spark|camon|pova|phantom)\s*[0-9]{1,2}\s*(?:pro|plus|air)?)\b/gi,
   /\b(infinix\s+(?:note|zero|hot|smart)\s*[0-9]{1,2}\s*(?:pro|plus|s|x)?)\b/gi,
   /\b(itel\s+(?:a|s|vision)\s*[0-9]{1,2}\s*(?:plus|pro)?)\b/gi,
-  
-  // ==============================================
-  // GOOGLE - ONE PLUS EXTRA
-  // ==============================================
   /\b(google\s+pixel\s+[0-9][a-z]?\s*(?:pro|xl|a|fold)?)\b/gi,
-  
-  // ==============================================
-  // PATRÓN ULTRA GENÉRICO (catch-all)
-  // ==============================================
   /\b(?:xiaomi|samsung|redmi|poco|realme|oneplus|oppo|vivo|iqoo|motorola|huawei|honor|nokia|asus|tecno|infinix|itel|google|nothing|sony)\s+([a-z0-9]+\s*(?:pro|plus|lite|ultra|max|se|neo|s|t|gt|fe|turbo|gaming|prime|power|play|c|sport|legend|master|speed|air|x|z|u|f|m|y|v|x|r|ce|n|open|fold|flip))\b/gi
 ];
 
@@ -2247,7 +2078,6 @@ const patrones = [
   return [...encontrados];
 }
 
-// Normaliza un modelo para comparación
 function normalizarModelo(m) {
   return m.toLowerCase()
     .replace(/\s+/g, ' ')
@@ -2259,7 +2089,6 @@ function normalizarModelo(m) {
     .trim();
 }
 
-// Agrupa modelos similares y devuelve el más mencionado
 function modeloMasPopular(respuestas) {
   const freq = {};
   for (const r of respuestas) {
@@ -2272,14 +2101,12 @@ function modeloMasPopular(respuestas) {
   }
   const sorted = Object.values(freq).sort((a, b) => b.count - a.count);
   if (sorted.length === 0) return null;
-  // Solo destacar si al menos 2 respuestas lo mencionan, o si hay al menos 1 mención clara
   const top = sorted[0];
   return top ? formatearModelo(top.original) : null;
 }
 
 function formatearModelo(raw) {
   let m = raw.trim();
-  // Capitalizar correctamente
   m = m.replace(/\b(samsung|xiaomi|redmi|poco|oneplus|motorola|moto|oppo|realme|sony|huawei|asus|nothing|google)\b/gi, w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
   m = m.replace(/\b(galaxy|iphone|pixel|xperia|zenfone|rog|note|ultra|pro|plus|lite|mini|max|fe)\b/gi, w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
   m = m.replace(/\bs(\d{2})\b/gi, (_, n) => `Galaxy S${n}`);
@@ -2333,7 +2160,6 @@ function avatarColor(nick) {
 
 function getRango(puntos, rol) {
   if (rol === 'admin') return { label: 'Admin', icon: '👑', id: 'admin', min: 0, max: 0 };
-  // Ordenar de mayor a menor para que el primero que cumpla sea el más alto
   const sorted = [...RANGOS].sort((a, b) => b.min - a.min);
   for (let i = 0; i < sorted.length; i++) {
     if (puntos >= sorted[i].min) return sorted[i];
@@ -2355,7 +2181,6 @@ function esAdmin() { return usuario?.rol === 'admin'; }
 // ═══════════════════════════════════════════
 function renderizarContenido(texto) {
   if (!texto) return '';
-  // @menciones
   return texto.replace(/@([a-zA-Z0-9_\-\.]+)/g, '<span class="mention">@$1</span>');
 }
 
@@ -2380,7 +2205,6 @@ function clearCita(hiloId) {
 async function cargarNotificaciones() {
   if (!usuario) return;
   
-  // Hilos propios
   const { data: misHilos } = await db.from('hilos')
     .select('id, datos_extra, created_at')
     .eq('nickname', usuario.nickname);
@@ -2392,7 +2216,6 @@ async function cargarNotificaciones() {
   let visto = {};
   try { visto = JSON.parse(localStorage.getItem(vistoKey) || '{}'); } catch(e) {}
   
-  // Respuestas a mis hilos
   const { data: respuestas } = await db.from('respuestas')
     .select('*, hilo_id')
     .in('hilo_id', hilosIds)
@@ -2400,7 +2223,6 @@ async function cargarNotificaciones() {
     .order('created_at', { ascending: false })
     .limit(20);
 
-  // Menciones a mí
   const { data: menciones } = await db.from('respuestas')
     .select('*, hilo_id')
     .ilike('contenido', `%@${usuario.nickname}%`)
@@ -2472,7 +2294,6 @@ function irAHilo(hiloId, notifId) {
 
   const el = document.getElementById(`thread_${hiloId}`);
   if (el) {
-    // Abrir las respuestas si están cerradas
     const rep = document.getElementById(`replies_${hiloId}`);
     const box = document.getElementById(`replybox_${hiloId}`);
     if (rep && rep.style.display === 'none') {
@@ -2567,13 +2388,14 @@ function actualizarBarraRango() {
   const pts = usuario.puntos || 0;
   const wrap = document.getElementById('rankProgressWrap');
   wrap.style.display = 'block';
+  const rango = getRango(pts, usuario.rol);
 
-if (usuario.rol === 'admin' || rango.id === 'leyenda' || rango.id === 'colaborador_top') {
-  document.getElementById('rankBarFill').style.width = '100%';
-  document.getElementById('rankNextLabel').innerHTML = '¡Máximo rango!';
-  document.getElementById('rankPtsLabel').textContent = `${pts} pts · ${rango.icon} ${rango.label}`;
-  return;
-}
+  if (usuario.rol === 'admin' || rango.id === 'leyenda' || rango.id === 'colaborador_top') {
+    document.getElementById('rankBarFill').style.width = '100%';
+    document.getElementById('rankNextLabel').innerHTML = '¡Máximo rango!';
+    document.getElementById('rankPtsLabel').textContent = `${pts} pts · ${rango.icon} ${rango.label}`;
+    return;
+  }
 
   const next = RANGOS.find(r => r.min > pts);
   if (!next) return;
@@ -2596,7 +2418,6 @@ function generarToken() {
   return t;
 }
 
-// Guarda el token en todos los sitios posibles
 function guardarToken(token) {
   try { localStorage.setItem('moviles_token', token); } catch(e) {}
   try { sessionStorage.setItem('moviles_token', token); } catch(e) {}
@@ -2606,7 +2427,6 @@ function guardarToken(token) {
   } catch(e) {}
 }
 
-// Lee el token de donde sea que esté guardado
 function leerToken() {
   try { const v = localStorage.getItem('moviles_token'); if (v) return v; } catch(e) {}
   try { const v = sessionStorage.getItem('moviles_token'); if (v) return v; } catch(e) {}
@@ -2637,7 +2457,6 @@ async function procesarAcceso() {
   const { data: existe } = await db.from('usuarios').select('*').eq('nickname', nickLower).single();
 
   if (existe) {
-    // Usuario existente sin palabra clave — pedírsela ahora (opción B)
     if (!existe.palabra_clave) {
       const palabraInput = document.getElementById('palabraClaveInput');
       palabraInput.style.display = 'block';
@@ -2662,7 +2481,6 @@ async function procesarAcceso() {
     cerrarModalAuth();
     onLogin();
   } else {
-    // Nuevo usuario — mostrar campo palabra clave si no está visible
     const palabraInput = document.getElementById('palabraClaveInput');
     palabraInput.style.display = 'block';
     palabraInput.placeholder = 'Elige una palabra clave para recuperar tu cuenta (ej: Roma)';
@@ -2777,7 +2595,7 @@ function onLogin() {
   cargarStats();
   cargarNotificaciones();
   actualizarBarraRango();
-  if (usuario) mostrarAdminPanel();  // ← AÑADE ESTA CONDICIÓN
+  if (usuario) mostrarAdminPanel();
   renderRangos();
 }
 
@@ -2810,8 +2628,8 @@ function toggleUserMenu() {
     mostrarModalAuth();
     return;
   }
-  // Podría expandirse con un menú de usuario, por ahora muestra info
 }
+
 // ═══════════════════════════════════════════
 // TABS
 // ═══════════════════════════════════════════
@@ -2824,8 +2642,7 @@ function setTab(tab, el) {
 }
 
 // ═══════════════════════════════════════════
-// HILOS
-// ═══════════════════════════════════════════
+// HILOS// ═══════════════════════════════════════════
 async function cargarHilos() {
   if (!usuario) return;
   document.getElementById('hilosList').innerHTML = '<div class="loading">⏳ Cargando...</div>';
@@ -2973,7 +2790,6 @@ function manejarTeclaRespuesta(event, hiloId) {
     event.preventDefault();
     enviarRespuesta(hiloId);
   }
-  // Shift+Enter inserta salto de línea de forma natural (no se previene)
 }
 
 function limpiarRespuesta(hiloId) {
@@ -3011,7 +2827,7 @@ async function marcarResuelta(hiloId) {
 }
 
 // ═══════════════════════════════════════════
-// RESPUESTAS MAS VOTADAS DESTACADAS
+// RESPUESTAS
 // ═══════════════════════════════════════════
 async function cargarRespuestas(hiloId) {
   const container = document.getElementById(`replies_${hiloId}`);
@@ -3082,12 +2898,13 @@ async function cargarRespuestas(hiloId) {
     const esTopVotada = (mejorRespuesta && mejorRespuesta.id === r.id && maxVotos > 0);
     const topClass = esTopVotada ? 'reply-item top-voted' : 'reply-item';
     
-    // INDICADOR DE EDITADO
     const editadoBadge = r.editado ? `<span class="editado-badge"><i>✏️</i> Editado ${r.editado_en ? timeAgo(r.editado_en) : ''}</span>` : '';
     
-    // BOTÓN EDITAR (solo para el autor)
     const editBtn = (usuario && usuario.nickname === r.nickname) ? 
-      `<button class="edit-reply-btn" data-edit-id="${r.id}" data-edit-contenido="${r.contenido.replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/\n/g,' ')}">✏️ Editar</button>` : '';
+      `<button class="edit-reply-btn" data-edit-id="${r.id}" data-edit-contenido="${(r.contenido || '').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/\n/g,' ')}">✏️ Editar</button>` : '';
+
+    const deleteBtn = (usuario && usuario.nickname === r.nickname) ? 
+      `<button class="delete-reply-btn" data-delete-id="${r.id}" data-hilo-id="${hiloId}">🗑 Eliminar</button>` : '';
 
     let citaHtml = '';
     if (r.cita_id) {
@@ -3121,8 +2938,9 @@ async function cargarRespuestas(hiloId) {
         <div class="reply-actions">
           <button class="vote-btn ${miVoto === 'util' ? 'voted-util' : ''}" onclick="votar('${r.id}','util','${hiloId}','${r.nickname}')">👍 ${votosUtil}</button>
           <button class="vote-btn ${miVoto === 'noutil' ? 'voted-noutil' : ''}" onclick="votar('${r.id}','noutil','${hiloId}','${r.nickname}')">👎 ${r.votos_noutil || 0}</button>
-          <button class="cite-btn" data-hilo="${hiloId}" data-reply="${r.id}" data-autor="${r.nickname}" data-contenido="${r.contenido.replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/\n/g,' ')}">↩ Citar</button>
+          <button class="cite-btn" data-hilo="${hiloId}" data-reply="${r.id}" data-autor="${r.nickname}" data-contenido="${(r.contenido || '').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/\n/g,' ')}">↩ Citar</button>
           ${editBtn}
+          ${deleteBtn}
         </div>
       </div>
     `;
@@ -3130,16 +2948,16 @@ async function cargarRespuestas(hiloId) {
 
   container.innerHTML = html;
 
-  // Event delegation para citar y editar (evita problemas con comillas en onclick inline)
   container.querySelectorAll('.cite-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      const hiloId = btn.dataset.hilo;
+      const hiloIdBtn = btn.dataset.hilo;
       const replyId = btn.dataset.reply;
       const autor = btn.dataset.autor;
       const texto = btn.dataset.contenido;
-      setCita(hiloId, replyId, autor, texto);
+      setCita(hiloIdBtn, replyId, autor, texto);
     });
   });
+
   container.querySelectorAll('.edit-reply-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.dataset.editId;
@@ -3147,6 +2965,84 @@ async function cargarRespuestas(hiloId) {
       abrirModalEditarRespuesta(id, contenido);
     });
   });
+
+  container.querySelectorAll('.delete-reply-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const respuestaId = btn.dataset.deleteId;
+      const hiloIdBtn = btn.dataset.hiloId;
+      eliminarRespuesta(respuestaId, hiloIdBtn);
+    });
+  });
+}
+
+// ═══════════════════════════════════════════
+// ELIMINAR RESPUESTA CON DEVOLUCIÓN DE PUNTOS
+// ═══════════════════════════════════════════
+async function eliminarRespuesta(respuestaId, hiloId) {
+  if (!usuario) {
+    toast('❌ Inicia sesión para eliminar');
+    return;
+  }
+  
+  const { data: respuesta, error: fetchError } = await db.from('respuestas')
+    .select('*')
+    .eq('id', respuestaId)
+    .single();
+  
+  if (fetchError || !respuesta) {
+    toast('❌ No se encontró la respuesta');
+    return;
+  }
+  
+  if (respuesta.nickname !== usuario.nickname) {
+    toast('❌ Solo puedes eliminar tus propias respuestas');
+    return;
+  }
+  
+  if (!confirm('¿Eliminar esta respuesta? Perderás los puntos que ganaste con ella.')) return;
+  
+  const { data: usuarioActual } = await db.from('usuarios')
+    .select('puntos')
+    .eq('id', usuario.id)
+    .single();
+  
+  let puntosARestar = 2;
+  const votosUtil = respuesta.votos_util || 0;
+  puntosARestar += votosUtil * 3;
+  
+  const nuevosPuntos = Math.max(0, (usuarioActual?.puntos || 0) - puntosARestar);
+  
+  const { error: deleteError } = await db.from('respuestas')
+    .delete()
+    .eq('id', respuestaId);
+  
+  if (deleteError) {
+    toast('❌ Error al eliminar: ' + deleteError.message);
+    return;
+  }
+  
+  await db.from('usuarios')
+    .update({ puntos: nuevosPuntos })
+    .eq('id', usuario.id);
+  
+  usuario.puntos = nuevosPuntos;
+  
+  mostrarUsuario();
+  actualizarBarraRango();
+  if (typeof renderRangos === 'function') renderRangos();
+  
+  await cargarRespuestas(hiloId);
+  
+  const { data: nuevasRespuestas } = await db.from('respuestas')
+    .select('id', { count: 'exact' })
+    .eq('hilo_id', hiloId);
+  
+  const cntEl = document.getElementById(`rcnt_${hiloId}`);
+  if (cntEl && nuevasRespuestas) {
+    cntEl.textContent = nuevasRespuestas.length;
+  }
+  
+  toast(`🗑 Respuesta eliminada. Se te restaron ${puntosARestar} puntos.`);
 }
 
 async function enviarRespuesta(hiloId) {
@@ -3165,14 +3061,12 @@ async function enviarRespuesta(hiloId) {
     contenido: texto,
   };
 
-  // Adjuntar cita si existe
   if (quoteActiva && quoteActiva.hiloId === hiloId) {
     insertData.cita_id = quoteActiva.replyId;
   }
 
   await db.from('respuestas').insert(insertData);
 
-  // +2 pts por responder
   const newPts = (usuario.puntos || 0) + 2;
   await db.from('usuarios').update({ puntos: newPts }).eq('id', usuario.id);
   usuario.puntos = newPts;
@@ -3181,14 +3075,12 @@ async function enviarRespuesta(hiloId) {
 
   input.value = '';
   input.style.height = 'auto';
-  // Ocultar botón borrar
   const clearBtn = document.getElementById(`clearbtn_${hiloId}`);
   if (clearBtn) clearBtn.classList.remove('visible');
   clearCita(hiloId);
   sendBtn.classList.remove('sending');
   toast('✅ Respuesta enviada · +2 pts');
 
-  // Asegurarse de que el panel de respuestas está visible antes de recargar
   const repContainer = document.getElementById(`replies_${hiloId}`);
   const repBox = document.getElementById(`replybox_${hiloId}`);
   if (repContainer && repContainer.style.display === 'none') {
@@ -3260,7 +3152,6 @@ async function publicarHilo() {
 
   if (!error) {
     cerrarForm();
-    // +1 pt por nueva consulta
     const newPts = (usuario.puntos || 0) + 1;
     await db.from('usuarios').update({ puntos: newPts }).eq('id', usuario.id);
     usuario.puntos = newPts;
@@ -3275,7 +3166,7 @@ async function publicarHilo() {
 }
 
 // ═══════════════════════════════════════════
-// PANEL ADMIN COMPLETO
+// PANEL ADMIN
 // ═══════════════════════════════════════════
 const ADMIN_NICK = 'dastan';
 let adminTabActual = 'usuarios';
@@ -3284,7 +3175,6 @@ let adminPagina = 1;
 const ADMIN_POR_PAG = 10;
 
 function mostrarAdminPanel() {
-  // Si no hay usuario logueado, NO mostrar el botón
   if (!usuario) {
     const btn = document.getElementById('adminBtn');
     if (btn) btn.style.display = 'none';
@@ -3293,19 +3183,11 @@ function mostrarAdminPanel() {
   
   const nick = (usuario.nickname || '').toLowerCase().trim();
   const btn = document.getElementById('adminBtn');
-  console.log('🔍 Verificando admin para:', nick);
   
-  // Solo mostrar si el nickname es EXACTAMENTE "dastan"
   if (nick === 'dastan') {
-    if (btn) {
-      btn.style.display = 'flex';
-      console.log('✅ Botón admin VISIBLE');
-    }
+    if (btn) btn.style.display = 'flex';
   } else {
-    if (btn) {
-      btn.style.display = 'none';
-      console.log('❌ Botón admin OCULTO para', nick);
-    }
+    if (btn) btn.style.display = 'none';
   }
 }
 
@@ -3365,7 +3247,6 @@ function adminPaginarHtml(total) {
 
 function adminIrPag(p) { adminPagina = p; cargarAdminContent(); }
 
-// ── 1. USUARIOS ──────────────────────────────
 async function renderAdminUsuarios() {
   const { data: users } = await db.from('usuarios').select('*').order('puntos', { ascending: false });
   if (!users || users.length === 0) { document.getElementById('adminContent').innerHTML = '<div class="admin-empty">Sin usuarios</div>'; return; }
@@ -3413,7 +3294,6 @@ async function renderAdminUsuarios() {
   document.getElementById('adminContent').innerHTML = html;
 }
 
-// ── 2. HILOS ─────────────────────────────────
 async function renderAdminPosts() {
   const { data: hilos } = await db.from('hilos').select('*').order('created_at', { ascending: false });
   if (!hilos || hilos.length === 0) { document.getElementById('adminContent').innerHTML = '<div class="admin-empty">Sin hilos</div>'; return; }
@@ -3449,7 +3329,6 @@ async function renderAdminPosts() {
   document.getElementById('adminContent').innerHTML = html;
 }
 
-// ── 3. RESPUESTAS ─────────────────────────────
 async function renderAdminRespuestas() {
   const { data: resps } = await db.from('respuestas').select('*').order('created_at', { ascending: false });
   if (!resps || resps.length === 0) { document.getElementById('adminContent').innerHTML = '<div class="admin-empty">Sin respuestas</div>'; return; }
@@ -3475,11 +3354,10 @@ async function renderAdminRespuestas() {
       </div></td>
     </tr>`;
   }
-  html += `</tbody></table>${adminPaginarHtml(resps.length)}`;
+  html += `</tbody></tr>${adminPaginarHtml(resps.length)}`;
   document.getElementById('adminContent').innerHTML = html;
 }
 
-// ── 4. ESTADÍSTICAS ───────────────────────────
 async function renderAdminStats() {
   const [
     { count: totalHilos },
@@ -3499,7 +3377,6 @@ async function renderAdminStats() {
     db.from('respuestas').select('created_at').order('created_at', { ascending: false }).limit(200),
   ]);
 
-  // Horas pico
   const horaCounts = Array(24).fill(0);
   (ultimasResps || []).forEach(r => {
     const h = new Date(r.created_at).getHours();
@@ -3517,7 +3394,6 @@ async function renderAdminStats() {
     </div>`;
   }).join('');
 
-  // Top usuarios tabla
   const topHtml = (topUsuarios || []).map((u, i) => `
     <tr>
       <td style="font-size:0.75rem;">${i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`}</td>
@@ -3559,7 +3435,6 @@ async function renderAdminStats() {
   `;
 }
 
-// ── 5. CONFIGURACIÓN ──────────────────────────
 function renderAdminConfig() {
   document.getElementById('adminContent').innerHTML = `
     <div class="admin-section-title">🎖️ Rangos — puntos mínimos</div>
@@ -3591,7 +3466,6 @@ function renderAdminConfig() {
   `;
 }
 
-// ── ACCIONES ──────────────────────────────────
 async function adminAjustarPuntos(nick) {
   const val = parseInt(document.getElementById(`pts_${nick}`).value);
   if (isNaN(val) || val < 0) { toast('❌ Valor no válido'); return; }
@@ -3618,7 +3492,6 @@ async function adminResetCodigo(nick) {
   const nuevoCodigo = generarCodigo();
   await db.from('usuarios').update({ codigo_acceso: nuevoCodigo }).eq('nickname', nick);
   toast(`🔑 Nuevo código de ${cap(nick)}: ${nuevoCodigo}`, 8000);
-  // Mostrar el código en pantalla claramente
   setTimeout(() => alert(`🔑 Nuevo código secreto de ${cap(nick)}:\n\n${nuevoCodigo}\n\nComunícaselo al usuario.`), 100);
 }
 
@@ -3681,7 +3554,6 @@ async function adminEnviarMasivo() {
     await db.from('configuracion').upsert({ clave: 'mensaje_masivo', valor: msg });
     toast('📢 Mensaje guardado — se mostrará a todos al cargar');
   } catch(e) {
-    // Si no existe la tabla configuracion, mostrar igualmente como toast local
     toast('📢 ' + msg, 6000);
   }
 }
@@ -3700,7 +3572,6 @@ async function adminBackup(formato) {
     tipo = 'application/json';
     ext = 'json';
   } else {
-    // CSV simple de usuarios
     const cabecera = 'nickname,puntos,rol,created_at';
     const filas = (usuarios || []).map(u => `${u.nickname},${u.puntos||0},${u.rol},${u.created_at||''}`);
     contenido = [cabecera, ...filas].join('\n');
@@ -3718,87 +3589,6 @@ async function adminBackup(formato) {
   toast(`⬇️ Backup ${ext.toUpperCase()} descargado`);
 }
 
-
-// ═══════════════════════════════════════════
-// EDITAR RESPUESTAS (SOLO ESTO ES NUEVO)
-// ═══════════════════════════════════════════
-function abrirModalEditarRespuesta(respuestaId, contenidoActual) {
-  if (!usuario) { toast('❌ Inicia sesión para editar'); return; }
-  const contenidoEscapado = (contenidoActual || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  const modalHtml = `
-    <div class="modal-overlay" id="editModal" style="display:flex; z-index:1000;">
-      <div class="modal" style="max-width:500px;">
-        <div class="modal-title">✏️ Editar respuesta</div>
-        <div class="modal-sub">Modifica tu recomendación.</div>
-        <textarea id="editContenido" rows="4" style="width:100%; padding:12px; border:1.5px solid var(--border); border-radius:12px; font-size:0.9rem; margin-bottom:16px;">${contenidoEscapado}</textarea>
-        <div style="display:flex; gap:10px; justify-content:flex-end;">
-          <button class="btn-cancel" onclick="cerrarModalEditar()">Cancelar</button>
-          <button class="btn-submit" onclick="guardarEdicionRespuesta('${respuestaId}')">Guardar</button>
-        </div>
-      </div>
-    </div>
-  `;
-  const oldModal = document.getElementById('editModal');
-  if (oldModal) oldModal.remove();
-  document.body.insertAdjacentHTML('beforeend', modalHtml);
-}
-
-function cerrarModalEditar() {
-  const modal = document.getElementById('editModal');
-  if (modal) modal.remove();
-}
-
-async function guardarEdicionRespuesta(respuestaId) {
-  const nuevo = document.getElementById('editContenido').value.trim();
-  if (!nuevo) { toast('❌ No puede estar vacío'); return; }
-  toast('📝 Guardando...');
-  const { error } = await db.from('respuestas').update({
-    contenido: nuevo,
-    editado: true,
-    editado_en: new Date().toISOString()
-  }).eq('id', respuestaId).eq('nickname', usuario.nickname);
-  if (error) { toast('❌ Error: ' + error.message); return; }
-  toast('✅ Editado');
-  cerrarModalEditar();
-  const { data: resp } = await db.from('respuestas').select('hilo_id').eq('id', respuestaId).single();
-  if (resp) cargarRespuestas(resp.hilo_id);
-}
-
-// ═══════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════
-async function init() {
-  cargarStats();
-  const token = leerToken();
-  console.log('TOKEN:', token ? 'encontrado' : 'null');
-  if (!token) { mostrarModalAuth(); return; }
-  try {
-    const { data: sesion, error: err1 } = await db.from('sesiones')
-      .select('nickname, expires_at')
-      .eq('token', token)
-      .single();
-    console.log('SESION:', JSON.stringify(sesion), 'ERR:', JSON.stringify(err1));
-    if (err1 || !sesion) { borrarToken(); mostrarModalAuth(); return; }
-    if (new Date(sesion.expires_at) <= new Date()) { borrarToken(); mostrarModalAuth(); return; }
-
-    const { data: user, error: err2 } = await db.from('usuarios')
-      .select('*')
-      .eq('nickname', sesion.nickname)
-      .single();
-    console.log('USER:', JSON.stringify(user), 'ERR:', JSON.stringify(err2));
-    if (err2 || !user) { borrarToken(); mostrarModalAuth(); return; }
-
-    usuario = user;
-    onLogin();
-  } catch(e) {
-    console.log('CATCH ERROR:', e.message);
-    mostrarModalAuth();
-  }
-}
-
-// ═══════════════════════════════════════════
-// EDITAR RESPUESTAS (NUEVAS FUNCIONES)
-// ═══════════════════════════════════════════
 // ═══════════════════════════════════════════
 // EDITAR RESPUESTAS
 // ═══════════════════════════════════════════
@@ -3848,39 +3638,29 @@ async function guardarEdicionRespuesta(respuestaId) {
 // INIT
 // ═══════════════════════════════════════════
 async function init() {
-    const token = leerToken();
-    console.log("TOKEN manual en localStorage:", token ? "encontrado" : "no encontrado");
+  cargarStats();
+  const token = leerToken();
+  if (!token) { mostrarModalAuth(); return; }
+  try {
+    const { data: sesion, error: err1 } = await db.from('sesiones')
+      .select('nickname, expires_at')
+      .eq('token', token)
+      .single();
+    if (err1 || !sesion) { borrarToken(); mostrarModalAuth(); return; }
+    if (new Date(sesion.expires_at) <= new Date()) { borrarToken(); mostrarModalAuth(); return; }
 
-    if (token) {
-        const { data: sesion, error: errorSesion } = await db.from('sesiones').select('*').eq('token', token).single();
-        console.log("SESION en DB:", JSON.stringify(sesion), "ERR:", errorSesion);
+    const { data: user, error: err2 } = await db.from('usuarios')
+      .select('*')
+      .eq('nickname', sesion.nickname)
+      .single();
+    if (err2 || !user) { borrarToken(); mostrarModalAuth(); return; }
 
-        if (sesion) {
-            const { data: usuarioDB, error: errorUsuario } = await db.from('usuarios').select('*').eq('nickname', sesion.nickname).single();
-            console.log("USER en DB:", JSON.stringify(usuarioDB), "ERR:", errorUsuario);
-
-            if (usuarioDB) {
-                // 1. Guardamos los datos en la variable global de tu web para que sepa quién eres
-                usuario = usuarioDB; 
-                
-                // 2. Cerramos el cartel flotante por si acaso se hubiera quedado abierto
-                cerrarModalAuth();
-                
-                // 3. Avisamos a la web para que pinte tu nombre de admin y tus 15 puntos arriba
-                onLogin();
-                
-                return; 
-            }
-        }
-    }
-
-    // Si de verdad no hay sesión ni token, entonces sí mostramos el login
-    mostrarModal();
+    usuario = user;
+    onLogin();
+  } catch(e) {
+    mostrarModalAuth();
+  }
 }
-
-
-
-window.addEventListener('load', init);
 
 // ═══════════════════════════════════════════
 // COOKIES
@@ -3901,6 +3681,7 @@ function aceptarCookies() {
 }
 
 document.addEventListener('DOMContentLoaded', initCookieBanner);
+window.addEventListener('load', init);
 </script>
 </body>
 </html>
