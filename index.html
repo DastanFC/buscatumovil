@@ -687,7 +687,7 @@ border: 1.5px solid var(--blue);
   border-radius: 0 8px 8px 0;
   padding: 7px 10px;
   margin-bottom: 8px;
-  font-size: 0.95rem;
+  font-size: 15px;
   color: var(--text-2);
   font-style: italic;
 }
@@ -695,15 +695,15 @@ border: 1.5px solid var(--blue);
 .quote-block .quote-author {
   font-style: normal;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 15px;
   color: var(--blue);
   margin-bottom: 3px;
 }
 
 .reply-content {
-  font-size: 0.95rem;
+  font-size: 15px;
   color: var(--text-2);
-  line-height: 1.10;
+  line-height: 1.5;
   margin-left: 36px;
 }
 
@@ -1762,11 +1762,32 @@ border: 1.5px solid var(--blue);
     <div class="modal-sub">Elige un nombre único. Sin correo, sin contraseña. Tu sesión se guardará automáticamente.</div>
     <input class="modal-input" type="text" id="nicknameInput" placeholder="Tu nombre de usuario" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" onkeydown="if(event.key==='Enter'){event.preventDefault();procesarAcceso();}" />
     <input class="modal-input" type="text" id="codigoInput" placeholder="Código secreto (si ya tienes cuenta)" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="letter-spacing:2px;" onkeydown="if(event.key==='Enter'){event.preventDefault();procesarAcceso();}" />
+    <input class="modal-input" type="text" id="palabraClaveInput" placeholder="Palabra clave (ej: Roma) — solo al registrarte" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="display:none;" onkeydown="if(event.key==='Enter'){event.preventDefault();procesarAcceso();}" />
     <div class="modal-error" id="authError"></div>
     <button class="modal-btn" onclick="procesarAcceso()">Continuar →</button>
     <p style="font-size:0.68rem;color:var(--text-3);text-align:center;margin-top:14px;">
       Si es tu primera vez, se creará una cuenta y recibirás un código secreto para volver.
     </p>
+    <p style="font-size:0.68rem;color:var(--blue);text-align:center;margin-top:6px;cursor:pointer;" onclick="abrirRecuperacion()">
+      ¿Olvidaste tu código secreto?
+    </p>
+  </div>
+</div>
+
+<!-- MODAL RECUPERACIÓN -->
+<div class="modal-overlay hidden" id="recoveryModal">
+  <div class="modal">
+    <div class="modal-title">🔑 Recuperar acceso</div>
+    <div class="modal-sub">Escribe tu nombre de usuario y tu palabra clave para ver tu código.</div>
+    <input class="modal-input" type="text" id="recoveryNick" placeholder="Tu nombre de usuario" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+    <input class="modal-input" type="text" id="recoveryPalabra" placeholder="Tu palabra clave (ej: Roma)" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" onkeydown="if(event.key==='Enter'){event.preventDefault();procesarRecuperacion();}" />
+    <div class="modal-error" id="recoveryError"></div>
+    <div id="recoveryResult" style="display:none;text-align:center;margin:12px 0;">
+      <div style="font-size:0.78rem;color:var(--text-3);margin-bottom:6px;">Tu código secreto es:</div>
+      <div class="code-box"><div class="code-val" id="recoveryCodeVal"></div></div>
+    </div>
+    <button class="modal-btn" onclick="procesarRecuperacion()" id="recoveryBtn">Ver mi código →</button>
+    <p style="font-size:0.68rem;color:var(--text-3);text-align:center;margin-top:10px;cursor:pointer;" onclick="cerrarRecuperacion()">← Volver al login</p>
   </div>
 </div>
 
@@ -2373,6 +2394,24 @@ async function procesarAcceso() {
   const { data: existe } = await db.from('usuarios').select('*').eq('nickname', nickLower).single();
 
   if (existe) {
+    // Usuario existente sin palabra clave — pedírsela ahora (opción B)
+    if (!existe.palabra_clave) {
+      const palabraInput = document.getElementById('palabraClaveInput');
+      palabraInput.style.display = 'block';
+      palabraInput.placeholder = 'Elige una palabra clave para recuperar tu cuenta';
+      if (!codigo) { errDiv.textContent = '🔐 Este usuario ya existe. Introduce tu código secreto.'; return; }
+      if (existe.codigo_acceso !== codigo) { errDiv.textContent = '❌ Código incorrecto'; return; }
+      const palabraClave = palabraInput.value.trim().toLowerCase();
+      if (!palabraClave || palabraClave.length < 2) { errDiv.textContent = '🔑 Escribe también una palabra clave (ej: Roma)'; return; }
+      await db.from('usuarios').update({ palabra_clave: palabraClave }).eq('nickname', nickLower);
+      existe.palabra_clave = palabraClave;
+      usuario = existe;
+      await crearSesion(nickLower);
+      cerrarModalAuth();
+      onLogin();
+      toast('✅ Palabra clave guardada. Ya puedes recuperar tu cuenta con ella.');
+      return;
+    }
     if (!codigo) { errDiv.textContent = '🔐 Este usuario ya existe. Introduce tu código secreto.'; return; }
     if (existe.codigo_acceso !== codigo) { errDiv.textContent = '❌ Código incorrecto'; return; }
     usuario = existe;
@@ -2380,9 +2419,19 @@ async function procesarAcceso() {
     cerrarModalAuth();
     onLogin();
   } else {
+    // Nuevo usuario — mostrar campo palabra clave si no está visible
+    const palabraInput = document.getElementById('palabraClaveInput');
+    palabraInput.style.display = 'block';
+    palabraInput.placeholder = 'Elige una palabra clave para recuperar tu cuenta (ej: Roma)';
+    const palabraClave = palabraInput.value.trim().toLowerCase();
+    if (!palabraClave || palabraClave.length < 2) {
+      errDiv.textContent = '🔑 Elige una palabra clave para poder recuperar tu cuenta';
+      palabraInput.focus();
+      return;
+    }
     const nuevoCodigo = generarCodigo();
     const { data: nuevo, error } = await db.from('usuarios').insert({
-      nickname: nickLower, puntos: 0, codigo_acceso: nuevoCodigo, rol: 'usuario'
+      nickname: nickLower, puntos: 0, codigo_acceso: nuevoCodigo, rol: 'usuario', palabra_clave: palabraClave
     }).select().single();
     if (error) { errDiv.textContent = '⚠️ Error: ' + error.message; return; }
     usuario = nuevo;
@@ -2391,6 +2440,41 @@ async function procesarAcceso() {
     onLogin();
     mostrarCodeModal(nuevoCodigo);
   }
+}
+
+function abrirRecuperacion() {
+  document.getElementById('authModal').classList.add('hidden');
+  document.getElementById('recoveryModal').classList.remove('hidden');
+  document.getElementById('recoveryError').textContent = '';
+  document.getElementById('recoveryResult').style.display = 'none';
+  document.getElementById('recoveryBtn').style.display = 'block';
+  document.getElementById('recoveryNick').value = '';
+  document.getElementById('recoveryPalabra').value = '';
+}
+
+function cerrarRecuperacion() {
+  document.getElementById('recoveryModal').classList.add('hidden');
+  document.getElementById('authModal').classList.remove('hidden');
+}
+
+async function procesarRecuperacion() {
+  const nick = document.getElementById('recoveryNick').value.trim().toLowerCase();
+  const palabra = document.getElementById('recoveryPalabra').value.trim().toLowerCase();
+  const errDiv = document.getElementById('recoveryError');
+  errDiv.textContent = '';
+
+  if (!nick || !palabra) { errDiv.textContent = '❌ Rellena los dos campos'; return; }
+
+  const { data: u } = await db.from('usuarios').select('codigo_acceso, palabra_clave').eq('nickname', nick).single();
+
+  if (!u) { errDiv.textContent = '❌ Usuario no encontrado'; return; }
+  if (!u.palabra_clave) { errDiv.textContent = '⚠️ Este usuario no tiene palabra clave. Contacta al admin.'; return; }
+  if (u.palabra_clave !== palabra) { errDiv.textContent = '❌ Palabra clave incorrecta'; return; }
+
+  document.getElementById('recoveryCodeVal').textContent = u.codigo_acceso;
+  document.getElementById('recoveryResult').style.display = 'block';
+  document.getElementById('recoveryBtn').style.display = 'none';
+  errDiv.textContent = '';
 }
 
 async function crearSesion(nickname) {
@@ -2886,6 +2970,8 @@ async function publicarHilo() {
 const ADMIN_NICK = 'dastan';
 let adminTabActual = 'usuarios';
 let adminBodyOpen = true;
+let adminPagina = 1;
+const ADMIN_POR_PAG = 10;
 
 function mostrarAdminPanel() {
   if (!usuario) return;
@@ -2918,6 +3004,7 @@ function toggleAdminBody() {
 
 function adminSetTab(tab, el) {
   adminTabActual = tab;
+  adminPagina = 1;
   document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
   cargarAdminContent();
@@ -2932,10 +3019,26 @@ async function cargarAdminContent() {
   else if (adminTabActual === 'config') renderAdminConfig();
 }
 
+function adminPaginarHtml(total) {
+  const totalPags = Math.ceil(total / ADMIN_POR_PAG);
+  if (totalPags <= 1) return '';
+  let html = `<div style="display:flex;gap:5px;justify-content:center;margin-top:14px;flex-wrap:wrap;">`;
+  for (let i = 1; i <= totalPags; i++) {
+    html += `<button class="admin-btn ${i === adminPagina ? 'admin-btn-blue' : 'admin-btn-gray'}" onclick="adminIrPag(${i})">${i}</button>`;
+  }
+  html += `</div>`;
+  return html;
+}
+
+function adminIrPag(p) { adminPagina = p; cargarAdminContent(); }
+
 // ── 1. USUARIOS ──────────────────────────────
 async function renderAdminUsuarios() {
   const { data: users } = await db.from('usuarios').select('*').order('puntos', { ascending: false });
   if (!users || users.length === 0) { document.getElementById('adminContent').innerHTML = '<div class="admin-empty">Sin usuarios</div>'; return; }
+
+  const inicio = (adminPagina - 1) * ADMIN_POR_PAG;
+  const pag = users.slice(inicio, inicio + ADMIN_POR_PAG);
 
   let html = `
     <div class="admin-section-title">👥 Todos los usuarios (${users.length})</div>
@@ -2943,14 +3046,17 @@ async function renderAdminUsuarios() {
       <thead><tr><th>Usuario</th><th>Puntos</th><th>Estado</th><th>Acciones</th></tr></thead>
       <tbody>`;
 
-  for (const u of users) {
+  for (const u of pag) {
     const badge = u.rol === 'admin'
       ? `<span class="admin-badge admin-badge-admin">👑 Admin</span>`
       : u.baneado ? `<span class="admin-badge admin-badge-baneado">🚫 Baneado</span>`
       : `<span class="admin-badge admin-badge-usuario">👤 Usuario</span>`;
 
     html += `<tr>
-      <td><div class="admin-nick">${cap(u.nickname)}</div></td>
+      <td>
+        <div class="admin-nick">${cap(u.nickname)}</div>
+        ${u.palabra_clave ? `<div style="font-size:0.65rem;color:var(--text-3);">🔑 Palabra: <b>${u.palabra_clave}</b></div>` : `<div style="font-size:0.65rem;color:var(--accent);">⚠️ Sin palabra clave</div>`}
+      </td>
       <td>
         <input class="admin-inline-input" type="number" value="${u.puntos||0}" id="pts_${u.nickname}" />
         <button class="admin-btn admin-btn-blue" onclick="adminAjustarPuntos('${u.nickname}')">✔</button>
@@ -2970,14 +3076,17 @@ async function renderAdminUsuarios() {
       </div></td>
     </tr>`;
   }
-  html += `</tbody></table>`;
+  html += `</tbody></table>${adminPaginarHtml(users.length)}`;
   document.getElementById('adminContent').innerHTML = html;
 }
 
 // ── 2. HILOS ─────────────────────────────────
 async function renderAdminPosts() {
-  const { data: hilos } = await db.from('hilos').select('*').order('created_at', { ascending: false }).limit(100);
+  const { data: hilos } = await db.from('hilos').select('*').order('created_at', { ascending: false });
   if (!hilos || hilos.length === 0) { document.getElementById('adminContent').innerHTML = '<div class="admin-empty">Sin hilos</div>'; return; }
+
+  const inicio = (adminPagina - 1) * ADMIN_POR_PAG;
+  const pag = hilos.slice(inicio, inicio + ADMIN_POR_PAG);
 
   let html = `
     <div class="admin-section-title">📋 Hilos (${hilos.length})</div>
@@ -2985,7 +3094,7 @@ async function renderAdminPosts() {
       <thead><tr><th>Autor</th><th>Consulta</th><th>Estado</th><th>Acciones</th></tr></thead>
       <tbody>`;
 
-  for (const h of hilos) {
+  for (const h of pag) {
     const resumen = [h.presupuesto, h.uso_principal, h.datos_extra].filter(Boolean).join(' · ') || 'Sin detalle';
     const fijado = h.fijado ? '📌 ' : '';
     html += `<tr>
@@ -3003,22 +3112,25 @@ async function renderAdminPosts() {
       </div></td>
     </tr>`;
   }
-  html += `</tbody></table>`;
+  html += `</tbody></table>${adminPaginarHtml(hilos.length)}`;
   document.getElementById('adminContent').innerHTML = html;
 }
 
 // ── 3. RESPUESTAS ─────────────────────────────
 async function renderAdminRespuestas() {
-  const { data: resps } = await db.from('respuestas').select('*').order('created_at', { ascending: false }).limit(80);
+  const { data: resps } = await db.from('respuestas').select('*').order('created_at', { ascending: false });
   if (!resps || resps.length === 0) { document.getElementById('adminContent').innerHTML = '<div class="admin-empty">Sin respuestas</div>'; return; }
 
+  const inicio = (adminPagina - 1) * ADMIN_POR_PAG;
+  const pag = resps.slice(inicio, inicio + ADMIN_POR_PAG);
+
   let html = `
-    <div class="admin-section-title">💬 Respuestas recientes (${resps.length})</div>
+    <div class="admin-section-title">💬 Respuestas (${resps.length})</div>
     <table class="admin-table">
       <thead><tr><th>Autor</th><th>Contenido</th><th>Votos</th><th>Acciones</th></tr></thead>
       <tbody>`;
 
-  for (const r of resps) {
+  for (const r of pag) {
     const preview = (r.contenido || '').slice(0, 90) + ((r.contenido||'').length > 90 ? '…' : '');
     html += `<tr>
       <td style="font-weight:600;font-size:0.78rem;white-space:nowrap;">${cap(r.nickname)}</td>
@@ -3030,7 +3142,7 @@ async function renderAdminRespuestas() {
       </div></td>
     </tr>`;
   }
-  html += `</tbody></table>`;
+  html += `</tbody></table>${adminPaginarHtml(resps.length)}`;
   document.getElementById('adminContent').innerHTML = html;
 }
 
