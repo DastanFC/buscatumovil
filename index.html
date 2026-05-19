@@ -1604,6 +1604,148 @@ border: 1.5px solid var(--blue);
   color: var(--text-3);
   font-size: 0.78rem;
 }
+
+/* ─── RESPONSIVE ADMIN PANEL ─── */
+@media (max-width: 768px) {
+  .admin-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .admin-table th,
+  .admin-table td {
+    padding: 8px 6px;
+    font-size: 0.7rem;
+  }
+  
+  .admin-inline-input {
+    width: 55px;
+    padding: 3px 5px;
+  }
+  
+  .admin-actions-row {
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .admin-btn {
+    padding: 3px 8px;
+    font-size: 0.6rem;
+  }
+  
+  .admin-hilo-title {
+    max-width: 150px;
+    white-space: normal;
+    word-break: break-word;
+  }
+  
+  .ranks-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .admin-tab-row {
+    flex-wrap: wrap;
+  }
+  
+  .admin-tab {
+    padding: 4px 10px;
+    font-size: 0.65rem;
+  }
+  
+  #adminContent > div[style*="display:grid"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px;
+  }
+}
+
+/* ─── RESPONSIVE ADMIN PANEL ─── */
+@media (max-width: 768px) {
+  .admin-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .admin-table th,
+  .admin-table td {
+    padding: 8px 6px;
+    font-size: 0.7rem;
+  }
+  
+  .admin-inline-input {
+    width: 55px;
+    padding: 3px 5px;
+  }
+  
+  .admin-actions-row {
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .admin-btn {
+    padding: 3px 8px;
+    font-size: 0.6rem;
+  }
+  
+  .admin-hilo-title {
+    max-width: 150px;
+    white-space: normal;
+    word-break: break-word;
+  }
+  
+  .ranks-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .admin-tab-row {
+    flex-wrap: wrap;
+  }
+  
+  .admin-tab {
+    padding: 4px 10px;
+    font-size: 0.65rem;
+  }
+  
+  #adminContent > div[style*="display:grid"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px;
+  }
+}
+
+#adminBtn {
+  display: none;
+  position: fixed;
+  bottom: 24px;
+  left: 20px;
+  z-index: 999;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #F5A623, #E8890A);
+  color: white;
+  font-size: 1.4rem;
+  box-shadow: 0 4px 16px rgba(245,166,35,0.5);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+@media (max-width: 768px) {
+  #adminBtn {
+    width: 48px;
+    height: 48px;
+    bottom: 16px;
+    left: 12px;
+    font-size: 1.2rem;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -2563,19 +2705,19 @@ function mostrarUsuario() {
   const nombre = cap(usuario.nickname);
   const rango = getRango(usuario.puntos || 0, usuario.rol);
   const ac = avatarColor(usuario.nickname);
-  
+
   const avatarEl = document.getElementById('chipAvatar');
   if (avatarEl) {
     avatarEl.style.background = ac.bg;
     avatarEl.style.color = ac.color;
     avatarEl.textContent = nombre.substring(0, 2).toUpperCase();
   }
-  
+
   const nameEl = document.getElementById('chipName');
   if (nameEl) {
     nameEl.textContent = nombre + (esAdmin() ? ' 👑' : '');
   }
-  
+
   const ptsEl = document.getElementById('chipPts');
   if (ptsEl) {
     ptsEl.textContent = `${rango.icon} ${usuario.puntos || 0}pts`;
@@ -2583,9 +2725,9 @@ function mostrarUsuario() {
 }
 
 function toggleUserMenu() {
-  if (!usuario) { 
-    mostrarModalAuth(); 
-    return; 
+  if (!usuario) {
+    mostrarModalAuth();
+    return;
   }
   // Podría expandirse con un menú de usuario, por ahora muestra info
 }
