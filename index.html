@@ -3643,7 +3643,50 @@ async function adminBackup(formato) {
 }
 
 
+// ═══════════════════════════════════════════
+// EDITAR RESPUESTAS (SOLO ESTO ES NUEVO)
+// ═══════════════════════════════════════════
+function abrirModalEditarRespuesta(respuestaId, contenidoActual) {
+  if (!usuario) { toast('❌ Inicia sesión para editar'); return; }
+  const contenidoEscapado = (contenidoActual || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const modalHtml = `
+    <div class="modal-overlay" id="editModal" style="display:flex; z-index:1000;">
+      <div class="modal" style="max-width:500px;">
+        <div class="modal-title">✏️ Editar respuesta</div>
+        <div class="modal-sub">Modifica tu recomendación.</div>
+        <textarea id="editContenido" rows="4" style="width:100%; padding:12px; border:1.5px solid var(--border); border-radius:12px; font-size:0.9rem; margin-bottom:16px;">${contenidoEscapado}</textarea>
+        <div style="display:flex; gap:10px; justify-content:flex-end;">
+          <button class="btn-cancel" onclick="cerrarModalEditar()">Cancelar</button>
+          <button class="btn-submit" onclick="guardarEdicionRespuesta('${respuestaId}')">Guardar</button>
+        </div>
+      </div>
+    </div>
+  `;
+  const oldModal = document.getElementById('editModal');
+  if (oldModal) oldModal.remove();
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
 
+function cerrarModalEditar() {
+  const modal = document.getElementById('editModal');
+  if (modal) modal.remove();
+}
+
+async function guardarEdicionRespuesta(respuestaId) {
+  const nuevo = document.getElementById('editContenido').value.trim();
+  if (!nuevo) { toast('❌ No puede estar vacío'); return; }
+  toast('📝 Guardando...');
+  const { error } = await db.from('respuestas').update({
+    contenido: nuevo,
+    editado: true,
+    editado_en: new Date().toISOString()
+  }).eq('id', respuestaId).eq('nickname', usuario.nickname);
+  if (error) { toast('❌ Error: ' + error.message); return; }
+  toast('✅ Editado');
+  cerrarModalEditar();
+  const { data: resp } = await db.from('respuestas').select('hilo_id').eq('id', respuestaId).single();
+  if (resp) cargarRespuestas(resp.hilo_id);
+}
 
 // ═══════════════════════════════════════════
 // INIT
