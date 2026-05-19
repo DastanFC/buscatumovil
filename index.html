@@ -1952,8 +1952,7 @@ border: 1.5px solid var(--blue);
   box-shadow: 0 4px 16px rgba(245,166,35,0.5);
   cursor: pointer;
   align-items: center;
-  justify-content: center;
-  display: flex;
+  justify-content: content;
   transition: transform 0.15s, box-shadow 0.15s;
 ">👑</button>
 
@@ -3040,7 +3039,7 @@ async function cargarRespuestas(hiloId) {
     
     // BOTÓN EDITAR (solo para el autor)
     const editBtn = (usuario && usuario.nickname === r.nickname) ? 
-      `<button class="edit-reply-btn" onclick="abrirModalEditarRespuesta('${r.id}', ${JSON.stringify(r.contenido)})">✏️ Editar</button>` : '';
+      `<button class="edit-reply-btn" data-edit-id="${r.id}" data-edit-contenido="${r.contenido.replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/\n/g,' ')}">✏️ Editar</button>` : '';
 
     let citaHtml = '';
     if (r.cita_id) {
@@ -3074,7 +3073,7 @@ async function cargarRespuestas(hiloId) {
         <div class="reply-actions">
           <button class="vote-btn ${miVoto === 'util' ? 'voted-util' : ''}" onclick="votar('${r.id}','util','${hiloId}','${r.nickname}')">👍 ${votosUtil}</button>
           <button class="vote-btn ${miVoto === 'noutil' ? 'voted-noutil' : ''}" onclick="votar('${r.id}','noutil','${hiloId}','${r.nickname}')">👎 ${r.votos_noutil || 0}</button>
-          <button class="cite-btn" onclick="setCita('${hiloId}','${r.id}','${r.nickname}',${JSON.stringify(r.contenido)})">↩ Citar</button>
+          <button class="cite-btn" data-hilo="${hiloId}" data-reply="${r.id}" data-autor="${r.nickname}" data-contenido="${r.contenido.replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/\n/g,' ')}">↩ Citar</button>
           ${editBtn}
         </div>
       </div>
@@ -3082,6 +3081,24 @@ async function cargarRespuestas(hiloId) {
   }
 
   container.innerHTML = html;
+
+  // Event delegation para citar y editar (evita problemas con comillas en onclick inline)
+  container.querySelectorAll('.cite-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const hiloId = btn.dataset.hilo;
+      const replyId = btn.dataset.reply;
+      const autor = btn.dataset.autor;
+      const texto = btn.dataset.contenido;
+      setCita(hiloId, replyId, autor, texto);
+    });
+  });
+  container.querySelectorAll('.edit-reply-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.editId;
+      const contenido = btn.dataset.editContenido;
+      abrirModalEditarRespuesta(id, contenido);
+    });
+  });
 }
 
 async function enviarRespuesta(hiloId) {
