@@ -826,11 +826,14 @@ border: 1.5px solid var(--blue);
   font-family: 'Roboto', sans-serif;
   resize: none;
   background: var(--surface-2);
-  transition: all 0.18s;
+  transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
   min-height: 44px;
-  max-height: 120px;
+  max-height: 200px;
   width: 0;
+  overflow: hidden;
+  overflow-y: hidden;
   -webkit-appearance: none;
+  line-height: 1.5;
 }
 .reply-input:focus {
   outline: none;
@@ -856,6 +859,26 @@ border: 1.5px solid var(--blue);
 }
 .send-btn:hover { background: var(--blue); transform: scale(1.05); }
 .send-btn.sending { opacity: 0.6; pointer-events: none; }
+
+.clear-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-3);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+  transition: all 0.15s;
+  align-self: flex-end;
+  margin-bottom: 4px;
+}
+.clear-btn:hover { background: #FEF2F2; border-color: #EF4444; color: #EF4444; }
+.clear-btn.visible { display: flex; }
 
 /* ─── RANK PROGRESS BAR ─── */
 .rank-progress {
@@ -2920,11 +2943,12 @@ async function renderHilo(h) {
             <button class="quote-clear" onclick="clearCita('${h.id}')">✕</button>
           </div>
           <div class="reply-input-row">
-            <textarea class="reply-input" id="rinput_${h.id}" placeholder="Escribe o usa @nombre"
+            <textarea class="reply-input" id="rinput_${h.id}" placeholder="Escribe tu recomendación… (Enter para enviar, Shift+Enter para saltar línea)"
               rows="1"
-              onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarRespuesta('${h.id}')}"
-              oninput="autoResize(this)"
+              onkeydown="manejarTeclaRespuesta(event,'${h.id}')"
+              oninput="autoResizeConBorrar(this,'clearbtn_${h.id}')"
             ></textarea>
+            <button class="clear-btn" id="clearbtn_${h.id}" onclick="limpiarRespuesta('${h.id}')" title="Borrar">✕</button>
             <button class="send-btn" id="sendbtn_${h.id}" onclick="enviarRespuesta('${h.id}')">➤</button>
           </div>
         </div>` : ''}
@@ -2934,7 +2958,30 @@ async function renderHilo(h) {
 
 function autoResize(el) {
   el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+  el.style.height = Math.min(el.scrollHeight, 200) + 'px';
+}
+
+function autoResizeConBorrar(el, clearBtnId) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 200) + 'px';
+  const btn = document.getElementById(clearBtnId);
+  if (btn) btn.classList.toggle('visible', el.value.length > 0);
+}
+
+function manejarTeclaRespuesta(event, hiloId) {
+  if (event.key === 'Enter' && !event.shiftKey) {
+    event.preventDefault();
+    enviarRespuesta(hiloId);
+  }
+  // Shift+Enter inserta salto de línea de forma natural (no se previene)
+}
+
+function limpiarRespuesta(hiloId) {
+  const input = document.getElementById(`rinput_${hiloId}`);
+  const btn = document.getElementById(`clearbtn_${hiloId}`);
+  if (input) { input.value = ''; input.style.height = 'auto'; input.focus(); }
+  if (btn) btn.classList.remove('visible');
+  clearCita(hiloId);
 }
 
 function toggleReplies(hiloId) {
@@ -3134,10 +3181,21 @@ async function enviarRespuesta(hiloId) {
 
   input.value = '';
   input.style.height = 'auto';
+  // Ocultar botón borrar
+  const clearBtn = document.getElementById(`clearbtn_${hiloId}`);
+  if (clearBtn) clearBtn.classList.remove('visible');
   clearCita(hiloId);
   sendBtn.classList.remove('sending');
   toast('✅ Respuesta enviada · +2 pts');
-  
+
+  // Asegurarse de que el panel de respuestas está visible antes de recargar
+  const repContainer = document.getElementById(`replies_${hiloId}`);
+  const repBox = document.getElementById(`replybox_${hiloId}`);
+  if (repContainer && repContainer.style.display === 'none') {
+    repContainer.style.display = 'block';
+    if (repBox) repBox.style.display = 'block';
+  }
+
   cargarRespuestas(hiloId);
 }
 
