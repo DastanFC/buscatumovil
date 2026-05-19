@@ -3643,6 +3643,8 @@ async function adminBackup(formato) {
 }
 
 
+
+
 // ═══════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════
@@ -3674,6 +3676,81 @@ async function init() {
     mostrarModalAuth();
   }
 }
+
+// ═══════════════════════════════════════════
+// EDITAR RESPUESTAS (NUEVAS FUNCIONES)
+// ═══════════════════════════════════════════
+function abrirModalEditarRespuesta(respuestaId, contenidoActual) {
+  if (!usuario) {
+    toast('❌ Inicia sesión para editar');
+    return;
+  }
+  
+  // Escapar el contenido para evitar problemas con comillas
+  const contenidoEscapado = (contenidoActual || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  
+  const modalHtml = `
+    <div class="modal-overlay" id="editModal" style="display:flex; z-index:1000;">
+      <div class="modal" style="max-width:500px;">
+        <div class="modal-title">✏️ Editar respuesta</div>
+        <div class="modal-sub">Modifica tu recomendación. Quedará marcada como "editada".</div>
+        <textarea id="editContenido" rows="4" style="width:100%; padding:12px; border:1.5px solid var(--border); border-radius:12px; font-size:0.9rem; font-family:'DM Sans', sans-serif; resize:vertical; margin-bottom:16px;">${contenidoEscapado}</textarea>
+        <div style="display:flex; gap:10px; justify-content:flex-end;">
+          <button class="btn-cancel" onclick="cerrarModalEditar()">Cancelar</button>
+          <button class="btn-submit" onclick="guardarEdicionRespuesta('${respuestaId}')">Guardar cambios</button>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // Eliminar modal existente si hay
+  const existingModal = document.getElementById('editModal');
+  if (existingModal) existingModal.remove();
+  
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+function cerrarModalEditar() {
+  const modal = document.getElementById('editModal');
+  if (modal) modal.remove();
+}
+
+async function guardarEdicionRespuesta(respuestaId) {
+  const nuevoContenido = document.getElementById('editContenido').value.trim();
+  
+  if (!nuevoContenido) {
+    toast('❌ No puedes dejar la respuesta vacía');
+    return;
+  }
+  
+  toast('📝 Guardando cambios...');
+  
+  const { error } = await db.from('respuestas')
+    .update({
+      contenido: nuevoContenido,
+      editado: true,
+      editado_en: new Date().toISOString(),
+      editado_por: usuario.nickname
+    })
+    .eq('id', respuestaId)
+    .eq('nickname', usuario.nickname);
+  
+  if (error) {
+    console.error('Error al editar:', error);
+    toast('❌ Error al editar: ' + error.message);
+    return;
+  }
+  
+  toast('✅ Respuesta editada correctamente');
+  cerrarModalEditar();
+  
+  // Recargar las respuestas
+  const { data: resp } = await db.from('respuestas').select('hilo_id').eq('id', respuestaId).single();
+  if (resp && resp.hilo_id) {
+    cargarRespuestas(resp.hilo_id);
+  }
+}
+
 // ═══════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════
@@ -3707,6 +3784,8 @@ async function init() {
     // Si de verdad no hay sesión ni token, entonces sí mostramos el login
     mostrarModal();
 }
+
+
 
 window.addEventListener('load', init);
 
