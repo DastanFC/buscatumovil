@@ -1615,7 +1615,6 @@ border: 1.5px solid var(--blue);
     <em>EL RECOMENDADOR</em>
   </div>
   <div class="topbar-right">
-    <button class="notif-btn" id="adminBtn" onclick="emergenciaAdmin()" title="Panel Admin" style="display:none;background:rgba(245,166,35,0.2);border:1px solid rgba(245,166,35,0.4);">👑</button>
     <button class="notif-btn" id="notifBtn" onclick="toggleNotifPanel()">
       🔔
       <span class="notif-badge" id="notifBadge"></span>
@@ -1742,6 +1741,27 @@ border: 1.5px solid var(--blue);
   <div id="hilosList"></div>
   <div id="pagination" class="pagination"></div>
 </div>
+
+<!-- BOTÓN ADMIN FLOTANTE (solo dastan) -->
+<button id="adminBtn" onclick="emergenciaAdmin()" style="
+  display: none;
+  position: fixed;
+  bottom: 24px;
+  left: 20px;
+  z-index: 999;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #F5A623, #E8890A);
+  color: white;
+  font-size: 1.4rem;
+  box-shadow: 0 4px 16px rgba(245,166,35,0.5);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s, box-shadow 0.15s;
+" onpointerdown="this.style.transform='scale(0.92)'" onpointerup="this.style.transform='scale(1)'">👑</button>
 
 <!-- TOAST -->
 <div class="send-toast" id="sendToast"></div>
