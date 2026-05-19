@@ -1187,16 +1187,16 @@ border: 1.5px solid var(--blue);
   color: white;
   border: none;
   border-radius: 999px;
-  height: 52px;
-  padding: 0 20px 0 16px;
+  height: 54px;
+  padding: 0 22px 0 18px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   cursor: pointer;
   box-shadow: 0 4px 20px rgba(29,111,232,0.45);
   font-family: 'Roboto', sans-serif;
   font-weight: 600;
-  font-size: 0.88rem;
+  font-size: 0.9rem;
   transition: all 0.2s;
 }
 
@@ -1213,12 +1213,18 @@ border: 1.5px solid var(--blue);
 .fab-icon { font-size: 1.1rem; line-height: 1; }
 .fab-label { white-space: nowrap; }
 
-/* En pantallas anchas queda bien expandido,
-   en móvil se puede colapsar a solo icono si se prefiere */
 @media (max-width: 380px) {
   .fab-label { display: none; }
-  .fab { padding: 0; width: 52px; justify-content: center; border-radius: 50%; }
+  .fab { 
+    padding: 0; 
+    width: 52px; 
+    justify-content: center; 
+    border-radius: 50%;
+  }
 }
+
+/* ─── TOAST ─── */
+.send-toast {
   position: fixed;
   bottom: 30px;
   left: 50%;
@@ -1234,6 +1240,7 @@ border: 1.5px solid var(--blue);
   z-index: 999;
   pointer-events: none;
 }
+
 .send-toast.show {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
