@@ -3447,27 +3447,57 @@ async function marcarResuelta(hiloId) {
 // ═══════════════════════════════════════════
 // RESPUESTAS MAS VOTADAS DESTACADAS
 // ═══════════════════════════════════════════
+
+// ── Parsear scores desde el campo contenido (fallback si las columnas no existen en BD) ──
+function parsearScoresDesdeContenido(contenido) {
+  if (!contenido) return {};
+  const match = contenido.match(/\[Scores:\s*([^\]]+)\]/);
+  if (!match) return {};
+  const scores = {};
+  const partes = match[1].split('·');
+  for (const parte of partes) {
+    const m = parte.trim().match(/(.+?)\s+([\d.]+)\/10/);
+    if (!m) continue;
+    const labelRaw = m[1].replace(/^[\s\S]*?([\w]+[\w\s]*)$/, '$1').trim();
+    const val = parseFloat(m[2]);
+    const cat = RANKING_CATS.find(c => c.label.toLowerCase() === labelRaw.toLowerCase());
+    if (cat) scores[cat.key] = val;
+  }
+  return scores;
+}
+
 async function cargarRespuestas(hiloId) {
   const container = document.getElementById(`replies_${hiloId}`);
   if (!container) return;
 
-  const { data: respuestas } = await db.from('respuestas')
+  // Siempre mostrar el contenedor y el replybox al recargar
+  container.style.display = 'block';
+  const box = document.getElementById(`replybox_${hiloId}`);
+  if (box) box.style.display = 'block';
+
+  const { data: respuestas, error: errResp } = await db.from('respuestas')
     .select('*')
     .eq('hilo_id', hiloId)
     .order('created_at', { ascending: true });
 
-  if (!respuestas || respuestas.length === 0) {
-    container.innerHTML = '<div class="replies-empty">💬 Sé el primero en recomendar</div>';
-    document.getElementById(`topRec_${hiloId}`).innerHTML = '';
+  if (errResp) {
+    container.innerHTML = `<div class="replies-empty">⚠️ Error al cargar: ${errResp.message}</div>`;
     return;
   }
 
-  // Calcular respuesta más votada
+  if (!respuestas || respuestas.length === 0) {
+    container.innerHTML = '<div class="replies-empty">💬 Sé el primero en recomendar</div>';
+    const topRecEl0 = document.getElementById(`topRec_${hiloId}`);
+    if (topRecEl0) topRecEl0.innerHTML = '';
+    return;
+  }
+
+  // Calcular respuesta más votada (incluye las de ranking aunque no tengan modelo detectado)
   let mejorRespuesta = null;
   let maxVotos = -1;
   for (const r of respuestas) {
     const votosUtil = r.votos_util || 0;
-    const tieneModelo = extraerModelos(r.contenido).length > 0;
+    const tieneModelo = r.movil_nombre || extraerModelos(r.contenido).length > 0;
     if (tieneModelo && votosUtil > maxVotos) {
       maxVotos = votosUtil;
       mejorRespuesta = r;
@@ -3476,26 +3506,30 @@ async function cargarRespuestas(hiloId) {
 
   // Top recommendation
   const topRecEl = document.getElementById(`topRec_${hiloId}`);
-  if (mejorRespuesta && maxVotos > 0) {
-    const modelos = extraerModelos(mejorRespuesta.contenido);
-    const modeloTop = modelos.length > 0 ? formatearModelo(modelos[0]) : 'Respuesta útil';
-    topRecEl.innerHTML = `
-      <div class="top-rec">
-        <div class="top-rec-icon">🏅</div>
-        <div>
-          <div class="top-rec-text">Más votado por la comunidad (${maxVotos} 👍)</div>
-          <div class="top-rec-model">${modeloTop}</div>
-          <div style="font-size:0.90rem;color:rgba(255,255,255);">Recomendado por ${cap(mejorRespuesta.nickname)}</div>
+  if (topRecEl) {
+    if (mejorRespuesta && maxVotos > 0) {
+      const modeloTop = mejorRespuesta.movil_nombre
+        ? formatearModelo(mejorRespuesta.movil_nombre)
+        : (() => { const m = extraerModelos(mejorRespuesta.contenido); return m.length > 0 ? formatearModelo(m[0]) : 'Respuesta útil'; })();
+      topRecEl.innerHTML = `
+        <div class="top-rec">
+          <div class="top-rec-icon">🏅</div>
+          <div>
+            <div class="top-rec-text">Más votado por la comunidad (${maxVotos} 👍)</div>
+            <div class="top-rec-model">${modeloTop}</div>
+            <div style="font-size:0.90rem;color:rgba(255,255,255);">Recomendado por ${cap(mejorRespuesta.nickname)}</div>
+          </div>
         </div>
-      </div>
-    `;
-  } else {
-    topRecEl.innerHTML = '';
+      `;
+    } else {
+      topRecEl.innerHTML = '';
+    }
   }
 
   const cntEl = document.getElementById(`rcnt_${hiloId}`);
   if (cntEl) cntEl.textContent = respuestas.length;
 
+  // ── Cargar votos y usuarios en batch (una sola query cada uno, mucho más rápido) ──
   let votosUsuario = {};
   if (usuario) {
     const { data: vots } = await db.from('votos')
@@ -3505,20 +3539,24 @@ async function cargarRespuestas(hiloId) {
     if (vots) vots.forEach(v => votosUsuario[v.respuesta_id] = v.tipo);
   }
 
+  const nicknames = [...new Set(respuestas.map(r => r.nickname))];
+  const { data: usuariosData } = await db.from('usuarios').select('nickname, puntos, rol').in('nickname', nicknames);
+  const usuariosMap = {};
+  if (usuariosData) usuariosData.forEach(u => usuariosMap[u.nickname] = u);
+
   let html = '';
   for (const r of respuestas) {
-    const { data: uData } = await db.from('usuarios').select('puntos, rol').eq('nickname', r.nickname).single();
+    const uData = usuariosMap[r.nickname] || null;
     const ac = avatarColor(r.nickname);
     const nombre = cap(r.nickname);
     const miVoto = votosUsuario[r.id];
-    const modelos = extraerModelos(r.contenido);
     const votosUtil = r.votos_util || 0;
     const esTopVotada = (mejorRespuesta && mejorRespuesta.id === r.id && maxVotos > 0);
     const topClass = esTopVotada ? 'reply-item top-voted' : 'reply-item';
-    
+
     // INDICADOR DE EDITADO
     const editadoBadge = r.editado ? `<span class="editado-badge"><i>✏️</i> Editado ${r.editado_en ? timeAgo(r.editado_en) : ''}</span>` : '';
-    
+
     // BOTONES EDITAR Y BORRAR (solo para el autor)
     const esAutor = usuario && usuario.nickname === r.nickname;
     const editBtn = esAutor ?
@@ -3526,6 +3564,7 @@ async function cargarRespuestas(hiloId) {
     const deleteBtn = esAutor ?
       `<button class="delete-reply-btn" data-delete-id="${r.id}" data-delete-hilo="${hiloId}">🗑 Borrar</button>` : '';
 
+    // Cita
     let citaHtml = '';
     if (r.cita_id) {
       const citada = respuestas.find(rx => rx.id === r.cita_id);
@@ -3538,39 +3577,41 @@ async function cargarRespuestas(hiloId) {
       }
     }
 
-    // Limpiar el texto: quitar [Scores:...] y, si es ranking, quitar también la primera línea (nombre del móvil)
+    // ── Limpiar texto: quitar [Scores:...] y la primera línea si es el nombre del móvil ──
     let textoLimpio = (r.contenido || '').replace(/\[Scores:[^\]]*\]/g, '').trim();
-    // Si la respuesta viene del formulario de ranking, la primera línea es el nombre del móvil → la eliminamos del texto visible
-    if ((r.tiene_ranking || r.movil_nombre) && textoLimpio) {
+    if (r.movil_nombre && textoLimpio) {
       const lineas = textoLimpio.split('\n');
-      // Si la primera línea coincide con el movil_nombre, quitarla
-      if (r.movil_nombre && lineas[0].trim().toLowerCase() === r.movil_nombre.trim().toLowerCase()) {
-        lineas.shift();
-      }
+      if (lineas[0].trim().toLowerCase() === r.movil_nombre.trim().toLowerCase()) lineas.shift();
       textoLimpio = lineas.join('\n').trim();
     }
     const contenidoLimpio = renderizarContenido(textoLimpio);
 
-    // Modelos a mostrar: si hay movil_nombre (ranking), usarlo directamente; si no, extraer del texto
-    const modelosAMostrar = (r.movil_nombre)
+    // ── Modelo a mostrar ──
+    const modelosAMostrar = r.movil_nombre
       ? [r.movil_nombre]
-      : modelos;
+      : extraerModelos(r.contenido);
 
-    // Renderizar bloque de ranking si tiene scores
+    // ── Scores: primero columnas de BD, si no hay, parsear desde el campo contenido ──
+    const scoresEnBD = RANKING_CATS.some(c => r[c.key] != null);
+    const scoresFinales = scoresEnBD ? r : parsearScoresDesdeContenido(r.contenido);
+    const mediaFinal = r.sc_media != null
+      ? r.sc_media
+      : (() => {
+          const vs = RANKING_CATS.map(c => scoresFinales[c.key]).filter(v => v != null);
+          return vs.length ? parseFloat((vs.reduce((a,b) => a+b, 0) / vs.length).toFixed(1)) : null;
+        })();
+
+    // ── Bloque de ranking ──
     let rankingHtml = '';
-    if (r.tiene_ranking || r.sc_media != null || RANKING_CATS.some(c => r[c.key] != null)) {
+    const tieneScores = RANKING_CATS.some(c => scoresFinales[c.key] != null);
+    if (r.tiene_ranking || r.movil_nombre || tieneScores) {
       const chipsHtml = RANKING_CATS
-        .filter(cat => r[cat.key] != null)
-        .map(cat => `<span class="reply-ranking-chip">${cat.icon} ${cat.label} <b>${r[cat.key]}/10</b></span>`)
+        .filter(cat => scoresFinales[cat.key] != null)
+        .map(cat => `<span class="reply-ranking-chip">${cat.icon} ${cat.label} <b>${scoresFinales[cat.key]}/10</b></span>`)
         .join('');
-      const mediaVal = r.sc_media != null ? r.sc_media
-        : (() => {
-            const vs = RANKING_CATS.map(c => r[c.key]).filter(v => v != null);
-            return vs.length ? (vs.reduce((a,b)=>a+b,0)/vs.length).toFixed(1) : null;
-          })();
       rankingHtml = `
         <div class="reply-ranking-block">
-          ${mediaVal != null ? `<div class="reply-ranking-media">⭐ Media <span style="margin-left:4px;font-size:1.05rem;">${mediaVal}/10</span></div>` : ''}
+          ${mediaFinal != null ? `<div class="reply-ranking-media">⭐ Media <span style="margin-left:4px;font-size:1.05rem;">${mediaFinal}/10</span></div>` : ''}
           ${chipsHtml ? `<div class="reply-ranking-chips">${chipsHtml}</div>` : ''}
         </div>`;
     }
@@ -3626,9 +3667,11 @@ async function cargarRespuestas(hiloId) {
       borrarRespuestaPropia(btn.dataset.deleteId, btn.dataset.deleteHilo);
     });
   });
+
+  // Mantener replybox visible tras recargar el HTML
+  if (box) box.style.display = 'block';
 }
 
-// ═══════════════════════════════════════════
 // MODAL RANKING — RECOMENDAR MÓVIL
 // ═══════════════════════════════════════════
 function abrirModalRanking(hiloId) {
