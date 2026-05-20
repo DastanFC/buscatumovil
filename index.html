@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<link rel="icon" type="image/png" href="/favicon.png" />
 <title>Recomiéndame un móvil</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -767,20 +766,6 @@ border: 1.5px solid var(--blue);
 }
 .cite-btn:hover { background: var(--surface-3); color: var(--text-2); }
 
-.delete-reply-btn {
-  background: none;
-  border: none;
-  font-size: 0.68rem;
-  color: #EF4444;
-  cursor: pointer;
-  padding: 3px 6px;
-  border-radius: 6px;
-  font-family: 'Roboto', sans-serif;
-  transition: all 0.18s;
-  opacity: 0.6;
-}
-.delete-reply-btn:hover { background: #FEF2F2; opacity: 1; }
-
 /* Empty replies */
 .replies-empty {
   padding: 18px 0;
@@ -791,29 +776,243 @@ border: 1.5px solid var(--blue);
 
 /* ─── REPLY BOX ─── */
 .reply-box {
-  padding: 12px 16px 16px;
   border-top: 1px solid var(--border);
   background: var(--surface);
   border-radius: 0 0 var(--radius) var(--radius);
+  overflow: hidden;
 }
 
+/* Cabecera compacta con botón de expandir */
+.reply-box-compact {
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.reply-box-avatar-sm {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* Dos botones de acción */
+.reply-box-actions {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.reply-action-btn {
+  flex: 1;
+  padding: 9px 12px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Roboto', sans-serif;
+  transition: all 0.18s;
+  white-space: nowrap;
+  border: 1.5px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.reply-action-btn:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-pale); }
+.reply-action-btn.primary { background: var(--navy); color: white; border-color: var(--navy); }
+.reply-action-btn.primary:hover { background: var(--blue); border-color: var(--blue); }
+
+@media (max-width: 420px) {
+  .reply-action-btn { font-size: 0.72rem; padding: 8px 8px; gap: 4px; }
+}
+
+/* Panel expandido */
+.reply-box-expanded {
+  display: none;
+  padding: 0 14px 14px;
+  animation: expandIn 0.2s ease;
+}
+.reply-box-expanded.open { display: block; }
+
+@keyframes expandIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── PANEL RECOMENDACIÓN CON PUNTUACIONES ── */
+.rec-panel {
+  background: linear-gradient(135deg, #F8FAFF 0%, #EFF4FF 100%);
+  border: 1.5px solid rgba(29,111,232,0.2);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.rec-panel-header {
+  background: var(--navy);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rec-panel-title {
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: white;
+  letter-spacing: 0.2px;
+}
+
+.rec-panel-body {
+  padding: 12px 14px;
+}
+
+/* Campo modelo */
+.rec-model-row {
+  margin-bottom: 12px;
+}
+
+.rec-field-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: var(--text-3);
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.rec-model-input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-family: 'Roboto', sans-serif;
+  background: white;
+  color: var(--text);
+  transition: all 0.18s;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+}
+.rec-model-input:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(29,111,232,0.08);
+}
+
+/* Grid de puntuaciones */
+.scores-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: var(--text-3);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.scores-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.score-cell {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  transition: border-color 0.15s;
+}
+.score-cell:focus-within { border-color: var(--blue); }
+
+.score-cell-label {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text-2);
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.score-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--navy);
+  color: white;
+  border: none;
+  border-radius: 7px;
+  padding: 4px 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  font-family: 'DM Mono', monospace;
+  cursor: pointer;
+  width: 46px;
+  text-align: center;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.score-select:focus { outline: none; background: var(--blue); }
+.score-select option { background: var(--navy); }
+
+/* Score avg badge */
+.scores-avg {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+  padding: 7px 10px;
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+}
+.scores-avg-label { font-size: 0.68rem; color: var(--text-3); flex: 1; }
+.scores-avg-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--navy);
+}
+.scores-avg-stars { font-size: 0.7rem; color: var(--accent); letter-spacing: -1px; }
+
+/* Texto libre */
 .quote-preview {
   background: var(--surface-2);
   border-left: 3px solid var(--blue);
   border-radius: 0 8px 8px 0;
   padding: 7px 10px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   font-size: 0.75rem;
   color: var(--text-2);
   display: none;
   align-items: flex-start;
   gap: 8px;
 }
-
 .quote-preview.active { display: flex; }
-
 .quote-preview-text { flex: 1; font-style: italic; }
-
 .quote-clear {
   background: none;
   border: none;
@@ -824,26 +1023,19 @@ border: 1.5px solid var(--blue);
   padding: 0;
 }
 
-.reply-input-row {
-  display: flex;
-  gap: 8px;
-  align-items: flex-end;
-  width: 100%;
-}
-
 .reply-input {
-  flex: 1;
+  width: 100%;
   padding: 10px 14px;
   border: 1.5px solid var(--border);
-  border-radius: 16px;
+  border-radius: 12px;
   font-size: 16px;
   font-family: 'Roboto', sans-serif;
   resize: none;
   background: var(--surface-2);
   transition: all 0.18s;
-  min-height: 44px;
-  max-height: 120px;
-  width: 0;
+  min-height: 72px;
+  max-height: 160px;
+  box-sizing: border-box;
   -webkit-appearance: none;
 }
 .reply-input:focus {
@@ -853,23 +1045,101 @@ border: 1.5px solid var(--blue);
   box-shadow: 0 0 0 3px rgba(29,111,232,0.07);
 }
 
+/* Footer del panel */
+.reply-box-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.reply-box-cancel {
+  background: none;
+  border: none;
+  font-size: 0.78rem;
+  color: var(--text-3);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-family: 'Roboto', sans-serif;
+  transition: all 0.15s;
+}
+.reply-box-cancel:hover { color: var(--text-2); background: var(--surface-3); }
+
 .send-btn {
   background: var(--navy);
   color: white;
   border: none;
-  width: 40px;
   height: 40px;
-  border-radius: 50%;
+  padding: 0 18px;
+  border-radius: 999px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
   transition: all 0.18s;
   flex-shrink: 0;
-  font-size: 1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-family: 'Roboto', sans-serif;
 }
-.send-btn:hover { background: var(--blue); transform: scale(1.05); }
+.send-btn:hover { background: var(--blue); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(29,111,232,0.35); }
 .send-btn.sending { opacity: 0.6; pointer-events: none; }
+
+/* Reply input row (modo simple) */
+.reply-input-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  width: 100%;
+}
+
+/* Score chips en respuestas ya enviadas */
+.reply-scores-display {
+  margin: 6px 0 4px;
+  margin-left: 36px;
+}
+
+.reply-scores-avg-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--navy);
+  color: white;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  margin-bottom: 5px;
+  font-family: 'DM Mono', monospace;
+}
+
+.reply-scores-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.reply-score-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 3px 7px;
+  font-size: 0.63rem;
+  color: var(--text-2);
+  font-weight: 500;
+}
+
+.reply-score-chip .sc-val {
+  font-weight: 700;
+  color: var(--navy);
+  font-family: 'DM Mono', monospace;
+}
 
 /* ─── RANK PROGRESS BAR ─── */
 .rank-progress {
@@ -1202,16 +1472,16 @@ border: 1.5px solid var(--blue);
   color: white;
   border: none;
   border-radius: 999px;
-  height: 54px;
-  padding: 0 22px 0 18px;
+  height: 52px;
+  padding: 0 20px 0 16px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   cursor: pointer;
   box-shadow: 0 4px 20px rgba(29,111,232,0.45);
   font-family: 'Roboto', sans-serif;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   transition: all 0.2s;
 }
 
@@ -1228,18 +1498,12 @@ border: 1.5px solid var(--blue);
 .fab-icon { font-size: 1.1rem; line-height: 1; }
 .fab-label { white-space: nowrap; }
 
+/* En pantallas anchas queda bien expandido,
+   en móvil se puede colapsar a solo icono si se prefiere */
 @media (max-width: 380px) {
   .fab-label { display: none; }
-  .fab { 
-    padding: 0; 
-    width: 52px; 
-    justify-content: center; 
-    border-radius: 50%;
-  }
+  .fab { padding: 0; width: 52px; justify-content: center; border-radius: 50%; }
 }
-
-/* ─── TOAST ─── */
-.send-toast {
   position: fixed;
   bottom: 30px;
   left: 50%;
@@ -1255,7 +1519,6 @@ border: 1.5px solid var(--blue);
   z-index: 999;
   pointer-events: none;
 }
-
 .send-toast.show {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
@@ -1626,220 +1889,6 @@ border: 1.5px solid var(--blue);
   color: var(--text-3);
   font-size: 0.78rem;
 }
-
-/* ─── RESPONSIVE ADMIN PANEL ─── */
-@media (max-width: 768px) {
-  .admin-table {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-    -webkit-overflow-scrolling: touch;
-  }
-  
-  .admin-table th,
-  .admin-table td {
-    padding: 8px 6px;
-    font-size: 0.7rem;
-  }
-  
-  .admin-inline-input {
-    width: 55px;
-    padding: 3px 5px;
-  }
-  
-  .admin-actions-row {
-    flex-direction: column;
-    gap: 4px;
-  }
-  
-  .admin-btn {
-    padding: 3px 8px;
-    font-size: 0.6rem;
-  }
-  
-  .admin-hilo-title {
-    max-width: 150px;
-    white-space: normal;
-    word-break: break-word;
-  }
-  
-  .ranks-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .admin-tab-row {
-    flex-wrap: wrap;
-  }
-  
-  .admin-tab {
-    padding: 4px 10px;
-    font-size: 0.65rem;
-  }
-  
-  #adminContent > div[style*="display:grid"] {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 8px;
-  }
-}
-
-/* ─── RESPONSIVE ADMIN PANEL ─── */
-@media (max-width: 768px) {
-  .admin-table {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-    -webkit-overflow-scrolling: touch;
-  }
-  
-  .admin-table th,
-  .admin-table td {
-    padding: 8px 6px;
-    font-size: 0.7rem;
-  }
-  
-  .admin-inline-input {
-    width: 55px;
-    padding: 3px 5px;
-  }
-  
-  .admin-actions-row {
-    flex-direction: column;
-    gap: 4px;
-  }
-  
-  .admin-btn {
-    padding: 3px 8px;
-    font-size: 0.6rem;
-  }
-  
-  .admin-hilo-title {
-    max-width: 150px;
-    white-space: normal;
-    word-break: break-word;
-  }
-  
-  .ranks-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .admin-tab-row {
-    flex-wrap: wrap;
-  }
-  
-  .admin-tab {
-    padding: 4px 10px;
-    font-size: 0.65rem;
-  }
-  
-  #adminContent > div[style*="display:grid"] {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 8px;
-  }
-}
-
-#adminBtn {
-  display: none;
-  position: fixed;
-  bottom: 24px;
-  left: 20px;
-  z-index: 999;
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  border: none;
-  background: linear-gradient(135deg, #F5A623, #E8890A);
-  color: white;
-  font-size: 1.4rem;
-  box-shadow: 0 4px 16px rgba(245,166,35,0.5);
-  cursor: pointer;
-  align-items: center;
-  justify-content: center;
-  display: flex;
-  transition: transform 0.15s, box-shadow 0.15s;
-}
-
-@media (max-width: 768px) {
-  #adminBtn {
-    width: 48px;
-    height: 48px;
-    bottom: 16px;
-    left: 12px;
-    font-size: 1.2rem;
-  }
-}
-
-/* ─── INDICADOR DE EDITADO ─── */
-.editado-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  background: var(--surface-3);
-  color: var(--text-3);
-  font-size: 0.6rem;
-  padding: 2px 8px;
-  border-radius: 999px;
-  margin-left: 8px;
-  font-weight: 500;
-}
-
-.editado-badge i {
-  font-size: 0.65rem;
-}
-
-/* Botón editar en respuestas */
-.edit-reply-btn {
-  background: none;
-  border: none;
-  font-size: 0.68rem;
-  color: var(--text-3);
-  cursor: pointer;
-  padding: 3px 6px;
-  border-radius: 6px;
-  transition: all 0.18s;
-}
-.edit-reply-btn:hover { background: var(--surface-3); color: var(--blue); }
-
-/* Modal de edición */
-.edit-modal textarea {
-  width: 100%;
-  padding: 12px;
-  border: 1.5px solid var(--border);
-  border-radius: 12px;
-  font-size: 0.9rem;
-  font-family: 'DM Sans', sans-serif;
-  resize: vertical;
-  min-height: 100px;
-  margin-bottom: 16px;
-}
-
-/* Estilos para el formulario de puntuaciones */
-.rec-form { background: var(--blue-pale); border-radius: 12px; padding: 12px; margin-bottom: 12px; border: 1px solid rgba(29,111,232,0.2); }
-.rec-form.hidden { display: none; }
-.rec-modelo-input { width: 100%; padding: 10px; border-radius: 10px; border: 1.5px solid var(--border); margin-bottom: 12px; background: white; }
-.rec-categorias { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
-.rec-cat-item { display: flex; justify-content: space-between; align-items: center; background: white; padding: 6px 10px; border-radius: 10px; }
-.rec-cat-select { width: 55px; padding: 4px; border-radius: 8px; }
-.rec-textarea { width: 100%; padding: 10px; border-radius: 10px; border: 1.5px solid var(--border); margin-bottom: 12px; resize: vertical; background: white; }
-.rec-form-actions { display: flex; gap: 8px; justify-content: flex-end; }
-.rec-submit-btn { background: var(--blue); color: white; border: none; padding: 8px 16px; border-radius: 999px; cursor: pointer; }
-.rec-cancel-btn { background: var(--surface-3); border: none; padding: 8px 16px; border-radius: 999px; cursor: pointer; }
-.rec-toggle-btn { background: none; border: 1px dashed var(--blue); color: var(--blue); padding: 8px; border-radius: 999px; font-size: 0.7rem; cursor: pointer; margin-bottom: 8px; width: 100%; }
-
-/* Estilos para mostrar puntuaciones */
-.score-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 10px 0; background: var(--surface-2); padding: 10px; border-radius: 12px; }
-.score-item { display: flex; align-items: center; gap: 8px; font-size: 0.7rem; }
-.score-label { min-width: 70px; }
-.score-bar { flex: 1; height: 6px; background: var(--surface-3); border-radius: 3px; overflow: hidden; }
-.score-fill { height: 100%; background: var(--accent); border-radius: 3px; }
-.score-value { min-width: 28px; text-align: right; font-weight: 600; color: var(--accent); }
-.rec-opinion { font-size: 0.85rem; color: var(--text-2); margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border); }
-
-/* Responsive */
-@media (max-width: 600px) {
-  .rec-categorias { grid-template-columns: 1fr; }
-  .score-grid { grid-template-columns: 1fr; }
-}
-
 </style>
 </head>
 <body>
@@ -1995,18 +2044,12 @@ border: 1.5px solid var(--blue);
   box-shadow: 0 4px 16px rgba(245,166,35,0.5);
   cursor: pointer;
   align-items: center;
-  justify-content: content;
+  justify-content: center;
   transition: transform 0.15s, box-shadow 0.15s;
-">👑</button>
+" onpointerdown="this.style.transform='scale(0.92)'" onpointerup="this.style.transform='scale(1)'">👑</button>
 
 <!-- TOAST -->
 <div class="send-toast" id="sendToast"></div>
-
-<!-- BOTÓN FLOTANTE NUEVA CONSULTA (FAB) -->
-<button class="fab" onclick="abrirForm()">
-  <span class="fab-icon">✏️</span>
-  <span class="fab-label">Nueva consulta</span>
-</button>
 
 <!-- COOKIE BANNER -->
 <div class="cookie-banner hidden" id="cookieBanner">
@@ -2106,14 +2149,6 @@ const RANGOS = window.RANGOS = [
   { id: 'leyenda', label: 'Leyenda', icon: '🔥', min: 200, max: 999, perk: 'Insignia legendaria', locked: true },
 ];
 
-const CATEGORIAS = [
-  { id: 'pantalla', label: '📱 Pantalla' }, { id: 'potencia', label: '🚀 Potencia' },
-  { id: 'camara', label: '📸 Cámara' }, { id: 'video', label: '🎥 Vídeo' },
-  { id: 'bateria', label: '🔋 Batería' }, { id: 'carga', label: '⚡ Carga' },
-  { id: 'sonido', label: '📢 Sonido' }, { id: 'bloatware', label: '🧹 Bloatware' },
-  { id: 'actualizaciones', label: '🔄 Updates' }, { id: 'software', label: '💻 Software' }
-];
-
 let usuario = null;
 let tabActual = 'abiertas';
 let hilosData = [];
@@ -2123,340 +2158,195 @@ let quoteActiva = null; // { hiloId, replyId, autor, texto }
 let notifCount = 0;
 
 // ═══════════════════════════════════════════
-// LISTA MAESTRA DE MODELOS CONOCIDOS
+// DETECCIÓN DE MÓVILES (sistema colectivo)
 // ═══════════════════════════════════════════
 
-const MODELOS_CONOCIDOS = [
-  // ── APPLE ──────────────────────────────────────────
-  { patron: 'iphone 15', variantes: ['15', 'iphone 15'] },
-  { patron: 'iphone 15 plus', variantes: ['15 plus', 'iphone 15 plus'] },
-  { patron: 'iphone 15 pro', variantes: ['15 pro', 'iphone 15 pro'] },
-  { patron: 'iphone 15 pro max', variantes: ['15 pro max', 'iphone 15 pro max'] },
-  { patron: 'iphone 16', variantes: ['16', 'iphone 16'] },
-  { patron: 'iphone 16 plus', variantes: ['16 plus', 'iphone 16 plus'] },
-  { patron: 'iphone 16 pro', variantes: ['16 pro', 'iphone 16 pro'] },
-  { patron: 'iphone 16 pro max', variantes: ['16 pro max', 'iphone 16 pro max'] },
-  { patron: 'iphone 16e', variantes: ['16e', 'iphone 16e'] },
-  { patron: 'iphone 17', variantes: ['17', 'iphone 17'] },
-  { patron: 'iphone 17 plus', variantes: ['17 plus', 'iphone 17 plus'] },
-  { patron: 'iphone 17 pro', variantes: ['17 pro', 'iphone 17 pro'] },
-  { patron: 'iphone 17 pro max', variantes: ['17 pro max', 'iphone 17 pro max'] },
-  { patron: 'iphone 17e', variantes: ['17e', 'iphone 17e'] },
-  { patron: 'iphone se', variantes: ['iphone se', 'se'] },
-  { patron: 'iphone xr', variantes: ['xr', 'iphone xr'] },
-  { patron: 'iphone xs', variantes: ['xs', 'iphone xs'] },
-  { patron: 'iphone xs max', variantes: ['xs max', 'iphone xs max'] },
-
-  // ── SAMSUNG ────────────────────────────────────────
-  { patron: 'galaxy s23', variantes: ['s23', 'galaxy s23'] },
-  { patron: 'galaxy s23+', variantes: ['s23+', 's23 plus', 'galaxy s23+'] },
-  { patron: 'galaxy s23 ultra', variantes: ['s23 ultra', 'galaxy s23 ultra'] },
-  { patron: 'galaxy s23 fe', variantes: ['s23 fe', 'galaxy s23 fe'] },
-  { patron: 'galaxy s24', variantes: ['s24', 'galaxy s24'] },
-  { patron: 'galaxy s24+', variantes: ['s24+', 's24 plus', 'galaxy s24+'] },
-  { patron: 'galaxy s24 ultra', variantes: ['s24 ultra', 'galaxy s24 ultra'] },
-  { patron: 'galaxy s24 fe', variantes: ['s24 fe', 'galaxy s24 fe'] },
-  { patron: 'galaxy s25', variantes: ['s25', 'galaxy s25'] },
-  { patron: 'galaxy s25+', variantes: ['s25+', 's25 plus', 'galaxy s25+'] },
-  { patron: 'galaxy s25 ultra', variantes: ['s25 ultra', 'galaxy s25 ultra'] },
-  { patron: 'galaxy s25 fe', variantes: ['s25 fe', 'galaxy s25 fe'] },
-  { patron: 'galaxy s26', variantes: ['s26', 'galaxy s26'] },
-  { patron: 'galaxy s26+', variantes: ['s26+', 's26 plus', 'galaxy s26+'] },
-  { patron: 'galaxy s26 ultra', variantes: ['s26 ultra', 'galaxy s26 ultra'] },
-  { patron: 'galaxy a15', variantes: ['a15', 'galaxy a15'] },
-  { patron: 'galaxy a16', variantes: ['a16', 'galaxy a16'] },
-  { patron: 'galaxy a25', variantes: ['a25', 'galaxy a25'] },
-  { patron: 'galaxy a26', variantes: ['a26', 'galaxy a26'] },
-  { patron: 'galaxy a35', variantes: ['a35', 'galaxy a35'] },
-  { patron: 'galaxy a36', variantes: ['a36', 'galaxy a36'] },
-  { patron: 'galaxy a55', variantes: ['a55', 'galaxy a55'] },
-  { patron: 'galaxy a56', variantes: ['a56', 'galaxy a56'] },
-  { patron: 'galaxy a57', variantes: ['a57', 'galaxy a57'] },
-  { patron: 'galaxy z fold 5', variantes: ['z fold 5', 'galaxy z fold 5', 'fold 5'] },
-  { patron: 'galaxy z flip 5', variantes: ['z flip 5', 'galaxy z flip 5', 'flip 5'] },
-  { patron: 'galaxy z fold 6', variantes: ['z fold 6', 'galaxy z fold 6', 'fold 6'] },
-  { patron: 'galaxy z flip 6', variantes: ['z flip 6', 'galaxy z flip 6', 'flip 6'] },
-  { patron: 'galaxy z fold 7', variantes: ['z fold 7', 'galaxy z fold 7', 'fold 7'] },
-  { patron: 'galaxy z flip 7', variantes: ['z flip 7', 'galaxy z flip 7', 'flip 7'] },
-  { patron: 'galaxy note 10', variantes: ['note 10', 'galaxy note 10'] },
-  { patron: 'galaxy note 10+', variantes: ['note 10+', 'note 10 plus', 'galaxy note 10+'] },
-  { patron: 'galaxy note 20', variantes: ['note 20', 'galaxy note 20'] },
-  { patron: 'galaxy note 20 ultra', variantes: ['note 20 ultra', 'galaxy note 20 ultra'] },
-
-  // ── GOOGLE PIXEL ───────────────────────────────────
-  { patron: 'pixel 8', variantes: ['pixel 8'] },
-  { patron: 'pixel 8 pro', variantes: ['pixel 8 pro', 'pixel8 pro'] },
-  { patron: 'pixel 8a', variantes: ['pixel 8a', 'pixel8a'] },
-  { patron: 'pixel 9', variantes: ['pixel 9'] },
-  { patron: 'pixel 9 pro', variantes: ['pixel 9 pro', 'pixel9 pro'] },
-  { patron: 'pixel 9 pro xl', variantes: ['pixel 9 pro xl', 'pixel9 pro xl'] },
-  { patron: 'pixel 9 pro fold', variantes: ['pixel 9 pro fold', 'pixel9 fold'] },
-  { patron: 'pixel 9a', variantes: ['pixel 9a', 'pixel9a'] },
-  { patron: 'pixel 10', variantes: ['pixel 10'] },
-  { patron: 'pixel 10 pro', variantes: ['pixel 10 pro', 'pixel10 pro'] },
-  { patron: 'pixel 10 pro xl', variantes: ['pixel 10 pro xl'] },
-  { patron: 'pixel 10 pro fold', variantes: ['pixel 10 pro fold'] },
-  { patron: 'pixel 10a', variantes: ['pixel 10a'] },
-
-  // ── XIAOMI ─────────────────────────────────────────
-  { patron: 'xiaomi 13', variantes: ['xiaomi 13', 'mi 13'] },
-  { patron: 'xiaomi 13 ultra', variantes: ['xiaomi 13 ultra', '13 ultra'] },
-  { patron: 'xiaomi 13t', variantes: ['xiaomi 13t', '13t'] },
-  { patron: 'xiaomi 13t pro', variantes: ['xiaomi 13t pro', '13t pro'] },
-  { patron: 'xiaomi 14', variantes: ['xiaomi 14', 'mi 14'] },
-  { patron: 'xiaomi 14 ultra', variantes: ['xiaomi 14 ultra', '14 ultra'] },
-  { patron: 'xiaomi 14t', variantes: ['xiaomi 14t', '14t'] },
-  { patron: 'xiaomi 14t pro', variantes: ['xiaomi 14t pro', '14t pro'] },
-  { patron: 'xiaomi 15', variantes: ['xiaomi 15', 'mi 15'] },
-  { patron: 'xiaomi 15 ultra', variantes: ['xiaomi 15 ultra', '15 ultra'] },
-  { patron: 'xiaomi 15t', variantes: ['xiaomi 15t', '15t'] },
-  { patron: 'xiaomi 15t pro', variantes: ['xiaomi 15t pro', '15t pro'] },
-  { patron: 'xiaomi 17', variantes: ['xiaomi 17', 'mi 17'] },
-  { patron: 'xiaomi 17 ultra', variantes: ['xiaomi 17 ultra', '17 ultra'] },
-  { patron: 'xiaomi mix flip', variantes: ['xiaomi mix flip', 'mix flip'] },
-  { patron: 'xiaomi mix fold 4', variantes: ['mix fold 4', 'xiaomi mix fold 4'] },
-  { patron: 'xiaomi mix fold 5', variantes: ['mix fold 5', 'xiaomi mix fold 5'] },
-
-  // ── REDMI ──────────────────────────────────────────
-  { patron: 'redmi note 13', variantes: ['redmi note 13', 'note 13'] },
-  { patron: 'redmi note 13 pro', variantes: ['redmi note 13 pro', 'note 13 pro'] },
-  { patron: 'redmi note 13 pro+', variantes: ['redmi note 13 pro+', 'note 13 pro+'] },
-  { patron: 'redmi note 14', variantes: ['redmi note 14', 'note 14'] },
-  { patron: 'redmi note 14 pro', variantes: ['redmi note 14 pro', 'note 14 pro'] },
-  { patron: 'redmi note 14 pro+', variantes: ['redmi note 14 pro+', 'note 14 pro+'] },
-  { patron: 'redmi note 15', variantes: ['redmi note 15', 'note 15'] },
-  { patron: 'redmi note 15 pro', variantes: ['redmi note 15 pro', 'note 15 pro'] },
-  { patron: 'redmi note 15 pro+', variantes: ['redmi note 15 pro+', 'note 15 pro+'] },
-  { patron: 'redmi 13', variantes: ['redmi 13'] },
-  { patron: 'redmi 14', variantes: ['redmi 14'] },
-  { patron: 'redmi 15', variantes: ['redmi 15'] },
-
-  // ── POCO ───────────────────────────────────────────
-  { patron: 'poco x6', variantes: ['poco x6'] },
-  { patron: 'poco x6 pro', variantes: ['poco x6 pro'] },
-  { patron: 'poco x7', variantes: ['poco x7'] },
-  { patron: 'poco x7 pro', variantes: ['poco x7 pro'] },
-  { patron: 'poco x8', variantes: ['poco x8'] },
-  { patron: 'poco x8 pro', variantes: ['poco x8 pro'] },
-  { patron: 'poco f6', variantes: ['poco f6'] },
-  { patron: 'poco f6 pro', variantes: ['poco f6 pro'] },
-  { patron: 'poco f7', variantes: ['poco f7'] },
-  { patron: 'poco f7 pro', variantes: ['poco f7 pro'] },
-  { patron: 'poco f7 ultra', variantes: ['poco f7 ultra'] },
-  { patron: 'poco f8', variantes: ['poco f8'] },
-  { patron: 'poco f8 pro', variantes: ['poco f8 pro'] },
-  { patron: 'poco f8 ultra', variantes: ['poco f8 ultra'] },
-  { patron: 'poco m7', variantes: ['poco m7'] },
-  { patron: 'poco m7 pro', variantes: ['poco m7 pro'] },
-
-  // ── ONEPLUS ────────────────────────────────────────
-  { patron: 'oneplus 12', variantes: ['oneplus 12', 'one plus 12'] },
-  { patron: 'oneplus 12r', variantes: ['oneplus 12r', 'one plus 12r'] },
-  { patron: 'oneplus 13', variantes: ['oneplus 13', 'one plus 13'] },
-  { patron: 'oneplus 13r', variantes: ['oneplus 13r', 'one plus 13r'] },
-  { patron: 'oneplus 15', variantes: ['oneplus 15', 'one plus 15'] },
-  { patron: 'oneplus 15r', variantes: ['oneplus 15r', 'one plus 15r'] },
-  { patron: 'oneplus nord 4', variantes: ['oneplus nord 4', 'nord 4'] },
-  { patron: 'oneplus nord ce 4', variantes: ['oneplus nord ce 4', 'nord ce 4'] },
-  { patron: 'oneplus open', variantes: ['oneplus open', 'oneplus fold'] },
-
-  // ── OPPO ───────────────────────────────────────────
-  { patron: 'oppo find x8', variantes: ['oppo find x8', 'find x8'] },
-  { patron: 'oppo find x8 pro', variantes: ['oppo find x8 pro', 'find x8 pro'] },
-  { patron: 'oppo find x9', variantes: ['oppo find x9', 'find x9'] },
-  { patron: 'oppo find x9 pro', variantes: ['oppo find x9 pro', 'find x9 pro'] },
-  { patron: 'oppo reno 13', variantes: ['oppo reno 13', 'reno 13'] },
-  { patron: 'oppo reno 13 pro', variantes: ['oppo reno 13 pro', 'reno 13 pro'] },
-  { patron: 'oppo reno 14', variantes: ['oppo reno 14', 'reno 14'] },
-
-  // ── REALME ─────────────────────────────────────────
-  { patron: 'realme gt 6', variantes: ['realme gt 6', 'gt 6'] },
-  { patron: 'realme gt 6t', variantes: ['realme gt 6t', 'gt 6t'] },
-  { patron: 'realme gt 7', variantes: ['realme gt 7', 'gt 7'] },
-  { patron: 'realme gt 7 pro', variantes: ['realme gt 7 pro', 'gt 7 pro'] },
-  { patron: 'realme gt 8', variantes: ['realme gt 8', 'gt 8'] },
-  { patron: 'realme gt 8 pro', variantes: ['realme gt 8 pro', 'gt 8 pro'] },
-  { patron: 'realme 13 pro', variantes: ['realme 13 pro'] },
-  { patron: 'realme 13 pro+', variantes: ['realme 13 pro+'] },
-  { patron: 'realme 14 pro', variantes: ['realme 14 pro'] },
-  { patron: 'realme 14 pro+', variantes: ['realme 14 pro+'] },
-
-  // ── HONOR ──────────────────────────────────────────
-  { patron: 'honor magic 7', variantes: ['honor magic 7', 'magic 7'] },
-  { patron: 'honor magic 7 pro', variantes: ['honor magic 7 pro', 'magic 7 pro'] },
-  { patron: 'honor magic 8', variantes: ['honor magic 8', 'magic 8'] },
-  { patron: 'honor magic 8 pro', variantes: ['honor magic 8 pro', 'magic 8 pro'] },
-  { patron: 'honor 400', variantes: ['honor 400'] },
-  { patron: 'honor 400 pro', variantes: ['honor 400 pro'] },
-  { patron: 'honor 600', variantes: ['honor 600'] },
-
-  // ── VIVO ───────────────────────────────────────────
-  { patron: 'vivo x200', variantes: ['vivo x200', 'x200'] },
-  { patron: 'vivo x200 pro', variantes: ['vivo x200 pro', 'x200 pro'] },
-  { patron: 'vivo x300', variantes: ['vivo x300', 'x300'] },
-  { patron: 'vivo x300 pro', variantes: ['vivo x300 pro', 'x300 pro'] },
-  { patron: 'iqoo 13', variantes: ['iqoo 13'] },
-  { patron: 'iqoo 13 pro', variantes: ['iqoo 13 pro'] },
-
-  // ── MOTOROLA ───────────────────────────────────────
-  { patron: 'moto edge 50', variantes: ['moto edge 50', 'edge 50'] },
-  { patron: 'moto edge 50 pro', variantes: ['moto edge 50 pro', 'edge 50 pro'] },
-  { patron: 'moto edge 50 ultra', variantes: ['moto edge 50 ultra', 'edge 50 ultra'] },
-  { patron: 'moto edge 70', variantes: ['moto edge 70', 'edge 70'] },
-  { patron: 'moto edge 70 pro', variantes: ['moto edge 70 pro', 'edge 70 pro'] },
-  { patron: 'moto razr 50', variantes: ['moto razr 50', 'razr 50'] },
-  { patron: 'moto razr 50 ultra', variantes: ['moto razr 50 ultra', 'razr 50 ultra'] },
-  { patron: 'moto g54', variantes: ['moto g54', 'g54'] },
-  { patron: 'moto g55', variantes: ['moto g55', 'g55'] },
-  { patron: 'moto g56', variantes: ['moto g56', 'g56'] },
-  { patron: 'moto g64', variantes: ['moto g64', 'g64'] },
-  { patron: 'moto g75', variantes: ['moto g75', 'g75'] },
-  { patron: 'moto g76', variantes: ['moto g76', 'g76'] },
-  { patron: 'moto g85', variantes: ['moto g85', 'g85'] },
-  { patron: 'moto g86', variantes: ['moto g86', 'g86'] },
-  { patron: 'moto g86 power', variantes: ['moto g86 power', 'g86 power'] },
-  { patron: 'moto g96', variantes: ['moto g96', 'g96'] },
-  { patron: 'moto g100', variantes: ['moto g100', 'g100'] },
-  { patron: 'moto g200', variantes: ['moto g200', 'g200'] },
-
-  // ── NOTHING ────────────────────────────────────────
-  { patron: 'nothing phone 1', variantes: ['nothing phone 1', 'nothing 1'] },
-  { patron: 'nothing phone 2', variantes: ['nothing phone 2', 'nothing 2'] },
-  { patron: 'nothing phone 2a', variantes: ['nothing phone 2a', 'nothing 2a'] },
-  { patron: 'nothing phone 3', variantes: ['nothing phone 3', 'nothing 3'] },
-  { patron: 'nothing phone 3a', variantes: ['nothing phone 3a', 'nothing 3a'] },
-  { patron: 'nothing phone 3a pro', variantes: ['nothing phone 3a pro', 'nothing 3a pro'] },
-  { patron: 'nothing phone 4a', variantes: ['nothing phone 4a', 'nothing 4a'] },
-
-  // ── CMF ────────────────────────────────────────────
-  { patron: 'cmf phone 1', variantes: ['cmf phone 1', 'cmf 1'] },
-  { patron: 'cmf phone 2', variantes: ['cmf phone 2', 'cmf 2'] },
-  { patron: 'cmf phone 2 pro', variantes: ['cmf phone 2 pro', 'cmf 2 pro'] },
-
-  // ── HUAWEI ─────────────────────────────────────────
-  { patron: 'huawei p60', variantes: ['huawei p60', 'p60'] },
-  { patron: 'huawei p60 pro', variantes: ['huawei p60 pro', 'p60 pro'] },
-  { patron: 'huawei p70', variantes: ['huawei p70', 'p70'] },
-  { patron: 'huawei p70 pro', variantes: ['huawei p70 pro', 'p70 pro'] },
-  { patron: 'huawei mate 60', variantes: ['huawei mate 60', 'mate 60'] },
-  { patron: 'huawei mate 60 pro', variantes: ['huawei mate 60 pro', 'mate 60 pro'] },
-  { patron: 'huawei nova 13', variantes: ['huawei nova 13', 'nova 13'] },
-  { patron: 'huawei nova 13 pro', variantes: ['huawei nova 13 pro', 'nova 13 pro'] },
-
-  // ── SONY ───────────────────────────────────────────
-  { patron: 'xperia 1 v', variantes: ['xperia 1 v', 'sony xperia 1 v'] },
-  { patron: 'xperia 1 vi', variantes: ['xperia 1 vi', 'sony xperia 1 vi'] },
-  { patron: 'xperia 5 v', variantes: ['xperia 5 v', 'sony xperia 5 v'] },
-  { patron: 'xperia 5 vi', variantes: ['xperia 5 vi', 'sony xperia 5 vi'] },
-  { patron: 'xperia 10 v', variantes: ['xperia 10 v', 'sony xperia 10 v'] },
-  { patron: 'xperia 10 vi', variantes: ['xperia 10 vi', 'sony xperia 10 vi'] },
-
-  // ── ASUS ───────────────────────────────────────────
-  { patron: 'rog phone 8', variantes: ['rog phone 8', 'asus rog 8'] },
-  { patron: 'rog phone 8 pro', variantes: ['rog phone 8 pro', 'asus rog 8 pro'] },
-  { patron: 'rog phone 9', variantes: ['rog phone 9', 'asus rog 9'] },
-  { patron: 'zenfone 11', variantes: ['zenfone 11', 'asus zenfone 11'] },
-  { patron: 'zenfone 11 ultra', variantes: ['zenfone 11 ultra', 'asus zenfone 11 ultra'] },
-
-  // ── TECNO ──────────────────────────────────────────
-  { patron: 'tecno spark 30', variantes: ['tecno spark 30', 'spark 30'] },
-  { patron: 'tecno camon 30', variantes: ['tecno camon 30', 'camon 30'] },
-  { patron: 'tecno camon 30 pro', variantes: ['tecno camon 30 pro', 'camon 30 pro'] },
-  { patron: 'tecno pova 6', variantes: ['tecno pova 6', 'pova 6'] },
-  { patron: 'tecno pova 6 pro', variantes: ['tecno pova 6 pro', 'pova 6 pro'] },
-
-  // ── INFINIX ────────────────────────────────────────
-  { patron: 'infinix note 40', variantes: ['infinix note 40', 'note 40'] },
-  { patron: 'infinix note 40 pro', variantes: ['infinix note 40 pro', 'note 40 pro'] },
-  { patron: 'infinix zero 40', variantes: ['infinix zero 40', 'zero 40'] },
-  { patron: 'infinix hot 50', variantes: ['infinix hot 50', 'hot 50'] },
-];
-
-// ═══════════════════════════════════════════
-// PATRONES GENÉRICOS (fallback para modelos no listados)
-// ═══════════════════════════════════════════
-
-const PATRONES_GENERICOS = [
-  /\b(iphone\s+\d+\s*(?:pro\s*max|pro\s*plus|pro|plus|mini|e)?)\b/gi,
-  /\b(galaxy\s+[sz]\d+\s*(?:ultra|plus|\+|fe)?)\b/gi,
-  /\b(pixel\s+\d+[a-z]?\s*(?:pro\s*(?:xl|fold)?|fold|xl)?)\b/gi,
-  /\b(xiaomi\s+\d+\s*(?:ultra|t\s*pro|t)?)\b/gi,
-  /\b(redmi\s+note\s+\d+\s*(?:pro\+?)?)\b/gi,
-  /\b(poco\s+[xfm]\d+\s*(?:pro|ultra)?)\b/gi,
-  /\b(oneplus\s+\d+\s*(?:pro|r)?)\b/gi,
-  /\b(realme\s+gt\s*\d+\s*(?:pro)?)\b/gi,
-  /\b(moto\s+(?:edge|razr|g)\s*\d+\s*(?:pro|ultra|power)?)\b/gi,
-  /\b(nothing\s+phone\s+\d+[a-z]?\s*(?:pro)?)\b/gi,
-];
-
-// ═══════════════════════════════════════════
-// EXTRACCIÓN DE MODELOS
-// ═══════════════════════════════════════════
-
+// Extrae posibles modelos de texto libre usando patrones
 function extraerModelos(texto) {
   if (!texto) return [];
   const lower = texto.toLowerCase();
+  
+const patrones = [
+  // ==============================================
+  // XIAOMI - TODAS LAS VARIANTES
+  // ==============================================
+  // Xiaomi numeración estándar
+  /\b(xiaomi\s+(?:1[0-9]|[0-9]{1,2})\s*(?:ultra|pro|pro\+|plus|lite|t|t\s*pro|s|se|neo)?)\b/gi,
+  // Xiaomi Mix series
+  /\b(xiaomi\s+mix\s*(?:fold|[0-9]|4|3|2|1)?)\b/gi,
+  // Xiaomi Civi series
+  /\b(xiaomi\s+civi\s*(?:[0-9]|1s|2|3)?)\b/gi,
+  // Xiaomi Black Shark
+  /\b(black\s+shark\s*(?:[0-9]|pro|5|4|3|2|1)?)\b/gi,
+  
+  // ==============================================
+  // REDMI - TODAS LAS VARIANTES
+  // ==============================================
+  // Redmi Note series
+  /\b(redmi\s+note\s+(?:[0-9]{1,2}|pro|pro\+|plus|s|t|t\s*pro|ultra|5g)?)\b/gi,
+  // Redmi numeración estándar
+  /\b(redmi\s+(?:[0-9]{1,2}[a-z]?|a|y|go|c)\s*(?:pro|plus|prime|s|5g)?)\b/gi,
+  // Redmi K series
+  /\b(redmi\s+k(?:[0-9]{1,2}|pro|ultra|gaming)?)\b/gi,
+  // Redmi Turbo series
+  /\b(redmi\s+turbo\s*(?:[0-9]|3|2|1)?)\b/gi,
+  
+  // ==============================================
+  // POCO - TODAS LAS VARIANTES
+  // ==============================================
+  // POCO F series
+  /\b(poco\s+f(?:[0-9]|1|2|3|4|5|6|pro|gt|ultra)?)\b/gi,
+  // POCO X series
+  /\b(poco\s+x(?:[0-9]|1|2|3|4|5|6|pro|gt|neo)?)\b/gi,
+  // POCO M series
+  /\b(poco\s+m(?:[0-9]|1|2|3|4|5|6|pro|plus)?)\b/gi,
+  // POCO C series
+  /\b(poco\s+c(?:[0-9]|1|2|3|4|5|6|40|50|65)?)\b/gi,
+  
+  // ==============================================
+  // SAMSUNG - TODAS LAS VARIANTES
+  // ==============================================
+  // Galaxy S series
+  /\b(galaxy\s+s(?:[0-9]{2}|22|23|24|25)\s*(?:ultra|plus|fe|slim)?)\b/gi,
+  // Galaxy A series
+  /\b(galaxy\s+a(?:[0-9]{2}|05|15|25|35|45|55|73)\s*(?:[0-9]|5g)?)\b/gi,
+  // Galaxy Z Fold/Flip
+  /\b(galaxy\s+z\s*(?:fold|flip)\s*(?:[0-9]|3|4|5|6)?)\b/gi,
+  // Galaxy Note series
+  /\b(galaxy\s+note\s*(?:[0-9]{1,2}|20|10|9|8|ultra|plus|fe)?)\b/gi,
+  // Galaxy M series
+  /\b(galaxy\s+m(?:[0-9]{2}|05|15|25|35|53|62)?)\b/gi,
+  
+  // ==============================================
+  // APPLE IPHONE - TODAS
+  // ==============================================
+  /\b(iphone\s+(?:1[0-9]|[0-9]|se|xs|xr|x)\s*(?:pro\s*max|pro|plus|max|mini)?)\b/gi,
+  
+  // ==============================================
+  // GOOGLE PIXEL
+  // ==============================================
+  /\b(pixel\s+[0-9][a-z]?\s*(?:pro|xl|a|fold)?)\b/gi,
+  
+  // ==============================================
+  // NOTHING
+  // ==============================================
+  /\b(nothing\s+(?:phone|cmf)\s*(?:\(?[12]\)?|[0-9a-z]+)?)\b/gi,
+  
+  // ==============================================
+  // ONEPLUS
+  // ==============================================
+  /\b(oneplus\s+(?:[0-9]{1,2}|nord|ace|open)\s*(?:pro|r|t|n|ce)?)\b/gi,
+  
+  // ==============================================
+  // OPPO
+  // ==============================================
+  /\b(oppo\s+(?:find|reno|a|k)\s*[xn]?[0-9]+\s*(?:pro|neo|plus|lite)?)\b/gi,
+  
+  // ==============================================
+  // VIVO
+  // ==============================================
+  /\b(vivo\s+(?:x|v|y|t|s)\s*[0-9]{1,3}\s*(?:pro|plus|sport)?)\b/gi,
+  /\b(iqoo\s+(?:[0-9]{1,2}|neo|z|u)\s*(?:pro|plus|legend)?)\b/gi,  // Submarca gamer de Vivo
+  
+  // ==============================================
+  // REALME
+  // ==============================================
+  /\b(realme\s+(?:gt|c|narzo|v|x)\s*[0-9]{1,3}\s*(?:pro|neo|master|speed|plus)?)\b/gi,
+  
+  // ==============================================
+  // MOTOROLA
+  // ==============================================
+  /\b(motorola\s+(?:moto\s+)?(?:g|e|edge|razr)\s*[0-9]{1,2}\s*(?:plus|power|play|ultra|fusion|50|40|30)?)\b/gi,
+  
+  // ==============================================
+  // HUAWEI
+  // ==============================================
+  /\b(huawei\s+(?:p|mate|nova)\s*[0-9]{1,2}\s*(?:pro|pro\+|plus|lite|se|neo)?)\b/gi,
+  
+  // ==============================================
+  // SONY
+  // ==============================================
+  /\b(sony\s+xperia\s+[0-9]+[a-z]?\s*(?:v|iv|iii|ii|ultra|plus)?)\b/gi,
+  
+  // ==============================================
+  // HONOR
+  // ==============================================
+  /\b(荣耀|honor\s+(?:[0-9]{1,3}|magic|play|x)\s*(?:pro|plus|lite|ultra)?)\b/gi,
+  
+  // ==============================================
+  // ASUS
+  // ==============================================
+  /\b(asus\s+(?:zenfone|rog)\s*(?:phone\s+)?[0-9]{1,2}\s*(?:pro|ultimate)?)\b/gi,
+  
+  // ==============================================
+  // NOKIA
+  // ==============================================
+  /\b(nokia\s+[gx]?[0-9]{2,3}\s*(?:plus|power)?)\b/gi,
+  
+  // ==============================================
+  // TECNO - INFINIX - ITEL
+  // ==============================================
+  /\b(tecno\s+(?:spark|camon|pova|phantom)\s*[0-9]{1,2}\s*(?:pro|plus|air)?)\b/gi,
+  /\b(infinix\s+(?:note|zero|hot|smart)\s*[0-9]{1,2}\s*(?:pro|plus|s|x)?)\b/gi,
+  /\b(itel\s+(?:a|s|vision)\s*[0-9]{1,2}\s*(?:plus|pro)?)\b/gi,
+  
+  // ==============================================
+  // GOOGLE - ONE PLUS EXTRA
+  // ==============================================
+  /\b(google\s+pixel\s+[0-9][a-z]?\s*(?:pro|xl|a|fold)?)\b/gi,
+  
+  // ==============================================
+  // PATRÓN ULTRA GENÉRICO (catch-all)
+  // ==============================================
+  /\b(?:xiaomi|samsung|redmi|poco|realme|oneplus|oppo|vivo|iqoo|motorola|huawei|honor|nokia|asus|tecno|infinix|itel|google|nothing|sony)\s+([a-z0-9]+\s*(?:pro|plus|lite|ultra|max|se|neo|s|t|gt|fe|turbo|gaming|prime|power|play|c|sport|legend|master|speed|air|x|z|u|f|m|y|v|x|r|ce|n|open|fold|flip))\b/gi
+];
+
   const encontrados = new Set();
-
-  for (const modelo of MODELOS_CONOCIDOS) {
-    for (const variante of modelo.variantes) {
-      const regex = new RegExp(`(?:^|[\\s,.;:!?()])${variante.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?:$|[\\s,.;:!?()])`, 'i');
-      if (regex.test(lower)) {
-        encontrados.add(modelo.patron);
-        break;
-      }
-    }
+  for (const pat of patrones) {
+    const matches = texto.match(pat);
+    if (matches) matches.forEach(m => encontrados.add(m.trim().toLowerCase()));
   }
-
-  // Fallback: patrones genéricos para modelos no listados
-  if (encontrados.size === 0) {
-    for (const patron of PATRONES_GENERICOS) {
-      const matches = [...lower.matchAll(patron)];
-      for (const m of matches) {
-        encontrados.add(m[1].trim().replace(/\s+/g, ' '));
-      }
-    }
-  }
-
-  return Array.from(encontrados);
+  return [...encontrados];
 }
 
-// ═══════════════════════════════════════════
-// FORMATEAR MODELO
-// ═══════════════════════════════════════════
-
-function formatearModelo(raw) {
-  if (!raw) return '';
-  let formatted = raw.replace(/\b\w/g, c => c.toUpperCase());
-  formatted = formatted
-    .replace(/Iphone/g, 'iPhone')
-    .replace(/Ipad/g, 'iPad')
-    .replace(/Poco/g, 'POCO')
-    .replace(/Oneplus/g, 'OnePlus')
-    .replace(/Realme/g, 'realme')
-    .replace(/Oppo/g, 'OPPO')
-    .replace(/Vivo/g, 'vivo')
-    .replace(/Iqoo/g, 'iQOO')
-    .replace(/Rog/g, 'ROG')
-    .replace(/Cmf/g, 'CMF');
-  return formatted;
+// Normaliza un modelo para comparación
+function normalizarModelo(m) {
+  return m.toLowerCase()
+    .replace(/\s+/g, ' ')
+    .replace(/galaxy\s*/g, '')
+    .replace(/samsung\s*/g, '')
+    .replace(/xiaomi\s*/g, '')
+    .replace(/motorola\s*/g, '')
+    .replace(/moto\s*/g, '')
+    .trim();
 }
 
-// ═══════════════════════════════════════════
-// MODELO MÁS POPULAR
-// ═══════════════════════════════════════════
-
+// Agrupa modelos similares y devuelve el más mencionado
 function modeloMasPopular(respuestas) {
   const freq = {};
   for (const r of respuestas) {
     const modelos = extraerModelos(r.contenido);
     for (const m of modelos) {
-      freq[m] = (freq[m] || 0) + 1;
+      const key = normalizarModelo(m);
+      if (!freq[key]) freq[key] = { count: 0, original: m };
+      freq[key].count++;
     }
   }
-  const sorted = Object.entries(freq).sort((a, b) => b[1] - a[1]);
-  if (!sorted.length) return null;
-  return sorted[0][1] >= 1 ? formatearModelo(sorted[0][0]) : null;
+  const sorted = Object.values(freq).sort((a, b) => b.count - a.count);
+  if (sorted.length === 0) return null;
+  // Solo destacar si al menos 2 respuestas lo mencionan, o si hay al menos 1 mención clara
+  const top = sorted[0];
+  return top ? formatearModelo(top.original) : null;
+}
+
+function formatearModelo(raw) {
+  let m = raw.trim();
+  // Capitalizar correctamente
+  m = m.replace(/\b(samsung|xiaomi|redmi|poco|oneplus|motorola|moto|oppo|realme|sony|huawei|asus|nothing|google)\b/gi, w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
+  m = m.replace(/\b(galaxy|iphone|pixel|xperia|zenfone|rog|note|ultra|pro|plus|lite|mini|max|fe)\b/gi, w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
+  m = m.replace(/\bs(\d{2})\b/gi, (_, n) => `Galaxy S${n}`);
+  m = m.replace(/\ba(\d{2})\b/gi, (_, n) => `Galaxy A${n}`);
+  return m;
 }
 
 // ═══════════════════════════════════════════
@@ -2537,7 +2427,9 @@ function setCita(hiloId, replyId, autor, texto) {
   if (!preview) return;
   preview.classList.add('active');
   preview.querySelector('.quote-preview-text').textContent = `${cap(autor)}: "${texto.slice(0, 80)}${texto.length > 80 ? '…' : ''}"`;
-  document.getElementById(`rinput_${hiloId}`).focus();
+  // Abrir el panel expandido automáticamente
+  abrirReplyExpandido(hiloId);
+  setTimeout(() => document.getElementById(`rinput_${hiloId}`)?.focus(), 80);
 }
 
 function clearCita(hiloId) {
@@ -2949,8 +2841,7 @@ function onLogin() {
   cargarStats();
   cargarNotificaciones();
   actualizarBarraRango();
-  if (usuario) mostrarAdminPanel();  // ← AÑADE ESTA CONDICIÓN
-  renderRangos();
+  mostrarAdminPanel();
 }
 
 function mostrarUsuario() {
@@ -2958,32 +2849,19 @@ function mostrarUsuario() {
   const nombre = cap(usuario.nickname);
   const rango = getRango(usuario.puntos || 0, usuario.rol);
   const ac = avatarColor(usuario.nickname);
-
-  const avatarEl = document.getElementById('chipAvatar');
-  if (avatarEl) {
-    avatarEl.style.background = ac.bg;
-    avatarEl.style.color = ac.color;
-    avatarEl.textContent = nombre.substring(0, 2).toUpperCase();
-  }
-
-  const nameEl = document.getElementById('chipName');
-  if (nameEl) {
-    nameEl.textContent = nombre + (esAdmin() ? ' 👑' : '');
-  }
-
-  const ptsEl = document.getElementById('chipPts');
-  if (ptsEl) {
-    ptsEl.textContent = `${rango.icon} ${usuario.puntos || 0}pts`;
-  }
+  
+  document.getElementById('chipAvatar').style.background = ac.bg;
+  document.getElementById('chipAvatar').style.color = ac.color;
+  document.getElementById('chipAvatar').textContent = nombre.substring(0,2).toUpperCase();
+  document.getElementById('chipName').textContent = nombre + (esAdmin() ? ' 👑' : '');
+  document.getElementById('chipPts').textContent = `${rango.icon} ${usuario.puntos || 0}pts`;
 }
 
 function toggleUserMenu() {
-  if (!usuario) {
-    mostrarModalAuth();
-    return;
-  }
+  if (!usuario) { mostrarModalAuth(); return; }
   // Podría expandirse con un menú de usuario, por ahora muestra info
 }
+
 // ═══════════════════════════════════════════
 // TABS
 // ═══════════════════════════════════════════
@@ -3108,38 +2986,108 @@ async function renderHilo(h) {
 
       <div class="replies-section" id="replies_${h.id}" style="display:none;"></div>
 
-${!h.resuelto ? `
-  <div class="reply-box" id="replybox_${h.id}" style="display:none;">
-    <div class="quote-preview" id="qpreview_${h.id}">
-      <span class="quote-preview-text"></span>
-      <button class="quote-clear" onclick="clearCita('${h.id}')">✕</button>
-    </div>
-    
-    <!-- FORMULARIO DE PUNTUACIONES (opcional) -->
-    <div class="rec-form hidden" id="recForm_${h.id}">
-      <input type="text" class="rec-modelo-input" id="modelo_${h.id}" list="modelos-lista" placeholder="📱 Modelo que recomiendas">
-      <datalist id="modelos-lista">
-        <option value="iPhone 15"><option value="iPhone 15 Pro"><option value="iPhone 16"><option value="Galaxy S24">
-        <option value="Galaxy S24 Ultra"><option value="Redmi Note 13"><option value="Redmi Note 13 Pro">
-        <option value="Poco F6"><option value="Pixel 8"><option value="Pixel 9"><option value="Xiaomi 14">
-      </datalist>
-      <div class="rec-categorias" id="categorias_${h.id}"></div>
-      <textarea class="rec-textarea" id="opinion_${h.id}" placeholder="💬 Tu opinión (opcional)"></textarea>
-      <div class="rec-form-actions">
-        <button class="rec-cancel-btn" onclick="toggleRecForm('${h.id}')">Cancelar</button>
-        <button class="rec-submit-btn" onclick="enviarRecomendacion('${h.id}')">📤 Publicar recomendación</button>
-      </div>
-    </div>
-    
-    <button class="rec-toggle-btn" onclick="toggleRecForm('${h.id}')">➕ Recomendar con puntuación (10 categorías)</button>
-    
-    <!-- RESPUESTA RÁPIDA (sin puntuaciones) -->
-    <div class="reply-input-row">
-      <textarea class="reply-input" id="rinput_${h.id}" placeholder="Respuesta rápida (sin puntuación)..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarRespuestaSimple('${h.id}')}" oninput="autoResize(this)"></textarea>
-      <button class="send-btn" onclick="enviarRespuestaSimple('${h.id}')">➤</button>
-    </div>
-  </div>` : ''}
+      ${!h.resuelto ? `
+        <div class="reply-box" id="replybox_${h.id}" style="display:none;">
 
+          <!-- Compact: avatar + dos botones -->
+          <div class="reply-box-compact" id="rcompact_${h.id}">
+            <div class="reply-box-avatar-sm" id="rboxavatar_${h.id}" style="background:#EFF6FF;color:#1E40AF;">??</div>
+            <div class="reply-box-actions">
+              <button class="reply-action-btn" onclick="abrirReplySimple('${h.id}')">💬 Responder</button>
+              <button class="reply-action-btn primary" onclick="abrirReplyRec('${h.id}')">📱 Recomendar móvil</button>
+            </div>
+          </div>
+
+          <!-- Panel respuesta simple -->
+          <div class="reply-box-expanded" id="rsimple_${h.id}">
+            <div class="quote-preview" id="qpreview_${h.id}">
+              <span class="quote-preview-text"></span>
+              <button class="quote-clear" onclick="clearCita('${h.id}')">✕</button>
+            </div>
+            <textarea class="reply-input" id="rinput_${h.id}"
+              placeholder="Escribe tu respuesta... (Ctrl+Enter para enviar)"
+              rows="3"
+              oninput="autoResize(this)"
+              onkeydown="if(event.key==='Enter'&&event.ctrlKey){event.preventDefault();enviarRespuesta('${h.id}',false)}"
+            ></textarea>
+            <div class="reply-box-footer">
+              <button class="reply-box-cancel" onclick="cerrarReplyExpandido('${h.id}')">Cancelar</button>
+              <button class="send-btn" id="sendbtn_${h.id}" onclick="enviarRespuesta('${h.id}',false)">
+                Enviar ➤
+              </button>
+            </div>
+          </div>
+
+          <!-- Panel recomendación con puntuaciones -->
+          <div class="reply-box-expanded" id="rrec_${h.id}">
+            <div class="rec-panel">
+              <div class="rec-panel-header">
+                <span style="font-size:1.1rem;">✏️</span>
+                <span class="rec-panel-title">RECOMENDAR MÓVIL</span>
+              </div>
+              <div class="rec-panel-body">
+
+                <!-- Modelo -->
+                <div class="rec-model-row">
+                  <div class="rec-field-label">📱 Modelo que recomiendas</div>
+                  <input class="rec-model-input" type="text" id="rmodelo_${h.id}"
+                    placeholder="Ej: Redmi Note 14 Pro, Samsung Galaxy A55..."
+                    autocomplete="off" autocorrect="off" spellcheck="false" />
+                </div>
+
+                <!-- Puntuaciones 1-10 -->
+                <div class="scores-label">⭐ Puntuaciones (1–10)</div>
+                <div class="scores-grid" id="scoresgrid_${h.id}">
+                  ${[
+                    {id:'pantalla',    label:'Pantalla',      icon:'📱'},
+                    {id:'potencia',    label:'Potencia',      icon:'🚀'},
+                    {id:'camara',      label:'Cámara',        icon:'📸'},
+                    {id:'video',       label:'Vídeo',         icon:'🎥'},
+                    {id:'bateria',     label:'Batería',       icon:'🔋'},
+                    {id:'carga',       label:'Carga',         icon:'⚡'},
+                    {id:'sonido',      label:'Sonido',        icon:'📢'},
+                    {id:'bloatware',   label:'Bloatware',     icon:'🧹'},
+                    {id:'updates',     label:'Actualizaciones',icon:'🔄'},
+                    {id:'software',    label:'Software',      icon:'💻'},
+                  ].map(cat => `
+                    <div class="score-cell">
+                      <span class="score-cell-label">${cat.icon} ${cat.label}</span>
+                      <select class="score-select" id="sc_${h.id}_${cat.id}" onchange="actualizarMedia('${h.id}')">
+                        <option value="0">—</option>
+                        ${[1,2,3,4,5,6,7,8,9,10].map(n=>`<option value="${n}">${n}</option>`).join('')}
+                      </select>
+                    </div>
+                  `).join('')}
+                </div>
+
+                <!-- Media -->
+                <div class="scores-avg" id="scavg_${h.id}" style="display:none;">
+                  <span class="scores-avg-label">Media general</span>
+                  <span class="scores-avg-stars" id="scavg_stars_${h.id}"></span>
+                  <span class="scores-avg-val" id="scavg_val_${h.id}">—</span>
+                </div>
+
+                <!-- Opinión libre -->
+                <div class="rec-field-label" style="margin-bottom:5px;">💬 Tu opinión <span style="font-weight:400;text-transform:none;letter-spacing:0;">(opcional)</span></div>
+                <textarea class="reply-input" id="rinput_rec_${h.id}"
+                  placeholder="Cuéntanos por qué recomiendas este móvil..."
+                  rows="3"
+                  oninput="autoResize(this)"
+                  onkeydown="if(event.key==='Enter'&&event.ctrlKey){event.preventDefault();enviarRespuesta('${h.id}',true)}"
+                ></textarea>
+
+              </div>
+            </div>
+
+            <div class="reply-box-footer">
+              <button class="reply-box-cancel" onclick="cerrarReplyExpandido('${h.id}')">Cancelar</button>
+              <button class="send-btn" id="sendbtn_rec_${h.id}" onclick="enviarRespuesta('${h.id}',true)" style="background:var(--blue);">
+                📤 Publicar recomendación
+              </button>
+            </div>
+          </div>
+
+        </div>` : ''}
     </div>
   `;
 }
@@ -3159,9 +3107,93 @@ function toggleReplies(hiloId) {
     if (box) box.style.display = 'none';
   } else {
     rep.style.display = 'block';
-    if (box) box.style.display = 'block';
+    if (box) {
+      box.style.display = 'block';
+      // Init avatar in reply compact bar
+      if (usuario) {
+        const ac = avatarColor(usuario.nickname);
+        const avatarEl = document.getElementById(`rboxavatar_${hiloId}`);
+        if (avatarEl) {
+          avatarEl.style.background = ac.bg;
+          avatarEl.style.color = ac.color;
+          avatarEl.textContent = cap(usuario.nickname).substring(0,2).toUpperCase();
+        }
+      }
+    }
     if (rep.innerHTML === '') cargarRespuestas(hiloId);
   }
+}
+
+function abrirReplySimple(hiloId) {
+  const compact = document.getElementById(`rcompact_${hiloId}`);
+  const simple  = document.getElementById(`rsimple_${hiloId}`);
+  const rec     = document.getElementById(`rrec_${hiloId}`);
+  if (compact) compact.style.display = 'none';
+  if (rec) rec.classList.remove('open');
+  if (simple) {
+    simple.classList.add('open');
+    setTimeout(() => document.getElementById(`rinput_${hiloId}`)?.focus(), 50);
+  }
+}
+
+function abrirReplyRec(hiloId) {
+  const compact = document.getElementById(`rcompact_${hiloId}`);
+  const simple  = document.getElementById(`rsimple_${hiloId}`);
+  const rec     = document.getElementById(`rrec_${hiloId}`);
+  if (compact) compact.style.display = 'none';
+  if (simple) simple.classList.remove('open');
+  if (rec) {
+    rec.classList.add('open');
+    setTimeout(() => document.getElementById(`rmodelo_${hiloId}`)?.focus(), 50);
+  }
+}
+
+// Mantener compatibilidad con setCita que llama a abrirReplyExpandido
+function abrirReplyExpandido(hiloId) {
+  abrirReplySimple(hiloId);
+}
+
+function cerrarReplyExpandido(hiloId) {
+  const compact = document.getElementById(`rcompact_${hiloId}`);
+  const simple  = document.getElementById(`rsimple_${hiloId}`);
+  const rec     = document.getElementById(`rrec_${hiloId}`);
+  if (compact) compact.style.display = 'flex';
+  if (simple) simple.classList.remove('open');
+  if (rec) rec.classList.remove('open');
+
+  // Reset textarea simple
+  const ta = document.getElementById(`rinput_${hiloId}`);
+  if (ta) { ta.value = ''; ta.style.height = 'auto'; }
+  // Reset textarea rec
+  const taRec = document.getElementById(`rinput_rec_${hiloId}`);
+  if (taRec) { taRec.value = ''; taRec.style.height = 'auto'; }
+  // Reset modelo
+  const modelo = document.getElementById(`rmodelo_${hiloId}`);
+  if (modelo) modelo.value = '';
+  // Reset scores
+  ['pantalla','potencia','camara','video','bateria','carga','sonido','bloatware','updates','software'].forEach(cat => {
+    const sel = document.getElementById(`sc_${hiloId}_${cat}`);
+    if (sel) sel.value = '0';
+  });
+  const avgEl = document.getElementById(`scavg_${hiloId}`);
+  if (avgEl) avgEl.style.display = 'none';
+
+  clearCita(hiloId);
+}
+
+function actualizarMedia(hiloId) {
+  const cats = ['pantalla','potencia','camara','video','bateria','carga','sonido','bloatware','updates','software'];
+  const vals = cats.map(c => parseInt(document.getElementById(`sc_${hiloId}_${c}`)?.value || '0')).filter(v => v > 0);
+  const avgEl = document.getElementById(`scavg_${hiloId}`);
+  if (!avgEl) return;
+  if (vals.length === 0) { avgEl.style.display = 'none'; return; }
+  const media = vals.reduce((a,b)=>a+b,0) / vals.length;
+  const mediaRound = Math.round(media * 10) / 10;
+  avgEl.style.display = 'flex';
+  document.getElementById(`scavg_val_${hiloId}`).textContent = `${mediaRound}/10`;
+  // Estrellas proporcionales (sobre 5)
+  const estrellas = Math.round(media / 2);
+  document.getElementById(`scavg_stars_${hiloId}`).textContent = '★'.repeat(estrellas) + '☆'.repeat(5 - estrellas);
 }
 
 async function marcarResuelta(hiloId) {
@@ -3193,23 +3225,27 @@ async function cargarRespuestas(hiloId) {
     return;
   }
 
-  // Calcular respuesta más votada
-  let mejorRespuesta = null;
-  let maxVotos = -1;
-  for (const r of respuestas) {
+// Calcular la respuesta con más votos útiles (que CONTENGA un modelo de móvil)
+let mejorRespuesta = null;
+let maxVotos = -1;
+
+for (const r of respuestas) {
     const votosUtil = r.votos_util || 0;
     const tieneModelo = extraerModelos(r.contenido).length > 0;
+    
+    // Solo considerar respuestas que recomienden un móvil
     if (tieneModelo && votosUtil > maxVotos) {
-      maxVotos = votosUtil;
-      mejorRespuesta = r;
+        maxVotos = votosUtil;
+        mejorRespuesta = r;
     }
-  }
+}
 
-  // Top recommendation
-  const topRecEl = document.getElementById(`topRec_${hiloId}`);
-  if (mejorRespuesta && maxVotos > 0) {
+// Mostrar top recommendation general
+const topRecEl = document.getElementById(`topRec_${hiloId}`);
+if (mejorRespuesta && maxVotos > 0) {
     const modelos = extraerModelos(mejorRespuesta.contenido);
     const modeloTop = modelos.length > 0 ? formatearModelo(modelos[0]) : 'Respuesta útil';
+    
     topRecEl.innerHTML = `
       <div class="top-rec">
         <div class="top-rec-icon">🏅</div>
@@ -3220,12 +3256,12 @@ async function cargarRespuestas(hiloId) {
         </div>
       </div>
     `;
-  } else {
+} else {
     topRecEl.innerHTML = '';
-  }
-
-  const cntEl = document.getElementById(`rcnt_${hiloId}`);
-  if (cntEl) cntEl.textContent = respuestas.length;
+}
+// Actualizar contador
+const cntEl = document.getElementById(`rcnt_${hiloId}`);
+if (cntEl) cntEl.textContent = respuestas.length;
 
   let votosUsuario = {};
   if (usuario) {
@@ -3244,19 +3280,14 @@ async function cargarRespuestas(hiloId) {
     const miVoto = votosUsuario[r.id];
     const modelos = extraerModelos(r.contenido);
     const votosUtil = r.votos_util || 0;
+    
+    // === NUEVO: Determinar si es la más votada (y tiene al menos 1 voto) ===
     const esTopVotada = (mejorRespuesta && mejorRespuesta.id === r.id && maxVotos > 0);
+    
+    // Clase adicional para destacar
     const topClass = esTopVotada ? 'reply-item top-voted' : 'reply-item';
-    
-    // INDICADOR DE EDITADO
-    const editadoBadge = r.editado ? `<span class="editado-badge"><i>✏️</i> Editado ${r.editado_en ? timeAgo(r.editado_en) : ''}</span>` : '';
-    
-    // BOTONES EDITAR Y BORRAR (solo para el autor)
-    const esAutor = usuario && usuario.nickname === r.nickname;
-    const editBtn = esAutor ?
-      `<button class="edit-reply-btn" data-edit-id="${r.id}" data-edit-contenido="${r.contenido.replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/\n/g,' ')}">✏️ Editar</button>` : '';
-    const deleteBtn = esAutor ?
-      `<button class="delete-reply-btn" data-delete-id="${r.id}" data-delete-hilo="${hiloId}">🗑 Borrar</button>` : '';
 
+    // Cita si la tiene
     let citaHtml = '';
     if (r.cita_id) {
       const citada = respuestas.find(rx => rx.id === r.cita_id);
@@ -3269,7 +3300,42 @@ async function cargarRespuestas(hiloId) {
       }
     }
 
-    const contenidoHtml = renderizarContenido(r.contenido);
+    const contenidoRaw = r.contenido || '';
+
+    // Extraer scores: primero del campo JSONB, luego del marcador [[SCORES:...]]
+    let scoresData = r.scores || null;
+    let contenidoLimpio = contenidoRaw;
+    if (!scoresData) {
+      const match = contenidoRaw.match(/\[\[SCORES:(.*?)\]\]/s);
+      if (match) {
+        try { scoresData = JSON.parse(match[1]); } catch(e) {}
+        contenidoLimpio = contenidoRaw.replace(/\n*\[\[SCORES:.*?\]\]/s, '').trim();
+      }
+    }
+
+    const contenidoHtml = renderizarContenido(contenidoLimpio);
+
+    // Render scores
+    let scoresHtml = '';
+    if (scoresData && typeof scoresData === 'object' && Object.keys(scoresData).length > 0) {
+      const scoreLabels = {
+        pantalla:'📱 Pantalla', potencia:'🚀 Potencia', camara:'📸 Cámara',
+        video:'🎥 Vídeo', bateria:'🔋 Batería', carga:'⚡ Carga',
+        sonido:'📢 Sonido', bloatware:'🧹 Bloatware', updates:'🔄 Updates', software:'💻 Software'
+      };
+      const vals = Object.values(scoresData).filter(v => v > 0);
+      const media = vals.length ? Math.round(vals.reduce((a,b)=>a+b,0)/vals.length*10)/10 : null;
+      const chips = Object.entries(scoresData)
+        .filter(([,v]) => v > 0)
+        .map(([k,v]) => `<span class="reply-score-chip">${scoreLabels[k]||k} <span class="sc-val">${v}/10</span></span>`);
+      if (chips.length > 0) {
+        scoresHtml = `
+          <div class="reply-scores-display">
+            ${media !== null ? `<div class="reply-scores-avg-badge">⭐ Media ${media}/10</div>` : ''}
+            <div class="reply-scores-chips">${chips.join('')}</div>
+          </div>`;
+      }
+    }
 
     html += `
       <div class="${topClass}" id="reply_${r.id}">
@@ -3278,7 +3344,6 @@ async function cargarRespuestas(hiloId) {
           <span class="reply-author">${nombre}</span>
           ${getBadgeHtml(uData?.puntos || 0, uData?.rol || 'usuario')}
           ${esTopVotada ? `<span class="top-voted-badge">🏅 Más votada</span>` : ''}
-          ${editadoBadge}
           <span class="reply-time">${timeAgo(r.created_at)}</span>
         </div>
         <div class="reply-content">
@@ -3286,80 +3351,119 @@ async function cargarRespuestas(hiloId) {
           ${contenidoHtml}
           ${modelos.length > 0 ? modelos.map(m => `<div><span class="phone-tag">📱 ${formatearModelo(m)}</span></div>`).join('') : ''}
         </div>
+        ${scoresHtml}
         <div class="reply-actions">
           <button class="vote-btn ${miVoto === 'util' ? 'voted-util' : ''}" onclick="votar('${r.id}','util','${hiloId}','${r.nickname}')">👍 ${votosUtil}</button>
           <button class="vote-btn ${miVoto === 'noutil' ? 'voted-noutil' : ''}" onclick="votar('${r.id}','noutil','${hiloId}','${r.nickname}')">👎 ${r.votos_noutil || 0}</button>
-          <button class="cite-btn" data-hilo="${hiloId}" data-reply="${r.id}" data-autor="${r.nickname}" data-contenido="${r.contenido.replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/\n/g,' ')}">↩ Citar</button>
-          ${editBtn}
-          ${deleteBtn}
+          <button class="cite-btn" onclick="setCita('${hiloId}','${r.id}','${r.nickname}',${JSON.stringify(r.contenido)})">↩ Citar</button>
         </div>
       </div>
     `;
   }
 
   container.innerHTML = html;
-
-  // Event delegation para citar y editar (evita problemas con comillas en onclick inline)
-  container.querySelectorAll('.cite-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const hiloId = btn.dataset.hilo;
-      const replyId = btn.dataset.reply;
-      const autor = btn.dataset.autor;
-      const texto = btn.dataset.contenido;
-      setCita(hiloId, replyId, autor, texto);
-    });
-  });
-  container.querySelectorAll('.edit-reply-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = btn.dataset.editId;
-      const contenido = btn.dataset.editContenido;
-      abrirModalEditarRespuesta(id, contenido);
-    });
-  });
-  container.querySelectorAll('.delete-reply-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      borrarRespuestaPropia(btn.dataset.deleteId, btn.dataset.deleteHilo);
-    });
-  });
 }
 
-async function enviarRespuesta(hiloId) {
+async function enviarRespuesta(hiloId, esRecomendacion = false) {
   if (!usuario) { mostrarModalAuth(); return; }
-  const input = document.getElementById(`rinput_${hiloId}`);
-  const texto = input.value.trim();
-  if (!texto) return;
 
-  const sendBtn = document.getElementById(`sendbtn_${hiloId}`);
-  sendBtn.classList.add('sending');
+  // Leer del textarea correcto según el modo
+  const inputId = esRecomendacion ? `rinput_rec_${hiloId}` : `rinput_${hiloId}`;
+  const input = document.getElementById(inputId);
+  const texto = (input?.value || '').trim();
+
+  let modelo = '';
+  let scores = {};
+  let hayScores = false;
+
+  if (esRecomendacion) {
+    modelo = (document.getElementById(`rmodelo_${hiloId}`)?.value || '').trim();
+    if (!modelo && !texto) {
+      const modeloInput = document.getElementById(`rmodelo_${hiloId}`);
+      if (modeloInput) { modeloInput.focus(); modeloInput.style.borderColor = 'var(--accent-red)'; setTimeout(()=>modeloInput.style.borderColor='',1500); }
+      toast('⚠️ Indica al menos el modelo o escribe tu opinión');
+      return;
+    }
+    const cats = ['pantalla','potencia','camara','video','bateria','carga','sonido','bloatware','updates','software'];
+    cats.forEach(cat => {
+      const val = parseInt(document.getElementById(`sc_${hiloId}_${cat}`)?.value || '0');
+      if (val > 0) { scores[cat] = val; hayScores = true; }
+    });
+  } else {
+    if (!texto) {
+      input?.focus();
+      if (input) { input.style.borderColor = 'var(--accent-red)'; setTimeout(()=>input.style.borderColor='',1500); }
+      return;
+    }
+  }
+
+  let contenidoFinal = texto;
+  if (esRecomendacion && modelo) {
+    contenidoFinal = modelo + (texto ? '\n\n' + texto : '');
+  }
+  if (!contenidoFinal) contenidoFinal = modelo || texto;
+
+  const sendBtnId = esRecomendacion ? `sendbtn_rec_${hiloId}` : `sendbtn_${hiloId}`;
+  const sendBtn = document.getElementById(sendBtnId);
+  if (sendBtn) sendBtn.classList.add('sending');
+
+  // Si no hay columna scores en Supabase, codificamos los scores dentro del contenido
+  // usando un marcador especial que el render sabe leer
+  let contenidoConScores = contenidoFinal;
+  if (hayScores) {
+    // Intentamos con campo scores primero; si falla usamos marcador en contenido
+    contenidoConScores = contenidoFinal + '\n\n[[SCORES:' + JSON.stringify(scores) + ']]';
+  }
 
   const insertData = {
     hilo_id: hiloId,
     usuario_id: usuario.id,
     nickname: usuario.nickname,
-    contenido: texto,
+    contenido: contenidoConScores,
   };
 
-  // Adjuntar cita si existe
   if (quoteActiva && quoteActiva.hiloId === hiloId) {
     insertData.cita_id = quoteActiva.replyId;
   }
 
-  await db.from('respuestas').insert(insertData);
+  // Intentar con campo scores JSONB primero
+  let insertOk = false;
+  if (hayScores) {
+    const { error: e1 } = await db.from('respuestas').insert({ ...insertData, contenido: contenidoFinal, scores }).select().single();
+    if (!e1) insertOk = true;
+  }
+  // Fallback: todo en contenido con marcador
+  if (!insertOk) {
+    await db.from('respuestas').insert(insertData);
+  }
 
-  // +2 pts por responder
   const newPts = (usuario.puntos || 0) + 2;
   await db.from('usuarios').update({ puntos: newPts }).eq('id', usuario.id);
   usuario.puntos = newPts;
   mostrarUsuario();
   actualizarBarraRango();
 
-  input.value = '';
-  input.style.height = 'auto';
-  clearCita(hiloId);
-  sendBtn.classList.remove('sending');
-  toast('✅ Respuesta enviada · +2 pts');
-  
-  cargarRespuestas(hiloId);
+  cerrarReplyExpandido(hiloId);
+  if (sendBtn) sendBtn.classList.remove('sending');
+
+  // Asegurar que el panel de respuestas está visible
+  const repContainer = document.getElementById(`replies_${hiloId}`);
+  if (repContainer) repContainer.style.display = 'block';
+  const replyBox = document.getElementById(`replybox_${hiloId}`);
+  if (replyBox) replyBox.style.display = 'block';
+
+  const cntEl = document.getElementById(`rcnt_${hiloId}`);
+
+  toast(esRecomendacion ? '📱 Recomendación publicada · +2 pts' : '✅ Respuesta enviada · +2 pts');
+
+  // Recargar respuestas — el DOM se actualiza sin F5
+  await cargarRespuestas(hiloId);
+
+  // Actualizar contador con el valor real
+  if (cntEl) {
+    const { count } = await db.from('respuestas').select('*', { count: 'exact', head: true }).eq('hilo_id', hiloId);
+    if (count != null) cntEl.textContent = count;
+  }
 }
 
 async function votar(respuestaId, tipo, hiloId, nickAsesor) {
@@ -3447,49 +3551,26 @@ let adminPagina = 1;
 const ADMIN_POR_PAG = 10;
 
 function mostrarAdminPanel() {
-  // Si no hay usuario logueado, NO mostrar el botón
-  if (!usuario) {
-    const btn = document.getElementById('adminBtn');
-    if (btn) btn.style.display = 'none';
-    return;
-  }
-  
+  if (!usuario) return;
   const nick = (usuario.nickname || '').toLowerCase().trim();
+  if (nick !== ADMIN_NICK) return;
   const btn = document.getElementById('adminBtn');
-  console.log('🔍 Verificando admin para:', nick);
-  
-  // Solo mostrar si el nickname es EXACTAMENTE "dastan"
-  if (nick === 'dastan') {
-    if (btn) {
-      btn.style.display = 'flex';
-      console.log('✅ Botón admin VISIBLE');
-    }
-  } else {
-    if (btn) {
-      btn.style.display = 'none';
-      console.log('❌ Botón admin OCULTO para', nick);
-    }
-  }
+  if (btn) btn.style.display = 'flex';
+  setTimeout(() => {
+    const panel = document.getElementById('adminPanel');
+    if (panel) { panel.style.display = 'block'; cargarAdminContent(); }
+  }, 300);
 }
 
 function emergenciaAdmin() {
-  if (!usuario) {
-    toast('⚠️ Inicia sesión primero');
-    return;
-  }
+  if (!usuario) return;
   const nick = (usuario.nickname || '').toLowerCase().trim();
-  if (nick !== 'dastan') {
-    toast('⛔ Acceso denegado');
-    return;
-  }
+  if (nick !== ADMIN_NICK) return;
   const panel = document.getElementById('adminPanel');
   if (!panel) return;
   const visible = panel.style.display === 'block';
   panel.style.display = visible ? 'none' : 'block';
-  if (!visible) { 
-    if (typeof cargarAdminContent === 'function') cargarAdminContent();
-    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
+  if (!visible) { cargarAdminContent(); panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
 }
 
 function toggleAdminBody() {
@@ -3810,24 +3891,6 @@ async function adminEliminarHilo(hiloId) {
   cargarStats();
 }
 
-async function borrarRespuestaPropia(respId, hiloId) {
-  if (!confirm('¿Borrar tu respuesta? Esta acción no se puede deshacer.')) return;
-  if (!usuario) return;
-  // Verificar que la respuesta pertenece al usuario antes de borrar
-  const { data: r } = await db.from('respuestas').select('nickname').eq('id', respId).single();
-  if (!r || r.nickname !== usuario.nickname) {
-    toast('❌ No puedes borrar esta respuesta');
-    return;
-  }
-  await db.from('votos').delete().eq('respuesta_id', respId);
-  await db.from('respuestas').delete().eq('id', respId);
-  // Restar 2 puntos al usuario por borrar su respuesta
-  const { data: u } = await db.from('usuarios').select('puntos').eq('nickname', usuario.nickname).single();
-  if (u) await db.from('usuarios').update({ puntos: Math.max(0, (u.puntos || 0) - 2) }).eq('nickname', usuario.nickname);
-  toast('🗑 Respuesta eliminada');
-  cargarRespuestas(hiloId);
-}
-
 async function adminEliminarRespuesta(respId, hiloId) {
   if (!confirm('¿Eliminar esta respuesta?')) return;
   await db.from('votos').delete().eq('respuesta_id', respId);
@@ -3901,140 +3964,6 @@ async function adminBackup(formato) {
 
 
 // ═══════════════════════════════════════════
-// EDITAR RESPUESTAS (SOLO ESTO ES NUEVO)
-// ═══════════════════════════════════════════
-function abrirModalEditarRespuesta(respuestaId, contenidoActual) {
-  if (!usuario) { toast('❌ Inicia sesión para editar'); return; }
-  const contenidoEscapado = (contenidoActual || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  const modalHtml = `
-    <div class="modal-overlay" id="editModal" style="display:flex; z-index:1000;">
-      <div class="modal" style="max-width:500px;">
-        <div class="modal-title">✏️ Editar respuesta</div>
-        <div class="modal-sub">Modifica tu recomendación.</div>
-        <textarea id="editContenido" rows="4" style="width:100%; padding:12px; border:1.5px solid var(--border); border-radius:12px; font-size:0.9rem; margin-bottom:16px;">${contenidoEscapado}</textarea>
-        <div style="display:flex; gap:10px; justify-content:flex-end;">
-          <button class="btn-cancel" onclick="cerrarModalEditar()">Cancelar</button>
-          <button class="btn-submit" onclick="guardarEdicionRespuesta('${respuestaId}')">Guardar</button>
-        </div>
-      </div>
-    </div>
-  `;
-  const oldModal = document.getElementById('editModal');
-  if (oldModal) oldModal.remove();
-  document.body.insertAdjacentHTML('beforeend', modalHtml);
-}
-
-function cerrarModalEditar() {
-  const modal = document.getElementById('editModal');
-  if (modal) modal.remove();
-}
-
-async function guardarEdicionRespuesta(respuestaId) {
-  const nuevo = document.getElementById('editContenido').value.trim();
-  if (!nuevo) { toast('❌ No puede estar vacío'); return; }
-  toast('📝 Guardando...');
-  const { error } = await db.from('respuestas').update({
-    contenido: nuevo,
-    editado: true,
-    editado_en: new Date().toISOString()
-  }).eq('id', respuestaId).eq('nickname', usuario.nickname);
-  if (error) { toast('❌ Error: ' + error.message); return; }
-  toast('✅ Editado');
-  cerrarModalEditar();
-  const { data: resp } = await db.from('respuestas').select('hilo_id').eq('id', respuestaId).single();
-  if (resp) cargarRespuestas(resp.hilo_id);
-}
-
-// ========== FUNCIONES NUEVAS PARA PUNTUACIONES ==========
-
-function toggleRecForm(hiloId) {
-  const form = document.getElementById(`recForm_${hiloId}`);
-  if (form) form.classList.toggle('hidden');
-  if (!form.classList.contains('hidden')) {
-    const container = document.getElementById(`categorias_${hiloId}`);
-    if (container && container.innerHTML === '') {
-      let catsHtml = '';
-      for (const cat of CATEGORIAS) {
-        catsHtml += `<div class="rec-cat-item">
-          <span class="rec-cat-label">${cat.label}</span>
-          <select class="rec-cat-select" id="cat_${cat.id}_${hiloId}">
-            ${[...Array(10)].map((_, i) => `<option value="${i+1}">${i+1}</option>`).join('')}
-          </select>
-        </div>`;
-      }
-      container.innerHTML = catsHtml;
-    }
-  }
-}
-
-async function enviarRecomendacion(hiloId) {
-  if (!usuario) { mostrarModalAuth(); return; }
-  const modelo = document.getElementById(`modelo_${hiloId}`).value.trim();
-  if (!modelo) { toast('❌ Escribe el modelo que recomiendas'); return; }
-  
-  const puntuaciones = {};
-  for (const cat of CATEGORIAS) {
-    const select = document.getElementById(`cat_${cat.id}_${hiloId}`);
-    if (select) puntuaciones[cat.id] = parseInt(select.value);
-  }
-  const opinion = document.getElementById(`opinion_${hiloId}`).value.trim();
-  
-  const insertData = {
-    hilo_id: hiloId, usuario_id: usuario.id, nickname: usuario.nickname,
-    modelo_recomendado: modelo, contenido: opinion, ...puntuaciones
-  };
-  await db.from('respuestas').insert(insertData);
-  const newPts = (usuario.puntos || 0) + 2;
-  await db.from('usuarios').update({ puntos: newPts }).eq('id', usuario.id);
-  usuario.puntos = newPts;
-  mostrarUsuario();
-  actualizarBarraRango();
-  
-  document.getElementById(`modelo_${hiloId}`).value = '';
-  document.getElementById(`opinion_${hiloId}`).value = '';
-  for (const cat of CATEGORIAS) {
-    const select = document.getElementById(`cat_${cat.id}_${hiloId}`);
-    if (select) select.value = '5';
-  }
-  toggleRecForm(hiloId);
-  toast('✅ Recomendación publicada · +2 pts');
-  cargarRespuestas(hiloId);
-}
-
-async function enviarRespuestaSimple(hiloId) {
-  if (!usuario) { mostrarModalAuth(); return; }
-  const input = document.getElementById(`rinput_${hiloId}`);
-  const texto = input.value.trim();
-  if (!texto) return;
-  await db.from('respuestas').insert({ hilo_id: hiloId, usuario_id: usuario.id, nickname: usuario.nickname, contenido: texto });
-  const newPts = (usuario.puntos || 0) + 2;
-  await db.from('usuarios').update({ puntos: newPts }).eq('id', usuario.id);
-  usuario.puntos = newPts;
-  mostrarUsuario();
-  actualizarBarraRango();
-  input.value = '';
-  toast('✅ Respuesta rápida enviada · +2 pts');
-  cargarRespuestas(hiloId);
-}
-
-function renderPuntuacionesRespuesta(r) {
-  let html = '<div class="score-grid">';
-  for (const cat of CATEGORIAS) {
-    const val = r[cat.id];
-    if (val && val >= 1) {
-      html += `<div class="score-item">
-        <span class="score-label">${cat.label}</span>
-        <div class="score-bar"><div class="score-fill" style="width:${val * 10}%"></div></div>
-        <span class="score-value">${val}</span>
-      </div>`;
-    }
-  }
-  html += '</div>';
-  if (r.contenido && r.contenido.trim()) html += `<div class="rec-opinion">💬 ${r.contenido}</div>`;
-  return html;
-}
-
-// ═══════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════
 async function init() {
@@ -4065,78 +3994,40 @@ async function init() {
     mostrarModalAuth();
   }
 }
-
-// ═══════════════════════════════════════════
-// EDITAR RESPUESTAS (NUEVAS FUNCIONES)
-// ═══════════════════════════════════════════
-// ═══════════════════════════════════════════
-// EDITAR RESPUESTAS
-// ═══════════════════════════════════════════
-function abrirModalEditarRespuesta(respuestaId, contenidoActual) {
-  if (!usuario) { toast('❌ Inicia sesión para editar'); return; }
-  const contenidoEscapado = (contenidoActual || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  const modalHtml = `
-    <div class="modal-overlay" id="editModal" style="display:flex; z-index:1000;">
-      <div class="modal" style="max-width:500px;">
-        <div class="modal-title">✏️ Editar respuesta</div>
-        <div class="modal-sub">Modifica tu recomendación.</div>
-        <textarea id="editContenido" rows="4" style="width:100%; padding:12px; border:1.5px solid var(--border); border-radius:12px; font-size:0.9rem; margin-bottom:16px;">${contenidoEscapado}</textarea>
-        <div style="display:flex; gap:10px; justify-content:flex-end;">
-          <button class="btn-cancel" onclick="cerrarModalEditar()">Cancelar</button>
-          <button class="btn-submit" onclick="guardarEdicionRespuesta('${respuestaId}')">Guardar</button>
-        </div>
-      </div>
-    </div>
-  `;
-  const oldModal = document.getElementById('editModal');
-  if (oldModal) oldModal.remove();
-  document.body.insertAdjacentHTML('beforeend', modalHtml);
-}
-
-function cerrarModalEditar() {
-  const modal = document.getElementById('editModal');
-  if (modal) modal.remove();
-}
-
-async function guardarEdicionRespuesta(respuestaId) {
-  const nuevo = document.getElementById('editContenido').value.trim();
-  if (!nuevo) { toast('❌ No puede estar vacío'); return; }
-  toast('📝 Guardando...');
-  const { error } = await db.from('respuestas').update({
-    contenido: nuevo,
-    editado: true,
-    editado_en: new Date().toISOString()
-  }).eq('id', respuestaId).eq('nickname', usuario.nickname);
-  if (error) { toast('❌ Error: ' + error.message); return; }
-  toast('✅ Editado');
-  cerrarModalEditar();
-  const { data: resp } = await db.from('respuestas').select('hilo_id').eq('id', respuestaId).single();
-  if (resp) cargarRespuestas(resp.hilo_id);
-}
-
-
 // ═══════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════
 async function init() {
     const token = leerToken();
     console.log("TOKEN manual en localStorage:", token ? "encontrado" : "no encontrado");
+
     if (token) {
         const { data: sesion, error: errorSesion } = await db.from('sesiones').select('*').eq('token', token).single();
         console.log("SESION en DB:", JSON.stringify(sesion), "ERR:", errorSesion);
+
         if (sesion) {
             const { data: usuarioDB, error: errorUsuario } = await db.from('usuarios').select('*').eq('nickname', sesion.nickname).single();
             console.log("USER en DB:", JSON.stringify(usuarioDB), "ERR:", errorUsuario);
+
             if (usuarioDB) {
+                // 1. Guardamos los datos en la variable global de tu web para que sepa quién eres
                 usuario = usuarioDB; 
+                
+                // 2. Cerramos el cartel flotante por si acaso se hubiera quedado abierto
                 cerrarModalAuth();
+                
+                // 3. Avisamos a la web para que pinte tu nombre de admin y tus 15 puntos arriba
                 onLogin();
+                
                 return; 
             }
         }
     }
-    mostrarModal();  // ❌ Esta línea da error porque mostrarModal no existe
+
+    // Si de verdad no hay sesión ni token, entonces sí mostramos el login
+    mostrarModal();
 }
+
 window.addEventListener('load', init);
 
 // ═══════════════════════════════════════════
