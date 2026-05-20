@@ -4776,6 +4776,8 @@ async function guardarEdicionRespuesta(respuestaId) {
 // INIT
 // ═══════════════════════════════════════════
 async function init() {
+    cargarBannerGlobal(); // ← AÑADIR ESTA LÍNEA
+    cargarStats();        // (esta ya puede estar o no)
     const token = leerToken();
     console.log("TOKEN manual en localStorage:", token ? "encontrado" : "no encontrado");
 
@@ -4806,7 +4808,10 @@ async function init() {
     mostrarModal();
 }
 
-
+// Cargar banner global inmediatamente (antes del login)
+window.addEventListener('load', async function() {
+  await cargarBannerGlobal();
+});
 
 window.addEventListener('load', init);
 
