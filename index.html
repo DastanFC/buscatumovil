@@ -728,6 +728,29 @@ border: 1.5px solid var(--blue);
   font-family: 'DM Mono', monospace;
 }
 
+/* Título del modelo como encabezado destacado */
+.reply-model-title {
+  margin-bottom: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.phone-title-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--navy);
+  color: white;
+  font-size: 0.88rem;
+  font-weight: 700;
+  padding: 5px 14px 5px 10px;
+  border-radius: 10px;
+  font-family: 'Roboto', sans-serif;
+  letter-spacing: -0.2px;
+  border-left: 3px solid var(--accent);
+}
+
 .reply-actions {
   display: flex;
   align-items: center;
@@ -1859,6 +1882,13 @@ border: 1.5px solid var(--blue);
   </div>
 </div>
 
+<!-- BANNER GLOBAL DE AVISOS (solo visible si el admin lo activa) -->
+<div id="globalBanner" style="display:none;align-items:center;gap:12px;padding:10px 20px;background:linear-gradient(90deg,#1D6FE8,#1A2D45);color:white;font-size:0.82rem;font-weight:500;border-bottom:1px solid rgba(255,255,255,0.1);position:relative;z-index:100;flex-wrap:wrap;">
+  <span style="font-size:1rem;flex-shrink:0;">📢</span>
+  <span id="globalBannerText" style="flex:1;min-width:0;line-height:1.45;"></span>
+  <button onclick="ocultarBannerGlobal()" style="background:rgba(255,255,255,0.15);border:none;color:white;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:0.85rem;flex-shrink:0;" title="Cerrar aviso">✕</button>
+</div>
+
 <!-- MAIN -->
 <div class="container">
 
@@ -1887,6 +1917,7 @@ border: 1.5px solid var(--blue);
         <button class="admin-tab" onclick="adminSetTab('respuestas', this)">💬 Respuestas</button>
         <button class="admin-tab" onclick="adminSetTab('stats', this)">📊 Estadísticas</button>
         <button class="admin-tab" onclick="adminSetTab('config', this)">⚙️ Config</button>
+        <button class="admin-tab" onclick="adminSetTab('actualizaciones', this)">📋 Actualizaciones</button>
       </div>
       <div id="adminContent"><div class="admin-loading">⏳ Cargando...</div></div>
     </div>
@@ -2915,6 +2946,7 @@ function onLogin() {
   actualizarBarraRango();
   if (usuario) mostrarAdminPanel();  // ← AÑADE ESTA CONDICIÓN
   renderRangos();
+  cargarBannerGlobal();
 }
 
 function mostrarUsuario() {
@@ -3230,8 +3262,8 @@ async function cargarRespuestas(hiloId) {
         </div>
         <div class="reply-content">
           ${citaHtml}
+          ${modelos.length > 0 ? `<div class="reply-model-title">${modelos.map(m => `<span class="phone-title-tag">📱 ${formatearModelo(m)}</span>`).join('')}</div>` : ''}
           ${contenidoHtml}
-          ${modelos.length > 0 ? modelos.map(m => `<div><span class="phone-tag">📱 ${formatearModelo(m)}</span></div>`).join('') : ''}
         </div>
         <div class="reply-actions">
           <button class="vote-btn ${miVoto === 'util' ? 'voted-util' : ''}" onclick="votar('${r.id}','util','${hiloId}','${r.nickname}')">👍 ${votosUtil}</button>
@@ -3291,7 +3323,8 @@ async function enviarRespuesta(hiloId) {
     insertData.cita_id = quoteActiva.replyId;
   }
 
-  await db.from('respuestas').insert(insertData);
+  const { error } = await db.from('respuestas').insert(insertData);
+  if (error) { toast('⚠️ Error al enviar: ' + error.message); sendBtn.classList.remove('sending'); return; }
 
   // +2 pts por responder
   const newPts = (usuario.puntos || 0) + 2;
@@ -3300,13 +3333,19 @@ async function enviarRespuesta(hiloId) {
   mostrarUsuario();
   actualizarBarraRango();
 
+  // Limpiar el input y cita
   input.value = '';
   input.style.height = 'auto';
   clearCita(hiloId);
   sendBtn.classList.remove('sending');
   toast('✅ Respuesta enviada · +2 pts');
-  
-  cargarRespuestas(hiloId);
+
+  // Auto-refrescar SOLO la sección de respuestas de este hilo (sin recargar página)
+  await cargarRespuestas(hiloId);
+
+  // Asegurarse de que la sección esté visible
+  const rep = document.getElementById(`replies_${hiloId}`);
+  if (rep) rep.style.display = 'block';
 }
 
 async function votar(respuestaId, tipo, hiloId, nickAsesor) {
@@ -3460,6 +3499,7 @@ async function cargarAdminContent() {
   else if (adminTabActual === 'respuestas') await renderAdminRespuestas();
   else if (adminTabActual === 'stats') await renderAdminStats();
   else if (adminTabActual === 'config') renderAdminConfig();
+  else if (adminTabActual === 'actualizaciones') renderAdminActualizaciones();
 }
 
 function adminPaginarHtml(total) {
@@ -3684,12 +3724,14 @@ function renderAdminConfig() {
         </div>`).join('')}
     </div>
 
-    <div class="admin-section-title">📢 Notificación masiva</div>
+    <div class="admin-section-title">📢 Banner de aviso global</div>
     <div style="margin-bottom:20px;">
-      <textarea id="adminMsgMasivo" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:12px;font-size:0.82rem;font-family:'DM Sans',sans-serif;resize:vertical;min-height:70px;" placeholder="Mensaje a mostrar a todos los usuarios como toast..."></textarea>
-      <div style="margin-top:8px;display:flex;gap:8px;">
-        <button class="admin-btn admin-btn-blue" onclick="adminEnviarMasivo()">📢 Enviar a todos</button>
-        <span style="font-size:0.7rem;color:var(--text-3);align-self:center;">(Se guardará en DB y se mostrará al cargar)</span>
+      <p style="font-size:0.75rem;color:var(--text-3);margin-bottom:10px;">El banner aparecerá debajo de la barra de rango para todos los usuarios. Guárdalo vacío para ocultarlo.</p>
+      <textarea id="adminMsgMasivo" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:12px;font-size:0.82rem;font-family:'DM Sans',sans-serif;resize:vertical;min-height:60px;" placeholder="Texto del aviso para todos los usuarios..."></textarea>
+      <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="admin-btn admin-btn-blue" onclick="adminEnviarMasivo()">💾 Guardar banner</button>
+        <button class="admin-btn admin-btn-gray" onclick="adminBorrarBanner()">🗑 Ocultar banner</button>
+        <span style="font-size:0.7rem;color:var(--text-3);align-self:center;">(Los usuarios verán un banner que pueden cerrar con ✕)</span>
       </div>
     </div>
 
@@ -3757,10 +3799,33 @@ async function adminEliminarHilo(hiloId) {
   cargarStats();
 }
 
-async function borrarRespuestaPropia(respId, hiloId) {
-  if (!confirm('¿Borrar tu respuesta? Esta acción no se puede deshacer.')) return;
+function borrarRespuestaPropia(respId, hiloId) {
   if (!usuario) return;
-  // Verificar que la respuesta pertenece al usuario antes de borrar
+  // Mostrar confirmación inline dentro de la respuesta
+  const replyEl = document.getElementById(`reply_${respId}`);
+  if (!replyEl) return;
+  // Evitar doble confirmación
+  if (replyEl.querySelector('.delete-confirm-row')) return;
+  const confirmRow = document.createElement('div');
+  confirmRow.className = 'delete-confirm-row';
+  confirmRow.style.cssText = 'display:flex;align-items:center;gap:8px;margin-left:36px;margin-top:6px;padding:8px 12px;background:#FEF2F2;border-radius:10px;border:1px solid #FECACA;';
+  confirmRow.innerHTML = `
+    <span style="font-size:0.78rem;color:#991B1B;flex:1;">¿Estás seguro que quieres eliminarlo?</span>
+    <button onclick="confirmarBorradoRespuesta('${respId}','${hiloId}')" style="background:#EF4444;color:white;border:none;border-radius:999px;padding:4px 12px;font-size:0.72rem;font-weight:600;cursor:pointer;font-family:'Roboto',sans-serif;">Sí</button>
+    <button onclick="cancelarBorradoRespuesta('${respId}')" style="background:var(--surface-3);color:var(--text-2);border:none;border-radius:999px;padding:4px 12px;font-size:0.72rem;font-weight:600;cursor:pointer;font-family:'Roboto',sans-serif;">No</button>
+  `;
+  replyEl.appendChild(confirmRow);
+}
+
+function cancelarBorradoRespuesta(respId) {
+  const replyEl = document.getElementById(`reply_${respId}`);
+  if (!replyEl) return;
+  const row = replyEl.querySelector('.delete-confirm-row');
+  if (row) row.remove();
+}
+
+async function confirmarBorradoRespuesta(respId, hiloId) {
+  if (!usuario) return;
   const { data: r } = await db.from('respuestas').select('nickname').eq('id', respId).single();
   if (!r || r.nickname !== usuario.nickname) {
     toast('❌ No puedes borrar esta respuesta');
@@ -3768,7 +3833,6 @@ async function borrarRespuestaPropia(respId, hiloId) {
   }
   await db.from('votos').delete().eq('respuesta_id', respId);
   await db.from('respuestas').delete().eq('id', respId);
-  // Restar 2 puntos al usuario por borrar su respuesta
   const { data: u } = await db.from('usuarios').select('puntos').eq('nickname', usuario.nickname).single();
   if (u) await db.from('usuarios').update({ puntos: Math.max(0, (u.puntos || 0) - 2) }).eq('nickname', usuario.nickname);
   toast('🗑 Respuesta eliminada');
@@ -3802,16 +3866,118 @@ function adminActualizarRango(rangoId) {
   toast(`✅ Rango ${r.label} actualizado a ${nuevoMin} pts mínimos (sesión actual)`);
 }
 
+// ── ACTUALIZACIONES (CHANGELOG) ───────────────
+const ACTUALIZACIONES_KEY = 'admin_actualizaciones';
+
+function getActualizaciones() {
+  try { return JSON.parse(localStorage.getItem(ACTUALIZACIONES_KEY) || '[]'); } catch(e) { return []; }
+}
+function saveActualizaciones(list) {
+  try { localStorage.setItem(ACTUALIZACIONES_KEY, JSON.stringify(list)); } catch(e) {}
+}
+
+function renderAdminActualizaciones() {
+  const items = getActualizaciones();
+  const iconOpts = [
+    { val: 'x', label: '❌ No funciona' },
+    { val: 'v', label: '✅ Solucionado' },
+    { val: '?', label: '🔍 Investigando' },
+  ];
+
+  const listaHtml = items.length === 0
+    ? `<div class="admin-empty">Sin actualizaciones todavía.</div>`
+    : items.map((it, i) => {
+        const icon = it.tipo === 'x' ? '❌' : it.tipo === 'v' ? '✅' : '🔍';
+        const color = it.tipo === 'x' ? '#991B1B' : it.tipo === 'v' ? '#065F46' : '#92400E';
+        const bg = it.tipo === 'x' ? '#FEF2F2' : it.tipo === 'v' ? '#ECFDF5' : '#FFFBEB';
+        return `
+          <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:${bg};border-radius:12px;margin-bottom:8px;border:1px solid ${it.tipo === 'x' ? '#FECACA' : it.tipo === 'v' ? '#A7F3D0' : '#FDE68A'};">
+            <span style="font-size:1.2rem;flex-shrink:0;margin-top:1px;">${icon}</span>
+            <span style="flex:1;font-size:0.82rem;color:${color};line-height:1.5;">${it.texto}</span>
+            <button onclick="eliminarActualizacion(${i})" style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:0.85rem;padding:2px 4px;border-radius:6px;flex-shrink:0;" title="Eliminar">✕</button>
+          </div>`;
+      }).join('');
+
+  document.getElementById('adminContent').innerHTML = `
+    <div class="admin-section-title">📋 Registro de cambios</div>
+    <div style="margin-bottom:16px;background:var(--surface-2);border:1px solid var(--border);border-radius:14px;padding:16px;">
+      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+        ${iconOpts.map(o => `
+          <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:0.78rem;padding:6px 12px;border-radius:999px;border:1.5px solid var(--border);background:var(--surface);">
+            <input type="radio" name="tipo_act" value="${o.val}" ${o.val === 'x' ? 'checked' : ''} style="margin:0;" />
+            ${o.label}
+          </label>`).join('')}
+      </div>
+      <textarea id="actTexto" rows="2" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:12px;font-size:0.82rem;font-family:'DM Sans',sans-serif;resize:vertical;background:var(--surface);" placeholder="Describe el cambio, error o novedad..."></textarea>
+      <button class="admin-btn admin-btn-blue" onclick="añadirActualizacion()" style="margin-top:10px;">➕ Añadir entrada</button>
+    </div>
+    <div id="actLista">${listaHtml}</div>
+  `;
+}
+
+function añadirActualizacion() {
+  const tipo = document.querySelector('input[name="tipo_act"]:checked')?.value || 'x';
+  const texto = document.getElementById('actTexto')?.value?.trim();
+  if (!texto) { toast('❌ Escribe el texto del cambio'); return; }
+  const list = getActualizaciones();
+  list.unshift({ tipo, texto, fecha: new Date().toLocaleDateString('es-ES') });
+  saveActualizaciones(list);
+  toast('✅ Entrada añadida');
+  renderAdminActualizaciones();
+}
+
+function eliminarActualizacion(idx) {
+  const list = getActualizaciones();
+  list.splice(idx, 1);
+  saveActualizaciones(list);
+  renderAdminActualizaciones();
+}
+
 async function adminEnviarMasivo() {
   const msg = document.getElementById('adminMsgMasivo').value.trim();
   if (!msg) { toast('❌ Escribe un mensaje'); return; }
   try {
     await db.from('configuracion').upsert({ clave: 'mensaje_masivo', valor: msg });
-    toast('📢 Mensaje guardado — se mostrará a todos al cargar');
+    toast('✅ Banner guardado — visible para todos al cargar');
+    // Mostrar el banner en la sesión actual también
+    mostrarBannerGlobal(msg);
   } catch(e) {
-    // Si no existe la tabla configuracion, mostrar igualmente como toast local
-    toast('📢 ' + msg, 6000);
+    // Si no existe la tabla configuracion, guardarlo localmente
+    try { localStorage.setItem('banner_global', msg); } catch(e2) {}
+    mostrarBannerGlobal(msg);
+    toast('✅ Banner activado');
   }
+}
+
+async function adminBorrarBanner() {
+  try { await db.from('configuracion').upsert({ clave: 'mensaje_masivo', valor: '' }); } catch(e) {}
+  try { localStorage.removeItem('banner_global'); } catch(e) {}
+  ocultarBannerGlobal();
+  toast('🗑 Banner ocultado');
+}
+
+function mostrarBannerGlobal(msg) {
+  let banner = document.getElementById('globalBanner');
+  if (!banner) return;
+  banner.querySelector('#globalBannerText').textContent = msg;
+  banner.style.display = 'flex';
+}
+
+function ocultarBannerGlobal() {
+  const banner = document.getElementById('globalBanner');
+  if (banner) banner.style.display = 'none';
+}
+
+async function cargarBannerGlobal() {
+  let msg = '';
+  try {
+    const { data } = await db.from('configuracion').select('valor').eq('clave', 'mensaje_masivo').single();
+    if (data?.valor) msg = data.valor;
+  } catch(e) {}
+  if (!msg) {
+    try { msg = localStorage.getItem('banner_global') || ''; } catch(e) {}
+  }
+  if (msg) mostrarBannerGlobal(msg);
 }
 
 async function adminBackup(formato) {
