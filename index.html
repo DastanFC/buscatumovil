@@ -3793,20 +3793,64 @@ async function enviarConRanking() {
     if (err2) { toast('⚠️ Error: ' + err2.message); return; }
   }
 
-  // +2 pts
-  const newPts = (usuario.puntos || 0) + 2;
-  await db.from('usuarios').update({ puntos: newPts }).eq('id', usuario.id);
-  usuario.puntos = newPts;
-  mostrarUsuario();
-  actualizarBarraRango();
-
+  // Cerrar modal inmediatamente (los puntos se actualizan en background abajo)
+  const hiloIdRanking = rankingHiloActivo;
   document.getElementById('rankingModalOverlay').style.display = 'none';
-  clearCita(rankingHiloActivo);
+  clearCita(hiloIdRanking);
   toast('✅ Recomendación enviada · +2 pts');
 
-  // Refrescar respuestas
-  await cargarRespuestas(rankingHiloActivo, true);
+  // Mostrar sección si estaba oculta
+  const repRk = document.getElementById(`replies_${hiloIdRanking}`);
+  const boxRk = document.getElementById(`replybox_${hiloIdRanking}`);
+  if (repRk) repRk.style.display = 'block';
+  if (boxRk) boxRk.style.display = 'block';
+
+  // Insertar la recomendación en el DOM al instante
+  const ac2 = avatarColor(usuario.nickname);
+  const nombre2 = cap(usuario.nickname);
+  const chipsInstant = RANKING_CATS
+    .filter(cat => scores[cat.key] !== null)
+    .map(cat => `<span class="reply-ranking-chip">${cat.icon} ${cat.label} <b>${scores[cat.key]}/10</b></span>`)
+    .join('');
+  const rankingInstant = `
+    <div class="reply-ranking-block">
+      ${media != null ? `<div class="reply-ranking-media">⭐ Media <span style="margin-left:4px;font-size:1.05rem;">${media}/10</span></div>` : ''}
+      ${chipsInstant ? `<div class="reply-ranking-chips">${chipsInstant}</div>` : ''}
+    </div>`;
+  const nuevoHtmlRanking = `
+    <div class="reply-item" id="temp_${Date.now()}">
+      <div class="reply-header">
+        <div class="reply-avatar" style="background:${ac2.bg};color:${ac2.color};">${nombre2.substring(0,2).toUpperCase()}</div>
+        <span class="reply-author">${nombre2}</span>
+        ${getBadgeHtml(usuario.puntos || 0, usuario.rol || 'usuario')}
+        <span class="reply-time">ahora</span>
+      </div>
+      <div class="reply-content">
+        <div class="reply-model-title"><span class="phone-title-tag">📱 ${formatearModelo(nombre)}</span></div>
+        ${rankingInstant}
+        ${nota ? renderizarContenido(nota) : ''}
+      </div>
+      <div class="reply-actions">
+        <button class="vote-btn">👍 0</button>
+        <button class="vote-btn">👎 0</button>
+      </div>
+    </div>`;
+  if (!repRk || repRk.querySelector('.replies-empty')) {
+    if (repRk) repRk.innerHTML = nuevoHtmlRanking;
+  } else {
+    repRk.insertAdjacentHTML('beforeend', nuevoHtmlRanking);
+  }
+  const cntElRk = document.getElementById(`rcnt_${hiloIdRanking}`);
+  if (cntElRk) cntElRk.textContent = parseInt(cntElRk.textContent || '0') + 1;
+
+  // En background: puntos y refresh completo con datos reales de BD
+  db.from('usuarios').update({ puntos: (usuario.puntos || 0) + 2 }).eq('id', usuario.id).then(() => {
+    usuario.puntos = (usuario.puntos || 0) + 2;
+    mostrarUsuario();
+    actualizarBarraRango();
+  });
   rankingHiloActivo = null;
+  setTimeout(() => cargarRespuestas(hiloIdRanking, true), 1000);
 }
 
 async function enviarRespuesta(hiloId) {
@@ -3816,7 +3860,6 @@ async function enviarRespuesta(hiloId) {
   if (!texto) return;
 
   const sendBtn = document.getElementById(`sendbtn_${hiloId}`);
-  sendBtn.classList.add('sending');
   sendBtn.disabled = true;
 
   const insertData = {
@@ -3833,32 +3876,61 @@ async function enviarRespuesta(hiloId) {
   const { error } = await db.from('respuestas').insert(insertData);
   if (error) {
     toast('⚠️ Error al enviar: ' + error.message);
-    sendBtn.classList.remove('sending');
     sendBtn.disabled = false;
     return;
   }
 
-  // +2 pts
-  const newPts = (usuario.puntos || 0) + 2;
-  await db.from('usuarios').update({ puntos: newPts }).eq('id', usuario.id);
-  usuario.puntos = newPts;
-  mostrarUsuario();
-  actualizarBarraRango();
-
-  // Limpiar input
+  // Limpiar input inmediatamente
+  const textoCopy = texto;
   input.value = '';
   input.style.height = 'auto';
   clearCita(hiloId);
-  sendBtn.classList.remove('sending');
   sendBtn.disabled = false;
   toast('✅ Respuesta enviada · +2 pts');
 
-  // Refrescar respuestas y mantener sección visible
+  // Mostrar sección si estaba oculta
   const rep = document.getElementById(`replies_${hiloId}`);
   const box = document.getElementById(`replybox_${hiloId}`);
   if (rep) rep.style.display = 'block';
   if (box) box.style.display = 'block';
-  await cargarRespuestas(hiloId, true);
+
+  // Insertar el comentario en el DOM al instante sin esperar a la BD
+  const ac = avatarColor(usuario.nickname);
+  const nombre = cap(usuario.nickname);
+  const tempId = 'temp_' + Date.now();
+  const nuevoHtml = `
+    <div class="reply-item" id="${tempId}">
+      <div class="reply-header">
+        <div class="reply-avatar" style="background:${ac.bg};color:${ac.color};">${nombre.substring(0,2).toUpperCase()}</div>
+        <span class="reply-author">${nombre}</span>
+        ${getBadgeHtml(usuario.puntos || 0, usuario.rol || 'usuario')}
+        <span class="reply-time">ahora</span>
+      </div>
+      <div class="reply-content">${renderizarContenido(textoCopy)}</div>
+      <div class="reply-actions">
+        <button class="vote-btn">👍 0</button>
+        <button class="vote-btn">👎 0</button>
+      </div>
+    </div>`;
+
+  // Si el contenedor está vacío o tiene el placeholder, reemplazarlo; si no, añadir al final
+  if (!rep || rep.querySelector('.replies-empty')) {
+    if (rep) rep.innerHTML = nuevoHtml;
+  } else {
+    rep.insertAdjacentHTML('beforeend', nuevoHtml);
+  }
+
+  // Actualizar contador
+  const cntEl = document.getElementById(`rcnt_${hiloId}`);
+  if (cntEl) cntEl.textContent = parseInt(cntEl.textContent || '0') + 1;
+
+  // En background: puntos y refresh completo (sin await = no bloquea)
+  db.from('usuarios').update({ puntos: (usuario.puntos || 0) + 2 }).eq('id', usuario.id).then(() => {
+    usuario.puntos = (usuario.puntos || 0) + 2;
+    mostrarUsuario();
+    actualizarBarraRango();
+  });
+  setTimeout(() => cargarRespuestas(hiloId, true), 800);
 }
 
 async function votar(respuestaId, tipo, hiloId, nickAsesor) {
