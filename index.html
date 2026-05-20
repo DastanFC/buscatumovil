@@ -4570,16 +4570,18 @@ async function eliminarActualizacion(idx) {
 async function adminEnviarMasivo() {
   const msg = document.getElementById('adminMsgMasivo').value.trim();
   if (!msg) { toast('❌ Escribe un mensaje'); return; }
+  let guardadoEnSupabase = false;
   try {
-    await db.from('configuracion').upsert({ clave: 'mensaje_masivo', valor: msg });
-    toast('✅ Banner guardado — visible para todos al cargar');
-    // Mostrar el banner en la sesión actual también
-    mostrarBannerGlobal(msg);
-  } catch(e) {
-    // Si no existe la tabla configuracion, guardarlo localmente
-    try { localStorage.setItem('banner_global', msg); } catch(e2) {}
-    mostrarBannerGlobal(msg);
-    toast('✅ Banner activado');
+    const { error } = await db.from('configuracion').upsert({ clave: 'mensaje_masivo', valor: msg });
+    if (!error) guardadoEnSupabase = true;
+  } catch(e) {}
+  // Guardar siempre en localStorage como copia local
+  try { localStorage.setItem('banner_global', msg); } catch(e) {}
+  mostrarBannerGlobal(msg);
+  if (guardadoEnSupabase) {
+    toast('✅ Banner guardado en Supabase — visible para TODOS los usuarios');
+  } else {
+    toast('⚠️ Supabase no disponible — banner solo visible para ti. Crea la tabla "configuracion" en Supabase.');
   }
 }
 
@@ -4593,7 +4595,11 @@ async function adminBorrarBanner() {
 function mostrarBannerGlobal(msg) {
   let banner = document.getElementById('globalBanner');
   if (!banner) return;
-  banner.querySelector('#globalBannerText').textContent = msg;
+  // Usar innerHTML para respetar saltos de línea
+  banner.querySelector('#globalBannerText').innerHTML = msg
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/
+/g, '<br>');
   banner.style.display = 'flex';
 }
 
@@ -4604,14 +4610,17 @@ function ocultarBannerGlobal() {
 
 async function cargarBannerGlobal() {
   let msg = '';
+  // Intentar Supabase (funciona para TODOS los usuarios)
   try {
-    const { data } = await db.from('configuracion').select('valor').eq('clave', 'mensaje_masivo').single();
-    if (data?.valor) msg = data.valor;
+    const { data, error } = await db.from('configuracion').select('valor').eq('clave', 'mensaje_masivo').single();
+    if (!error && data?.valor) msg = data.valor;
   } catch(e) {}
+  // Fallback a localStorage SOLO si Supabase no devuelve nada
+  // (localStorage es local — solo sirve para el admin en su navegador)
   if (!msg) {
     try { msg = localStorage.getItem('banner_global') || ''; } catch(e) {}
   }
-  if (msg) mostrarBannerGlobal(msg);
+  if (msg && msg.trim()) mostrarBannerGlobal(msg);
 }
 
 async function adminBackup(formato) {
