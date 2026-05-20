@@ -1809,6 +1809,235 @@ border: 1.5px solid var(--blue);
   font-size: 0.65rem;
 }
 
+/* ─── RANKING MODAL ─── */
+.ranking-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15,27,45,0.7);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 600;
+  padding: 0;
+}
+@media (min-width: 600px) {
+  .ranking-modal-overlay { align-items: center; padding: 20px; }
+}
+.ranking-modal {
+  background: white;
+  border-radius: 24px 24px 0 0;
+  padding: 20px 18px 28px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 92vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  animation: slideUpModal 0.28s cubic-bezier(.22,1,.36,1);
+}
+@media (min-width: 600px) {
+  .ranking-modal { border-radius: 24px; }
+}
+@keyframes slideUpModal {
+  from { transform: translateY(40px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+.ranking-modal-handle {
+  width: 36px; height: 4px;
+  background: var(--border);
+  border-radius: 999px;
+  margin: 0 auto 16px;
+}
+.ranking-modal-title {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 4px;
+}
+.ranking-modal-sub {
+  font-size: 0.73rem;
+  color: var(--text-3);
+  margin-bottom: 16px;
+}
+.ranking-movil-input {
+  width: 100%;
+  padding: 10px 13px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 16px;
+  font-family: 'Roboto', sans-serif;
+  background: var(--surface-2);
+  color: var(--text);
+  margin-bottom: 14px;
+  transition: all 0.18s;
+  -webkit-appearance: none;
+}
+.ranking-movil-input:focus {
+  outline: none; border-color: var(--blue);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(29,111,232,0.08);
+}
+.ranking-scores-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.ranking-score-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ranking-score-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-3);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.ranking-score-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ranking-score-input {
+  width: 52px;
+  padding: 6px 8px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-family: 'DM Mono', monospace;
+  text-align: center;
+  background: var(--surface-2);
+  color: var(--navy);
+  transition: all 0.18s;
+  -webkit-appearance: none;
+}
+.ranking-score-input:focus {
+  outline: none; border-color: var(--blue);
+  background: white; box-shadow: 0 0 0 3px rgba(29,111,232,0.08);
+}
+.ranking-score-bar {
+  flex: 1; height: 5px;
+  background: var(--surface-3);
+  border-radius: 999px; overflow: hidden;
+}
+.ranking-score-bar-fill {
+  height: 100%; border-radius: 999px;
+  background: linear-gradient(90deg, var(--blue), var(--blue-light));
+  transition: width 0.25s;
+}
+.ranking-media-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--navy);
+  color: white;
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  font-family: 'Roboto', sans-serif;
+}
+.ranking-media-num {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+.ranking-media-label {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.55);
+}
+.ranking-nota-input {
+  width: 100%;
+  padding: 9px 13px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-family: 'DM Sans', sans-serif;
+  resize: none;
+  min-height: 60px;
+  background: var(--surface-2);
+  color: var(--text);
+  margin-bottom: 14px;
+  transition: all 0.18s;
+  -webkit-appearance: none;
+}
+.ranking-nota-input:focus {
+  outline: none; border-color: var(--blue);
+  background: white; box-shadow: 0 0 0 3px rgba(29,111,232,0.08);
+}
+.ranking-actions {
+  display: flex; gap: 8px; justify-content: flex-end;
+}
+
+/* ─── RENDER DE SCORES EN RESPUESTA ─── */
+.reply-ranking-block {
+  margin: 8px 0 6px;
+  padding: 10px 12px;
+  background: var(--surface-2);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+.reply-ranking-media {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--navy);
+  color: var(--accent);
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 800;
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+}
+.reply-ranking-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.reply-ranking-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 3px 9px;
+  font-size: 0.7rem;
+  color: var(--text-2);
+}
+.reply-ranking-chip b {
+  font-weight: 700;
+  color: var(--navy);
+}
+
+/* ─── BOTÓN RECOMENDAR MÓVIL en reply-box ─── */
+.ranking-open-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  background: var(--navy);
+  color: white;
+  border: none;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: 'Roboto', sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.18s;
+  flex-shrink: 0;
+}
+.ranking-open-btn:hover { background: var(--blue); }
+
 /* Botón editar en respuestas */
 .edit-reply-btn {
   background: none;
@@ -1887,6 +2116,13 @@ border: 1.5px solid var(--blue);
   <span style="font-size:1rem;flex-shrink:0;">📢</span>
   <span id="globalBannerText" style="flex:1;min-width:0;line-height:1.45;"></span>
   <button onclick="ocultarBannerGlobal()" style="background:rgba(255,255,255,0.15);border:none;color:white;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:0.85rem;flex-shrink:0;" title="Cerrar aviso">✕</button>
+</div>
+
+<!-- PANEL ACTUALIZACIONES (visible para todos los usuarios) -->
+<div id="actualizacionesPanel" style="display:none;">
+  <div style="background:var(--surface);border-radius:0;border-bottom:1px solid var(--border);padding:10px 20px;max-width:1060px;margin:0 auto;">
+    <div id="actualizacionesList" style="display:flex;flex-direction:column;gap:6px;"></div>
+  </div>
 </div>
 
 <!-- MAIN -->
@@ -2084,6 +2320,40 @@ border: 1.5px solid var(--blue);
   </div>
 </div>
 
+<!-- MODAL RANKING -->
+<div class="ranking-modal-overlay" id="rankingModalOverlay" style="display:none;" onclick="cerrarModalRanking(event)">
+  <div class="ranking-modal" onclick="event.stopPropagation()">
+    <div class="ranking-modal-handle"></div>
+    <div class="ranking-modal-title">📱 Recomendar móvil con puntuación</div>
+    <div class="ranking-modal-sub">Opcional · Las puntuaciones ayudan a otros usuarios a decidir mejor</div>
+
+    <input class="ranking-movil-input" type="text" id="rankingMovilNombre"
+      placeholder="Nombre del móvil que recomiendas (ej: Redmi Note 14)"
+      autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+
+    <div class="ranking-scores-grid" id="rankingScoresGrid">
+      <!-- Generado por JS -->
+    </div>
+
+    <div class="ranking-media-badge" id="rankingMediaBadge">
+      <div>
+        <div class="ranking-media-label">Valoración media</div>
+        <div class="ranking-media-num" id="rankingMediaNum">—</div>
+      </div>
+      <div style="margin-left:auto;font-size:0.72rem;color:rgba(255,255,255,0.4);">sobre 10</div>
+    </div>
+
+    <textarea class="ranking-nota-input" id="rankingNota"
+      placeholder="Añade un comentario sobre este móvil (opcional)..."
+      rows="2"></textarea>
+
+    <div class="ranking-actions">
+      <button class="btn-cancel" onclick="cerrarModalRanking()">Cancelar</button>
+      <button class="btn-submit" onclick="enviarConRanking()">Enviar recomendación</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ═══════════════════════════════════════════
 // CONFIG
@@ -2116,6 +2386,21 @@ let currentPage = 1;
 const ITEMS_PER_PAGE = 5;
 let quoteActiva = null; // { hiloId, replyId, autor, texto }
 let notifCount = 0;
+let rankingHiloActivo = null; // hiloId al que se está recomendando
+
+// ─── CATEGORÍAS DE RANKING ───────────────────
+const RANKING_CATS = [
+  { key: 'sc_pantalla',    label: 'Pantalla',     icon: '📱' },
+  { key: 'sc_potencia',    label: 'Potencia',     icon: '🚀' },
+  { key: 'sc_camara',      label: 'Cámara',       icon: '📷' },
+  { key: 'sc_video',       label: 'Vídeo',        icon: '🎥' },
+  { key: 'sc_bateria',     label: 'Batería',      icon: '🔋' },
+  { key: 'sc_carga',       label: 'Carga',        icon: '⚡' },
+  { key: 'sc_sonido',      label: 'Sonido',       icon: '🔊' },
+  { key: 'sc_bloatware',   label: 'Bloatware',    icon: '🧹' },
+  { key: 'sc_actualizaciones', label: 'Updates',  icon: '🔄' },
+  { key: 'sc_software',    label: 'Software',     icon: '💻' },
+];
 
 // ═══════════════════════════════════════════
 // LISTA MAESTRA DE MODELOS CONOCIDOS
@@ -2944,9 +3229,10 @@ function onLogin() {
   cargarStats();
   cargarNotificaciones();
   actualizarBarraRango();
-  if (usuario) mostrarAdminPanel();  // ← AÑADE ESTA CONDICIÓN
+  if (usuario) mostrarAdminPanel();
   renderRangos();
   cargarBannerGlobal();
+  cargarActualizacionesUsuario();
 }
 
 function mostrarUsuario() {
@@ -3111,12 +3397,15 @@ async function renderHilo(h) {
             <button class="quote-clear" onclick="clearCita('${h.id}')">✕</button>
           </div>
           <div class="reply-input-row">
-            <textarea class="reply-input" id="rinput_${h.id}" placeholder="Escribe o usa @nombre"
+            <textarea class="reply-input" id="rinput_${h.id}" placeholder="Escribe tu respuesta o usa @nombre"
               rows="1"
               onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarRespuesta('${h.id}')}"
               oninput="autoResize(this)"
             ></textarea>
             <button class="send-btn" id="sendbtn_${h.id}" onclick="enviarRespuesta('${h.id}')">➤</button>
+          </div>
+          <div style="display:flex;justify-content:flex-end;margin-top:8px;">
+            <button class="ranking-open-btn" onclick="abrirModalRanking('${h.id}')">📱 Recomendar móvil</button>
           </div>
         </div>` : ''}
     </div>
@@ -3132,14 +3421,15 @@ function toggleReplies(hiloId) {
   const rep = document.getElementById(`replies_${hiloId}`);
   const box = document.getElementById(`replybox_${hiloId}`);
   const isOpen = rep.style.display !== 'none';
-  
+
   if (isOpen) {
     rep.style.display = 'none';
     if (box) box.style.display = 'none';
   } else {
     rep.style.display = 'block';
     if (box) box.style.display = 'block';
-    if (rep.innerHTML === '') cargarRespuestas(hiloId);
+    // Siempre recargar al abrir para tener datos frescos
+    cargarRespuestas(hiloId);
   }
 }
 
@@ -3250,6 +3540,30 @@ async function cargarRespuestas(hiloId) {
 
     const contenidoHtml = renderizarContenido(r.contenido);
 
+    // Limpiar el texto de la línea [Scores: ...] del contenido visible
+    const contenidoLimpio = renderizarContenido(
+      (r.contenido || '').replace(/\[Scores:[^\]]*\]/g, '').trim()
+    );
+
+    // Renderizar bloque de ranking si tiene scores
+    let rankingHtml = '';
+    if (r.tiene_ranking || r.sc_media != null || RANKING_CATS.some(c => r[c.key] != null)) {
+      const chipsHtml = RANKING_CATS
+        .filter(cat => r[cat.key] != null)
+        .map(cat => `<span class="reply-ranking-chip">${cat.icon} ${cat.label} <b>${r[cat.key]}/10</b></span>`)
+        .join('');
+      const mediaVal = r.sc_media != null ? r.sc_media
+        : (() => {
+            const vs = RANKING_CATS.map(c => r[c.key]).filter(v => v != null);
+            return vs.length ? (vs.reduce((a,b)=>a+b,0)/vs.length).toFixed(1) : null;
+          })();
+      rankingHtml = `
+        <div class="reply-ranking-block">
+          ${mediaVal != null ? `<div class="reply-ranking-media">⭐ Media <span style="margin-left:4px;font-size:1.05rem;">${mediaVal}/10</span></div>` : ''}
+          ${chipsHtml ? `<div class="reply-ranking-chips">${chipsHtml}</div>` : ''}
+        </div>`;
+    }
+
     html += `
       <div class="${topClass}" id="reply_${r.id}">
         <div class="reply-header">
@@ -3263,7 +3577,8 @@ async function cargarRespuestas(hiloId) {
         <div class="reply-content">
           ${citaHtml}
           ${modelos.length > 0 ? `<div class="reply-model-title">${modelos.map(m => `<span class="phone-title-tag">📱 ${formatearModelo(m)}</span>`).join('')}</div>` : ''}
-          ${contenidoHtml}
+          ${rankingHtml}
+          ${contenidoLimpio}
         </div>
         <div class="reply-actions">
           <button class="vote-btn ${miVoto === 'util' ? 'voted-util' : ''}" onclick="votar('${r.id}','util','${hiloId}','${r.nickname}')">👍 ${votosUtil}</button>
@@ -3302,6 +3617,141 @@ async function cargarRespuestas(hiloId) {
   });
 }
 
+// ═══════════════════════════════════════════
+// MODAL RANKING — RECOMENDAR MÓVIL
+// ═══════════════════════════════════════════
+function abrirModalRanking(hiloId) {
+  if (!usuario) { mostrarModalAuth(); return; }
+  rankingHiloActivo = hiloId;
+
+  // Generar grid de categorías
+  const grid = document.getElementById('rankingScoresGrid');
+  grid.innerHTML = RANKING_CATS.map(cat => `
+    <div class="ranking-score-item">
+      <div class="ranking-score-label">${cat.icon} ${cat.label}</div>
+      <div class="ranking-score-row">
+        <input class="ranking-score-input" type="number" id="rk_${cat.key}"
+          min="0" max="10" step="1" value=""
+          placeholder="—"
+          oninput="actualizarMediaRanking()" />
+        <div class="ranking-score-bar">
+          <div class="ranking-score-bar-fill" id="bar_${cat.key}" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('rankingMovilNombre').value = '';
+  document.getElementById('rankingNota').value = '';
+  document.getElementById('rankingMediaNum').textContent = '—';
+  document.getElementById('rankingModalOverlay').style.display = 'flex';
+  document.getElementById('rankingMovilNombre').focus();
+}
+
+function cerrarModalRanking(e) {
+  if (e && e.target !== document.getElementById('rankingModalOverlay')) return;
+  document.getElementById('rankingModalOverlay').style.display = 'none';
+  rankingHiloActivo = null;
+}
+
+function actualizarMediaRanking() {
+  const vals = RANKING_CATS.map(cat => {
+    const v = parseFloat(document.getElementById(`rk_${cat.key}`)?.value);
+    // Actualizar barra
+    const bar = document.getElementById(`bar_${cat.key}`);
+    if (bar) bar.style.width = (!isNaN(v) && v >= 0 && v <= 10) ? `${v * 10}%` : '0%';
+    return (!isNaN(v) && v >= 0 && v <= 10) ? v : null;
+  }).filter(v => v !== null);
+
+  const mediaEl = document.getElementById('rankingMediaNum');
+  if (vals.length === 0) { mediaEl.textContent = '—'; return; }
+  const media = (vals.reduce((a,b) => a+b, 0) / vals.length).toFixed(1);
+  mediaEl.textContent = media;
+}
+
+async function enviarConRanking() {
+  if (!rankingHiloActivo || !usuario) return;
+
+  const nombre = document.getElementById('rankingMovilNombre').value.trim();
+  if (!nombre) { toast('❌ Escribe el nombre del móvil'); document.getElementById('rankingMovilNombre').focus(); return; }
+
+  // Recoger scores
+  const scores = {};
+  let algunScore = false;
+  const vals = [];
+  for (const cat of RANKING_CATS) {
+    const raw = document.getElementById(`rk_${cat.key}`)?.value;
+    const v = parseFloat(raw);
+    if (!isNaN(v) && v >= 0 && v <= 10) {
+      scores[cat.key] = Math.round(v * 10) / 10;
+      vals.push(scores[cat.key]);
+      algunScore = true;
+    } else {
+      scores[cat.key] = null;
+    }
+  }
+
+  const media = vals.length > 0
+    ? Math.round((vals.reduce((a,b) => a+b, 0) / vals.length) * 10) / 10
+    : null;
+
+  const nota = document.getElementById('rankingNota').value.trim();
+
+  // Construir texto legible para el campo contenido
+  const scoreTxt = RANKING_CATS
+    .filter(cat => scores[cat.key] !== null)
+    .map(cat => `${cat.icon} ${cat.label} ${scores[cat.key]}/10`)
+    .join(' · ');
+  const contenido = `${nombre}${nota ? '\n' + nota : ''}${algunScore ? '\n[Scores: ' + scoreTxt + ']' : ''}`;
+
+  const insertData = {
+    hilo_id: rankingHiloActivo,
+    usuario_id: usuario.id,
+    nickname: usuario.nickname,
+    contenido,
+    movil_nombre: nombre,
+    ...scores,
+    sc_media: media,
+    tiene_ranking: true,
+  };
+
+  // Adjuntar cita si existe
+  if (quoteActiva && quoteActiva.hiloId === rankingHiloActivo) {
+    insertData.cita_id = quoteActiva.replyId;
+  }
+
+  const { error } = await db.from('respuestas').insert(insertData);
+  if (error) {
+    // Si las columnas de score no existen aún, insertamos sin ellas
+    const fallback = {
+      hilo_id: rankingHiloActivo,
+      usuario_id: usuario.id,
+      nickname: usuario.nickname,
+      contenido,
+    };
+    if (quoteActiva && quoteActiva.hiloId === rankingHiloActivo) fallback.cita_id = quoteActiva.replyId;
+    const { error: err2 } = await db.from('respuestas').insert(fallback);
+    if (err2) { toast('⚠️ Error: ' + err2.message); return; }
+  }
+
+  // +2 pts
+  const newPts = (usuario.puntos || 0) + 2;
+  await db.from('usuarios').update({ puntos: newPts }).eq('id', usuario.id);
+  usuario.puntos = newPts;
+  mostrarUsuario();
+  actualizarBarraRango();
+
+  document.getElementById('rankingModalOverlay').style.display = 'none';
+  clearCita(rankingHiloActivo);
+  toast('✅ Recomendación enviada · +2 pts');
+
+  // Refrescar respuestas
+  const rep = document.getElementById(`replies_${rankingHiloActivo}`);
+  if (rep) rep.style.display = 'block';
+  await cargarRespuestas(rankingHiloActivo);
+  rankingHiloActivo = null;
+}
+
 async function enviarRespuesta(hiloId) {
   if (!usuario) { mostrarModalAuth(); return; }
   const input = document.getElementById(`rinput_${hiloId}`);
@@ -3310,6 +3760,7 @@ async function enviarRespuesta(hiloId) {
 
   const sendBtn = document.getElementById(`sendbtn_${hiloId}`);
   sendBtn.classList.add('sending');
+  sendBtn.disabled = true;
 
   const insertData = {
     hilo_id: hiloId,
@@ -3318,34 +3769,41 @@ async function enviarRespuesta(hiloId) {
     contenido: texto,
   };
 
-  // Adjuntar cita si existe
   if (quoteActiva && quoteActiva.hiloId === hiloId) {
     insertData.cita_id = quoteActiva.replyId;
   }
 
   const { error } = await db.from('respuestas').insert(insertData);
-  if (error) { toast('⚠️ Error al enviar: ' + error.message); sendBtn.classList.remove('sending'); return; }
+  if (error) {
+    toast('⚠️ Error al enviar: ' + error.message);
+    sendBtn.classList.remove('sending');
+    sendBtn.disabled = false;
+    return;
+  }
 
-  // +2 pts por responder
+  // +2 pts
   const newPts = (usuario.puntos || 0) + 2;
   await db.from('usuarios').update({ puntos: newPts }).eq('id', usuario.id);
   usuario.puntos = newPts;
   mostrarUsuario();
   actualizarBarraRango();
 
-  // Limpiar el input y cita
+  // Limpiar input
   input.value = '';
   input.style.height = 'auto';
   clearCita(hiloId);
   sendBtn.classList.remove('sending');
+  sendBtn.disabled = false;
   toast('✅ Respuesta enviada · +2 pts');
 
-  // Auto-refrescar SOLO la sección de respuestas de este hilo (sin recargar página)
-  await cargarRespuestas(hiloId);
-
-  // Asegurarse de que la sección esté visible
+  // Refrescar respuestas y mantener sección visible
   const rep = document.getElementById(`replies_${hiloId}`);
+  const box = document.getElementById(`replybox_${hiloId}`);
   if (rep) rep.style.display = 'block';
+  if (box) box.style.display = 'block';
+  await cargarRespuestas(hiloId);
+  // Asegurar que el box siga visible tras el refresh (innerHTML no lo toca)
+  if (box) box.style.display = 'block';
 }
 
 async function votar(respuestaId, tipo, hiloId, nickAsesor) {
@@ -3869,15 +4327,60 @@ function adminActualizarRango(rangoId) {
 // ── ACTUALIZACIONES (CHANGELOG) ───────────────
 const ACTUALIZACIONES_KEY = 'admin_actualizaciones';
 
-function getActualizaciones() {
+async function getActualizaciones() {
+  // Intentar leer de Supabase primero
+  try {
+    const { data } = await db.from('configuracion').select('valor').eq('clave', 'actualizaciones').single();
+    if (data?.valor) return JSON.parse(data.valor);
+  } catch(e) {}
+  // Fallback a localStorage
   try { return JSON.parse(localStorage.getItem(ACTUALIZACIONES_KEY) || '[]'); } catch(e) { return []; }
 }
-function saveActualizaciones(list) {
-  try { localStorage.setItem(ACTUALIZACIONES_KEY, JSON.stringify(list)); } catch(e) {}
+
+async function saveActualizaciones(list) {
+  const json = JSON.stringify(list);
+  try {
+    await db.from('configuracion').upsert({ clave: 'actualizaciones', valor: json });
+  } catch(e) {
+    try { localStorage.setItem(ACTUALIZACIONES_KEY, json); } catch(e2) {}
+  }
+  // Refrescar el panel de usuarios también
+  mostrarActualizacionesUsuario(list);
 }
 
-function renderAdminActualizaciones() {
-  const items = getActualizaciones();
+function mostrarActualizacionesUsuario(items) {
+  const panel = document.getElementById('actualizacionesPanel');
+  const list = document.getElementById('actualizacionesList');
+  if (!panel || !list) return;
+  if (!items || items.length === 0) { panel.style.display = 'none'; return; }
+
+  const iconMap = { x: '❌', v: '✅', '?': '🔍' };
+  const colorMap = {
+    x:   { bg: '#FEF2F2', border: '#FECACA', text: '#991B1B' },
+    v:   { bg: '#ECFDF5', border: '#A7F3D0', text: '#065F46' },
+    '?': { bg: '#FFFBEB', border: '#FDE68A', text: '#92400E' },
+  };
+
+  list.innerHTML = items.map(it => {
+    const c = colorMap[it.tipo] || colorMap['?'];
+    const ic = iconMap[it.tipo] || '🔍';
+    return `<div style="display:flex;align-items:flex-start;gap:8px;padding:7px 10px;background:${c.bg};border-radius:10px;border:1px solid ${c.border};">
+      <span style="font-size:1rem;flex-shrink:0;">${ic}</span>
+      <span style="font-size:0.8rem;color:${c.text};line-height:1.45;flex:1;">${it.texto}</span>
+      ${it.fecha ? `<span style="font-size:0.65rem;color:var(--text-3);white-space:nowrap;align-self:center;">${it.fecha}</span>` : ''}
+    </div>`;
+  }).join('');
+
+  panel.style.display = 'block';
+}
+
+async function cargarActualizacionesUsuario() {
+  const items = await getActualizaciones();
+  mostrarActualizacionesUsuario(items);
+}
+
+async function renderAdminActualizaciones() {
+  const items = await getActualizaciones();
   const iconOpts = [
     { val: 'x', label: '❌ No funciona' },
     { val: 'v', label: '✅ Solucionado' },
@@ -3890,21 +4393,25 @@ function renderAdminActualizaciones() {
         const icon = it.tipo === 'x' ? '❌' : it.tipo === 'v' ? '✅' : '🔍';
         const color = it.tipo === 'x' ? '#991B1B' : it.tipo === 'v' ? '#065F46' : '#92400E';
         const bg = it.tipo === 'x' ? '#FEF2F2' : it.tipo === 'v' ? '#ECFDF5' : '#FFFBEB';
+        const border = it.tipo === 'x' ? '#FECACA' : it.tipo === 'v' ? '#A7F3D0' : '#FDE68A';
         return `
-          <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:${bg};border-radius:12px;margin-bottom:8px;border:1px solid ${it.tipo === 'x' ? '#FECACA' : it.tipo === 'v' ? '#A7F3D0' : '#FDE68A'};">
+          <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:${bg};border-radius:12px;margin-bottom:8px;border:1px solid ${border};">
             <span style="font-size:1.2rem;flex-shrink:0;margin-top:1px;">${icon}</span>
-            <span style="flex:1;font-size:0.82rem;color:${color};line-height:1.5;">${it.texto}</span>
+            <div style="flex:1;">
+              <span style="font-size:0.82rem;color:${color};line-height:1.5;">${it.texto}</span>
+              ${it.fecha ? `<div style="font-size:0.65rem;color:var(--text-3);margin-top:2px;">${it.fecha}</div>` : ''}
+            </div>
             <button onclick="eliminarActualizacion(${i})" style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:0.85rem;padding:2px 4px;border-radius:6px;flex-shrink:0;" title="Eliminar">✕</button>
           </div>`;
       }).join('');
 
   document.getElementById('adminContent').innerHTML = `
-    <div class="admin-section-title">📋 Registro de cambios</div>
+    <div class="admin-section-title">📋 Registro de cambios <span style="font-size:0.7rem;font-weight:400;color:var(--text-3);">Visible para todos los usuarios bajo la barra de rango</span></div>
     <div style="margin-bottom:16px;background:var(--surface-2);border:1px solid var(--border);border-radius:14px;padding:16px;">
       <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
         ${iconOpts.map(o => `
           <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:0.78rem;padding:6px 12px;border-radius:999px;border:1.5px solid var(--border);background:var(--surface);">
-            <input type="radio" name="tipo_act" value="${o.val}" ${o.val === 'x' ? 'checked' : ''} style="margin:0;" />
+            <input type="radio" name="tipo_act" value="${o.val}" ${o.val === 'v' ? 'checked' : ''} style="margin:0;" />
             ${o.label}
           </label>`).join('')}
       </div>
@@ -3915,21 +4422,21 @@ function renderAdminActualizaciones() {
   `;
 }
 
-function añadirActualizacion() {
-  const tipo = document.querySelector('input[name="tipo_act"]:checked')?.value || 'x';
+async function añadirActualizacion() {
+  const tipo = document.querySelector('input[name="tipo_act"]:checked')?.value || 'v';
   const texto = document.getElementById('actTexto')?.value?.trim();
   if (!texto) { toast('❌ Escribe el texto del cambio'); return; }
-  const list = getActualizaciones();
+  const list = await getActualizaciones();
   list.unshift({ tipo, texto, fecha: new Date().toLocaleDateString('es-ES') });
-  saveActualizaciones(list);
-  toast('✅ Entrada añadida');
+  await saveActualizaciones(list);
+  toast('✅ Entrada añadida y visible para usuarios');
   renderAdminActualizaciones();
 }
 
-function eliminarActualizacion(idx) {
-  const list = getActualizaciones();
+async function eliminarActualizacion(idx) {
+  const list = await getActualizaciones();
   list.splice(idx, 1);
-  saveActualizaciones(list);
+  await saveActualizaciones(list);
   renderAdminActualizaciones();
 }
 
