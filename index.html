@@ -580,6 +580,44 @@ border: 1.5px solid var(--blue);
   color: var(--blue);
 }
 
+/* ─── UNREAD REPLIES BADGE ─── */
+.unread-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-red);
+  color: white;
+  font-size: 0.6rem;
+  font-weight: 700;
+  min-width: 17px;
+  height: 17px;
+  border-radius: 999px;
+  padding: 0 4px;
+  margin-left: 2px;
+  animation: popIn 0.2s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+@keyframes popIn {
+  from { transform: scale(0.4); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+/* ─── PARTICIPATED ICON ─── */
+.participated-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.63rem;
+  color: var(--blue);
+  font-weight: 600;
+  background: var(--blue-pale);
+  border-radius: 999px;
+  padding: 2px 7px 2px 5px;
+  margin-left: 6px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
 .resolve-btn {
   background: none;
   border: 1.5px solid var(--green);
@@ -3335,6 +3373,24 @@ async function renderHilo(h) {
   const nombre = cap(h.nickname);
   const puedeCerrar = usuario && (usuario.nickname === h.nickname || esAdmin());
 
+  // ── Unread replies logic ──
+  const seenKey = `seen_replies_${h.id}_${usuario?.nickname || 'anon'}`;
+  let seenCount = 0;
+  try { seenCount = parseInt(localStorage.getItem(seenKey) || '0', 10); } catch(e) {}
+  const unreadCount = Math.max(0, replyCount - seenCount);
+
+  // ── Participation check ──
+  let haParticipado = false;
+  if (usuario && h.nickname !== usuario.nickname) {
+    try {
+      const { count } = await db.from('respuestas')
+        .select('id', { count: 'exact', head: true })
+        .eq('hilo_id', h.id)
+        .eq('nickname', usuario.nickname);
+      haParticipado = (count || 0) > 0;
+    } catch(e) {}
+  }
+
   const specs = [
     { label: 'Presupuesto', val: h.presupuesto, icon: '💰' },
     { label: 'Móvil actual', val: h.movil_actual, icon: '📱' },
@@ -3357,7 +3413,7 @@ async function renderHilo(h) {
           <div class="author-block">
             <div class="author-name">${nombre} ${getBadgeHtml(pts, rol)}</div>
           </div>
-          <div class="thread-time">${timeAgo(h.created_at)}</div>
+          <div class="thread-time">${timeAgo(h.created_at)}${haParticipado ? '<span class="participated-icon">✏️ Participé</span>' : ''}</div>
         </div>
 
         ${specs.length ? `
@@ -3381,7 +3437,7 @@ async function renderHilo(h) {
 
       <div class="thread-bar">
         <button class="reply-count-btn" onclick="toggleReplies('${h.id}')">
-          💬 <span class="cnt" id="rcnt_${h.id}">${replyCount}</span> respuestas
+          💬 <span class="cnt" id="rcnt_${h.id}">${replyCount}</span> respuestas${unreadCount > 0 ? `<span class="unread-badge" id="unread_${h.id}">${unreadCount} nuevo${unreadCount > 1 ? 's' : ''}</span>` : `<span class="unread-badge" id="unread_${h.id}" style="display:none"></span>`}
         </button>
         ${h.resuelto
           ? '<div class="resolved-pill">✅ Resuelta</div>'
@@ -3430,7 +3486,22 @@ function toggleReplies(hiloId) {
     if (box) box.style.display = 'block';
     // Siempre recargar al abrir para tener datos frescos
     cargarRespuestas(hiloId);
+    // Marcar como leídas
+    marcarRespuestasVistas(hiloId);
   }
+}
+
+function marcarRespuestasVistas(hiloId) {
+  // Lee el conteo actual del DOM y lo guarda como visto
+  const cntEl = document.getElementById(`rcnt_${hiloId}`);
+  const badgeEl = document.getElementById(`unread_${hiloId}`);
+  const count = cntEl ? parseInt(cntEl.textContent || '0', 10) : 0;
+  try {
+    const seenKey = `seen_replies_${hiloId}_${usuario?.nickname || 'anon'}`;
+    localStorage.setItem(seenKey, String(count));
+  } catch(e) {}
+  // Ocultar el badge
+  if (badgeEl) badgeEl.style.display = 'none';
 }
 
 async function marcarResuelta(hiloId) {
@@ -3843,6 +3914,9 @@ async function enviarConRanking() {
   const cntElRk = document.getElementById(`rcnt_${hiloIdRanking}`);
   if (cntElRk) cntElRk.textContent = parseInt(cntElRk.textContent || '0') + 1;
 
+  // Marcar como visto
+  marcarRespuestasVistas(hiloIdRanking);
+
   // En background: puntos y refresh completo con datos reales de BD
   db.from('usuarios').update({ puntos: (usuario.puntos || 0) + 2 }).eq('id', usuario.id).then(() => {
     usuario.puntos = (usuario.puntos || 0) + 2;
@@ -3923,6 +3997,9 @@ async function enviarRespuesta(hiloId) {
   // Actualizar contador
   const cntEl = document.getElementById(`rcnt_${hiloId}`);
   if (cntEl) cntEl.textContent = parseInt(cntEl.textContent || '0') + 1;
+
+  // Marcar como visto (el usuario acaba de enviar y está leyendo el hilo)
+  marcarRespuestasVistas(hiloId);
 
   // En background: puntos y refresh completo (sin await = no bloquea)
   db.from('usuarios').update({ puntos: (usuario.puntos || 0) + 2 }).eq('id', usuario.id).then(() => {
