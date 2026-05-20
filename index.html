@@ -1829,7 +1829,174 @@ border: 1.5px solid var(--blue);
   }
 }
 
-/* ─── INDICADOR DE EDITADO ─── */
+/* ─── BADGE SIN RESPONDER ─── */
+.badge-sin-responder {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: #FEF3C7;
+  color: #B45309;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin-left: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.3px;
+}
+
+/* ─── NOTICIAS ─── */
+.noticia-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  margin-bottom: 20px;
+  transition: box-shadow 0.2s, transform 0.15s;
+  cursor: pointer;
+}
+.noticia-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+
+/* Modal de noticia */
+.noticia-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15,27,45,0.75);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 700;
+  padding: 0;
+}
+@media (min-width: 600px) {
+  .noticia-modal-overlay { align-items: center; padding: 20px; }
+}
+.noticia-modal {
+  background: white;
+  border-radius: 24px 24px 0 0;
+  width: 100%;
+  max-width: 680px;
+  max-height: 92vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  animation: slideUpModal 0.28s cubic-bezier(.22,1,.36,1);
+}
+@media (min-width: 600px) { .noticia-modal { border-radius: 24px; } }
+.noticia-modal-img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  display: block;
+}
+.noticia-modal-body {
+  padding: 20px 22px 32px;
+}
+.noticia-modal-titulo {
+  font-family: "Roboto", sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--navy);
+  line-height: 1.3;
+  margin: 10px 0 10px;
+}
+.noticia-modal-resumen {
+  font-size: 0.88rem;
+  color: var(--text-2);
+  line-height: 1.7;
+  margin-bottom: 14px;
+}
+.noticia-modal-meta {
+  font-size: 0.68rem;
+  color: var(--text-3);
+}
+.noticia-modal-close {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface-3);
+  border: none;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: "Roboto", sans-serif;
+  cursor: pointer;
+  margin: 0 22px 20px;
+  color: var(--text-2);
+}
+
+.noticia-img-wrap {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--surface-3);
+  cursor: pointer;
+}
+.noticia-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s;
+}
+.noticia-card:hover .noticia-img { transform: scale(1.03); }
+
+.noticia-body {
+  padding: 18px 20px 16px;
+}
+@media (max-width: 600px) { .noticia-body { padding: 14px 16px 12px; } }
+
+.noticia-cat {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 999px;
+  margin-bottom: 8px;
+}
+.noticia-cat-rumor { background: #FEF3C7; color: #B45309; }
+.noticia-cat-oficial { background: #D1FAE5; color: #065F46; }
+.noticia-cat-analisis { background: #EDE9FE; color: #6D28D9; }
+.noticia-cat-comunidad { background: #DBEAFE; color: #1E40AF; }
+
+.noticia-titulo {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--navy);
+  line-height: 1.3;
+  margin-bottom: 8px;
+}
+@media (max-width: 600px) { .noticia-titulo { font-size: 0.95rem; } }
+
+.noticia-resumen {
+  font-size: 0.83rem;
+  color: var(--text-2);
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.noticia-meta {
+  font-size: 0.68rem;
+  color: var(--text-3);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.noticias-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-3);
+  font-size: 0.85rem;
+}
+
+
 .editado-badge {
   display: inline-flex;
   align-items: center;
@@ -2192,6 +2359,7 @@ border: 1.5px solid var(--blue);
         <button class="admin-tab" onclick="adminSetTab('stats', this)">📊 Estadísticas</button>
         <button class="admin-tab" onclick="adminSetTab('config', this)">⚙️ Config</button>
         <button class="admin-tab" onclick="adminSetTab('actualizaciones', this)">📋 Actualizaciones</button>
+        <button class="admin-tab" onclick="adminSetTab('noticias_admin', this)">📰 Noticias</button>
       </div>
       <div id="adminContent"><div class="admin-loading">⏳ Cargando...</div></div>
     </div>
@@ -2202,6 +2370,7 @@ border: 1.5px solid var(--blue);
     <button class="tab active" onclick="setTab('abiertas', this)">📋 Consultas abiertas</button>
     <button class="tab" onclick="setTab('mis_abiertas', this)">📝 Mis consultas</button>
     <button class="tab" onclick="setTab('mis_cerradas', this)">✅ Cerradas</button>
+    <button class="tab" onclick="setTab('noticias', this)">📰 Noticias</button>
     <button class="new-btn" onclick="abrirForm()"><span>✏️</span> Nueva consulta</button>
   </div>
 
@@ -2253,6 +2422,9 @@ border: 1.5px solid var(--blue);
   <!-- Threads -->
   <div id="hilosList"></div>
   <div id="pagination" class="pagination"></div>
+
+  <!-- Noticias -->
+  <div id="noticiasList" style="display:none;"></div>
 </div>
 
 <!-- BOTÓN ADMIN FLOTANTE (solo dastan) -->
@@ -3312,7 +3484,24 @@ function setTab(tab, el) {
   currentPage = 1;
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
-  cargarHilos();
+
+  const hilosEl = document.getElementById('hilosList');
+  const pagEl = document.getElementById('pagination');
+  const noticiasEl = document.getElementById('noticiasList');
+  const formEl = document.getElementById('newForm');
+
+  if (tab === 'noticias') {
+    hilosEl.style.display = 'none';
+    pagEl.style.display = 'none';
+    noticiasEl.style.display = 'block';
+    if (formEl) formEl.style.display = 'none';
+    cargarNoticias();
+  } else {
+    hilosEl.style.display = 'block';
+    pagEl.style.display = 'block';
+    noticiasEl.style.display = 'none';
+    cargarHilos();
+  }
 }
 
 // ═══════════════════════════════════════════
@@ -3437,7 +3626,7 @@ async function renderHilo(h) {
 
       <div class="thread-bar">
         <button class="reply-count-btn" onclick="toggleReplies('${h.id}')">
-          💬 <span class="cnt" id="rcnt_${h.id}">${replyCount}</span> respuestas${unreadCount > 0 ? `<span class="unread-badge" id="unread_${h.id}">${unreadCount} nuevo${unreadCount > 1 ? 's' : ''}</span>` : `<span class="unread-badge" id="unread_${h.id}" style="display:none"></span>`}
+          💬 <span class="cnt" id="rcnt_${h.id}">${replyCount}</span> respuestas${replyCount === 0 ? '<span class="badge-sin-responder">⚡ Sin responder</span>' : ''}${unreadCount > 0 ? `<span class="unread-badge" id="unread_${h.id}">${unreadCount} nuevo${unreadCount > 1 ? 's' : ''}</span>` : `<span class="unread-badge" id="unread_${h.id}" style="display:none"></span>`}
         </button>
         ${h.resuelto
           ? '<div class="resolved-pill">✅ Resuelta</div>'
@@ -4162,6 +4351,7 @@ async function cargarAdminContent() {
   else if (adminTabActual === 'stats') await renderAdminStats();
   else if (adminTabActual === 'config') renderAdminConfig();
   else if (adminTabActual === 'actualizaciones') renderAdminActualizaciones();
+  else if (adminTabActual === 'noticias_admin') await renderAdminNoticias();
 }
 
 function adminPaginarHtml(total) {
@@ -4690,6 +4880,152 @@ async function cargarBannerGlobal() {
     try { msg = localStorage.getItem('banner_global') || ''; } catch(e) {}
   }
   if (msg) mostrarBannerGlobal(msg);
+}
+
+// ═══════════════════════════════════════════
+// NOTICIAS
+// ═══════════════════════════════════════════
+
+const NOTICIA_CAT_LABELS = {
+  rumor: 'Rumor',
+  oficial: 'Oficial',
+  analisis: 'Análisis',
+  comunidad: 'Comunidad'
+};
+
+function abrirNoticia(idx) {
+  const n = noticiasCache[idx];
+  if (!n) return;
+  const catClass = 'noticia-cat-' + (n.categoria || 'comunidad');
+  const catLabel = NOTICIA_CAT_LABELS[n.categoria] || n.categoria;
+  const imgHtml = n.imagen
+    ? `<img class="noticia-modal-img" src="${n.imagen}" alt="${n.titulo}" onerror="this.style.display='none'" />`
+    : '';
+  const html = `
+    <div class="noticia-modal-overlay" id="noticiaModal" onclick="cerrarNoticia(event)">
+      <div class="noticia-modal" onclick="event.stopPropagation()">
+        ${imgHtml}
+        <div class="noticia-modal-body">
+          <span class="noticia-cat ${catClass}">${catLabel}</span>
+          <div class="noticia-modal-titulo">${n.titulo}</div>
+          <div class="noticia-modal-resumen">${n.resumen}</div>
+          <div class="noticia-modal-meta">📅 ${n.fecha || ''}</div>
+        </div>
+        <button class="noticia-modal-close" onclick="cerrarNoticia()">✕ Cerrar</button>
+      </div>
+    </div>
+  `;
+  const old = document.getElementById('noticiaModal');
+  if (old) old.remove();
+  document.body.insertAdjacentHTML('beforeend', html);
+}
+
+function cerrarNoticia(e) {
+  if (e && e.target !== document.getElementById('noticiaModal')) return;
+  const m = document.getElementById('noticiaModal');
+  if (m) m.remove();
+}
+
+let noticiasCache = [];
+
+async function cargarNoticias() {
+  const el = document.getElementById('noticiasList');
+  if (!el) return;
+  el.innerHTML = '<div class="noticias-empty">⏳ Cargando noticias...</div>';
+
+  const { data, error } = await db.from('noticias').select('*').order('created_at', { ascending: false });
+  if (error || !data || data.length === 0) {
+    el.innerHTML = '<div class="noticias-empty">📭 Aún no hay noticias publicadas. Vuelve pronto.</div>';
+    return;
+  }
+
+  noticiasCache = data;
+  el.innerHTML = data.map((n, idx) => {
+    const catClass = 'noticia-cat-' + (n.categoria || 'comunidad');
+    const catLabel = NOTICIA_CAT_LABELS[n.categoria] || n.categoria;
+    const imgHtml = n.imagen_url
+      ? `<div class="noticia-img-wrap"><img class="noticia-img" src="${n.imagen_url}" alt="${n.titulo}" onerror="this.parentElement.style.display='none'" /></div>`
+      : '';
+    return `
+      <div class="noticia-card" onclick="abrirNoticia(${idx})">
+        ${imgHtml}
+        <div class="noticia-body">
+          <span class="noticia-cat ${catClass}">${catLabel}</span>
+          <div class="noticia-titulo">${n.titulo}</div>
+          <div class="noticia-resumen">${n.resumen}</div>
+          <div class="noticia-meta">📅 ${n.fecha || ''}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ── ADMIN: NOTICIAS ──────────────────────────
+async function renderAdminNoticias() {
+  const { data: noticias } = await db.from('noticias').select('*').order('created_at', { ascending: false });
+
+  let listaHtml = '';
+  if (noticias && noticias.length > 0) {
+    listaHtml = noticias.map(n => `
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);">
+        ${n.imagen_url ? `<img src="${n.imagen_url}" style="width:64px;height:40px;object-fit:cover;border-radius:8px;flex-shrink:0;" onerror="this.style.display='none'" />` : '<div style="width:64px;height:40px;background:var(--surface-3);border-radius:8px;flex-shrink:0;"></div>'}
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:0.8rem;font-weight:600;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${n.titulo}</div>
+          <div style="font-size:0.68rem;color:var(--text-3);">${n.categoria || ''} · ${n.fecha || ''}</div>
+        </div>
+        <button class="admin-btn admin-btn-red" onclick="adminBorrarNoticia('${n.id}')">🗑</button>
+      </div>
+    `).join('');
+  } else {
+    listaHtml = '<div style="font-size:0.8rem;color:var(--text-3);padding:12px 0;">No hay noticias todavía.</div>';
+  }
+
+  document.getElementById('adminContent').innerHTML = `
+    <div style="margin-bottom:18px;">
+      <div style="font-size:0.78rem;font-weight:700;color:var(--navy);margin-bottom:12px;">📰 Publicar nueva noticia</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <input id="an_titulo" type="text" placeholder="Titular de la noticia" style="padding:10px 12px;border:1.5px solid var(--border);border-radius:12px;font-size:0.85rem;font-family:'DM Sans',sans-serif;background:var(--surface-2);color:var(--text);" />
+        <textarea id="an_resumen" rows="3" placeholder="Resumen (el texto que se ve en la tarjeta)" style="padding:10px 12px;border:1.5px solid var(--border);border-radius:12px;font-size:0.85rem;font-family:'DM Sans',sans-serif;background:var(--surface-2);color:var(--text);resize:vertical;"></textarea>
+        <input id="an_imagen" type="text" placeholder="URL de la imagen (postimage o imgbb — enlace directo)" style="padding:10px 12px;border:1.5px solid var(--border);border-radius:12px;font-size:0.85rem;font-family:'DM Sans',sans-serif;background:var(--surface-2);color:var(--text);" />
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <select id="an_categoria" style="padding:10px 12px;border:1.5px solid var(--border);border-radius:12px;font-size:0.85rem;font-family:'DM Sans',sans-serif;background:var(--surface-2);color:var(--text);">
+            <option value="rumor">Rumor</option>
+            <option value="oficial">Oficial</option>
+            <option value="analisis">Análisis</option>
+            <option value="comunidad">Comunidad</option>
+          </select>
+          <input id="an_fecha" type="text" placeholder="Fecha (ej: Mayo 2025)" style="padding:10px 12px;border:1.5px solid var(--border);border-radius:12px;font-size:0.85rem;font-family:'DM Sans',sans-serif;background:var(--surface-2);color:var(--text);" />
+        </div>
+        <button class="admin-btn admin-btn-blue" onclick="adminPublicarNoticia()" style="align-self:flex-end;padding:10px 24px;">📰 Publicar noticia</button>
+      </div>
+    </div>
+    <div style="font-size:0.78rem;font-weight:700;color:var(--navy);margin-bottom:8px;">Noticias publicadas</div>
+    <div id="adminNoticiasList">${listaHtml}</div>
+  `;
+}
+
+async function adminPublicarNoticia() {
+  const titulo = document.getElementById('an_titulo').value.trim();
+  const resumen = document.getElementById('an_resumen').value.trim();
+  const imagen_url = document.getElementById('an_imagen').value.trim();
+  const categoria = document.getElementById('an_categoria').value;
+  const fecha = document.getElementById('an_fecha').value.trim();
+
+  if (!titulo || !resumen) { toast('❌ Título y resumen son obligatorios'); return; }
+
+  toast('⏳ Publicando...');
+  const { error } = await db.from('noticias').insert({ titulo, resumen, imagen_url, categoria, fecha });
+  if (error) { toast('❌ Error: ' + error.message); return; }
+  toast('✅ Noticia publicada');
+  await renderAdminNoticias();
+}
+
+async function adminBorrarNoticia(id) {
+  if (!confirm('¿Borrar esta noticia?')) return;
+  const { error } = await db.from('noticias').delete().eq('id', id);
+  if (error) { toast('❌ Error: ' + error.message); return; }
+  toast('🗑 Noticia borrada');
+  await renderAdminNoticias();
 }
 
 async function adminBackup(formato) {
