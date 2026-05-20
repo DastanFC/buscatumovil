@@ -3538,12 +3538,23 @@ async function cargarRespuestas(hiloId) {
       }
     }
 
-    const contenidoHtml = renderizarContenido(r.contenido);
+    // Limpiar el texto: quitar [Scores:...] y, si es ranking, quitar también la primera línea (nombre del móvil)
+    let textoLimpio = (r.contenido || '').replace(/\[Scores:[^\]]*\]/g, '').trim();
+    // Si la respuesta viene del formulario de ranking, la primera línea es el nombre del móvil → la eliminamos del texto visible
+    if ((r.tiene_ranking || r.movil_nombre) && textoLimpio) {
+      const lineas = textoLimpio.split('\n');
+      // Si la primera línea coincide con el movil_nombre, quitarla
+      if (r.movil_nombre && lineas[0].trim().toLowerCase() === r.movil_nombre.trim().toLowerCase()) {
+        lineas.shift();
+      }
+      textoLimpio = lineas.join('\n').trim();
+    }
+    const contenidoLimpio = renderizarContenido(textoLimpio);
 
-    // Limpiar el texto de la línea [Scores: ...] del contenido visible
-    const contenidoLimpio = renderizarContenido(
-      (r.contenido || '').replace(/\[Scores:[^\]]*\]/g, '').trim()
-    );
+    // Modelos a mostrar: si hay movil_nombre (ranking), usarlo directamente; si no, extraer del texto
+    const modelosAMostrar = (r.movil_nombre)
+      ? [r.movil_nombre]
+      : modelos;
 
     // Renderizar bloque de ranking si tiene scores
     let rankingHtml = '';
@@ -3576,7 +3587,7 @@ async function cargarRespuestas(hiloId) {
         </div>
         <div class="reply-content">
           ${citaHtml}
-          ${modelos.length > 0 ? `<div class="reply-model-title">${modelos.map(m => `<span class="phone-title-tag">📱 ${formatearModelo(m)}</span>`).join('')}</div>` : ''}
+          ${modelosAMostrar.length > 0 ? `<div class="reply-model-title">${modelosAMostrar.map(m => `<span class="phone-title-tag">📱 ${formatearModelo(m)}</span>`).join('')}</div>` : ''}
           ${rankingHtml}
           ${contenidoLimpio}
         </div>
@@ -3698,11 +3709,13 @@ async function enviarConRanking() {
   const nota = document.getElementById('rankingNota').value.trim();
 
   // Construir texto legible para el campo contenido
+  // Nota: el nombre del móvil se guarda en movil_nombre y se renderiza como tag,
+  // así que NO lo incluimos en el texto plano para evitar duplicados.
   const scoreTxt = RANKING_CATS
     .filter(cat => scores[cat.key] !== null)
     .map(cat => `${cat.icon} ${cat.label} ${scores[cat.key]}/10`)
     .join(' · ');
-  const contenido = `${nombre}${nota ? '\n' + nota : ''}${algunScore ? '\n[Scores: ' + scoreTxt + ']' : ''}`;
+  const contenido = `${nombre}\n${nota ? nota : ''}${algunScore ? '\n[Scores: ' + scoreTxt + ']' : ''}`.trim();
 
   const insertData = {
     hilo_id: rankingHiloActivo,
@@ -3802,7 +3815,8 @@ async function enviarRespuesta(hiloId) {
   if (rep) rep.style.display = 'block';
   if (box) box.style.display = 'block';
   await cargarRespuestas(hiloId);
-  // Asegurar que el box siga visible tras el refresh (innerHTML no lo toca)
+  // Asegurar que el box y replies sigan visibles tras el refresh (innerHTML no los toca)
+  if (rep) rep.style.display = 'block';
   if (box) box.style.display = 'block';
 }
 
