@@ -4670,7 +4670,8 @@ async function adminBorrarBanner() {
 function mostrarBannerGlobal(msg) {
   let banner = document.getElementById('globalBanner');
   if (!banner) return;
-  banner.querySelector('#globalBannerText').textContent = msg;
+  const escaped = msg.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  banner.querySelector('#globalBannerText').innerHTML = escaped.replace(/\n/g, '<br>');
   banner.style.display = 'flex';
 }
 
