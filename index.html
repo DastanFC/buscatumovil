@@ -3466,14 +3466,17 @@ function parsearScoresDesdeContenido(contenido) {
   return scores;
 }
 
-async function cargarRespuestas(hiloId) {
+async function cargarRespuestas(hiloId, forceVisible = false) {
   const container = document.getElementById(`replies_${hiloId}`);
   if (!container) return;
 
-  // Siempre mostrar el contenedor y el replybox al recargar
-  container.style.display = 'block';
   const box = document.getElementById(`replybox_${hiloId}`);
-  if (box) box.style.display = 'block';
+
+  // Solo forzar visibilidad cuando se llama tras enviar (no en la carga inicial de la lista)
+  if (forceVisible) {
+    container.style.display = 'block';
+    if (box) box.style.display = 'block';
+  }
 
   const { data: respuestas, error: errResp } = await db.from('respuestas')
     .select('*')
@@ -3668,8 +3671,8 @@ async function cargarRespuestas(hiloId) {
     });
   });
 
-  // Mantener replybox visible tras recargar el HTML
-  if (box) box.style.display = 'block';
+  // Si forceVisible: asegurarse de que box sigue visible después de reescribir innerHTML
+  if (forceVisible && box) box.style.display = 'block';
 }
 
 // MODAL RANKING — RECOMENDAR MÓVIL
@@ -3802,9 +3805,7 @@ async function enviarConRanking() {
   toast('✅ Recomendación enviada · +2 pts');
 
   // Refrescar respuestas
-  const rep = document.getElementById(`replies_${rankingHiloActivo}`);
-  if (rep) rep.style.display = 'block';
-  await cargarRespuestas(rankingHiloActivo);
+  await cargarRespuestas(rankingHiloActivo, true);
   rankingHiloActivo = null;
 }
 
@@ -3857,10 +3858,7 @@ async function enviarRespuesta(hiloId) {
   const box = document.getElementById(`replybox_${hiloId}`);
   if (rep) rep.style.display = 'block';
   if (box) box.style.display = 'block';
-  await cargarRespuestas(hiloId);
-  // Asegurar que el box y replies sigan visibles tras el refresh (innerHTML no los toca)
-  if (rep) rep.style.display = 'block';
-  if (box) box.style.display = 'block';
+  await cargarRespuestas(hiloId, true);
 }
 
 async function votar(respuestaId, tipo, hiloId, nickAsesor) {
