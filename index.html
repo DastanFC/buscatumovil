@@ -767,6 +767,20 @@ border: 1.5px solid var(--blue);
 }
 .cite-btn:hover { background: var(--surface-3); color: var(--text-2); }
 
+.delete-reply-btn {
+  background: none;
+  border: none;
+  font-size: 0.68rem;
+  color: #EF4444;
+  cursor: pointer;
+  padding: 3px 6px;
+  border-radius: 6px;
+  font-family: 'Roboto', sans-serif;
+  transition: all 0.18s;
+  opacity: 0.6;
+}
+.delete-reply-btn:hover { background: #FEF2F2; opacity: 1; }
+
 /* Empty replies */
 .replies-empty {
   padding: 18px 0;
@@ -3038,9 +3052,12 @@ async function cargarRespuestas(hiloId) {
     // INDICADOR DE EDITADO
     const editadoBadge = r.editado ? `<span class="editado-badge"><i>✏️</i> Editado ${r.editado_en ? timeAgo(r.editado_en) : ''}</span>` : '';
     
-    // BOTÓN EDITAR (solo para el autor)
-    const editBtn = (usuario && usuario.nickname === r.nickname) ? 
+    // BOTONES EDITAR Y BORRAR (solo para el autor)
+    const esAutor = usuario && usuario.nickname === r.nickname;
+    const editBtn = esAutor ?
       `<button class="edit-reply-btn" data-edit-id="${r.id}" data-edit-contenido="${r.contenido.replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/\n/g,' ')}">✏️ Editar</button>` : '';
+    const deleteBtn = esAutor ?
+      `<button class="delete-reply-btn" data-delete-id="${r.id}" data-delete-hilo="${hiloId}">🗑 Borrar</button>` : '';
 
     let citaHtml = '';
     if (r.cita_id) {
@@ -3076,6 +3093,7 @@ async function cargarRespuestas(hiloId) {
           <button class="vote-btn ${miVoto === 'noutil' ? 'voted-noutil' : ''}" onclick="votar('${r.id}','noutil','${hiloId}','${r.nickname}')">👎 ${r.votos_noutil || 0}</button>
           <button class="cite-btn" data-hilo="${hiloId}" data-reply="${r.id}" data-autor="${r.nickname}" data-contenido="${r.contenido.replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/\n/g,' ')}">↩ Citar</button>
           ${editBtn}
+          ${deleteBtn}
         </div>
       </div>
     `;
@@ -3098,6 +3116,11 @@ async function cargarRespuestas(hiloId) {
       const id = btn.dataset.editId;
       const contenido = btn.dataset.editContenido;
       abrirModalEditarRespuesta(id, contenido);
+    });
+  });
+  container.querySelectorAll('.delete-reply-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      borrarRespuestaPropia(btn.dataset.deleteId, btn.dataset.deleteHilo);
     });
   });
 }
@@ -3587,6 +3610,24 @@ async function adminEliminarHilo(hiloId) {
   cargarAdminContent();
   cargarHilos();
   cargarStats();
+}
+
+async function borrarRespuestaPropia(respId, hiloId) {
+  if (!confirm('¿Borrar tu respuesta? Esta acción no se puede deshacer.')) return;
+  if (!usuario) return;
+  // Verificar que la respuesta pertenece al usuario antes de borrar
+  const { data: r } = await db.from('respuestas').select('nickname').eq('id', respId).single();
+  if (!r || r.nickname !== usuario.nickname) {
+    toast('❌ No puedes borrar esta respuesta');
+    return;
+  }
+  await db.from('votos').delete().eq('respuesta_id', respId);
+  await db.from('respuestas').delete().eq('id', respId);
+  // Restar 2 puntos al usuario por borrar su respuesta
+  const { data: u } = await db.from('usuarios').select('puntos').eq('nickname', usuario.nickname).single();
+  if (u) await db.from('usuarios').update({ puntos: Math.max(0, (u.puntos || 0) - 2) }).eq('nickname', usuario.nickname);
+  toast('🗑 Respuesta eliminada');
+  cargarRespuestas(hiloId);
 }
 
 async function adminEliminarRespuesta(respId, hiloId) {
