@@ -331,6 +331,27 @@ body {
 }
 .new-btn:hover { background: var(--blue-light); transform: translateY(-1px); }
 
+.inicio-btn {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.18s;
+  color: var(--text-2);
+}
+.inicio-btn:hover { border-color: var(--blue); transform: translateY(-1px); }
+
+@media (max-width: 600px) {
+  .new-btn { display: none; }
+}
+
 /* ─── FORM CARD ─── */
 .form-card {
   background: var(--surface);
@@ -2270,6 +2291,37 @@ border: 1.5px solid var(--blue);
 }
 
 </style>
+<!-- Quill editor -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.snow.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.min.js"></script>
+<style>
+/* Quill overrides para que encaje con el diseño */
+.ql-toolbar {
+  border-radius: 12px 12px 0 0 !important;
+  border-color: var(--border) !important;
+  background: var(--surface-2) !important;
+  font-family: 'DM Sans', sans-serif !important;
+}
+.ql-container {
+  border-radius: 0 0 12px 12px !important;
+  border-color: var(--border) !important;
+  background: var(--surface-2) !important;
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 0.85rem !important;
+  color: var(--text) !important;
+  min-height: 120px;
+}
+.ql-editor { min-height: 120px; }
+.ql-editor.ql-blank::before { color: var(--text-3) !important; font-style: normal !important; }
+/* Contenido renderizado en la noticia */
+.noticia-modal-resumen img { max-width: 100%; border-radius: 10px; margin: 8px 0; }
+.noticia-modal-resumen a { color: var(--primary, #2563eb); text-decoration: underline; }
+.noticia-modal-resumen strong { font-weight: 700; }
+.noticia-modal-resumen em { font-style: italic; }
+.noticia-modal-resumen u { text-decoration: underline; }
+.noticia-modal-resumen ul, .noticia-modal-resumen ol { padding-left: 20px; margin: 6px 0; }
+.noticia-resumen img { display: none; } /* en tarjeta no mostramos imágenes del cuerpo */
+</style>
 </head>
 <body>
 
@@ -2367,7 +2419,8 @@ border: 1.5px solid var(--blue);
 
   <!-- Tabs -->
   <div class="tabs-bar">
-    <button class="tab active" onclick="setTab('abiertas', this)">📋 Consultas abiertas</button>
+    <button class="inicio-btn" onclick="location.reload()" title="Volver al inicio">🏠</button>
+    <button class="tab active" onclick="setTab('abiertas', this)">📋 Abiertas</button>
     <button class="tab" onclick="setTab('mis_abiertas', this)">📝 Mis consultas</button>
     <button class="tab" onclick="setTab('mis_cerradas', this)">✅ Cerradas</button>
     <button class="tab" onclick="setTab('noticias', this)">📰 Noticias</button>
@@ -4908,7 +4961,7 @@ function abrirNoticia(idx) {
         <div class="noticia-modal-body">
           <span class="noticia-cat ${catClass}">${catLabel}</span>
           <div class="noticia-modal-titulo">${n.titulo}</div>
-          <div class="noticia-modal-resumen">${n.resumen}</div>
+          <div class="noticia-modal-resumen ql-editor" style="padding:0;">${n.resumen || ''}</div>
           <div class="noticia-modal-meta">📅 ${n.fecha || ''}</div>
         </div>
         <button class="noticia-modal-close" onclick="cerrarNoticia()">✕ Cerrar</button>
@@ -4952,7 +5005,7 @@ async function cargarNoticias() {
         <div class="noticia-body">
           <span class="noticia-cat ${catClass}">${catLabel}</span>
           <div class="noticia-titulo">${n.titulo}</div>
-          <div class="noticia-resumen">${n.resumen}</div>
+          <div class="noticia-resumen">${n.resumen ? n.resumen.replace(/<[^>]*>/g, ' ').substring(0, 180).trim() + (n.resumen.replace(/<[^>]*>/g, '').length > 180 ? '…' : '') : ''}</div>
           <div class="noticia-meta">📅 ${n.fecha || ''}</div>
         </div>
       </div>
@@ -4961,6 +5014,9 @@ async function cargarNoticias() {
 }
 
 // ── ADMIN: NOTICIAS ──────────────────────────
+let quillEditor = null;
+let editandoNoticiaId = null;
+
 async function renderAdminNoticias() {
   const { data: noticias } = await db.from('noticias').select('*').order('created_at', { ascending: false });
 
@@ -4973,6 +5029,7 @@ async function renderAdminNoticias() {
           <div style="font-size:0.8rem;font-weight:600;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${n.titulo}</div>
           <div style="font-size:0.68rem;color:var(--text-3);">${n.categoria || ''} · ${n.fecha || ''}</div>
         </div>
+        <button class="admin-btn admin-btn-blue" onclick="adminEditarNoticia('${n.id}')">✏️</button>
         <button class="admin-btn admin-btn-red" onclick="adminBorrarNoticia('${n.id}')">🗑</button>
       </div>
     `).join('');
@@ -4982,11 +5039,10 @@ async function renderAdminNoticias() {
 
   document.getElementById('adminContent').innerHTML = `
     <div style="margin-bottom:18px;">
-      <div style="font-size:0.78rem;font-weight:700;color:var(--navy);margin-bottom:12px;">📰 Publicar nueva noticia</div>
+      <div style="font-size:0.78rem;font-weight:700;color:var(--navy);margin-bottom:12px;" id="an_form_titulo">📰 Publicar nueva noticia</div>
       <div style="display:flex;flex-direction:column;gap:10px;">
         <input id="an_titulo" type="text" placeholder="Titular de la noticia" style="padding:10px 12px;border:1.5px solid var(--border);border-radius:12px;font-size:0.85rem;font-family:'DM Sans',sans-serif;background:var(--surface-2);color:var(--text);" />
-        <textarea id="an_resumen" rows="3" placeholder="Resumen (el texto que se ve en la tarjeta)" style="padding:10px 12px;border:1.5px solid var(--border);border-radius:12px;font-size:0.85rem;font-family:'DM Sans',sans-serif;background:var(--surface-2);color:var(--text);resize:vertical;"></textarea>
-        <input id="an_imagen" type="text" placeholder="URL de la imagen (postimage o imgbb — enlace directo)" style="padding:10px 12px;border:1.5px solid var(--border);border-radius:12px;font-size:0.85rem;font-family:'DM Sans',sans-serif;background:var(--surface-2);color:var(--text);" />
+        <input id="an_imagen" type="text" placeholder="URL portada — debe acabar en .jpg .jpeg .png .webp o .gif" style="padding:10px 12px;border:1.5px solid var(--border);border-radius:12px;font-size:0.85rem;font-family:'DM Sans',sans-serif;background:var(--surface-2);color:var(--text);" />
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
           <select id="an_categoria" style="padding:10px 12px;border:1.5px solid var(--border);border-radius:12px;font-size:0.85rem;font-family:'DM Sans',sans-serif;background:var(--surface-2);color:var(--text);">
             <option value="rumor">Rumor</option>
@@ -4996,27 +5052,92 @@ async function renderAdminNoticias() {
           </select>
           <input id="an_fecha" type="text" placeholder="Fecha (ej: Mayo 2025)" style="padding:10px 12px;border:1.5px solid var(--border);border-radius:12px;font-size:0.85rem;font-family:'DM Sans',sans-serif;background:var(--surface-2);color:var(--text);" />
         </div>
-        <button class="admin-btn admin-btn-blue" onclick="adminPublicarNoticia()" style="align-self:flex-end;padding:10px 24px;">📰 Publicar noticia</button>
+        <div style="font-size:0.72rem;color:var(--text-3);margin-bottom:-4px;">Cuerpo de la noticia</div>
+        <div id="an_quill_editor"></div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:4px;">
+          <button class="admin-btn admin-btn-gray" id="an_cancelar_btn" onclick="adminCancelarEdicion()" style="display:none;">Cancelar</button>
+          <button class="admin-btn admin-btn-blue" id="an_publicar_btn" onclick="adminPublicarNoticia()" style="padding:10px 24px;">📰 Publicar noticia</button>
+        </div>
       </div>
     </div>
     <div style="font-size:0.78rem;font-weight:700;color:var(--navy);margin-bottom:8px;">Noticias publicadas</div>
     <div id="adminNoticiasList">${listaHtml}</div>
   `;
+
+  // Inicializar Quill
+  editandoNoticiaId = null;
+  quillEditor = new Quill('#an_quill_editor', {
+    theme: 'snow',
+    placeholder: 'Escribe aquí el cuerpo completo de la noticia...',
+    modules: {
+      toolbar: [
+        ['bold', 'italic', 'underline'],
+        [{ 'align': [] }],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+        ['link', 'image'],
+        ['clean']
+      ]
+    }
+  });
+}
+
+async function adminEditarNoticia(id) {
+  const { data: n } = await db.from('noticias').select('*').eq('id', id).single();
+  if (!n) return;
+
+  editandoNoticiaId = id;
+  document.getElementById('an_form_titulo').textContent = '✏️ Editando noticia';
+  document.getElementById('an_titulo').value = n.titulo || '';
+  document.getElementById('an_imagen').value = n.imagen_url || '';
+  document.getElementById('an_categoria').value = n.categoria || 'rumor';
+  document.getElementById('an_fecha').value = n.fecha || '';
+  if (quillEditor) quillEditor.root.innerHTML = n.resumen || '';
+  document.getElementById('an_publicar_btn').textContent = '💾 Guardar cambios';
+  document.getElementById('an_cancelar_btn').style.display = 'inline-flex';
+  document.getElementById('an_form_titulo').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function adminCancelarEdicion() {
+  editandoNoticiaId = null;
+  document.getElementById('an_form_titulo').textContent = '📰 Publicar nueva noticia';
+  document.getElementById('an_titulo').value = '';
+  document.getElementById('an_imagen').value = '';
+  document.getElementById('an_fecha').value = '';
+  if (quillEditor) quillEditor.setText('');
+  document.getElementById('an_publicar_btn').textContent = '📰 Publicar noticia';
+  document.getElementById('an_cancelar_btn').style.display = 'none';
 }
 
 async function adminPublicarNoticia() {
   const titulo = document.getElementById('an_titulo').value.trim();
-  const resumen = document.getElementById('an_resumen').value.trim();
   const imagen_url = document.getElementById('an_imagen').value.trim();
   const categoria = document.getElementById('an_categoria').value;
   const fecha = document.getElementById('an_fecha').value.trim();
+  const resumen = quillEditor ? quillEditor.root.innerHTML : '';
+  const textoPlano = quillEditor ? quillEditor.getText().trim() : '';
 
-  if (!titulo || !resumen) { toast('❌ Título y resumen son obligatorios'); return; }
+  if (!titulo || !textoPlano) { toast('❌ Título y cuerpo son obligatorios'); return; }
 
-  toast('⏳ Publicando...');
-  const { error } = await db.from('noticias').insert({ titulo, resumen, imagen_url, categoria, fecha });
+  // Validar extensión de imagen si se pone
+  if (imagen_url) {
+    const urlLimpia = imagen_url.split('?')[0].toLowerCase();
+    if (!/\.(jpg|jpeg|png|webp|gif)$/.test(urlLimpia)) {
+      toast('⚠️ La URL de la imagen debe acabar en .jpg .jpeg .png .webp o .gif');
+      return;
+    }
+  }
+
+  toast('⏳ Guardando...');
+
+  let error;
+  if (editandoNoticiaId) {
+    ({ error } = await db.from('noticias').update({ titulo, resumen, imagen_url, categoria, fecha }).eq('id', editandoNoticiaId));
+  } else {
+    ({ error } = await db.from('noticias').insert({ titulo, resumen, imagen_url, categoria, fecha }));
+  }
+
   if (error) { toast('❌ Error: ' + error.message); return; }
-  toast('✅ Noticia publicada');
+  toast(editandoNoticiaId ? '✅ Noticia actualizada' : '✅ Noticia publicada');
   await renderAdminNoticias();
 }
 
