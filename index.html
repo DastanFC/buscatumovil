@@ -1181,7 +1181,7 @@ body {
   padding: 12px 14px;
   border: 1.5px solid var(--border);
   border-radius: var(--radius-sm);
-  font-size: 16px; /* 16px mínimo para evitar zoom en iOS */
+  font-size: 16px;
   font-family: 'Roboto', sans-serif;
   margin-bottom: 12px;
   transition: all 0.18s;
@@ -1470,7 +1470,7 @@ body {
 
 /* Respuesta más votada destacada */
 .reply-item.top-voted {
-  background: linear-gradient(135deg, rgba(255, 215, 0, 0.08) 0%, rgba(218, 165, 32, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.08) 0%, rgba(218, 165, 68, 0.05) 100%);
   border-left: 4px solid #FFD700;
   border-radius: 12px;
   margin: 8px 0;
@@ -2308,6 +2308,118 @@ body {
 .noticia-modal-resumen u { text-decoration: underline; }
 .noticia-modal-resumen ul, .noticia-modal-resumen ol { padding-left: 20px; margin: 6px 0; }
 .noticia-resumen img { display: none; } /* en tarjeta no mostramos imágenes del cuerpo */
+
+/* ─── TOP MÓVILES SECTION ─── */
+.top-moviles-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    transition: all 0.2s;
+}
+.top-moviles-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+.top-moviles-title {
+    font-family: 'Roboto', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--navy);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.top-moviles-toggle {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--text-3);
+    transition: transform 0.2s;
+    padding: 0 8px;
+}
+.top-moviles-content {
+    transition: all 0.3s ease;
+}
+.top-moviles-content.collapsed {
+    display: none;
+}
+.top-moviles-filter {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+.top-moviles-filter .form-field {
+    flex: 1;
+    min-width: 150px;
+    margin-bottom: 0;
+}
+.top-moviles-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.top-moviles-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface-2);
+    border-radius: 14px;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+}
+.top-moviles-item:hover {
+    transform: translateX(4px);
+    border-color: var(--blue);
+}
+.top-moviles-rank {
+    font-size: 28px;
+    min-width: 50px;
+    text-align: center;
+}
+.top-moviles-info {
+    flex: 1;
+    padding: 0 12px;
+}
+.top-moviles-name {
+    font-weight: 800;
+    font-size: 1rem;
+    color: var(--navy);
+}
+.top-moviles-stats {
+    font-size: 0.7rem;
+    color: var(--text-3);
+    margin-top: 4px;
+}
+.top-moviles-score {
+    text-align: right;
+}
+.top-moviles-score-value {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--accent);
+}
+.top-moviles-score-label {
+    font-size: 0.65rem;
+    color: var(--text-3);
+}
+.top-moviles-footer {
+    margin-top: 12px;
+    font-size: 0.7rem;
+    color: var(--text-3);
+    text-align: center;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+}
 </style>
 </head>
 <body>
@@ -2382,6 +2494,33 @@ body {
     <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;margin-bottom:4px;">Sistema de rangos</div>
     <div style="font-size:0.75rem;color:var(--text-3);margin-bottom:0;">Ganas 2 pts por responder · 3 pts cuando votan útil tu respuesta · 1 pt por nueva consulta</div>
     <div class="ranks-grid" id="ranksGrid"></div>
+  </div>
+
+  <!-- NUEVA SECCIÓN: TOP MÓVILES DEL MOMENTO -->
+  <div id="topMovilesSection" class="top-moviles-card">
+    <div class="top-moviles-header" onclick="toggleTopMoviles()">
+      <div class="top-moviles-title">
+        <span>🏆</span> Top Móviles del Momento
+      </div>
+      <button class="top-moviles-toggle" id="topToggleBtn">▾</button>
+    </div>
+    <div id="topMovilesContent" class="top-moviles-content">
+      <div class="top-moviles-filter">
+        <div class="form-field">
+          <label>💰 Filtrar por presupuesto (opcional)</label>
+          <input type="number" id="topPresupuestoFiltro" placeholder="Ej: 400" value="" step="50">
+        </div>
+        <div>
+          <button class="btn-submit" onclick="cargarTopMoviles()" style="margin-top: 22px;">🔍 Actualizar TOP</button>
+        </div>
+      </div>
+      <div id="topMovilesList" class="top-moviles-list">
+        <div class="loading">⏳ Cargando ranking...</div>
+      </div>
+      <div class="top-moviles-footer">
+        * Basado en recomendaciones más votadas (👍) y recientes de la comunidad
+      </div>
+    </div>
   </div>
 
   <!-- PANEL ADMIN (solo visible para dastan) -->
@@ -2680,6 +2819,7 @@ let rankingHiloActivo = null; // hiloId al que se está recomendando
 let quillEditorNoticia = null; // Editor Quill para noticias
 let noticiasPagina = 1;
 const NOTICIAS_POR_PAGINA = 5;
+let topMovilesVisible = true;
 
 // ─── CATEGORÍAS DE RANKING ───────────────────
 const RANKING_CATS = [
@@ -2973,7 +3113,7 @@ function extraerModelos(texto) {
 
   for (const modelo of MODELOS_CONOCIDOS) {
     for (const variante of modelo.variantes) {
-      const regex = new RegExp(`(?:^|[\\s,.;:!?()])${variante.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?:$|[\\s,.;:!?()])`, 'i');
+      const regex = new RegExp(`(?:^|[\\s,.;:!?()])${variante.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')}(?:$|[\\s,.;:!?()])`, 'i');
       if (regex.test(lower)) {
         encontrados.add(modelo.patron);
         break;
@@ -3527,6 +3667,9 @@ function onLogin() {
   renderRangos();
   cargarBannerGlobal();
   cargarActualizacionesUsuario();
+  
+  // Cargar TOP de móviles al iniciar sesión
+  cargarTopMoviles();
   
   // Mostrar botones de admin si corresponde
   if (usuario && usuario.nickname === 'dastan') {
@@ -4204,9 +4347,12 @@ async function enviarConRanking() {
     usuario.puntos = (usuario.puntos || 0) + 2;
     mostrarUsuario();
     actualizarBarraRango();
+    cargarTopMoviles();
   });
   rankingHiloActivo = null;
   setTimeout(() => cargarRespuestas(hiloIdRanking, true), 1000);
+  // Actualizar TOP de móviles después de enviar una recomendación
+  setTimeout(() => cargarTopMoviles(), 1500);
 }
 
 async function enviarRespuesta(hiloId) {
@@ -4288,8 +4434,11 @@ async function enviarRespuesta(hiloId) {
     usuario.puntos = (usuario.puntos || 0) + 2;
     mostrarUsuario();
     actualizarBarraRango();
+    cargarTopMoviles();
   });
   setTimeout(() => cargarRespuestas(hiloId, true), 800);
+  // Actualizar TOP
+  setTimeout(() => cargarTopMoviles(), 1500);
 }
 
 async function votar(respuestaId, tipo, hiloId, nickAsesor) {
@@ -4309,6 +4458,8 @@ async function votar(respuestaId, tipo, hiloId, nickAsesor) {
   }
 
   cargarRespuestas(hiloId);
+  // Actualizar TOP después de votar
+  setTimeout(() => cargarTopMoviles(), 1000);
 }
 
 // ═══════════════════════════════════════════
@@ -4731,11 +4882,11 @@ async function renderAdminUsuarios() {
       <td>
         <div class="admin-nick">${cap(u.nickname)}</div>
         ${u.palabra_clave ? `<div style="font-size:0.65rem;color:var(--text-3);">🔑 Palabra: <b>${u.palabra_clave}</b></div>` : `<div style="font-size:0.65rem;color:var(--accent);">⚠️ Sin palabra clave</div>`}
-      </td>
+       </td>
       <td>
         <input class="admin-inline-input" type="number" value="${u.puntos||0}" id="pts_${u.nickname}" />
         <button class="admin-btn admin-btn-blue" onclick="adminAjustarPuntos('${u.nickname}')">✔</button>
-      </td>
+       </td>
       <td>${badge}</td>
       <td><div class="admin-actions-row">
         ${u.nickname !== ADMIN_NICK ? `
@@ -4751,7 +4902,7 @@ async function renderAdminUsuarios() {
       </div></td>
     </tr>`;
   }
-  html += `</tbody></table>${adminPaginarHtml(users.length)}`;
+  html += `</tbody><tr>${adminPaginarHtml(users.length)}`;
   document.getElementById('adminContent').innerHTML = html;
 }
 
@@ -5026,6 +5177,7 @@ async function confirmarBorradoRespuesta(respId, hiloId) {
   if (u) await db.from('usuarios').update({ puntos: Math.max(0, (u.puntos || 0) - 2) }).eq('nickname', usuario.nickname);
   toast('🗑 Respuesta eliminada');
   cargarRespuestas(hiloId);
+  cargarTopMoviles();
 }
 
 async function adminEliminarRespuesta(respId, hiloId) {
@@ -5035,6 +5187,7 @@ async function adminEliminarRespuesta(respId, hiloId) {
   toast('🗑 Respuesta eliminada');
   cargarAdminContent();
   cargarRespuestas(hiloId);
+  cargarTopMoviles();
 }
 
 async function adminVotoExtra(respId, nickAsesor) {
@@ -5044,6 +5197,7 @@ async function adminVotoExtra(respId, nickAsesor) {
   if (u) await db.from('usuarios').update({ puntos: (u.puntos || 0) + 3 }).eq('nickname', nickAsesor);
   toast(`⭐ Voto útil añadido a ${cap(nickAsesor)}`);
   cargarAdminContent();
+  cargarTopMoviles();
 }
 
 function adminActualizarRango(rangoId) {
@@ -5257,6 +5411,169 @@ async function adminBackup(formato) {
 }
 
 // ═══════════════════════════════════════════
+// TOP MÓVILES - Función principal
+// ═══════════════════════════════════════════
+
+async function cargarTopMoviles() {
+  const listContainer = document.getElementById('topMovilesList');
+  if (!listContainer) return;
+  
+  listContainer.innerHTML = '<div class="loading">⏳ Analizando recomendaciones de la comunidad...</div>';
+  
+  // Obtener filtro de presupuesto
+  const presupuestoInput = document.getElementById('topPresupuestoFiltro');
+  let presupuestoFiltro = null;
+  if (presupuestoInput && presupuestoInput.value) {
+    presupuestoFiltro = parseInt(presupuestoInput.value);
+    if (isNaN(presupuestoFiltro)) presupuestoFiltro = null;
+  }
+  
+  // Obtener hilos con respuestas
+  const { data: hilosConRespuestas, error: hilosError } = await db
+    .from('hilos')
+    .select(`
+      id,
+      presupuesto,
+      created_at,
+      respuestas ( 
+        id,
+        contenido,
+        movil_nombre,
+        votos_util,
+        created_at,
+        nickname
+      )
+    `)
+    .not('respuestas', 'is', null);
+  
+  if (hilosError || !hilosConRespuestas) {
+    listContainer.innerHTML = '<div class="empty-state">❌ No se pudo cargar el ranking de móviles.</div>';
+    return;
+  }
+  
+  // Procesar cada respuesta
+  const recomendacionesPonderadas = [];
+  
+  for (const hilo of hilosConRespuestas) {
+    // Filtrar por presupuesto si se especifica
+    if (presupuestoFiltro && hilo.presupuesto) {
+      const presupuestoHilo = parseInt(hilo.presupuesto);
+      if (!isNaN(presupuestoHilo) && Math.abs(presupuestoHilo - presupuestoFiltro) > 100) {
+        continue; // Ignorar hilos fuera del rango de presupuesto
+      }
+    }
+    
+    for (const respuesta of hilo.respuestas) {
+      // Extraer nombre del móvil
+      let nombreMovil = respuesta.movil_nombre;
+      if (!nombreMovil) {
+        const modelosExtraidos = extraerModelos(respuesta.contenido);
+        if (modelosExtraidos.length > 0) nombreMovil = modelosExtraidos[0];
+      }
+      if (!nombreMovil) continue;
+      
+      // Calcular puntuación ponderada por antigüedad
+      const votos = respuesta.votos_util || 0;
+      const fechaRespuesta = new Date(respuesta.created_at);
+      const diasAntiguedad = (Date.now() - fechaRespuesta.getTime()) / (1000 * 3600 * 24);
+      
+      let factorActualidad = 1.0;
+      if (diasAntiguedad > 60) factorActualidad = 0.3;
+      else if (diasAntiguedad > 30) factorActualidad = 0.6;
+      else if (diasAntiguedad > 14) factorActualidad = 0.8;
+      else if (diasAntiguedad > 7) factorActualidad = 0.9;
+      
+      const score = votos * factorActualidad;
+      
+      if (score > 0 || votos > 0) {
+        recomendacionesPonderadas.push({
+          nombre: formatearModelo(nombreMovil),
+          score: score,
+          votos: votos,
+          hace: timeAgo(respuesta.created_at),
+          recomendadoPor: respuesta.nickname,
+        });
+      }
+    }
+  }
+  
+  // Agrupar por nombre de móvil y sumar scores
+  const mapaMoviles = new Map();
+  for (const rec of recomendacionesPonderadas) {
+    const nombreLimpio = rec.nombre.toLowerCase();
+    if (mapaMoviles.has(nombreLimpio)) {
+      const existing = mapaMoviles.get(nombreLimpio);
+      existing.score += rec.score;
+      existing.votos += rec.votos;
+    } else {
+      mapaMoviles.set(nombreLimpio, { ...rec });
+    }
+  }
+  
+  // Ordenar y tomar top 5
+  let topMoviles = Array.from(mapaMoviles.values());
+  topMoviles.sort((a, b) => b.score - a.score);
+  topMoviles = topMoviles.slice(0, 5);
+  
+  // Renderizar
+  if (topMoviles.length === 0) {
+    listContainer.innerHTML = '<div class="empty-state">🤷‍♂️ No hay móviles recomendados con suficientes votos.</div>';
+    return;
+  }
+  
+  let rankingHtml = '';
+  for (let i = 0; i < topMoviles.length; i++) {
+    const m = topMoviles[i];
+    const medalla = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '📱';
+    rankingHtml += `
+      <div class="top-moviles-item">
+        <div class="top-moviles-rank">${medalla}</div>
+        <div class="top-moviles-info">
+          <div class="top-moviles-name">${m.nombre}</div>
+          <div class="top-moviles-stats">👍 ${m.votos} votos · ${m.hace}</div>
+        </div>
+        <div class="top-moviles-score">
+          <div class="top-moviles-score-value">${Math.round(m.score * 10) / 10}</div>
+          <div class="top-moviles-score-label">puntos</div>
+        </div>
+      </div>
+    `;
+  }
+  
+  listContainer.innerHTML = rankingHtml;
+}
+
+// Función para ocultar/mostrar el TOP de móviles
+function toggleTopMoviles() {
+  const content = document.getElementById('topMovilesContent');
+  const btn = document.getElementById('topToggleBtn');
+  
+  if (topMovilesVisible) {
+    content.classList.add('collapsed');
+    btn.innerHTML = '▸';
+    topMovilesVisible = false;
+    localStorage.setItem('topMovilesOculto', 'true');
+  } else {
+    content.classList.remove('collapsed');
+    btn.innerHTML = '▾';
+    topMovilesVisible = true;
+    localStorage.setItem('topMovilesOculto', 'false');
+  }
+}
+
+// Restaurar estado del TOP al cargar
+function restaurarEstadoTop() {
+  const oculto = localStorage.getItem('topMovilesOculto');
+  if (oculto === 'true') {
+    topMovilesVisible = false;
+    const content = document.getElementById('topMovilesContent');
+    const btn = document.getElementById('topToggleBtn');
+    if (content) content.classList.add('collapsed');
+    if (btn) btn.innerHTML = '▸';
+  }
+}
+
+// ═══════════════════════════════════════════
 // EDITAR RESPUESTAS
 // ═══════════════════════════════════════════
 function abrirModalEditarRespuesta(respuestaId, contenidoActual) {
@@ -5299,6 +5616,7 @@ async function guardarEdicionRespuesta(respuestaId) {
   cerrarModalEditar();
   const { data: resp } = await db.from('respuestas').select('hilo_id').eq('id', respuestaId).single();
   if (resp) cargarRespuestas(resp.hilo_id);
+  cargarTopMoviles();
 }
 
 // ═══════════════════════════════════════════
@@ -5323,8 +5641,9 @@ function aceptarCookies() {
 // INIT
 // ═══════════════════════════════════════════
 async function init() {
-    cargarBannerGlobal(); // ← AÑADIR ESTA LÍNEA
-    cargarStats();        // (esta ya puede estar o no)
+    cargarBannerGlobal();
+    cargarStats();
+    restaurarEstadoTop();
     const token = leerToken();
     console.log("TOKEN manual en localStorage:", token ? "encontrado" : "no encontrado");
 
@@ -5337,22 +5656,15 @@ async function init() {
             console.log("USER en DB:", JSON.stringify(usuarioDB), "ERR:", errorUsuario);
 
             if (usuarioDB) {
-                // 1. Guardamos los datos en la variable global de tu web para que sepa quién eres
                 usuario = usuarioDB; 
-                
-                // 2. Cerramos el cartel flotante por si acaso se hubiera quedado abierto
                 cerrarModalAuth();
-                
-                // 3. Avisamos a la web para que pinte tu nombre de admin y tus 15 puntos arriba
                 onLogin();
-                
                 return; 
             }
         }
     }
 
-    // Si de verdad no hay sesión ni token, entonces sí mostramos el login
-    mostrarModal();
+    mostrarModalAuth();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
