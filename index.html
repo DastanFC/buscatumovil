@@ -5513,7 +5513,7 @@ async function cargarTopMoviles() {
   // Ordenar y tomar top 5
   let topMoviles = Array.from(mapaMoviles.values());
   topMoviles.sort((a, b) => b.score - a.score);
-  topMoviles = topMoviles.slice(0, 5);
+  topMoviles = topMoviles.slice(0, 3);
   
   // Renderizar
   if (topMoviles.length === 0) {
