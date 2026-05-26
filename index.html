@@ -3119,13 +3119,18 @@ const PATRONES_GENERICOS = [
 // ═══════════════════════════════════════════
 
 function extraerModelos(texto) {
+  // FORZAR ACTUALIZACIÓN - v2
+  console.log("🔧 NUEVA VERSIÓN DE extraerModelos - 2026-01-20");
   if (!texto) return [];
   const lower = texto.toLowerCase();
   const encontrados = new Set();
 
   for (const modelo of MODELOS_CONOCIDOS) {
     for (const variante of modelo.variantes) {
-      const regex = new RegExp(`(?:^|[\\s,.;:!?()])${variante.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')}(?:$|[\\s,.;:!?()])`, 'i');
+      // Usar \b para palabras completas (solo letras/números)
+      // Escapar caracteres especiales
+      const varianteEscapada = variante.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const regex = new RegExp(`\\b${varianteEscapada}\\b`, 'i');
       if (regex.test(lower)) {
         encontrados.add(modelo.patron);
         break;
@@ -3133,7 +3138,7 @@ function extraerModelos(texto) {
     }
   }
 
-  // Fallback: patrones genéricos para modelos no listados
+  // Fallback: patrones genéricos
   if (encontrados.size === 0) {
     for (const patron of PATRONES_GENERICOS) {
       const matches = [...lower.matchAll(patron)];
