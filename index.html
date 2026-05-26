@@ -4003,17 +4003,25 @@ async function cargarRespuestas(hiloId, forceVisible = false) {
     return;
   }
 
-  // Calcular respuesta más votada (incluye las de ranking aunque no tengan modelo detectado)
-  let mejorRespuesta = null;
-  let maxVotos = -1;
-  for (const r of respuestas) {
-    const votosUtil = r.votos_util || 0;
-    const tieneModelo = r.movil_nombre || extraerModelos(r.contenido).length > 0;
-    if (tieneModelo && votosUtil > maxVotos) {
-      maxVotos = votosUtil;
-      mejorRespuesta = r;
-    }
+// Calcular respuesta más votada (incluye las de ranking aunque no tengan modelo detectado)
+let mejorRespuesta = null;
+let maxVotos = -1;
+for (const r of respuestas) {
+  const votosUtil = r.votos_util || 0;
+  
+  // 👇 AÑADE ESTOS CONSOLE.LOG 👇
+  const modelosDetectados = extraerModelos(r.contenido);
+  console.log('🔍 DEBUG - Respuesta de:', r.nickname);
+  console.log('📝 Contenido:', r.contenido);
+  console.log('📱 Modelos detectados:', modelosDetectados);
+  console.log('---');
+  
+  const tieneModelo = r.movil_nombre || modelosDetectados.length > 0;
+  if (tieneModelo && votosUtil > maxVotos) {
+    maxVotos = votosUtil;
+    mejorRespuesta = r;
   }
+}
 
   // Top recommendation
   const topRecEl = document.getElementById(`topRec_${hiloId}`);
@@ -4021,7 +4029,7 @@ async function cargarRespuestas(hiloId, forceVisible = false) {
     if (mejorRespuesta && maxVotos > 0) {
       const modeloTop = mejorRespuesta.movil_nombre
         ? formatearModelo(mejorRespuesta.movil_nombre)
-        : (() => { const m = extraerModelos(mejorRespuesta.contenido); return m.length > 0 ? formatearModelo(m[0]) : 'Respuesta útil'; })();
+        : (() => { const m = extraerModelos(mejorRespuesta.contenido); return m.length > 0 ? m.map(mod => formatearModelo(mod)).join(' / ') : 'Respuesta útil'; })();
       topRecEl.innerHTML = `
         <div class="top-rec">
           <div class="top-rec-icon">🏅</div>
