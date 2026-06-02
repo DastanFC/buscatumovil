@@ -3150,7 +3150,10 @@ function extraerModelos(texto) {
     }
   }
 
-  return Array.from(encontrados);
+  // Eliminar modelos que son subconjunto de otro modelo más específico ya detectado
+  const arr = Array.from(encontrados);
+  const filtrado = arr.filter(m => !arr.some(otro => otro !== m && otro.includes(m)));
+  return filtrado;
 }
 
 // ═══════════════════════════════════════════
