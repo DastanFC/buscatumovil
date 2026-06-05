@@ -607,12 +607,14 @@ body {
   justify-content: space-between;
   background: var(--surface-2);
   border-top: 1px solid var(--border);
-  gap: 10px;
+  gap: 8px;
   border-radius: 0 0 var(--radius) var(--radius);
+  flex-wrap: wrap;
 }
 
 @media (max-width: 600px) {
-  .thread-bar { padding: 10px 16px; }
+  .thread-bar { padding: 10px 16px; gap: 6px; }
+  .resolve-btn { font-size: 11px; padding: 5px 12px; }
 }
 
 .reply-count-btn {
@@ -944,25 +946,26 @@ body {
 
 .reply-input-row {
   display: flex;
+  flex-direction: column;
   gap: 8px;
-  align-items: flex-end;
   width: 100%;
 }
 
 .reply-input {
-  flex: 1;
+  width: 100%;
   padding: 10px 14px;
   border: 1.5px solid var(--border);
-  border-radius: 16px;
-  font-size: 16px;
+  border-radius: 14px;
+  font-size: 15px;
   font-family: 'Roboto', sans-serif;
   resize: none;
   background: var(--surface-2);
   transition: all 0.18s;
   min-height: 44px;
-  max-height: 120px;
-  width: 0;
+  max-height: 160px;
+  box-sizing: border-box;
   -webkit-appearance: none;
+  display: block;
 }
 .reply-input:focus {
   outline: none;
@@ -971,23 +974,48 @@ body {
   box-shadow: 0 0 0 3px rgba(29,111,232,0.07);
 }
 
+.reply-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .send-btn {
+  flex: 1;
   background: var(--navy);
   color: white;
   border: none;
-  width: 40px;
-  height: 40px;
+  height: 38px;
+  border-radius: 999px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.18s;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Roboto', sans-serif;
+}
+.send-btn:hover { background: var(--blue); }
+.send-btn.sending { opacity: 0.6; pointer-events: none; }
+
+.recommend-icon-btn {
+  background: var(--surface-3);
+  border: 1.5px solid var(--border);
+  color: var(--text-2);
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.18s;
+  font-size: 18px;
   flex-shrink: 0;
-  font-size: 16px;
+  transition: all 0.18s;
 }
-.send-btn:hover { background: var(--blue); transform: scale(1.05); }
-.send-btn.sending { opacity: 0.6; pointer-events: none; }
+.recommend-icon-btn:hover { border-color: var(--blue); background: var(--blue-pale); }
 
 /* ─── RANK PROGRESS BAR ─── */
 .rank-progress {
@@ -1509,7 +1537,89 @@ body {
   margin-right: 4px;
 }
 
-/* ─── SPECS NUEVO DISEÑO ─── */
+/* Collapse rangos banner on mobile by default */
+@media (max-width: 600px) {
+  .perks-banner {
+    padding: 12px 16px;
+  }
+  .perks-banner-title { font-size: 13px; }
+  .perks-banner-sub { font-size: 11px; }
+}
+
+/* ─── THREAD CARD NUEVO DISEÑO ─── */
+.thread-header-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.thread-budget-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--navy);
+  color: var(--accent);
+  font-family: 'Roboto', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  padding: 4px 12px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.thread-specs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 6px;
+  margin: 10px 0;
+}
+
+.spec-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 10px;
+}
+
+.spec-row-icon { font-size: 13px; flex-shrink: 0; }
+
+.spec-row-content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.spec-row-label {
+  font-size: 10px;
+  color: var(--text-3);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  white-space: nowrap;
+}
+
+.spec-row-val {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 600px) {
+  .thread-specs-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+  }
+  .spec-row { padding: 5px 8px; }
+  .spec-row-val { font-size: 11px; }
+}
+
 .specs-chips {
   display: flex;
   flex-wrap: wrap;
@@ -1564,14 +1674,20 @@ body {
 }
 
 .extra-note-clean span:last-child {
-  font-size: 18px;
+  font-size: 14px;
   color: var(--text-2);
   line-height: 1.55;
 }
 
 @media (max-width: 600px) {
+  .extra-note-clean span:last-child {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 600px) {
   .spec-chip { padding: 4px 9px 4px 7px; }
-  .spec-chip-label { display: none; }
+  .spec-chip-label { font-size: 10px; }
 }
 
 #adminPanel {
@@ -2603,7 +2719,7 @@ body {
         <div class="form-field"><label>⚡ ¿Carga rápida?</label>
           <select id="f_carga"><option value="No necesaria">No necesaria</option><option value="Sí">Sí</option></select>
         </div>
-        <div class="form-field full"><label>📝 Algo más</label><textarea id="f_extra" placeholder="Cualquier detalle adicional..."></textarea></div>
+        <div class="form-field full"><label>📝 Cuéntanos más <span style="color:var(--accent-red);font-size:10px;font-weight:700;margin-left:4px;">OBLIGATORIO</span></label><textarea id="f_extra" placeholder="Explica con detalle: ¿para qué lo usarás? ¿qué valoras más? ¿alguna condición importante? Cuanto más detallado, mejor consejo recibirás." style="min-height:80px;" required></textarea></div>
       </div>
       <div class="form-actions">
         <button class="btn-cancel" onclick="cerrarForm()">Cancelar</button>
@@ -3852,6 +3968,10 @@ async function renderHilo(h) {
     { label: 'Carga rápida', val: h.carga_rapida, icon: '⚡' },
   ].filter(s => s.val && !['Sin preferencia','No','No mucho','Normal','No necesaria',''].includes(s.val));
 
+  // Extract budget for header badge
+  const budgetSpec = specs.find(s => s.label === 'Presupuesto');
+  const otherSpecs = specs.filter(s => s.label !== 'Presupuesto');
+
   return `
     <div class="thread-card" id="thread_${h.id}">
       <div class="thread-header">
@@ -3863,13 +3983,17 @@ async function renderHilo(h) {
           <div class="thread-time">${timeAgo(h.created_at)}${haParticipado ? '<span class="participated-icon">✏️ Participé</span>' : ''}</div>
         </div>
 
-        ${specs.length ? `
-          <div class="specs-chips">
-            ${specs.map(s => `
-              <div class="spec-chip">
-                <span class="spec-chip-icon">${s.icon}</span>
-                <span class="spec-chip-label">${s.label}</span>
-                <span class="spec-chip-val">${s.val}</span>
+        ${budgetSpec ? `<div class="thread-budget-badge">${budgetSpec.icon} ${budgetSpec.val}</div>` : ''}
+
+        ${otherSpecs.length ? `
+          <div class="thread-specs-grid">
+            ${otherSpecs.map(s => `
+              <div class="spec-row">
+                <span class="spec-row-icon">${s.icon}</span>
+                <div class="spec-row-content">
+                  <span class="spec-row-label">${s.label}</span>
+                  <span class="spec-row-val">${s.val}</span>
+                </div>
               </div>`).join('')}
           </div>` : ''}
 
@@ -3900,15 +4024,15 @@ async function renderHilo(h) {
             <button class="quote-clear" onclick="clearCita('${h.id}')">✕</button>
           </div>
           <div class="reply-input-row">
-            <textarea class="reply-input" id="rinput_${h.id}" placeholder="Escribe tu respuesta o usa @nombre"
-              rows="1"
+            <textarea class="reply-input" id="rinput_${h.id}" placeholder="Escribe tu respuesta..."
+              rows="2"
               onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarRespuesta('${h.id}')}"
               oninput="autoResize(this)"
             ></textarea>
-            <button class="send-btn" id="sendbtn_${h.id}" onclick="enviarRespuesta('${h.id}')">➤</button>
-          </div>
-          <div style="display:flex;justify-content:flex-end;margin-top:8px;">
-            <button class="ranking-open-btn" onclick="abrirModalRanking('${h.id}')">📱 Recomendar móvil</button>
+            <div class="reply-actions-row">
+              <button class="send-btn" id="sendbtn_${h.id}" onclick="enviarRespuesta('${h.id}')">➤ Enviar respuesta</button>
+              <button class="recommend-icon-btn" onclick="abrirModalRanking('${h.id}')" title="Recomendar un móvil">📱</button>
+            </div>
           </div>
         </div>` : ''}
     </div>
@@ -4514,6 +4638,12 @@ function cerrarForm() {
 
 async function publicarHilo() {
   if (!usuario) { mostrarModalAuth(); return; }
+  const extra = document.getElementById('f_extra').value.trim();
+  if (!extra || extra.length < 10) {
+    toast('⚠️ El campo "Cuéntanos más" es obligatorio y debe tener al menos 10 caracteres');
+    document.getElementById('f_extra').focus();
+    return;
+  }
   const { error } = await db.from('hilos').insert({
     usuario_id: usuario.id,
     nickname: usuario.nickname,
@@ -4529,7 +4659,7 @@ async function publicarHilo() {
     camara: document.getElementById('f_camara').value,
     bateria: document.getElementById('f_bateria').value,
     carga_rapida: document.getElementById('f_carga').value,
-    datos_extra: document.getElementById('f_extra').value,
+    datos_extra: extra,
   });
 
   if (!error) {
