@@ -498,7 +498,6 @@ body {
   box-shadow: var(--shadow);
   overflow: hidden;
   transition: box-shadow 0.2s, transform 0.15s;
-  /* Evitar que el contenido se salga del card */
   min-width: 0;
   width: 100%;
   box-sizing: border-box;
@@ -1574,11 +1573,17 @@ body {
 
 .thread-specs-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 6px;
   margin: 10px 0;
   width: 100%;
   min-width: 0;
+}
+
+@media (min-width: 600px) {
+  .thread-specs-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
 }
 
 .spec-row {
@@ -1612,17 +1617,12 @@ body {
   font-size: 12px;
   font-weight: 700;
   color: var(--text);
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 100%;
 }
 
 @media (max-width: 600px) {
-  .thread-specs-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 5px;
-  }
   .spec-row { padding: 5px 8px; }
   .spec-row-val { font-size: 11px; }
 }
@@ -2246,10 +2246,7 @@ body {
 }
 
 @media (max-width: 480px) {
-  .ranking-scores-grid {
-    gap: 8px;
-    margin-bottom: 10px;
-  }
+  .ranking-scores-grid { gap: 8px; margin-bottom: 10px; }
   .ranking-score-label { font-size: 10px; }
   .ranking-score-input { width: 44px; font-size: 13px; padding: 5px 6px; }
   .ranking-media-badge { padding: 8px 12px; margin-bottom: 10px; }
