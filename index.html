@@ -496,8 +496,12 @@ body {
   margin-bottom: 20px;
   border: 1.5px solid var(--blue);
   box-shadow: var(--shadow);
-  overflow: visible;
+  overflow: hidden;
   transition: box-shadow 0.2s, transform 0.15s;
+  /* Evitar que el contenido se salga del card */
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 .thread-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-1px); }
 
@@ -1573,6 +1577,8 @@ body {
   grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
   gap: 6px;
   margin: 10px 0;
+  width: 100%;
+  min-width: 0;
 }
 
 .spec-row {
@@ -1606,9 +1612,10 @@ body {
   font-size: 12px;
   font-weight: 700;
   color: var(--text);
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
 }
 
 @media (max-width: 600px) {
@@ -2167,7 +2174,6 @@ body {
   justify-content: center;
   z-index: 600;
   padding: 0;
-  /* Respetar el área segura del teclado virtual */
   padding-bottom: env(keyboard-inset-height, 0px);
 }
 @media (min-width: 600px) {
@@ -2180,14 +2186,12 @@ body {
   padding-bottom: max(28px, env(safe-area-inset-bottom, 16px));
   width: 100%;
   max-width: 500px;
-  /* En móvil con teclado abierto, limitar altura para no desbordarse */
   max-height: 85vh;
   height: auto;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
   animation: slideUpModal 0.28s cubic-bezier(.22,1,.36,1);
-  /* Evitar que se parta visualmente */
   will-change: transform;
   backface-visibility: hidden;
 }
@@ -2241,7 +2245,6 @@ body {
   margin-bottom: 14px;
 }
 
-/* En móvil con teclado, reducir el gap para que todo quepa */
 @media (max-width: 480px) {
   .ranking-scores-grid {
     gap: 8px;
