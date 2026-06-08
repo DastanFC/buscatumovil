@@ -290,6 +290,11 @@ body {
   max-width: 1060px;
   margin: 0 auto;
   padding: 20px 20px 100px;
+  box-sizing: border-box;
+  width: 100%;
+}
+@media (max-width: 600px) {
+  .container { padding-left: 12px; padding-right: 12px; }
 }
 
 /* ─── TABS ─── */
@@ -497,10 +502,8 @@ body {
   border: 1.5px solid var(--blue);
   box-shadow: var(--shadow);
   overflow: hidden;
-  min-width: 0;
-  width: 100%;
-  box-sizing: border-box;
   transition: box-shadow 0.2s, transform 0.15s;
+  contain: layout;
 }
 .thread-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-1px); }
 
@@ -1577,7 +1580,7 @@ body {
   gap: 6px;
   margin: 10px 0;
   width: 100%;
-  min-width: 0;
+  box-sizing: border-box;
 }
 @media (min-width: 600px) {
   .thread-specs-grid {
@@ -1601,6 +1604,8 @@ body {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  overflow: hidden;
+  width: 100%;
 }
 
 .spec-row-label {
@@ -1619,8 +1624,6 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 100%;
-  display: block;
 }
 
 @media (max-width: 600px) {
@@ -2191,7 +2194,6 @@ body {
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
   animation: slideUpModal 0.28s cubic-bezier(.22,1,.36,1);
-  will-change: transform;
 }
 @media (min-width: 600px) {
   .ranking-modal { border-radius: 24px; max-height: 90vh; }
