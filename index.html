@@ -497,10 +497,10 @@ body {
   border: 1.5px solid var(--blue);
   box-shadow: var(--shadow);
   overflow: hidden;
-  transition: box-shadow 0.2s, transform 0.15s;
   min-width: 0;
   width: 100%;
   box-sizing: border-box;
+  transition: box-shadow 0.2s, transform 0.15s;
 }
 .thread-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-1px); }
 
@@ -1579,7 +1579,6 @@ body {
   width: 100%;
   min-width: 0;
 }
-
 @media (min-width: 600px) {
   .thread-specs-grid {
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -1620,6 +1619,8 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 100%;
+  display: block;
 }
 
 @media (max-width: 600px) {
@@ -2182,18 +2183,15 @@ body {
 .ranking-modal {
   background: white;
   border-radius: 24px 24px 0 0;
-  padding: 20px 18px 28px;
-  padding-bottom: max(28px, env(safe-area-inset-bottom, 16px));
+  padding: 20px 18px max(28px, env(safe-area-inset-bottom, 16px));
   width: 100%;
   max-width: 500px;
   max-height: 85vh;
-  height: auto;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
   animation: slideUpModal 0.28s cubic-bezier(.22,1,.36,1);
   will-change: transform;
-  backface-visibility: hidden;
 }
 @media (min-width: 600px) {
   .ranking-modal { border-radius: 24px; max-height: 90vh; }
@@ -2244,7 +2242,6 @@ body {
   gap: 10px;
   margin-bottom: 14px;
 }
-
 @media (max-width: 480px) {
   .ranking-scores-grid { gap: 8px; margin-bottom: 10px; }
   .ranking-score-label { font-size: 10px; }
@@ -5873,13 +5870,10 @@ document.addEventListener('DOMContentLoaded', () => {
   initKeyboardHandler();
 });
 
-// ═══════════════════════════════════════════
-// KEYBOARD HANDLER — evita que el modal se parta
-// ═══════════════════════════════════════════
 function initKeyboardHandler() {
   if (!window.visualViewport) return;
   let rafId = null;
-  function adjustModalForKeyboard() {
+  function adjust() {
     if (rafId) cancelAnimationFrame(rafId);
     rafId = requestAnimationFrame(() => {
       const overlay = document.getElementById('rankingModalOverlay');
@@ -5887,9 +5881,9 @@ function initKeyboardHandler() {
       const modal = overlay.querySelector('.ranking-modal');
       if (!modal) return;
       const vv = window.visualViewport;
-      const keyboardHeight = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
-      if (keyboardHeight > 50) {
-        overlay.style.paddingBottom = keyboardHeight + 'px';
+      const kb = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+      if (kb > 50) {
+        overlay.style.paddingBottom = kb + 'px';
         modal.style.maxHeight = Math.min(vv.height * 0.88, vv.height - 40) + 'px';
       } else {
         overlay.style.paddingBottom = '';
@@ -5897,8 +5891,8 @@ function initKeyboardHandler() {
       }
     });
   }
-  window.visualViewport.addEventListener('resize', adjustModalForKeyboard);
-  window.visualViewport.addEventListener('scroll', adjustModalForKeyboard);
+  window.visualViewport.addEventListener('resize', adjust);
+  window.visualViewport.addEventListener('scroll', adjust);
 }
 </script>
 </body>
