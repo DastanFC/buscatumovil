@@ -3197,87 +3197,32 @@ body {
   line-height: 1.35;
 }
 
-/* Cada post es una fila horizontal: sidebar izquierda + cuerpo derecha */
+/* Cada post es un bloque vertical — estilo ForoCoches sin sidebar */
 .fc-post {
-  display: flex;
+  display: block;
   border-bottom: 1px solid #e8ecf0;
   background: white;
-  min-height: 0;
 }
 .fc-post:last-child { border-bottom: none; }
 
-/* ── SIDEBAR (perfil de usuario a la izquierda) ── */
-.fc-post-sidebar {
-  width: 90px;
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 14px 6px 12px;
-  border-right: 1px solid #e8ecf0;
-  background: #f5f7fa;
-  gap: 5px;
-  text-align: center;
-}
-@media (max-width: 480px) {
-  .fc-post-sidebar { width: 64px; padding: 10px 4px 10px; }
-}
+/* Sin sidebar — oculto */
+.fc-post-sidebar { display: none; }
+.fc-post-avatar { display: none; }
+.fc-post-rank-badge { display: none; }
+.fc-post-nick { display: none; }
 
-.fc-post-avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  font-size: 16px;
-  flex-shrink: 0;
-}
-@media (max-width: 480px) {
-  .fc-post-avatar { width: 36px; height: 36px; font-size: 12px; border-radius: 4px; }
-}
-
-.fc-post-nick {
-  font-size: 11px;
-  font-weight: 700;
-  color: #1a2744;
-  word-break: break-all;
-  line-height: 1.25;
-  max-width: 80px;
-}
-@media (max-width: 480px) {
-  .fc-post-nick { font-size: 9px; max-width: 58px; }
-}
-
-.fc-post-rank-badge {
-  font-size: 9px;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-weight: 600;
-  line-height: 1.4;
-  max-width: 80px;
-  word-break: break-word;
-  text-align: center;
-}
-@media (max-width: 480px) {
-  .fc-post-rank-badge { font-size: 8px; padding: 1px 4px; max-width: 58px; }
-}
-
-/* ── CUERPO DEL POST ── */
+/* ── CUERPO DEL POST (ocupa todo el ancho) ── */
 .fc-post-body {
-  flex: 1;
-  min-width: 0;
   display: flex;
   flex-direction: column;
 }
 
-/* Cabecera: #N · tiempo · acciones */
+/* Cabecera: avatar pequeño + nombre + rango + fecha + #N — todo en una línea */
 .fc-post-header {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 7px 12px 6px;
+  padding: 8px 14px 6px;
   border-bottom: 1px solid #eef0f3;
   background: #fafbfc;
   flex-wrap: wrap;
@@ -3286,20 +3231,52 @@ body {
 .fc-post-num {
   font-size: 11px;
   font-weight: 700;
-  color: #888;
+  color: #bbb;
+  margin-left: auto;
 }
 .fc-post-time {
   font-size: 11px;
   color: #aaa;
 }
 
-/* Botones de acción: Citar, @, Editar, Borrar, ⚠️ */
-.fc-post-actions-top {
-  margin-left: auto;
+/* Avatar inline pequeño */
+.fc-post-avatar-inline {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
   display: flex;
-  gap: 3px;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 9px;
+  flex-shrink: 0;
+}
+
+/* Nick inline */
+.fc-post-nick-inline {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1a2744;
+}
+
+/* Rango inline */
+.fc-post-rank-inline {
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* Acciones debajo del contenido */
+.fc-post-actions-top {
+  display: flex;
+  gap: 4px;
   align-items: center;
   flex-wrap: wrap;
+  padding: 6px 14px 8px;
+  border-top: 1px solid #eef0f3;
+  background: #fafbfc;
 }
 
 .fc-action-btn {
@@ -3957,6 +3934,7 @@ body {
         <button class="admin-tab" onclick="adminSetTab('config', this)">⚙️ Config</button>
         <button class="admin-tab" onclick="adminSetTab('actualizaciones', this)">📋 Actualizaciones</button>
         <button class="admin-tab" onclick="adminSetTab('noticias_admin', this)">📰 Noticias</button>
+        <button class="admin-tab" onclick="adminSetTab('reportes', this)">⚠️ Reportes</button>
       </div>
       <div id="adminContent"><div class="admin-loading">⏳ Cargando...</div></div>
     </div>
@@ -5567,7 +5545,7 @@ for (const r of respuestas) {
     // BOTONES EDITAR Y BORRAR (solo para el autor)
     const esAutor = usuario && usuario.nickname === r.nickname;
     const editBtn = esAutor ?
-      `<button class="edit-reply-btn" data-edit-id="${r.id}" data-edit-contenido="${r.contenido.replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/\n/g,' ')}">✏️ Editar</button>` : '';
+      `<button class="edit-reply-btn" data-edit-id="${r.id}">✏️ Editar</button>` : '';
     const deleteBtn = esAutor ?
       `<button class="delete-reply-btn" data-delete-id="${r.id}" data-delete-hilo="${hiloId}">🗑 Borrar</button>` : '';
 
@@ -5665,7 +5643,9 @@ for (const r of respuestas) {
   container.querySelectorAll('.edit-reply-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.dataset.editId;
-      const contenido = btn.dataset.editContenido;
+      // Buscar el contenido original en la respuesta ya cargada
+      const resp = respuestas.find(r => r.id === id);
+      const contenido = resp ? resp.contenido : '';
       abrirModalEditarRespuesta(id, contenido);
     });
   });
@@ -6363,6 +6343,7 @@ async function cargarAdminContent() {
   else if (adminTabActual === 'config') renderAdminConfig();
   else if (adminTabActual === 'actualizaciones') renderAdminActualizaciones();
   else if (adminTabActual === 'noticias_admin') await renderAdminNoticias();
+  else if (adminTabActual === 'reportes') await renderAdminReportes();
 }
 
 function adminPaginarHtml(total) {
@@ -7326,18 +7307,16 @@ async function abrirPost(postId) {
     <div class="fc-thread-container">
       <div class="fc-thread-title-bar">${catInfo.icon} ${escHtml(post.titulo)}</div>
       <div class="fc-post">
-        <div class="fc-post-sidebar">
-          <div class="fc-post-avatar" style="background:${ac.bg};color:${ac.color};">${nombre.substring(0,2).toUpperCase()}</div>
-          <div class="fc-post-nick">${nombre}</div>
-          <span class="fc-post-rank-badge rank-${rangoPost.id}">${rangoPost.icon} ${rangoPost.label}</span>
-        </div>
         <div class="fc-post-body">
           <div class="fc-post-header">
-            <span class="fc-post-num">#1</span>
+            <div class="fc-post-avatar-inline" style="background:${ac.bg};color:${ac.color};">${nombre.substring(0,2).toUpperCase()}</div>
+            <span class="fc-post-nick-inline">${nombre}</span>
+            <span class="fc-post-rank-inline rank-${rangoPost.id}">${rangoPost.icon} ${rangoPost.label}</span>
             <span class="fc-post-time">${timeAgo(post.created_at)}</span>
-            <div class="fc-post-actions-top">${accionesPost}</div>
+            <span class="fc-post-num">#1</span>
           </div>
           <div class="fc-post-content">${renderForumContent(post.contenido || '')}</div>
+          <div class="fc-post-actions-top">${accionesPost}</div>
         </div>
       </div>
     </div>
@@ -7385,18 +7364,16 @@ async function cargarRespuestasForo(postId) {
 
     html += `
       <div class="fc-post" id="fcpost_${r.id}">
-        <div class="fc-post-sidebar">
-          <div class="fc-post-avatar" style="background:${ac.bg};color:${ac.color};">${nombre.substring(0,2).toUpperCase()}</div>
-          <div class="fc-post-nick">${nombre}</div>
-          <span class="fc-post-rank-badge rank-${rango.id}">${rango.icon} ${rango.label}</span>
-        </div>
         <div class="fc-post-body">
           <div class="fc-post-header">
-            <span class="fc-post-num">#${i + 2}</span>
+            <div class="fc-post-avatar-inline" style="background:${ac.bg};color:${ac.color};">${nombre.substring(0,2).toUpperCase()}</div>
+            <span class="fc-post-nick-inline">${nombre}</span>
+            <span class="fc-post-rank-inline rank-${rango.id}">${rango.icon} ${rango.label}</span>
             <span class="fc-post-time">${timeAgo(r.created_at)}</span>
-            <div class="fc-post-actions-top">${acciones}</div>
+            <span class="fc-post-num">#${i + 2}</span>
           </div>
           <div class="fc-post-content">${contenidoHtml}</div>
+          <div class="fc-post-actions-top">${acciones}</div>
         </div>
       </div>`;
   }
@@ -7543,8 +7520,24 @@ async function borrarRespuestaForo(replyId) {
   await cargarRespuestasForo(forumPostActual);
 }
 
-function reportarPostForo(id) {
-  toast('⚠️ Reportado. El equipo lo revisará.');
+async function reportarPostForo(id) {
+  if (!usuario) { toast('⚠️ Debes iniciar sesión para reportar'); return; }
+  try {
+    await db.from('foro_reports').insert({
+      post_id: id,
+      reporter_nickname: usuario.nickname,
+      created_at: new Date().toISOString()
+    });
+  } catch(e) {
+    // Si la tabla no existe, guardar en configuracion como fallback
+    try {
+      const { data: existing } = await db.from('configuracion').select('valor').eq('clave', 'reportes').single();
+      const lista = existing?.valor ? JSON.parse(existing.valor) : [];
+      lista.push({ id, reporter: usuario.nickname, ts: new Date().toISOString() });
+      await db.from('configuracion').upsert({ clave: 'reportes', valor: JSON.stringify(lista) });
+    } catch(e2) {}
+  }
+  toast('⚠️ Reportado. El equipo lo revisará en breve.');
 }
 
 function abrirNuevoPostForo() {
@@ -7903,8 +7896,105 @@ async function guardarEdicionRespuesta(respuestaId) {
   toast('✅ Editado');
   cerrarModalEditar();
   const { data: resp } = await db.from('respuestas').select('hilo_id').eq('id', respuestaId).single();
-  if (resp) cargarRespuestas(resp.hilo_id);
+  if (resp) {
+    // Forzar que la sección de respuestas sea visible y recargue
+    const container = document.getElementById(`replies_${resp.hilo_id}`);
+    if (container) container.style.display = 'block';
+    const box = document.getElementById(`replybox_${resp.hilo_id}`);
+    if (box) box.style.display = 'block';
+    await cargarRespuestas(resp.hilo_id, true);
+  }
   cargarTopMoviles();
+}
+
+// ═══════════════════════════════════════════
+// ADMIN — REPORTES
+// ═══════════════════════════════════════════
+async function renderAdminReportes() {
+  const el = document.getElementById('adminContent');
+
+  // Intentar cargar desde tabla foro_reports
+  let reportes = [];
+  let fuenteTabla = false;
+  try {
+    const { data, error } = await db.from('foro_reports')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(100);
+    if (!error && data) { reportes = data; fuenteTabla = true; }
+  } catch(e) {}
+
+  // Fallback: cargar desde configuracion
+  if (!fuenteTabla) {
+    try {
+      const { data } = await db.from('configuracion').select('valor').eq('clave', 'reportes').single();
+      if (data?.valor) reportes = JSON.parse(data.valor);
+    } catch(e) {}
+  }
+
+  if (reportes.length === 0) {
+    el.innerHTML = `
+      <div class="admin-section-title">⚠️ Reportes recibidos</div>
+      <div class="admin-empty">✅ Sin reportes pendientes</div>`;
+    return;
+  }
+
+  const filas = reportes.map((r, i) => {
+    const id = r.post_id || r.id || '—';
+    const reporter = r.reporter_nickname || r.reporter || '—';
+    const ts = r.created_at || r.ts ? new Date(r.created_at || r.ts).toLocaleString('es-ES') : '—';
+    return `
+      <tr>
+        <td style="font-family:'DM Mono',monospace;font-size:11px;">${id}</td>
+        <td><strong>${reporter}</strong></td>
+        <td>${ts}</td>
+        <td>
+          <div class="admin-actions-row">
+            ${fuenteTabla
+              ? `<button class="admin-btn admin-btn-red" onclick="eliminarReporte('${r.id}')">🗑 Descartar</button>`
+              : `<button class="admin-btn admin-btn-red" onclick="eliminarReporteFallback(${i})">🗑 Descartar</button>`
+            }
+          </div>
+        </td>
+      </tr>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="admin-section-title">⚠️ Reportes recibidos <span style="font-size:0.7rem;font-weight:400;color:var(--text-3);">(${reportes.length})</span></div>
+    <table class="admin-table">
+      <thead><tr>
+        <th>ID reportado</th><th>Reportado por</th><th>Fecha</th><th>Acción</th>
+      </tr></thead>
+      <tbody>${filas}</tbody>
+    </table>
+    <div style="margin-top:12px;">
+      <button class="admin-btn admin-btn-gray" onclick="limpiarTodosReportes()">🧹 Limpiar todos</button>
+    </div>`;
+}
+
+async function eliminarReporte(reporteId) {
+  await db.from('foro_reports').delete().eq('id', reporteId);
+  toast('🗑 Reporte descartado');
+  renderAdminReportes();
+}
+
+async function eliminarReporteFallback(idx) {
+  try {
+    const { data } = await db.from('configuracion').select('valor').eq('clave', 'reportes').single();
+    const lista = data?.valor ? JSON.parse(data.valor) : [];
+    lista.splice(idx, 1);
+    await db.from('configuracion').upsert({ clave: 'reportes', valor: JSON.stringify(lista) });
+  } catch(e) {}
+  toast('🗑 Reporte descartado');
+  renderAdminReportes();
+}
+
+async function limpiarTodosReportes() {
+  if (!confirm('¿Limpiar todos los reportes?')) return;
+  try { await db.from('foro_reports').delete().neq('id', '00000000-0000-0000-0000-000000000000'); } catch(e) {}
+  try { await db.from('configuracion').upsert({ clave: 'reportes', valor: '[]' }); } catch(e) {}
+  toast('🧹 Reportes limpiados');
+  renderAdminReportes();
 }
 
 // ═══════════════════════════════════════════
