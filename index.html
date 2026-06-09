@@ -393,6 +393,234 @@ body {
   .new-noticia-btn { display: none; }
 }
 
+/* ─── FORUM BTN (tab central) ─── */
+.forum-tab-btn {
+  flex-shrink: 0;
+  background: linear-gradient(135deg, var(--navy), #1A3558);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.18s;
+  font-family: 'Roboto', sans-serif;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border: 1.5px solid rgba(29,111,232,0.4);
+}
+.forum-tab-btn:hover { background: var(--blue); border-color: var(--blue); transform: translateY(-1px); }
+.forum-tab-btn.active { background: var(--blue); border-color: var(--blue); box-shadow: 0 2px 10px rgba(29,111,232,0.4); }
+
+/* ─── FORUM SECTION ─── */
+.forum-section {
+  display: none;
+  animation: fadeIn 0.25s ease;
+}
+.forum-section.open { display: block; }
+
+.forum-categories {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+@media (max-width: 600px) {
+  .forum-categories { grid-template-columns: 1fr; gap: 10px; }
+}
+
+.forum-cat-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  border: 1.5px solid var(--border);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.18s;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.forum-cat-card:hover { border-color: var(--blue); box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+.forum-cat-card.active { border-color: var(--blue); background: var(--blue-pale); }
+
+.forum-cat-icon { font-size: 28px; flex-shrink: 0; }
+.forum-cat-info { flex: 1; min-width: 0; }
+.forum-cat-name { font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 14px; color: var(--navy); margin-bottom: 3px; }
+.forum-cat-desc { font-size: 12px; color: var(--text-3); }
+.forum-cat-count { font-size: 11px; font-weight: 700; color: var(--blue); background: var(--blue-pale); border-radius: 999px; padding: 2px 8px; flex-shrink: 0; }
+
+.forum-thread-area { display: none; }
+.forum-thread-area.open { display: block; }
+
+.forum-thread-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.forum-back-btn {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--text-2);
+  font-family: 'Roboto', sans-serif;
+  transition: all 0.18s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.forum-back-btn:hover { border-color: var(--blue); color: var(--blue); }
+
+.forum-cat-title {
+  font-family: 'Roboto', sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--navy);
+}
+
+.forum-new-btn {
+  margin-left: auto;
+  background: var(--blue);
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: 'Roboto', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.18s;
+}
+.forum-new-btn:hover { background: var(--blue-light); }
+
+.forum-post-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  border: 1.5px solid var(--border);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.forum-post-card:hover { border-color: var(--blue); box-shadow: var(--shadow-lg); }
+
+.forum-post-top { display: flex; align-items: flex-start; gap: 12px; }
+.forum-post-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+.forum-post-body { flex: 1; min-width: 0; }
+.forum-post-title { font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 14px; color: var(--navy); margin-bottom: 4px; line-height: 1.35; }
+.forum-post-preview { font-size: 12px; color: var(--text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.forum-post-meta { display: flex; align-items: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+.forum-post-author { font-size: 12px; font-weight: 600; color: var(--text-2); }
+.forum-post-time { font-size: 11px; color: var(--text-3); }
+.forum-post-replies { font-size: 11px; font-weight: 700; color: var(--blue); background: var(--blue-pale); border-radius: 999px; padding: 2px 8px; }
+.forum-pin-badge { font-size: 10px; color: var(--accent); font-weight: 700; background: #FFF3CD; border-radius: 999px; padding: 2px 7px; }
+
+/* Forum post detail */
+.forum-detail-area { display: none; }
+.forum-detail-area.open { display: block; }
+
+.forum-detail-post {
+  background: var(--surface);
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  border: 1.5px solid var(--blue);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.forum-detail-body { padding: 20px 24px; }
+.forum-detail-title { font-family: 'Roboto', sans-serif; font-size: 18px; font-weight: 800; color: var(--navy); margin-bottom: 12px; line-height: 1.3; }
+.forum-detail-content { font-size: 15px; color: var(--text-2); line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
+.forum-detail-footer { padding: 12px 24px; background: var(--surface-2); border-top: 1px solid var(--border); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+.forum-reply-section { margin-top: 8px; }
+.forum-reply-item {
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  margin-bottom: 10px;
+  border: 1px solid var(--border);
+}
+.forum-reply-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+.forum-reply-content { font-size: 14px; color: var(--text-2); line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+
+.forum-reply-box {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  border: 1.5px solid var(--border);
+  margin-top: 16px;
+}
+.forum-reply-box textarea {
+  width: 100%; padding: 10px 14px; border: 1.5px solid var(--border);
+  border-radius: 14px; font-size: 14px; font-family: 'DM Sans', sans-serif;
+  resize: none; background: var(--surface-2); min-height: 80px; box-sizing: border-box;
+  transition: all 0.18s;
+}
+.forum-reply-box textarea:focus { outline: none; border-color: var(--blue); background: white; box-shadow: 0 0 0 3px rgba(29,111,232,0.07); }
+
+/* Warning notice */
+.forum-warning {
+  background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 10px;
+  padding: 10px 14px; font-size: 12px; color: #92400E; margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+
+/* ─── TOP RANKING USUARIOS ─── */
+.top-usuarios-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.top-usuarios-header {
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  background: var(--navy);
+  color: white;
+  border-radius: var(--radius) var(--radius) 0 0;
+  transition: background 0.18s;
+}
+.top-usuarios-header:hover { background: #1A2D45; }
+.top-usuarios-title { font-family: 'Roboto', sans-serif; font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.top-usuarios-toggle { background: none; border: none; color: white; font-size: 18px; cursor: pointer; line-height: 1; }
+.top-usuarios-content { transition: all 0.3s ease; }
+.top-usuarios-content.collapsed { display: none; }
+.top-usuarios-list { padding: 8px 16px 8px; }
+.top-usuarios-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--surface-3);
+  gap: 10px;
+}
+.top-usuarios-item:last-child { border-bottom: none; }
+.top-usuarios-rank { font-size: 22px; min-width: 38px; text-align: center; }
+.top-usuarios-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; flex-shrink: 0; }
+.top-usuarios-info { flex: 1; }
+.top-usuarios-name { font-weight: 700; font-size: 14px; color: var(--navy); }
+.top-usuarios-badge { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+.top-usuarios-score { text-align: right; }
+.top-usuarios-score-value { font-size: 1.2rem; font-weight: 800; color: var(--accent); }
+.top-usuarios-score-label { font-size: 0.65rem; color: var(--text-3); }
+
 /* ─── FORM CARD ─── */
 .form-card {
   background: var(--surface);
@@ -2690,6 +2918,96 @@ body {
     </div>
   </div>
 
+  <!-- TOP RANKING USUARIOS -->
+  <div id="topUsuariosSection" class="top-usuarios-card">
+    <div class="top-usuarios-header" onclick="toggleTopUsuarios()">
+      <div class="top-usuarios-title">
+        <span>👥</span> Top usuarios de la comunidad
+      </div>
+      <button class="top-usuarios-toggle" id="topUsuariosToggleBtn">▾</button>
+    </div>
+    <div id="topUsuariosContent" class="top-usuarios-content">
+      <div id="topUsuariosList" class="top-usuarios-list">
+        <div class="loading">⏳ Cargando ranking...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORO -->
+  <div id="forumSection" class="forum-section">
+    <!-- Lista de categorías -->
+    <div id="forumCats">
+      <div class="forum-categories">
+        <div class="forum-cat-card" onclick="abrirCategoria('android')">
+          <div class="forum-cat-icon">🤖</div>
+          <div class="forum-cat-info">
+            <div class="forum-cat-name">Foro Android</div>
+            <div class="forum-cat-desc">Noticias, dudas y debate sobre Android</div>
+          </div>
+          <span class="forum-cat-count" id="fcat_count_android">...</span>
+        </div>
+        <div class="forum-cat-card" onclick="abrirCategoria('ios')">
+          <div class="forum-cat-icon">🍎</div>
+          <div class="forum-cat-info">
+            <div class="forum-cat-name">Foro iOS</div>
+            <div class="forum-cat-desc">Todo sobre iPhone, iPad y Apple</div>
+          </div>
+          <span class="forum-cat-count" id="fcat_count_ios">...</span>
+        </div>
+        <div class="forum-cat-card" onclick="abrirCategoria('personalizacion')">
+          <div class="forum-cat-icon">🎨</div>
+          <div class="forum-cat-info">
+            <div class="forum-cat-name">Personalización</div>
+            <div class="forum-cat-desc">Launchers, widgets, temas y fondos</div>
+          </div>
+          <span class="forum-cat-count" id="fcat_count_personalizacion">...</span>
+        </div>
+        <div class="forum-cat-card" onclick="abrirCategoria('apps')">
+          <div class="forum-cat-icon">📲</div>
+          <div class="forum-cat-info">
+            <div class="forum-cat-name">Apps y juegos</div>
+            <div class="forum-cat-desc">Recomendaciones y novedades <span style="color:var(--accent-red);font-size:10px;font-weight:700;">⚠️ No piratería</span></div>
+          </div>
+          <span class="forum-cat-count" id="fcat_count_apps">...</span>
+        </div>
+        <div class="forum-cat-card" onclick="abrirCategoria('ayuda')">
+          <div class="forum-cat-icon">🆘</div>
+          <div class="forum-cat-info">
+            <div class="forum-cat-name">Foro Ayuda</div>
+            <div class="forum-cat-desc">Problemas técnicos y soporte</div>
+          </div>
+          <span class="forum-cat-count" id="fcat_count_ayuda">...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hilos de una categoría -->
+    <div id="forumThreadArea" class="forum-thread-area">
+      <div class="forum-thread-header">
+        <button class="forum-back-btn" onclick="volverForumCats()">← Volver</button>
+        <div class="forum-cat-title" id="forumCatTitle"></div>
+        <button class="forum-new-btn" onclick="abrirNuevoPostForo()">✏️ Nuevo post</button>
+      </div>
+      <div id="forumPostList"></div>
+    </div>
+
+    <!-- Detalle de un post -->
+    <div id="forumDetailArea" class="forum-detail-area">
+      <div class="forum-thread-header">
+        <button class="forum-back-btn" onclick="volverForumHilos()">← Volver a la categoría</button>
+      </div>
+      <div id="forumDetailContent"></div>
+      <div class="forum-reply-section" id="forumRepliesSection"></div>
+      <div class="forum-reply-box" id="forumReplyBox" style="display:none;">
+        <div style="font-size:12px;font-weight:600;color:var(--text-3);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;">Tu respuesta</div>
+        <textarea id="forumReplyInput" placeholder="Escribe tu respuesta..." rows="3"></textarea>
+        <div style="display:flex;justify-content:flex-end;margin-top:10px;">
+          <button class="btn-submit" onclick="enviarRespuestaForo()">➤ Publicar respuesta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- PANEL ADMIN (solo visible para dastan) -->
   <div id="adminPanel">
     <div class="admin-header" onclick="toggleAdminBody()">
@@ -2718,6 +3036,7 @@ body {
     <button class="tab" onclick="setTab('mis_abiertas', this)">📝 Mis consultas</button>
     <button class="tab" onclick="setTab('mis_cerradas', this)">✅ Cerradas</button>
     <button class="tab" onclick="setTab('noticias', this)">📰 Noticias</button>
+    <button class="forum-tab-btn" id="forumTabBtn" onclick="setTab('foro', this)">💬 Foro</button>
     <button class="new-btn" onclick="abrirForm()"><span>✏️</span> Nueva consulta</button>
     <button class="new-noticia-btn" id="newNoticiaBtn" style="display:none;" onclick="abrirModalNuevaNoticia()"><span>📰</span> Nueva noticia</button>
   </div>
@@ -3861,6 +4180,9 @@ function onLogin() {
   // Cargar TOP de móviles al iniciar sesión
   cargarTopMoviles();
   
+  // Cargar TOP de usuarios
+  cargarTopUsuarios();
+  
   // Mostrar botones de admin si corresponde
   if (usuario && usuario.nickname === 'dastan') {
     const newNoticiaBtn = document.getElementById('newNoticiaBtn');
@@ -3908,24 +4230,48 @@ function setTab(tab, el) {
   tabActual = tab;
   currentPage = 1;
   noticiasPagina = 1;
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab, .forum-tab-btn').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
 
   const hilosEl = document.getElementById('hilosList');
   const pagEl = document.getElementById('pagination');
   const noticiasEl = document.getElementById('noticiasList');
   const formEl = document.getElementById('newForm');
+  const forumEl = document.getElementById('forumSection');
+  const topMovilesEl = document.getElementById('topMovilesSection');
+  const topUsuariosEl = document.getElementById('topUsuariosSection');
+
+  // Reset forum state
+  if (tab !== 'foro') {
+    if (forumEl) forumEl.classList.remove('open');
+  }
 
   if (tab === 'noticias') {
     hilosEl.style.display = 'none';
     pagEl.style.display = 'none';
     noticiasEl.style.display = 'block';
     if (formEl) formEl.style.display = 'none';
+    if (forumEl) forumEl.classList.remove('open');
+    if (topMovilesEl) topMovilesEl.style.display = '';
+    if (topUsuariosEl) topUsuariosEl.style.display = '';
     cargarNoticias();
+  } else if (tab === 'foro') {
+    hilosEl.style.display = 'none';
+    pagEl.style.display = 'none';
+    noticiasEl.style.display = 'none';
+    if (formEl) formEl.style.display = 'none';
+    if (forumEl) forumEl.classList.add('open');
+    if (topMovilesEl) topMovilesEl.style.display = 'none';
+    if (topUsuariosEl) topUsuariosEl.style.display = 'none';
+    cargarContadoresForo();
+    mostrarForumCats();
   } else {
     hilosEl.style.display = 'block';
     pagEl.style.display = 'block';
     noticiasEl.style.display = 'none';
+    if (forumEl) forumEl.classList.remove('open');
+    if (topMovilesEl) topMovilesEl.style.display = '';
+    if (topUsuariosEl) topUsuariosEl.style.display = '';
     cargarHilos();
   }
 }
@@ -5792,8 +6138,310 @@ function restaurarEstadoTop() {
 }
 
 // ═══════════════════════════════════════════
-// EDITAR RESPUESTAS
+// TOP RANKING USUARIOS
 // ═══════════════════════════════════════════
+let topUsuariosVisible = true;
+
+async function cargarTopUsuarios() {
+  const listEl = document.getElementById('topUsuariosList');
+  if (!listEl) return;
+
+  const { data: usuarios, error } = await db
+    .from('usuarios')
+    .select('nickname, puntos, rol')
+    .order('puntos', { ascending: false })
+    .limit(5);
+
+  if (error || !usuarios || usuarios.length === 0) {
+    listEl.innerHTML = '<div class="empty-state" style="padding:20px;">No hay usuarios aún.</div>';
+    return;
+  }
+
+  let html = '';
+  for (let i = 0; i < usuarios.length; i++) {
+    const u = usuarios[i];
+    const medalla = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}º`;
+    const rango = getRango(u.puntos || 0, u.rol);
+    const ac = avatarColor(u.nickname);
+    const nombre = cap(u.nickname);
+    html += `
+      <div class="top-usuarios-item">
+        <div class="top-usuarios-rank">${medalla}</div>
+        <div class="top-usuarios-avatar" style="background:${ac.bg};color:${ac.color};">${nombre.substring(0,2).toUpperCase()}</div>
+        <div class="top-usuarios-info">
+          <div class="top-usuarios-name">${nombre}${u.rol === 'admin' ? ' 👑' : ''}</div>
+          <div class="top-usuarios-badge">${rango.icon} ${rango.label}</div>
+        </div>
+        <div class="top-usuarios-score">
+          <div class="top-usuarios-score-value">${u.puntos || 0}</div>
+          <div class="top-usuarios-score-label">puntos</div>
+        </div>
+      </div>
+    `;
+  }
+  listEl.innerHTML = html;
+}
+
+function toggleTopUsuarios() {
+  const content = document.getElementById('topUsuariosContent');
+  const btn = document.getElementById('topUsuariosToggleBtn');
+  topUsuariosVisible = !topUsuariosVisible;
+  if (topUsuariosVisible) {
+    content.classList.remove('collapsed');
+    btn.innerHTML = '▾';
+  } else {
+    content.classList.add('collapsed');
+    btn.innerHTML = '▸';
+  }
+}
+
+// ═══════════════════════════════════════════
+// FORO
+// ═══════════════════════════════════════════
+const FORUM_CATS = {
+  android: { name: 'Foro Android', icon: '🤖' },
+  ios: { name: 'Foro iOS', icon: '🍎' },
+  personalizacion: { name: 'Personalización', icon: '🎨' },
+  apps: { name: 'Apps y juegos', icon: '📲' },
+  ayuda: { name: 'Foro Ayuda', icon: '🆘' },
+};
+let forumCatActual = null;
+let forumPostActual = null;
+
+function mostrarForumCats() {
+  document.getElementById('forumCats').style.display = 'block';
+  document.getElementById('forumThreadArea').classList.remove('open');
+  document.getElementById('forumDetailArea').classList.remove('open');
+}
+
+function volverForumCats() {
+  mostrarForumCats();
+  forumPostActual = null;
+}
+
+function volverForumHilos() {
+  document.getElementById('forumDetailArea').classList.remove('open');
+  document.getElementById('forumThreadArea').classList.add('open');
+  forumPostActual = null;
+}
+
+async function cargarContadoresForo() {
+  for (const cat of Object.keys(FORUM_CATS)) {
+    const { count } = await db.from('foro_posts')
+      .select('id', { count: 'exact', head: true })
+      .eq('categoria', cat);
+    const el = document.getElementById(`fcat_count_${cat}`);
+    if (el) el.textContent = (count || 0) + ' posts';
+  }
+}
+
+async function abrirCategoria(cat) {
+  forumCatActual = cat;
+  const catInfo = FORUM_CATS[cat];
+  document.getElementById('forumCats').style.display = 'none';
+  document.getElementById('forumDetailArea').classList.remove('open');
+  document.getElementById('forumThreadArea').classList.add('open');
+  document.getElementById('forumCatTitle').textContent = `${catInfo.icon} ${catInfo.name}`;
+  document.getElementById('forumPostList').innerHTML = '<div class="loading">⏳ Cargando...</div>';
+
+  const { data: posts, error } = await db.from('foro_posts')
+    .select('*, foro_replies(count)')
+    .eq('categoria', cat)
+    .order('pinned', { ascending: false })
+    .order('created_at', { ascending: false })
+    .limit(50);
+
+  if (error) {
+    document.getElementById('forumPostList').innerHTML = '<div class="empty-state">❌ Error cargando posts. ¿Está la tabla creada en Supabase?</div>';
+    return;
+  }
+
+  if (!posts || posts.length === 0) {
+    document.getElementById('forumPostList').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">${catInfo.icon}</div>
+        <div>Sé el primero en publicar en ${catInfo.name}</div>
+      </div>`;
+    return;
+  }
+
+  let html = '';
+  for (const p of posts) {
+    const ac = avatarColor(p.nickname);
+    const nombre = cap(p.nickname);
+    const replies = p.foro_replies?.[0]?.count || 0;
+    html += `
+      <div class="forum-post-card" onclick="abrirPost('${p.id}')">
+        <div class="forum-post-top">
+          <div class="forum-post-avatar" style="background:${ac.bg};color:${ac.color};">${nombre.substring(0,2).toUpperCase()}</div>
+          <div class="forum-post-body">
+            <div class="forum-post-title">${p.pinned ? '<span class="forum-pin-badge">📌 Fijado</span> ' : ''}${escHtml(p.titulo)}</div>
+            <div class="forum-post-preview">${escHtml((p.contenido || '').substring(0, 120))}</div>
+          </div>
+        </div>
+        <div class="forum-post-meta">
+          <span class="forum-post-author">${nombre}</span>
+          <span class="forum-post-time">${timeAgo(p.created_at)}</span>
+          <span class="forum-post-replies">💬 ${replies}</span>
+        </div>
+      </div>
+    `;
+  }
+  document.getElementById('forumPostList').innerHTML = html;
+}
+
+async function abrirPost(postId) {
+  forumPostActual = postId;
+  document.getElementById('forumThreadArea').classList.remove('open');
+  document.getElementById('forumDetailArea').classList.add('open');
+  document.getElementById('forumDetailContent').innerHTML = '<div class="loading">⏳ Cargando...</div>';
+  document.getElementById('forumRepliesSection').innerHTML = '';
+  document.getElementById('forumReplyBox').style.display = 'none';
+
+  const { data: post, error } = await db.from('foro_posts').select('*').eq('id', postId).single();
+  if (error || !post) {
+    document.getElementById('forumDetailContent').innerHTML = '<div class="empty-state">❌ Post no encontrado</div>';
+    return;
+  }
+
+  const ac = avatarColor(post.nickname);
+  const nombre = cap(post.nickname);
+  const catInfo = FORUM_CATS[post.categoria] || { icon: '💬', name: post.categoria };
+
+  document.getElementById('forumDetailContent').innerHTML = `
+    <div class="forum-detail-post">
+      <div class="forum-detail-body">
+        <div class="forum-detail-title">${escHtml(post.titulo)}</div>
+        <div class="forum-detail-content">${escHtml(post.contenido || '')}</div>
+      </div>
+      <div class="forum-detail-footer">
+        <div class="forum-post-avatar" style="background:${ac.bg};color:${ac.color};width:28px;height:28px;font-size:10px;">${nombre.substring(0,2).toUpperCase()}</div>
+        <span class="forum-post-author">${nombre}</span>
+        <span class="forum-post-time">${timeAgo(post.created_at)}</span>
+        <span style="font-size:11px;color:var(--text-3);">${catInfo.icon} ${catInfo.name}</span>
+      </div>
+    </div>
+  `;
+
+  // Cargar respuestas
+  await cargarRespuestasForo(postId);
+
+  // Mostrar caja de respuesta
+  if (usuario) document.getElementById('forumReplyBox').style.display = 'block';
+}
+
+async function cargarRespuestasForo(postId) {
+  const { data: replies } = await db.from('foro_replies')
+    .select('*')
+    .eq('post_id', postId)
+    .order('created_at', { ascending: true });
+
+  const el = document.getElementById('forumRepliesSection');
+  if (!replies || replies.length === 0) {
+    el.innerHTML = '<div class="replies-empty">Sin respuestas aún. ¡Sé el primero!</div>';
+    return;
+  }
+
+  let html = `<div style="font-family:'Roboto',sans-serif;font-weight:700;font-size:14px;color:var(--navy);margin-bottom:10px;">💬 ${replies.length} respuesta${replies.length > 1 ? 's' : ''}</div>`;
+  for (const r of replies) {
+    const ac = avatarColor(r.nickname);
+    const nombre = cap(r.nickname);
+    html += `
+      <div class="forum-reply-item">
+        <div class="forum-reply-header">
+          <div class="forum-post-avatar" style="background:${ac.bg};color:${ac.color};width:28px;height:28px;font-size:10px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;">${nombre.substring(0,2).toUpperCase()}</div>
+          <span class="forum-post-author">${nombre}</span>
+          <span class="forum-post-time">${timeAgo(r.created_at)}</span>
+        </div>
+        <div class="forum-reply-content">${escHtml(r.contenido || '')}</div>
+      </div>
+    `;
+  }
+  el.innerHTML = html;
+}
+
+async function enviarRespuestaForo() {
+  if (!usuario) { toast('❌ Inicia sesión para responder'); return; }
+  const input = document.getElementById('forumReplyInput');
+  const texto = input.value.trim();
+  if (!texto) { toast('❌ Escribe algo'); return; }
+  if (!forumPostActual) return;
+
+  const { error } = await db.from('foro_replies').insert({
+    post_id: forumPostActual,
+    nickname: usuario.nickname,
+    contenido: texto,
+  });
+
+  if (error) {
+    toast('❌ Error: ' + error.message);
+    return;
+  }
+  input.value = '';
+  toast('✅ Respuesta publicada');
+  await cargarRespuestasForo(forumPostActual);
+}
+
+function abrirNuevoPostForo() {
+  if (!usuario) { mostrarModalAuth(); return; }
+  if (!forumCatActual) return;
+
+  const catInfo = FORUM_CATS[forumCatActual];
+  const warning = forumCatActual === 'apps' ? `
+    <div class="forum-warning">⚠️ <strong>Recuerda:</strong> No se permite hablar de piratería ni apps de fuentes no oficiales.</div>` : '';
+
+  const modalHtml = `
+    <div class="modal-overlay" id="forumNewPostModal" style="display:flex;z-index:600;">
+      <div class="modal" style="max-width:520px;">
+        <div class="modal-title">${catInfo.icon} Nuevo post en ${catInfo.name}</div>
+        ${warning}
+        <input class="modal-input" type="text" id="forumPostTitulo" placeholder="Título del post" maxlength="200" />
+        <textarea class="modal-input" id="forumPostContenido" rows="5" placeholder="Describe tu consulta, opinión o tema..." style="resize:vertical;min-height:100px;font-size:14px;"></textarea>
+        <div class="form-actions">
+          <button class="btn-cancel" onclick="cerrarNuevoPostForo()">Cancelar</button>
+          <button class="btn-submit" onclick="publicarPostForo()">Publicar</button>
+        </div>
+      </div>
+    </div>
+  `;
+  const old = document.getElementById('forumNewPostModal');
+  if (old) old.remove();
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+function cerrarNuevoPostForo() {
+  const m = document.getElementById('forumNewPostModal');
+  if (m) m.remove();
+}
+
+async function publicarPostForo() {
+  if (!usuario || !forumCatActual) return;
+  const titulo = (document.getElementById('forumPostTitulo').value || '').trim();
+  const contenido = (document.getElementById('forumPostContenido').value || '').trim();
+  if (!titulo) { toast('❌ El título es obligatorio'); return; }
+  if (!contenido) { toast('❌ Escribe el contenido'); return; }
+
+  const { error } = await db.from('foro_posts').insert({
+    categoria: forumCatActual,
+    titulo,
+    contenido,
+    nickname: usuario.nickname,
+    pinned: false,
+  });
+
+  if (error) { toast('❌ Error: ' + error.message + ' — ¿Está la tabla foro_posts creada?'); return; }
+  toast('✅ Post publicado');
+  cerrarNuevoPostForo();
+  await abrirCategoria(forumCatActual);
+  await cargarContadoresForo();
+}
+
+function escHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+
 function abrirModalEditarRespuesta(respuestaId, contenidoActual) {
   if (!usuario) { toast('❌ Inicia sesión para editar'); return; }
   const contenidoEscapado = (contenidoActual || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -5862,6 +6510,7 @@ async function init() {
     cargarBannerGlobal();
     cargarStats();
     restaurarEstadoTop();
+    cargarTopUsuarios();
     const token = leerToken();
     console.log("TOKEN manual en localStorage:", token ? "encontrado" : "no encontrado");
 
