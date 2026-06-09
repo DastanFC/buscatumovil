@@ -5602,7 +5602,7 @@ for (const r of respuestas) {
     }
 
     html += `
-      <div class="${topClass}" id="reply_${r.id}">
+      <div class="${topClass}" id="reply_${r.id}" data-reply-id="${r.id}">
         <div class="reply-header">
           <div class="reply-avatar" style="background:${ac.bg};color:${ac.color};">${nombre.substring(0,2).toUpperCase()}</div>
           <span class="reply-author">${nombre}</span>
@@ -6644,22 +6644,29 @@ async function adminEliminarHilo(hiloId) {
 
 function borrarRespuestaPropia(respId, hiloId) {
   if (!usuario) return;
-  const replyEl = document.getElementById(`reply_${respId}`);
-  if (!replyEl) return;
+  // Buscar por atributo data en vez de ID (más robusto con UUIDs)
+  const replyEl = document.querySelector(`[data-reply-id="${respId}"]`) ||
+                  document.getElementById(`reply_${CSS.escape(respId)}`);
+  if (!replyEl) { toast('❌ No se encontró la respuesta'); return; }
   if (replyEl.querySelector('.delete-confirm-row')) return;
+
   const confirmRow = document.createElement('div');
   confirmRow.className = 'delete-confirm-row';
-  confirmRow.style.cssText = 'display:flex;align-items:center;gap:8px;margin-left:36px;margin-top:6px;padding:8px 12px;background:#FEF2F2;border-radius:10px;border:1px solid #FECACA;';
+  confirmRow.style.cssText = 'display:flex;align-items:center;gap:8px;margin-top:6px;padding:8px 12px;background:#FEF2F2;border-radius:10px;border:1px solid #FECACA;';
   confirmRow.innerHTML = `
     <span style="font-size:0.78rem;color:#991B1B;flex:1;">¿Estás seguro que quieres eliminarlo?</span>
-    <button onclick="confirmarBorradoRespuesta('${respId}','${hiloId}')" style="background:#EF4444;color:white;border:none;border-radius:999px;padding:4px 12px;font-size:0.72rem;font-weight:600;cursor:pointer;font-family:'Roboto',sans-serif;">Sí</button>
-    <button onclick="cancelarBorradoRespuesta('${respId}')" style="background:var(--surface-3);color:var(--text-2);border:none;border-radius:999px;padding:4px 12px;font-size:0.72rem;font-weight:600;cursor:pointer;font-family:'Roboto',sans-serif;">No</button>
+    <button class="confirm-yes" style="background:#EF4444;color:white;border:none;border-radius:999px;padding:4px 12px;font-size:0.72rem;font-weight:600;cursor:pointer;font-family:'Roboto',sans-serif;">Sí</button>
+    <button class="confirm-no" style="background:var(--surface-3);color:var(--text-2);border:none;border-radius:999px;padding:4px 12px;font-size:0.72rem;font-weight:600;cursor:pointer;font-family:'Roboto',sans-serif;">No</button>
   `;
+
+  confirmRow.querySelector('.confirm-yes').addEventListener('click', () => confirmarBorradoRespuesta(respId, hiloId));
+  confirmRow.querySelector('.confirm-no').addEventListener('click', () => confirmRow.remove());
   replyEl.appendChild(confirmRow);
 }
 
 function cancelarBorradoRespuesta(respId) {
-  const replyEl = document.getElementById(`reply_${respId}`);
+  const replyEl = document.querySelector(`[data-reply-id="${respId}"]`) ||
+                  document.getElementById(`reply_${CSS.escape(respId)}`);
   if (!replyEl) return;
   const row = replyEl.querySelector('.delete-confirm-row');
   if (row) row.remove();
@@ -7859,23 +7866,36 @@ function fcInsertLink() {
 
 function abrirModalEditarRespuesta(respuestaId, contenidoActual) {
   if (!usuario) { toast('❌ Inicia sesión para editar'); return; }
-  const contenidoEscapado = (contenidoActual || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  const modalHtml = `
-    <div class="modal-overlay" id="editModal" style="display:flex; z-index:1000;">
-      <div class="modal" style="max-width:500px;">
-        <div class="modal-title">✏️ Editar respuesta</div>
-        <div class="modal-sub">Modifica tu recomendación.</div>
-        <textarea id="editContenido" rows="4" style="width:100%; padding:12px; border:1.5px solid var(--border); border-radius:12px; font-size:0.9rem; margin-bottom:16px;">${contenidoEscapado}</textarea>
-        <div style="display:flex; gap:10px; justify-content:flex-end;">
-          <button class="btn-cancel" onclick="cerrarModalEditar()">Cancelar</button>
-          <button class="btn-submit" onclick="guardarEdicionRespuesta('${respuestaId}')">Guardar</button>
-        </div>
-      </div>
-    </div>
-  `;
   const oldModal = document.getElementById('editModal');
   if (oldModal) oldModal.remove();
-  document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.id = 'editModal';
+  overlay.style.cssText = 'display:flex; z-index:2000;';
+
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.style.maxWidth = '500px';
+  modal.innerHTML = `
+    <div class="modal-title">✏️ Editar respuesta</div>
+    <div class="modal-sub">Modifica tu recomendación.</div>
+    <textarea id="editContenido" rows="6" style="width:100%; padding:12px; border:1.5px solid var(--border); border-radius:12px; font-size:0.9rem; margin-bottom:16px; font-family:'DM Sans',sans-serif; resize:vertical;"></textarea>
+    <div style="display:flex; gap:10px; justify-content:flex-end;">
+      <button class="btn-cancel" id="editModalCancelBtn">Cancelar</button>
+      <button class="btn-submit" id="editModalSaveBtn">Guardar</button>
+    </div>
+  `;
+
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+
+  // Asignar contenido directamente via JS (evita problemas con HTML encoding)
+  document.getElementById('editContenido').value = contenidoActual || '';
+
+  document.getElementById('editModalCancelBtn').addEventListener('click', cerrarModalEditar);
+  document.getElementById('editModalSaveBtn').addEventListener('click', () => guardarEdicionRespuesta(respuestaId));
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) cerrarModalEditar(); });
 }
 
 function cerrarModalEditar() {
@@ -7884,25 +7904,34 @@ function cerrarModalEditar() {
 }
 
 async function guardarEdicionRespuesta(respuestaId) {
-  const nuevo = document.getElementById('editContenido').value.trim();
+  const nuevo = document.getElementById('editContenido')?.value?.trim();
   if (!nuevo) { toast('❌ No puede estar vacío'); return; }
-  toast('📝 Guardando...');
+  const saveBtn = document.getElementById('editModalSaveBtn');
+  if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Guardando...'; }
+
   const { error } = await db.from('respuestas').update({
     contenido: nuevo,
     editado: true,
     editado_en: new Date().toISOString()
-  }).eq('id', respuestaId).eq('nickname', usuario.nickname);
-  if (error) { toast('❌ Error: ' + error.message); return; }
+  }).eq('id', respuestaId);
+
+  if (error) {
+    toast('❌ Error: ' + error.message);
+    if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Guardar'; }
+    return;
+  }
+
   toast('✅ Editado');
   cerrarModalEditar();
+
+  // Recargar solo el contenedor de respuestas del hilo correspondiente
   const { data: resp } = await db.from('respuestas').select('hilo_id').eq('id', respuestaId).single();
   if (resp) {
-    // Forzar que la sección de respuestas sea visible y recargue
     const container = document.getElementById(`replies_${resp.hilo_id}`);
-    if (container) container.style.display = 'block';
-    const box = document.getElementById(`replybox_${resp.hilo_id}`);
-    if (box) box.style.display = 'block';
-    await cargarRespuestas(resp.hilo_id, true);
+    // Solo recargar si ya está visible (para no abrir secciones cerradas)
+    if (container && container.style.display !== 'none') {
+      await cargarRespuestas(resp.hilo_id);
+    }
   }
   cargarTopMoviles();
 }
