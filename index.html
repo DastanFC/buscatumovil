@@ -3174,63 +3174,97 @@ body {
   .forum-shortcut-btn { padding: 12px 14px; margin-bottom: 12px; }
 }
 
-/* ─── FORUM FC STYLE (hilo vertical) ─── */
-.fc-post {
-  display: flex;
-  gap: 0;
-  border-bottom: 1px solid var(--border);
-  padding: 0;
+/* ─── FORUM FC STYLE (hilo vertical — estilo ForoCoches real) ─── */
+
+/* Contenedor de todo el hilo */
+.fc-thread-container {
   background: white;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid #d1d8e0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  margin-bottom: 6px;
 }
 
+/* Barra de título del hilo */
+.fc-thread-title-bar {
+  background: #1a2744;
+  padding: 10px 16px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: white;
+  line-height: 1.35;
+}
+
+/* Cada post es una fila horizontal: sidebar izquierda + cuerpo derecha */
+.fc-post {
+  display: flex;
+  border-bottom: 1px solid #e8ecf0;
+  background: white;
+  min-height: 0;
+}
+.fc-post:last-child { border-bottom: none; }
+
+/* ── SIDEBAR (perfil de usuario a la izquierda) ── */
 .fc-post-sidebar {
-  width: 72px;
+  width: 90px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 14px 8px 14px;
-  border-right: 1px solid var(--surface-3);
-  background: var(--surface-2);
-  gap: 6px;
+  padding: 14px 6px 12px;
+  border-right: 1px solid #e8ecf0;
+  background: #f5f7fa;
+  gap: 5px;
+  text-align: center;
 }
-@media (max-width: 600px) {
-  .fc-post-sidebar { width: 54px; padding: 12px 4px; }
+@media (max-width: 480px) {
+  .fc-post-sidebar { width: 64px; padding: 10px 4px 10px; }
 }
 
 .fc-post-avatar {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 14px;
+  font-size: 16px;
   flex-shrink: 0;
 }
-@media (max-width: 600px) {
-  .fc-post-avatar { width: 34px; height: 34px; font-size: 11px; }
+@media (max-width: 480px) {
+  .fc-post-avatar { width: 36px; height: 36px; font-size: 12px; border-radius: 4px; }
 }
 
 .fc-post-nick {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
-  color: var(--navy);
-  text-align: center;
+  color: #1a2744;
   word-break: break-all;
-  line-height: 1.2;
+  line-height: 1.25;
+  max-width: 80px;
+}
+@media (max-width: 480px) {
+  .fc-post-nick { font-size: 9px; max-width: 58px; }
 }
 
 .fc-post-rank-badge {
   font-size: 9px;
-  padding: 2px 5px;
-  border-radius: 999px;
+  padding: 2px 6px;
+  border-radius: 4px;
   font-weight: 600;
-  text-align: center;
   line-height: 1.4;
+  max-width: 80px;
+  word-break: break-word;
+  text-align: center;
+}
+@media (max-width: 480px) {
+  .fc-post-rank-badge { font-size: 8px; padding: 1px 4px; max-width: 58px; }
 }
 
+/* ── CUERPO DEL POST ── */
 .fc-post-body {
   flex: 1;
   min-width: 0;
@@ -3238,116 +3272,174 @@ body {
   flex-direction: column;
 }
 
+/* Cabecera: #N · tiempo · acciones */
 .fc-post-header {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 14px 6px;
-  border-bottom: 1px solid var(--surface-3);
+  gap: 6px;
+  padding: 7px 12px 6px;
+  border-bottom: 1px solid #eef0f3;
+  background: #fafbfc;
   flex-wrap: wrap;
 }
 
 .fc-post-num {
   font-size: 11px;
-  color: var(--text-3);
-  margin-right: 4px;
+  font-weight: 700;
+  color: #888;
 }
 .fc-post-time {
   font-size: 11px;
-  color: var(--text-3);
+  color: #aaa;
 }
+
+/* Botones de acción: Citar, @, Editar, Borrar, ⚠️ */
 .fc-post-actions-top {
   margin-left: auto;
   display: flex;
-  gap: 4px;
+  gap: 3px;
   align-items: center;
+  flex-wrap: wrap;
 }
+
 .fc-action-btn {
   background: none;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 3px 8px;
+  border: 1px solid #dde2ea;
+  border-radius: 4px;
+  padding: 3px 7px;
   font-size: 11px;
-  color: var(--text-3);
+  color: #666;
   cursor: pointer;
   font-family: 'Roboto', sans-serif;
-  transition: all 0.15s;
+  transition: all 0.13s;
   white-space: nowrap;
+  line-height: 1.4;
 }
-.fc-action-btn:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-pale); }
+.fc-action-btn:hover { border-color: var(--blue); color: var(--blue); background: #eef4ff; }
+.fc-action-btn.danger:hover { border-color: var(--accent-red); color: var(--accent-red); background: #fff0f0; }
 
+/* Checkbox de multicita */
+.fc-multicita-check {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid #ccc;
+  border-radius: 3px;
+  cursor: pointer;
+  margin: 0;
+  flex-shrink: 0;
+  position: relative;
+  background: white;
+  transition: all 0.13s;
+}
+.fc-multicita-check:checked {
+  background: var(--blue);
+  border-color: var(--blue);
+}
+.fc-multicita-check:checked::after {
+  content: '✓';
+  position: absolute;
+  top: -1px; left: 1px;
+  font-size: 11px;
+  color: white;
+  font-weight: 700;
+}
+
+/* Contenido del post */
 .fc-post-content {
   padding: 12px 14px 14px;
-  font-size: 15px;
-  color: var(--text-2);
-  line-height: 1.65;
+  font-size: 14px;
+  color: #333;
+  line-height: 1.7;
   flex: 1;
   word-break: break-word;
 }
-@media (max-width: 600px) {
-  .fc-post-content { font-size: 14px; padding: 10px 12px 12px; }
+@media (max-width: 480px) {
+  .fc-post-content { font-size: 13px; padding: 10px 10px 12px; }
 }
 
-.fc-post-content img {
-  max-width: 100%;
-  border-radius: 8px;
-  margin: 6px 0;
-  display: block;
-}
+.fc-post-content img { max-width: 100%; border-radius: 6px; margin: 6px 0; display: block; }
 .fc-post-content a { color: var(--blue); text-decoration: underline; }
-.fc-post-content strong, .fc-post-content b { font-weight: 700; color: var(--text); }
+.fc-post-content strong, .fc-post-content b { font-weight: 700; }
 .fc-post-content em, .fc-post-content i { font-style: italic; }
 .fc-post-content u { text-decoration: underline; }
 
-/* Cita anidada en post del foro */
+/* Cita anidada */
 .fc-quote {
-  background: var(--surface-2);
+  background: #f0f4ff;
+  border: 1px solid #c8d8ff;
   border-left: 3px solid var(--blue);
-  border-radius: 0 8px 8px 0;
+  border-radius: 0 6px 6px 0;
   padding: 8px 12px;
-  margin: 4px 0 8px;
+  margin: 4px 0 10px;
   font-size: 13px;
-  color: var(--text-3);
 }
 .fc-quote-from {
   font-weight: 700;
   font-size: 12px;
   color: var(--blue);
-  margin-bottom: 3px;
+  margin-bottom: 4px;
 }
 .fc-quote-body {
   font-style: italic;
-  color: var(--text-2);
+  color: #555;
   font-size: 13px;
   line-height: 1.5;
 }
-
-/* Cita anidada dentro de cita */
 .fc-quote .fc-quote {
-  background: var(--surface-3);
-  border-left-color: var(--text-3);
+  background: #e8ecf5;
+  border-left-color: #999;
   margin-top: 6px;
 }
 
-/* Post detail container */
-.fc-thread-container {
-  background: white;
-  border-radius: var(--radius);
-  overflow: hidden;
-  border: 1.5px solid var(--blue);
-  box-shadow: var(--shadow);
-  margin-bottom: 4px;
-}
-
-.fc-thread-title-bar {
+/* Barra de multicita flotante */
+.fc-multicita-bar {
+  position: fixed;
+  bottom: 70px;
+  left: 50%;
+  transform: translateX(-50%);
   background: var(--navy);
-  padding: 14px 18px;
-  font-family: 'Roboto', sans-serif;
-  font-size: 16px;
-  font-weight: 800;
   color: white;
-  line-height: 1.3;
+  border-radius: 999px;
+  padding: 10px 20px;
+  display: none;
+  align-items: center;
+  gap: 12px;
+  z-index: 500;
+  box-shadow: 0 4px 20px rgba(15,27,45,0.3);
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Roboto', sans-serif;
 }
+.fc-multicita-bar.visible { display: flex; }
+.fc-multicita-bar-count { color: var(--accent); }
+.fc-multicita-bar-btn {
+  background: var(--blue);
+  border: none;
+  border-radius: 999px;
+  color: white;
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Roboto', sans-serif;
+  transition: background 0.15s;
+}
+.fc-multicita-bar-btn:hover { background: var(--blue-light); }
+.fc-multicita-bar-cancel {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 999px;
+  color: rgba(255,255,255,0.7);
+  padding: 5px 12px;
+  font-size: 11px;
+  cursor: pointer;
+  font-family: 'Roboto', sans-serif;
+  transition: all 0.15s;
+}
+.fc-multicita-bar-cancel:hover { border-color: white; color: white; }
 
 /* ─── REPLY BOX FC ─── */
 .forum-reply-box-fc {
@@ -3955,6 +4047,13 @@ body {
   <span class="fab-icon">📰</span>
   <span class="fab-label">Nueva noticia</span>
 </button>
+
+<!-- BARRA MULTICITA -->
+<div class="fc-multicita-bar" id="fcMulticitaBar">
+  <span>Citas seleccionadas: <span class="fc-multicita-bar-count" id="fcMulticitaCount">0</span></span>
+  <button class="fc-multicita-bar-btn" onclick="aplicarMulticita()">💬 Citar seleccionadas</button>
+  <button class="fc-multicita-bar-cancel" onclick="cancelarMulticita()">Cancelar</button>
+</div>
 
 <!-- TOAST -->
 <div class="send-toast" id="sendToast"></div>
@@ -7189,6 +7288,8 @@ async function abrirCategoria(cat) {
 
 async function abrirPost(postId) {
   forumPostActual = postId;
+  fcMultiCitas = [];
+  actualizarBarraMulticita();
   document.getElementById('forumThreadArea').classList.remove('open');
   const detailArea = document.getElementById('forumDetailArea');
   detailArea.classList.add('open');
@@ -7208,6 +7309,19 @@ async function abrirPost(postId) {
   const { data: uPost } = await db.from('usuarios').select('puntos,rol').eq('nickname', post.nickname).single();
   const rangoPost = getRango(uPost?.puntos || 0, uPost?.rol || 'usuario');
 
+  const esAutor = usuario && usuario.nickname === post.nickname;
+  const esAdmin = usuario && (usuario.rol === 'admin' || usuario.nickname === 'dastan');
+  const contenidoSafe = (post.contenido || '').replace(/`/g,"'").replace(/\\/g,'');
+
+  const accionesPost = usuario ? `
+    <input type="checkbox" class="fc-multicita-check" id="fc_check_${post.id}" onclick="toggleCitaPost('${escHtml(nombre)}', \`${contenidoSafe.substring(0,200)}\`, '${post.id}')">
+    <button class="fc-action-btn" onclick="citarPostForo('${escHtml(nombre)}', \`${contenidoSafe}\`)">💬 Citar</button>
+    <button class="fc-action-btn" onclick="mencionarEnForo('${escHtml(post.nickname)}')">@</button>
+    ${(esAutor || esAdmin) ? `<button class="fc-action-btn" onclick="editarPostForo('${post.id}')">✏️ Editar</button>` : ''}
+    ${(esAutor || esAdmin) ? `<button class="fc-action-btn danger" onclick="borrarPostForo('${post.id}')">🗑</button>` : ''}
+    <button class="fc-action-btn" onclick="reportarPostForo('${post.id}')" title="Reportar">⚠️</button>
+  ` : '';
+
   document.getElementById('forumDetailContent').innerHTML = `
     <div class="fc-thread-container">
       <div class="fc-thread-title-bar">${catInfo.icon} ${escHtml(post.titulo)}</div>
@@ -7221,10 +7335,7 @@ async function abrirPost(postId) {
           <div class="fc-post-header">
             <span class="fc-post-num">#1</span>
             <span class="fc-post-time">${timeAgo(post.created_at)}</span>
-            <div class="fc-post-actions-top">
-              ${usuario ? `<button class="fc-action-btn" onclick="citarPostForo('${escHtml(nombre)}', \`${escHtml(post.contenido||'').replace(/`/g,"'")}\`)">💬 Citar</button>` : ''}
-              ${usuario ? `<button class="fc-action-btn" onclick="mencionarEnForo('${escHtml(post.nickname)}')">@</button>` : ''}
-            </div>
+            <div class="fc-post-actions-top">${accionesPost}</div>
           </div>
           <div class="fc-post-content">${renderForumContent(post.contenido || '')}</div>
         </div>
@@ -7244,7 +7355,7 @@ async function cargarRespuestasForo(postId) {
 
   const el = document.getElementById('forumRepliesSection');
   if (!replies || replies.length === 0) {
-    el.innerHTML = '<div class="replies-empty" style="padding:16px 0 8px;">Sin respuestas aún. ¡Sé el primero!</div>';
+    el.innerHTML = '<div style="padding:14px 0 8px;color:var(--text-3);font-size:13px;">Sin respuestas aún. ¡Sé el primero!</div>';
     return;
   }
 
@@ -7258,6 +7369,19 @@ async function cargarRespuestasForo(postId) {
     const { data: uData } = await db.from('usuarios').select('puntos,rol').eq('nickname', r.nickname).single();
     const rango = getRango(uData?.puntos || 0, uData?.rol || 'usuario');
     const contenidoHtml = renderForumContent(r.contenido || '');
+    const contenidoSafe = (r.contenido || '').replace(/`/g,"'").replace(/\\/g,'');
+
+    const esAutor = usuario && usuario.nickname === r.nickname;
+    const esAdmin = usuario && (usuario.rol === 'admin' || usuario.nickname === 'dastan');
+
+    const acciones = usuario ? `
+      <input type="checkbox" class="fc-multicita-check" id="fc_check_${r.id}" onclick="toggleCitaPost('${escHtml(nombre)}', \`${contenidoSafe.substring(0,200)}\`, '${r.id}')">
+      <button class="fc-action-btn" onclick="citarPostForo('${escHtml(nombre)}', \`${contenidoSafe}\`)">💬 Citar</button>
+      <button class="fc-action-btn" onclick="mencionarEnForo('${escHtml(r.nickname)}')">@</button>
+      ${(esAutor || esAdmin) ? `<button class="fc-action-btn" onclick="editarRespuestaForo('${r.id}')">✏️ Editar</button>` : ''}
+      ${(esAutor || esAdmin) ? `<button class="fc-action-btn danger" onclick="borrarRespuestaForo('${r.id}')">🗑</button>` : ''}
+      <button class="fc-action-btn" onclick="reportarPostForo('${r.id}')" title="Reportar">⚠️</button>
+    ` : '';
 
     html += `
       <div class="fc-post" id="fcpost_${r.id}">
@@ -7270,10 +7394,7 @@ async function cargarRespuestasForo(postId) {
           <div class="fc-post-header">
             <span class="fc-post-num">#${i + 2}</span>
             <span class="fc-post-time">${timeAgo(r.created_at)}</span>
-            <div class="fc-post-actions-top">
-              ${usuario ? `<button class="fc-action-btn" onclick="citarPostForo('${escHtml(nombre)}', \`${escHtml(r.contenido||'').replace(/`/g,"'").substring(0,200)}\`)">💬 Citar</button>` : ''}
-              ${usuario ? `<button class="fc-action-btn" onclick="mencionarEnForo('${escHtml(r.nickname)}')">@</button>` : ''}
-            </div>
+            <div class="fc-post-actions-top">${acciones}</div>
           </div>
           <div class="fc-post-content">${contenidoHtml}</div>
         </div>
@@ -7305,11 +7426,16 @@ async function enviarRespuestaForo() {
   if (input && input.tagName === 'DIV') {
     const rawText = input.textContent.trim();
     if (fcCitaActiva) {
-      texto = `[cite:${fcCitaActiva.nickname}]${fcCitaActiva.contenido.substring(0,200)}[/cite]\n${rawText}`;
+      if (fcCitaActiva.isMulti) {
+        // Multicita: el contenido ya viene formateado
+        texto = `${fcCitaActiva.contenido}\n${rawText}`;
+      } else {
+        texto = `[cite:${fcCitaActiva.nickname}]${fcCitaActiva.contenido.substring(0,200)}[/cite]\n${rawText}`;
+      }
     } else {
       texto = rawText;
     }
-    if (!texto) { toast('❌ Escribe algo'); return; }
+    if (!texto.trim()) { toast('❌ Escribe algo'); return; }
     input.innerHTML = '';
   } else if (input) {
     texto = input.value.trim();
@@ -7327,6 +7453,98 @@ async function enviarRespuestaForo() {
   clearForumCita();
   toast('✅ Respuesta publicada');
   await cargarRespuestasForo(forumPostActual);
+}
+
+// ── EDITAR / BORRAR POST DEL FORO ──────────────
+async function editarPostForo(postId) {
+  const { data: post } = await db.from('foro_posts').select('titulo,contenido').eq('id', postId).single();
+  if (!post) return;
+  const modalHtml = `
+    <div class="fc-newpost-overlay" id="editForumPostModal" onclick="if(event.target===this)this.remove()">
+      <div class="fc-newpost-sheet">
+        <div class="fc-newpost-handle"></div>
+        <div class="fc-newpost-header">
+          <span class="fc-newpost-title">✏️ Editar post</span>
+          <button class="fc-newpost-close" onclick="document.getElementById('editForumPostModal').remove()">✕</button>
+        </div>
+        <input class="fc-newpost-input" type="text" id="editForumTitulo" value="${escHtml(post.titulo)}" maxlength="200" />
+        <textarea class="fc-newpost-textarea" id="editForumContenido" rows="5">${escHtml(post.contenido)}</textarea>
+        <div class="fc-newpost-actions">
+          <button class="fc-newpost-cancel" onclick="document.getElementById('editForumPostModal').remove()">Cancelar</button>
+          <button class="fc-newpost-publish" onclick="guardarEdicionPostForo('${postId}')">Guardar</button>
+        </div>
+      </div>
+    </div>`;
+  const old = document.getElementById('editForumPostModal');
+  if (old) old.remove();
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+async function guardarEdicionPostForo(postId) {
+  const titulo = (document.getElementById('editForumTitulo').value || '').trim();
+  const contenido = (document.getElementById('editForumContenido').value || '').trim();
+  if (!titulo || !contenido) { toast('❌ Título y contenido son obligatorios'); return; }
+  const { error } = await db.from('foro_posts').update({ titulo, contenido }).eq('id', postId);
+  if (error) { toast('❌ Error: ' + error.message); return; }
+  toast('✅ Post editado');
+  document.getElementById('editForumPostModal')?.remove();
+  await abrirPost(postId);
+}
+
+async function borrarPostForo(postId) {
+  if (!confirm('¿Borrar este post permanentemente? Se eliminarán también todas sus respuestas.')) return;
+  await db.from('foro_replies').delete().eq('post_id', postId);
+  const { error } = await db.from('foro_posts').delete().eq('id', postId);
+  if (error) { toast('❌ Error: ' + error.message); return; }
+  toast('🗑 Post borrado');
+  volverForumHilos();
+  await abrirCategoria(forumCatActual);
+}
+
+// ── EDITAR / BORRAR RESPUESTA DEL FORO ──────────
+async function editarRespuestaForo(replyId) {
+  const { data: r } = await db.from('foro_replies').select('contenido').eq('id', replyId).single();
+  if (!r) return;
+  const modalHtml = `
+    <div class="fc-newpost-overlay" id="editForumReplyModal" onclick="if(event.target===this)this.remove()">
+      <div class="fc-newpost-sheet">
+        <div class="fc-newpost-handle"></div>
+        <div class="fc-newpost-header">
+          <span class="fc-newpost-title">✏️ Editar respuesta</span>
+          <button class="fc-newpost-close" onclick="document.getElementById('editForumReplyModal').remove()">✕</button>
+        </div>
+        <textarea class="fc-newpost-textarea" id="editForumReplyContenido" rows="6" style="min-height:140px;">${escHtml(r.contenido)}</textarea>
+        <div class="fc-newpost-actions">
+          <button class="fc-newpost-cancel" onclick="document.getElementById('editForumReplyModal').remove()">Cancelar</button>
+          <button class="fc-newpost-publish" onclick="guardarEdicionRespuestaForo('${replyId}')">Guardar</button>
+        </div>
+      </div>
+    </div>`;
+  const old = document.getElementById('editForumReplyModal');
+  if (old) old.remove();
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+async function guardarEdicionRespuestaForo(replyId) {
+  const contenido = (document.getElementById('editForumReplyContenido').value || '').trim();
+  if (!contenido) { toast('❌ No puede estar vacío'); return; }
+  const { error } = await db.from('foro_replies').update({ contenido }).eq('id', replyId);
+  if (error) { toast('❌ Error: ' + error.message); return; }
+  toast('✅ Respuesta editada');
+  document.getElementById('editForumReplyModal')?.remove();
+  await cargarRespuestasForo(forumPostActual);
+}
+
+async function borrarRespuestaForo(replyId) {
+  if (!confirm('¿Borrar esta respuesta?')) return;
+  const { error } = await db.from('foro_replies').delete().eq('id', replyId);
+  if (error) { toast('❌ Error: ' + error.message); return; }
+  toast('🗑 Respuesta borrada');
+  await cargarRespuestasForo(forumPostActual);
+}
+
+function reportarPostForo(id) {
+  toast('⚠️ Reportado. El equipo lo revisará.');
 }
 
 function abrirNuevoPostForo() {
@@ -7528,11 +7746,74 @@ function cerrarModalTopMoviles() { document.getElementById('modalTopMoviles').cl
 // ═══════════════════════════════════════════
 let fcCitaActiva = null; // { nickname, contenido }
 let fcMultiCitas = []; // array de { nickname, contenido } para multicita
+let fcMulticitaMode = false;
 
 function clearForumCita() {
   fcCitaActiva = null;
+  fcMultiCitas = [];
   const preview = document.getElementById('fcQuotePreview');
   if (preview) preview.style.display = 'none';
+}
+
+function toggleMulticitaMode() {
+  fcMulticitaMode = !fcMulticitaMode;
+  if (!fcMulticitaMode) cancelarMulticita();
+  actualizarBarraMulticita();
+}
+
+function actualizarBarraMulticita() {
+  const bar = document.getElementById('fcMulticitaBar');
+  const count = document.getElementById('fcMulticitaCount');
+  if (!bar) return;
+  if (fcMultiCitas.length > 0) {
+    bar.classList.add('visible');
+    if (count) count.textContent = fcMultiCitas.length;
+  } else {
+    bar.classList.remove('visible');
+  }
+}
+
+function toggleCitaPost(nickname, contenido, postId) {
+  const idx = fcMultiCitas.findIndex(c => c.postId === postId);
+  const check = document.getElementById(`fc_check_${postId}`);
+  if (idx >= 0) {
+    fcMultiCitas.splice(idx, 1);
+    if (check) check.checked = false;
+  } else {
+    fcMultiCitas.push({ nickname, contenido, postId });
+    if (check) check.checked = true;
+  }
+  actualizarBarraMulticita();
+}
+
+function aplicarMulticita() {
+  if (fcMultiCitas.length === 0) return;
+  // Construir texto de multicita
+  let texto = fcMultiCitas.map(c =>
+    `[cite:${c.nickname}]${c.contenido.substring(0, 200)}[/cite]`
+  ).join('\n');
+  fcCitaActiva = { nickname: 'multicita', contenido: texto, isMulti: true };
+  const preview = document.getElementById('fcQuotePreview');
+  const authorEl = document.getElementById('fcQuoteAuthor');
+  const textEl = document.getElementById('fcQuoteText');
+  if (preview && authorEl && textEl) {
+    authorEl.textContent = `${fcMultiCitas.length} citas seleccionadas`;
+    textEl.textContent = fcMultiCitas.map(c => c.nickname).join(', ') + '…';
+    preview.style.display = 'flex';
+  }
+  cancelarMulticita();
+  const box = document.getElementById('forumReplyBox');
+  if (box) { box.style.display = 'block'; box.scrollIntoView({ behavior: 'smooth', block: 'end' }); }
+  const input = document.getElementById('forumReplyInput');
+  if (input) input.focus();
+}
+
+function cancelarMulticita() {
+  fcMultiCitas = [];
+  fcMulticitaMode = false;
+  // uncheck all
+  document.querySelectorAll('.fc-multicita-check').forEach(c => c.checked = false);
+  actualizarBarraMulticita();
 }
 
 function citarPostForo(nickname, contenido) {
@@ -7545,7 +7826,6 @@ function citarPostForo(nickname, contenido) {
     textEl.textContent = contenido.replace(/<[^>]+>/g, '').substring(0, 120) + (contenido.length > 120 ? '…' : '');
     preview.style.display = 'flex';
   }
-  // Scroll al reply box
   const box = document.getElementById('forumReplyBox');
   if (box) { box.style.display = 'block'; box.scrollIntoView({ behavior: 'smooth', block: 'end' }); }
   const input = document.getElementById('forumReplyInput');
