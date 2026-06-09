@@ -407,13 +407,15 @@ body {
   z-index: 450;
   background: var(--navy);
   border-top: 1px solid rgba(255,255,255,0.1);
-  padding: 0 0 env(safe-area-inset-bottom, 0);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
   box-shadow: 0 -4px 20px rgba(15,27,45,0.25);
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
 @media (max-width: 600px) {
   .bottom-nav { display: flex; }
-  .container { padding-bottom: 130px; }
+  .container { padding-bottom: 100px; }
 }
 
 .bottom-nav-inner {
@@ -501,8 +503,7 @@ body {
   box-shadow: 0 -2px 10px rgba(15,27,45,0.08);
 }
 @media (max-width: 600px) {
-  .mini-rank-bar { display: flex; }
-  .container { padding-bottom: 120px; }
+  .mini-rank-bar { display: none; }
 }
 
 .mini-rank-half {
@@ -1751,6 +1752,10 @@ body {
   transition: all 0.2s;
 }
 
+@media (max-width: 600px) {
+  .fab { display: none !important; }
+}
+
 .fab:hover {
   background: var(--blue-light);
   transform: translateY(-2px);
@@ -1792,10 +1797,12 @@ body {
   box-shadow: 0 6px 20px rgba(245,166,35,0.5);
 }
 
+/* fab-news stays hidden on mobile too (admin uses desktop mostly) */
+@media (max-width: 600px) {
+  .fab-news { display: none !important; }
+}
 @media (max-width: 380px) {
   .fab-label { display: none; }
-  .fab { padding: 0; width: 52px; justify-content: center; border-radius: 50%; }
-  .fab-news { padding: 0; width: 48px; justify-content: center; border-radius: 50%; bottom: 86px; }
 }
 
 /* ─── TOAST ─── */
@@ -2340,17 +2347,17 @@ body {
 #adminBtn {
   display: none;
   position: fixed;
-  bottom: 24px;
-  left: 20px;
-  z-index: 999;
-  width: 52px;
-  height: 52px;
+  bottom: 76px;
+  left: 12px;
+  z-index: 460;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   border: none;
   background: linear-gradient(135deg, #F5A623, #E8890A);
   color: white;
-  font-size: 22px;
-  box-shadow: 0 4px 16px rgba(245,166,35,0.5);
+  font-size: 19px;
+  box-shadow: 0 3px 12px rgba(245,166,35,0.5);
   cursor: pointer;
   align-items: center;
   justify-content: center;
@@ -2358,13 +2365,13 @@ body {
   transition: transform 0.15s, box-shadow 0.15s;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   #adminBtn {
-    width: 48px;
-    height: 48px;
-    bottom: 16px;
-    left: 12px;
-    font-size: 19px;
+    width: 40px;
+    height: 40px;
+    bottom: 70px;
+    left: 10px;
+    font-size: 17px;
   }
 }
 
@@ -3126,6 +3133,37 @@ body {
   padding: 16px 18px 32px;
 }
 
+/* ─── FORUM EXIT BAR ─── */
+.forum-exit-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0 12px;
+  margin-bottom: 4px;
+}
+.forum-exit-btn {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--text-2);
+  font-family: 'Roboto', sans-serif;
+  transition: all 0.18s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.forum-exit-btn:hover { border-color: var(--blue); color: var(--blue); }
+.forum-exit-title {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--navy);
+}
+
 /* ─── FORUM SHORTCUT BUTTON ─── */
 .forum-shortcut-btn {
   display: flex;
@@ -3407,9 +3445,9 @@ body {
   font-size: 13px;
 }
 
-/* ─── MOBILE PADDING ADJUST (no mini rank bar) ─── */
+/* ─── MOBILE PADDING ADJUST ─── */
 @media (max-width: 600px) {
-  .container { padding-bottom: 80px; }
+  .container { padding-bottom: 100px; }
 }
 </style>
 </head>
@@ -3558,6 +3596,12 @@ body {
   <div id="forumSection" class="forum-section">
     <!-- Lista de categorías -->
     <div id="forumCats">
+      <div class="forum-exit-bar">
+        <button class="forum-exit-btn" onclick="setTab('abiertas', document.querySelector('.tab.active') || document.querySelector('.tab'))">
+          ← Salir del foro
+        </button>
+        <span class="forum-exit-title">💬 Foro</span>
+      </div>
       <div class="forum-categories">
         <div class="forum-cat-card" onclick="abrirCategoria('android')">
           <div class="forum-cat-info">
@@ -3752,25 +3796,7 @@ body {
 </div>
 
 <!-- BOTÓN ADMIN FLOTANTE (solo dastan) -->
-<button id="adminBtn" onclick="emergenciaAdmin()" style="
-  display: none;
-  position: fixed;
-  bottom: 24px;
-  left: 20px;
-  z-index: 999;
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  border: none;
-  background: linear-gradient(135deg, #F5A623, #E8890A);
-  color: white;
-  font-size: 1.4rem;
-  box-shadow: 0 4px 16px rgba(245,166,35,0.5);
-  cursor: pointer;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.15s, box-shadow 0.15s;
-">👑</button>
+<button id="adminBtn" onclick="emergenciaAdmin()">👑</button>
 
 <!-- FAB periódico (solo admin) -->
 <button class="fab-news" id="fabNewsBtn" onclick="abrirModalNuevaNoticia()" style="display:none;">
@@ -3800,14 +3826,15 @@ body {
         <span class="bnav-forum-label">FORO</span>
       </button>
     </div>
-    <button class="bnav-btn" id="bnav_nueva" onclick="abrirForm()">
-      <span class="bnav-icon">✏️</span>
-      <span class="bnav-label">Nueva</span>
+    <button class="bnav-btn" id="bnav_nueva" onclick="bnavNueva()">
+      <span class="bnav-icon" id="bnavNuevaIcon">✏️</span>
+      <span class="bnav-label" id="bnavNuevaLabel">Nueva</span>
     </button>
     <button class="bnav-btn bnav-admin-only" id="bnav_mis_cerradas" onclick="setTab('mis_cerradas', this); syncBnav('mis_cerradas')" style="display:none;">
       <span class="bnav-icon">✅</span>
       <span class="bnav-label">Cerradas</span>
     </button>
+    <!-- Botón contextual: en foro = nuevo post, si no = back a consultas -->
   </div>
 </nav>
 
@@ -4909,6 +4936,7 @@ function setTab(tab, el) {
   document.querySelectorAll('.tab, .forum-tab-btn').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
   syncBnav(tab);
+  actualizarBnavNueva();
 
   const hilosEl = document.getElementById('hilosList');
   const pagEl = document.getElementById('pagination');
@@ -4940,6 +4968,9 @@ function setTab(tab, el) {
     if (forumEl) forumEl.classList.add('open');
     if (topMovilesEl) topMovilesEl.style.display = 'none';
     if (topUsuariosEl) topUsuariosEl.style.display = 'none';
+    // Ocultar botón foro shortcut cuando estamos en el foro
+    const shortcut = document.getElementById('forumShortcutBtn');
+    if (shortcut) shortcut.style.display = 'none';
     cargarContadoresForo();
     mostrarForumCats();
   } else {
@@ -4949,6 +4980,9 @@ function setTab(tab, el) {
     if (forumEl) forumEl.classList.remove('open');
     if (topMovilesEl) topMovilesEl.style.display = '';
     if (topUsuariosEl) topUsuariosEl.style.display = '';
+    // Restaurar botón acceso al foro
+    const shortcut = document.getElementById('forumShortcutBtn');
+    if (shortcut) shortcut.style.display = '';
     cargarHilos();
   }
 }
@@ -7208,6 +7242,29 @@ function escHtml(str) {
   return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
+// ─── BNAV NUEVA CONTEXTUAL ───────────────────
+function bnavNueva() {
+  if (tabActual === 'foro') {
+    abrirNuevoPostForo();
+  } else {
+    abrirForm();
+  }
+}
+
+// Update bnav nueva label based on context
+function actualizarBnavNueva() {
+  const icon = document.getElementById('bnavNuevaIcon');
+  const label = document.getElementById('bnavNuevaLabel');
+  if (!icon || !label) return;
+  if (tabActual === 'foro') {
+    icon.textContent = '✏️';
+    label.textContent = 'Nuevo post';
+  } else {
+    icon.textContent = '✏️';
+    label.textContent = 'Nueva';
+  }
+}
+
 // ═══════════════════════════════════════════
 // HAMBURGER DRAWER
 // ═══════════════════════════════════════════
@@ -7478,26 +7535,48 @@ document.addEventListener('DOMContentLoaded', () => {
 function initKeyboardHandler() {
   if (!window.visualViewport) return;
   let rafId = null;
+
   function adjust() {
     if (rafId) cancelAnimationFrame(rafId);
     rafId = requestAnimationFrame(() => {
-      const overlay = document.getElementById('rankingModalOverlay');
-      if (!overlay || overlay.style.display === 'none') return;
-      const modal = overlay.querySelector('.ranking-modal');
-      if (!modal) return;
       const vv = window.visualViewport;
-      const kb = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
-      if (kb > 50) {
-        overlay.style.paddingBottom = kb + 'px';
-        modal.style.maxHeight = Math.min(vv.height * 0.88, vv.height - 40) + 'px';
-      } else {
-        overlay.style.paddingBottom = '';
-        modal.style.maxHeight = '';
+
+      // Keep bottom nav pinned to bottom of visual viewport (handles Chrome showing/hiding URL bar)
+      const nav = document.getElementById('bottomNav');
+      if (nav) {
+        const offsetFromBottom = window.innerHeight - (vv.offsetTop + vv.height);
+        nav.style.bottom = Math.max(0, offsetFromBottom) + 'px';
+      }
+
+      // Keep admin button above nav
+      const adminBtn = document.getElementById('adminBtn');
+      if (adminBtn && adminBtn.style.display !== 'none') {
+        const offsetFromBottom = window.innerHeight - (vv.offsetTop + vv.height);
+        adminBtn.style.bottom = (Math.max(0, offsetFromBottom) + 70) + 'px';
+      }
+
+      // Ranking modal keyboard adjust
+      const overlay = document.getElementById('rankingModalOverlay');
+      if (overlay && overlay.style.display !== 'none') {
+        const modal = overlay.querySelector('.ranking-modal');
+        if (modal) {
+          const kb = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+          if (kb > 50) {
+            overlay.style.paddingBottom = kb + 'px';
+            modal.style.maxHeight = Math.min(vv.height * 0.88, vv.height - 40) + 'px';
+          } else {
+            overlay.style.paddingBottom = '';
+            modal.style.maxHeight = '';
+          }
+        }
       }
     });
   }
+
   window.visualViewport.addEventListener('resize', adjust);
   window.visualViewport.addEventListener('scroll', adjust);
+  // Run once on load
+  adjust();
 }
 </script>
 </body>
