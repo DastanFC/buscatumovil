@@ -2954,12 +2954,472 @@ body {
     padding-top: 10px;
     border-top: 1px solid var(--border);
 }
+
+/* ─── HAMBURGER BUTTON ─── */
+.hamburger-btn {
+  background: none;
+  border: none;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.hamburger-btn:hover { background: rgba(255,255,255,0.1); }
+.hamburger-btn span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: white;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+
+/* ─── SIDE DRAWER ─── */
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 800;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+.drawer-overlay.open { opacity: 1; pointer-events: all; }
+
+.side-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 280px;
+  max-width: 85vw;
+  height: 100%;
+  background: white;
+  z-index: 900;
+  transform: translateX(-100%);
+  transition: transform 0.28s cubic-bezier(.22,1,.36,1);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 0 24px rgba(15,27,45,0.2);
+}
+.side-drawer.open { transform: translateX(0); }
+
+.drawer-header {
+  background: var(--navy);
+  padding: 16px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 52px;
+}
+.drawer-title {
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: white;
+  letter-spacing: -0.2px;
+}
+.drawer-close {
+  background: rgba(255,255,255,0.12);
+  border: none;
+  color: white;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.drawer-menu {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+.drawer-item {
+  width: 100%;
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  color: var(--text);
+  transition: background 0.15s;
+  text-align: left;
+  border-bottom: 1px solid var(--surface-3);
+}
+.drawer-item:hover { background: var(--surface-2); }
+.drawer-item:active { background: var(--surface-3); }
+.drawer-item-icon { font-size: 22px; flex-shrink: 0; }
+.drawer-item-label { flex: 1; font-weight: 500; }
+.drawer-item-arrow { color: var(--text-3); font-size: 20px; }
+
+/* ─── SIDEMENU MODALS (Rangos / Top usuarios / Top móviles) ─── */
+.sidemenu-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15,27,45,0.65);
+  backdrop-filter: blur(4px);
+  z-index: 950;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+}
+@media (min-width: 600px) {
+  .sidemenu-modal-overlay { align-items: center; padding: 20px; }
+}
+.sidemenu-modal-overlay.open { display: flex; }
+
+.sidemenu-modal {
+  background: white;
+  border-radius: 24px 24px 0 0;
+  width: 100%;
+  max-width: 520px;
+  max-height: 85vh;
+  overflow-y: auto;
+  animation: slideUpModal 0.25s cubic-bezier(.22,1,.36,1);
+}
+@media (min-width: 600px) { .sidemenu-modal { border-radius: 24px; } }
+
+.sidemenu-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px 14px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--navy);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 2;
+}
+.sidemenu-modal-header button {
+  background: var(--surface-3);
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-2);
+}
+
+.sidemenu-modal-body {
+  padding: 16px 18px 32px;
+}
+
+/* ─── FORUM SHORTCUT BUTTON ─── */
+.forum-shortcut-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: linear-gradient(135deg, var(--navy) 0%, #1A3558 100%);
+  border: 1.5px solid rgba(29,111,232,0.35);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  color: white;
+  transition: all 0.18s;
+  box-shadow: var(--shadow);
+}
+.forum-shortcut-btn:hover { border-color: var(--blue); box-shadow: var(--shadow-lg); }
+.forum-shortcut-btn:active { transform: scale(0.98); }
+@media (max-width: 600px) {
+  .forum-shortcut-btn { padding: 12px 14px; margin-bottom: 12px; }
+}
+
+/* ─── FORUM FC STYLE (hilo vertical) ─── */
+.fc-post {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  padding: 0;
+  background: white;
+}
+
+.fc-post-sidebar {
+  width: 72px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 8px 14px;
+  border-right: 1px solid var(--surface-3);
+  background: var(--surface-2);
+  gap: 6px;
+}
+@media (max-width: 600px) {
+  .fc-post-sidebar { width: 54px; padding: 12px 4px; }
+}
+
+.fc-post-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+@media (max-width: 600px) {
+  .fc-post-avatar { width: 34px; height: 34px; font-size: 11px; }
+}
+
+.fc-post-nick {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--navy);
+  text-align: center;
+  word-break: break-all;
+  line-height: 1.2;
+}
+
+.fc-post-rank-badge {
+  font-size: 9px;
+  padding: 2px 5px;
+  border-radius: 999px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.fc-post-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.fc-post-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px 6px;
+  border-bottom: 1px solid var(--surface-3);
+  flex-wrap: wrap;
+}
+
+.fc-post-num {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-right: 4px;
+}
+.fc-post-time {
+  font-size: 11px;
+  color: var(--text-3);
+}
+.fc-post-actions-top {
+  margin-left: auto;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.fc-action-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 11px;
+  color: var(--text-3);
+  cursor: pointer;
+  font-family: 'Roboto', sans-serif;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.fc-action-btn:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-pale); }
+
+.fc-post-content {
+  padding: 12px 14px 14px;
+  font-size: 15px;
+  color: var(--text-2);
+  line-height: 1.65;
+  flex: 1;
+  word-break: break-word;
+}
+@media (max-width: 600px) {
+  .fc-post-content { font-size: 14px; padding: 10px 12px 12px; }
+}
+
+.fc-post-content img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin: 6px 0;
+  display: block;
+}
+.fc-post-content a { color: var(--blue); text-decoration: underline; }
+.fc-post-content strong, .fc-post-content b { font-weight: 700; color: var(--text); }
+.fc-post-content em, .fc-post-content i { font-style: italic; }
+.fc-post-content u { text-decoration: underline; }
+
+/* Cita anidada en post del foro */
+.fc-quote {
+  background: var(--surface-2);
+  border-left: 3px solid var(--blue);
+  border-radius: 0 8px 8px 0;
+  padding: 8px 12px;
+  margin: 4px 0 8px;
+  font-size: 13px;
+  color: var(--text-3);
+}
+.fc-quote-from {
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--blue);
+  margin-bottom: 3px;
+}
+.fc-quote-body {
+  font-style: italic;
+  color: var(--text-2);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Cita anidada dentro de cita */
+.fc-quote .fc-quote {
+  background: var(--surface-3);
+  border-left-color: var(--text-3);
+  margin-top: 6px;
+}
+
+/* Post detail container */
+.fc-thread-container {
+  background: white;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1.5px solid var(--blue);
+  box-shadow: var(--shadow);
+  margin-bottom: 4px;
+}
+
+.fc-thread-title-bar {
+  background: var(--navy);
+  padding: 14px 18px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  color: white;
+  line-height: 1.3;
+}
+
+/* ─── REPLY BOX FC ─── */
+.forum-reply-box-fc {
+  background: white;
+  border-radius: var(--radius);
+  border: 1.5px solid var(--border);
+  overflow: hidden;
+  margin-top: 8px;
+  box-shadow: var(--shadow);
+}
+
+.fc-quote-preview {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 14px;
+  background: var(--blue-pale);
+  border-bottom: 1px solid rgba(29,111,232,0.15);
+}
+.fc-quote-preview-inner { flex: 1; min-width: 0; }
+.fc-quote-author { font-size: 11px; font-weight: 700; color: var(--blue); display: block; margin-bottom: 2px; }
+.fc-quote-text { font-size: 12px; color: var(--text-2); font-style: italic; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fc-quote-clear { background: none; border: none; color: var(--text-3); font-size: 16px; cursor: pointer; flex-shrink: 0; padding: 0 2px; }
+
+.fc-toolbar {
+  display: flex;
+  gap: 2px;
+  padding: 6px 10px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.fc-tool-btn {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  width: 32px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-2);
+  transition: all 0.15s;
+}
+.fc-tool-btn:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-pale); }
+
+.fc-reply-area {
+  min-height: 90px;
+}
+
+.fc-reply-input {
+  width: 100%;
+  min-height: 90px;
+  padding: 12px 14px;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text);
+  outline: none;
+  line-height: 1.6;
+  word-break: break-word;
+}
+.fc-reply-input:empty::before {
+  content: attr(data-placeholder);
+  color: var(--text-3);
+  pointer-events: none;
+}
+
+.fc-reply-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px 10px;
+  border-top: 1px solid var(--border);
+  background: var(--surface-2);
+}
+.fc-reply-hint {
+  font-size: 11px;
+  color: var(--text-3);
+}
+.fc-send-btn {
+  padding: 8px 20px;
+  font-size: 13px;
+}
+
+/* ─── MOBILE PADDING ADJUST (no mini rank bar) ─── */
+@media (max-width: 600px) {
+  .container { padding-bottom: 80px; }
+}
 </style>
 </head>
 <body>
 
 <!-- TOPBAR -->
 <div class="topbar">
+  <button class="hamburger-btn" onclick="toggleSideDrawer()" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
   <div class="logo" ondblclick="emergenciaAdmin()">
     <div class="logo-icon">📱</div>
     <em>EL RECOMENDADOR</em>
@@ -2973,6 +3433,72 @@ body {
       <div class="user-chip-avatar" id="chipAvatar">👤</div>
       <span class="user-chip-name" id="chipName">Invitado</span>
       <span class="user-chip-pts" id="chipPts"></span>
+    </div>
+  </div>
+</div>
+
+<!-- SIDE DRAWER -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeSideDrawer()"></div>
+<div class="side-drawer" id="sideDrawer">
+  <div class="drawer-header">
+    <span class="drawer-title">📱 EL RECOMENDADOR</span>
+    <button class="drawer-close" onclick="closeSideDrawer()">✕</button>
+  </div>
+  <div class="drawer-menu">
+    <button class="drawer-item" onclick="closeSideDrawer(); abrirModalRangos()">
+      <span class="drawer-item-icon">🏆</span>
+      <span class="drawer-item-label">Rangos de usuarios</span>
+      <span class="drawer-item-arrow">›</span>
+    </button>
+    <button class="drawer-item" onclick="closeSideDrawer(); abrirModalTopUsuarios()">
+      <span class="drawer-item-icon">👥</span>
+      <span class="drawer-item-label">Top usuarios</span>
+      <span class="drawer-item-arrow">›</span>
+    </button>
+    <button class="drawer-item" onclick="closeSideDrawer(); abrirModalTopMoviles()">
+      <span class="drawer-item-icon">📱</span>
+      <span class="drawer-item-label">Top móviles</span>
+      <span class="drawer-item-arrow">›</span>
+    </button>
+  </div>
+</div>
+
+<!-- MODAL RANGOS -->
+<div class="sidemenu-modal-overlay" id="modalRangos" onclick="if(event.target===this)cerrarModalRangos()">
+  <div class="sidemenu-modal">
+    <div class="sidemenu-modal-header">
+      <span>🏆 Rangos de usuarios</span>
+      <button onclick="cerrarModalRangos()">✕</button>
+    </div>
+    <div class="sidemenu-modal-body">
+      <p style="font-size:12px;color:var(--text-3);margin-bottom:14px;">Ganas 2 pts por responder · 3 pts cuando votan útil tu respuesta · 1 pt por nueva consulta</p>
+      <div class="ranks-grid" id="modalRanksGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL TOP USUARIOS -->
+<div class="sidemenu-modal-overlay" id="modalTopUsuarios" onclick="if(event.target===this)cerrarModalTopUsuarios()">
+  <div class="sidemenu-modal">
+    <div class="sidemenu-modal-header">
+      <span>👥 Top usuarios</span>
+      <button onclick="cerrarModalTopUsuarios()">✕</button>
+    </div>
+    <div class="sidemenu-modal-body" id="modalTopUsuariosBody">
+      <div class="loading">⏳ Cargando...</div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL TOP MÓVILES -->
+<div class="sidemenu-modal-overlay" id="modalTopMoviles" onclick="if(event.target===this)cerrarModalTopMoviles()">
+  <div class="sidemenu-modal">
+    <div class="sidemenu-modal-header">
+      <span>📱 Top móviles</span>
+      <button onclick="cerrarModalTopMoviles()">✕</button>
+    </div>
+    <div class="sidemenu-modal-body" id="modalTopMovilesBody">
+      <div class="loading">⏳ Cargando...</div>
     </div>
   </div>
 </div>
@@ -3018,58 +3544,14 @@ body {
 <!-- MAIN -->
 <div class="container">
 
-  <!-- Perks banner -->
-  <div class="perks-banner" onclick="togglePerks()" id="perksBanner">
-    <div class="perks-banner-title">🏆 RANGOS DE USUARIO <span style="margin-left:auto;font-size:0.75rem;opacity:0.4">▾</span></div>
-    <div class="perks-banner-sub">Gana puntos respondiendo a otros usuarios y sube de rango. </div>
-  </div>
-
-  <div class="perks-panel" id="perksPanel">
-    <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;margin-bottom:4px;">Sistema de rangos</div>
-    <div style="font-size:0.75rem;color:var(--text-3);margin-bottom:0;">Ganas 2 pts por responder · 3 pts cuando votan útil tu respuesta · 1 pt por nueva consulta</div>
-    <div class="ranks-grid" id="ranksGrid"></div>
-  </div>
-
-  <!-- NUEVA SECCIÓN: TOP MÓVILES DEL MOMENTO -->
-  <div id="topMovilesSection" class="top-moviles-card">
-    <div class="top-moviles-header" onclick="toggleTopMoviles()">
-      <div class="top-moviles-title">
-        <span>🏆</span> Top móviles de usuarios
-      </div>
-      <button class="top-moviles-toggle" id="topToggleBtn">▾</button>
+  <!-- BOTÓN FORO (entre banner global y consultas) -->
+  <div class="forum-shortcut-btn" id="forumShortcutBtn" onclick="setTab('foro', document.getElementById('forumTabBtn')); syncBnav('foro')">
+    <span style="font-size:20px;">💬</span>
+    <div style="flex:1;min-width:0;">
+      <div style="font-weight:700;font-size:14px;font-family:'Roboto',sans-serif;">Foro de la comunidad</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.6);">Android · iOS · Apps · Ayuda</div>
     </div>
-    <div id="topMovilesContent" class="top-moviles-content">
-      <div class="top-moviles-filter">
-        <div class="form-field">
-          <label>💰 Filtrar por presupuesto (opcional)</label>
-          <input type="number" id="topPresupuestoFiltro" placeholder="Ej: 400" value="" step="50">
-        </div>
-        <div>
-          <button class="btn-submit" onclick="cargarTopMoviles()" style="margin-top: 22px;">🔍 Actualizar TOP</button>
-        </div>
-      </div>
-      <div id="topMovilesList" class="top-moviles-list">
-        <div class="loading">⏳ Cargando ranking...</div>
-      </div>
-      <div class="top-moviles-footer">
-        * Basado en recomendaciones más votadas (👍) y recientes de la comunidad
-      </div>
-    </div>
-  </div>
-
-  <!-- TOP RANKING USUARIOS -->
-  <div id="topUsuariosSection" class="top-usuarios-card">
-    <div class="top-usuarios-header" onclick="toggleTopUsuarios()">
-      <div class="top-usuarios-title">
-        <span>👥</span> Top usuarios de la comunidad
-      </div>
-      <button class="top-usuarios-toggle" id="topUsuariosToggleBtn">▾</button>
-    </div>
-    <div id="topUsuariosContent" class="top-usuarios-content">
-      <div id="topUsuariosList" class="top-usuarios-list">
-        <div class="loading">⏳ Cargando ranking...</div>
-      </div>
-    </div>
+    <span style="font-size:18px;opacity:0.7;">›</span>
   </div>
 
   <!-- FORO -->
@@ -3125,18 +3607,47 @@ body {
       <div id="forumPostList"></div>
     </div>
 
-    <!-- Detalle de un post -->
+    <!-- Detalle de un post — estilo ForoCoches vertical -->
     <div id="forumDetailArea" class="forum-detail-area">
-      <div class="forum-thread-header">
+      <div class="forum-thread-header" style="margin-bottom:0;">
         <button class="forum-back-btn" onclick="volverForumHilos()">← Volver a la categoría</button>
       </div>
+
+      <!-- Post original -->
       <div id="forumDetailContent"></div>
-      <div class="forum-reply-section" id="forumRepliesSection"></div>
-      <div class="forum-reply-box" id="forumReplyBox" style="display:none;">
-        <div style="font-size:12px;font-weight:600;color:var(--text-3);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;">Tu respuesta</div>
-        <textarea id="forumReplyInput" placeholder="Escribe tu respuesta..." rows="3"></textarea>
-        <div style="display:flex;justify-content:flex-end;margin-top:10px;">
-          <button class="btn-submit" onclick="enviarRespuestaForo()">➤ Publicar respuesta</button>
+
+      <!-- Respuestas estilo hilo vertical -->
+      <div id="forumRepliesSection" class="forum-reply-section"></div>
+
+      <!-- Caja de respuesta rápida estilo móvil ForoCoches -->
+      <div class="forum-reply-box-fc" id="forumReplyBox" style="display:none;">
+        <!-- Preview de cita activa -->
+        <div class="fc-quote-preview" id="fcQuotePreview" style="display:none;">
+          <div class="fc-quote-preview-inner">
+            <span class="fc-quote-author" id="fcQuoteAuthor"></span>
+            <span class="fc-quote-text" id="fcQuoteText"></span>
+          </div>
+          <button class="fc-quote-clear" onclick="clearForumCita()">✕</button>
+        </div>
+
+        <!-- Toolbar WYSIWYG básica -->
+        <div class="fc-toolbar">
+          <button class="fc-tool-btn" onclick="fcFormat('bold')" title="Negrita"><b>B</b></button>
+          <button class="fc-tool-btn" onclick="fcFormat('italic')" title="Cursiva"><i>I</i></button>
+          <button class="fc-tool-btn" onclick="fcFormat('underline')" title="Subrayado"><u>U</u></button>
+          <button class="fc-tool-btn" onclick="fcInsertImg()" title="Imagen por URL">🖼️</button>
+          <button class="fc-tool-btn" onclick="fcInsertLink()" title="Enlace">🔗</button>
+        </div>
+
+        <!-- Área de texto -->
+        <div class="fc-reply-area">
+          <div id="forumReplyInput" class="fc-reply-input" contenteditable="true" data-placeholder="Escribe tu respuesta..."></div>
+        </div>
+
+        <!-- Acciones -->
+        <div class="fc-reply-actions">
+          <span class="fc-reply-hint">Shift+Enter para salto de línea</span>
+          <button class="btn-submit fc-send-btn" onclick="enviarRespuestaForo()">➤ Publicar</button>
         </div>
       </div>
     </div>
@@ -3168,8 +3679,7 @@ body {
     <button class="inicio-btn" onclick="location.reload()" title="Volver al inicio">🏠</button>
     <button class="tab active" onclick="setTab('abiertas', this)">📋 Abiertas</button>
     <button class="tab" onclick="setTab('mis_abiertas', this)">📝 Mis consultas</button>
-    <button class="tab" onclick="setTab('mis_cerradas', this)">✅ Cerradas</button>
-    <button class="tab" onclick="setTab('noticias', this)">📰 Noticias</button>
+    <button class="tab admin-only-tab" onclick="setTab('mis_cerradas', this)" style="display:none;">✅ Cerradas</button>
     <button class="forum-tab-btn" id="forumTabBtn" onclick="setTab('foro', this)">💬 Foro</button>
     <button class="new-btn" onclick="abrirForm()"><span>✏️</span> Nueva consulta</button>
     <button class="new-noticia-btn" id="newNoticiaBtn" style="display:none;" onclick="abrirModalNuevaNoticia()"><span>📰</span> Nueva noticia</button>
@@ -3271,36 +3781,18 @@ body {
 <!-- TOAST -->
 <div class="send-toast" id="sendToast"></div>
 
-<!-- MINI RANKING BAR (mobile, above bottom nav) -->
-<div class="mini-rank-bar" id="miniRankBar">
-  <div class="mini-rank-half" onclick="scrollToTopMoviles()">
-    <div class="mini-rank-icon">🏆</div>
-    <div class="mini-rank-info">
-      <div class="mini-rank-label">Top móvil</div>
-      <div class="mini-rank-value" id="miniTopMovil">—</div>
-    </div>
-  </div>
-  <div class="mini-rank-divider"></div>
-  <div class="mini-rank-half" onclick="scrollToTopUsuarios()">
-    <div class="mini-rank-icon">👑</div>
-    <div class="mini-rank-info">
-      <div class="mini-rank-label">Top usuario</div>
-      <div class="mini-rank-value" id="miniTopUsuario">—</div>
-      <div class="mini-rank-sub" id="miniTopUsuarioPts"></div>
-    </div>
-  </div>
-</div>
+<!-- MINI RANK BAR removed - now accessible via hamburger menu -->
 
 <!-- BOTTOM NAV (mobile) -->
 <nav class="bottom-nav" id="bottomNav">
   <div class="bottom-nav-inner">
     <button class="bnav-btn active" id="bnav_abiertas" onclick="setTab('abiertas', this); syncBnav('abiertas')">
       <span class="bnav-icon">🏠</span>
-      <span class="bnav-label">Inicio</span>
+      <span class="bnav-label">Consultas</span>
     </button>
     <button class="bnav-btn" id="bnav_mis_abiertas" onclick="setTab('mis_abiertas', this); syncBnav('mis_abiertas')">
       <span class="bnav-icon">📝</span>
-      <span class="bnav-label">Mis consultas</span>
+      <span class="bnav-label">Las mías</span>
     </button>
     <div class="bnav-forum">
       <button class="bnav-forum-pill" id="bnav_foro" onclick="setTab('foro', document.getElementById('forumTabBtn')); syncBnav('foro')">
@@ -3308,11 +3800,11 @@ body {
         <span class="bnav-forum-label">FORO</span>
       </button>
     </div>
-    <button class="bnav-btn" id="bnav_noticias" onclick="setTab('noticias', this); syncBnav('noticias')">
-      <span class="bnav-icon">📰</span>
-      <span class="bnav-label">Noticias</span>
+    <button class="bnav-btn" id="bnav_nueva" onclick="abrirForm()">
+      <span class="bnav-icon">✏️</span>
+      <span class="bnav-label">Nueva</span>
     </button>
-    <button class="bnav-btn" id="bnav_mis_cerradas" onclick="setTab('mis_cerradas', this); syncBnav('mis_cerradas')">
+    <button class="bnav-btn bnav-admin-only" id="bnav_mis_cerradas" onclick="setTab('mis_cerradas', this); syncBnav('mis_cerradas')" style="display:none;">
       <span class="bnav-icon">✅</span>
       <span class="bnav-label">Cerradas</span>
     </button>
@@ -4371,6 +4863,8 @@ function onLogin() {
     const fabNewsBtn = document.getElementById('fabNewsBtn');
     if (newNoticiaBtn) newNoticiaBtn.style.display = 'flex';
     if (fabNewsBtn) fabNewsBtn.style.display = 'flex';
+    // Mostrar tab Cerradas solo para admin
+    document.querySelectorAll('.admin-only-tab, .bnav-admin-only').forEach(el => el.style.display = '');
   }
 }
 
@@ -6516,8 +7010,9 @@ async function abrirCategoria(cat) {
 async function abrirPost(postId) {
   forumPostActual = postId;
   document.getElementById('forumThreadArea').classList.remove('open');
-  document.getElementById('forumDetailArea').classList.add('open');
-  document.getElementById('forumDetailContent').innerHTML = '<div class="loading">⏳ Cargando...</div>';
+  const detailArea = document.getElementById('forumDetailArea');
+  detailArea.classList.add('open');
+  document.getElementById('forumDetailContent').innerHTML = '<div class="loading" style="padding:20px;">⏳ Cargando...</div>';
   document.getElementById('forumRepliesSection').innerHTML = '';
   document.getElementById('forumReplyBox').style.display = 'none';
 
@@ -6530,26 +7025,34 @@ async function abrirPost(postId) {
   const ac = avatarColor(post.nickname);
   const nombre = cap(post.nickname);
   const catInfo = FORUM_CATS[post.categoria] || { icon: '💬', name: post.categoria };
+  const { data: uPost } = await db.from('usuarios').select('puntos,rol').eq('nickname', post.nickname).single();
+  const rangoPost = getRango(uPost?.puntos || 0, uPost?.rol || 'usuario');
 
   document.getElementById('forumDetailContent').innerHTML = `
-    <div class="forum-detail-post">
-      <div class="forum-detail-body">
-        <div class="forum-detail-title">${escHtml(post.titulo)}</div>
-        <div class="forum-detail-content">${escHtml(post.contenido || '')}</div>
-      </div>
-      <div class="forum-detail-footer">
-        <div class="forum-post-avatar" style="background:${ac.bg};color:${ac.color};width:28px;height:28px;font-size:10px;">${nombre.substring(0,2).toUpperCase()}</div>
-        <span class="forum-post-author">${nombre}</span>
-        <span class="forum-post-time">${timeAgo(post.created_at)}</span>
-        <span style="font-size:11px;color:var(--text-3);">${catInfo.icon} ${catInfo.name}</span>
+    <div class="fc-thread-container">
+      <div class="fc-thread-title-bar">${catInfo.icon} ${escHtml(post.titulo)}</div>
+      <div class="fc-post">
+        <div class="fc-post-sidebar">
+          <div class="fc-post-avatar" style="background:${ac.bg};color:${ac.color};">${nombre.substring(0,2).toUpperCase()}</div>
+          <div class="fc-post-nick">${nombre}</div>
+          <span class="fc-post-rank-badge rank-${rangoPost.id}">${rangoPost.icon} ${rangoPost.label}</span>
+        </div>
+        <div class="fc-post-body">
+          <div class="fc-post-header">
+            <span class="fc-post-num">#1</span>
+            <span class="fc-post-time">${timeAgo(post.created_at)}</span>
+            <div class="fc-post-actions-top">
+              ${usuario ? `<button class="fc-action-btn" onclick="citarPostForo('${escHtml(nombre)}', \`${escHtml(post.contenido||'').replace(/`/g,"'")}\`)">💬 Citar</button>` : ''}
+              ${usuario ? `<button class="fc-action-btn" onclick="mencionarEnForo('${escHtml(post.nickname)}')">@</button>` : ''}
+            </div>
+          </div>
+          <div class="fc-post-content">${renderForumContent(post.contenido || '')}</div>
+        </div>
       </div>
     </div>
   `;
 
-  // Cargar respuestas
   await cargarRespuestasForo(postId);
-
-  // Mostrar caja de respuesta
   if (usuario) document.getElementById('forumReplyBox').style.display = 'block';
 }
 
@@ -6561,34 +7064,78 @@ async function cargarRespuestasForo(postId) {
 
   const el = document.getElementById('forumRepliesSection');
   if (!replies || replies.length === 0) {
-    el.innerHTML = '<div class="replies-empty">Sin respuestas aún. ¡Sé el primero!</div>';
+    el.innerHTML = '<div class="replies-empty" style="padding:16px 0 8px;">Sin respuestas aún. ¡Sé el primero!</div>';
     return;
   }
 
-  let html = `<div style="font-family:'Roboto',sans-serif;font-weight:700;font-size:14px;color:var(--navy);margin-bottom:10px;">💬 ${replies.length} respuesta${replies.length > 1 ? 's' : ''}</div>`;
-  for (const r of replies) {
+  let html = `<div style="font-family:'Roboto',sans-serif;font-weight:700;font-size:13px;color:var(--navy);margin:10px 0 4px;">💬 ${replies.length} respuesta${replies.length > 1 ? 's' : ''}</div>`;
+  html += `<div class="fc-thread-container">`;
+
+  for (let i = 0; i < replies.length; i++) {
+    const r = replies[i];
     const ac = avatarColor(r.nickname);
     const nombre = cap(r.nickname);
+    const { data: uData } = await db.from('usuarios').select('puntos,rol').eq('nickname', r.nickname).single();
+    const rango = getRango(uData?.puntos || 0, uData?.rol || 'usuario');
+    const contenidoHtml = renderForumContent(r.contenido || '');
+
     html += `
-      <div class="forum-reply-item">
-        <div class="forum-reply-header">
-          <div class="forum-post-avatar" style="background:${ac.bg};color:${ac.color};width:28px;height:28px;font-size:10px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;">${nombre.substring(0,2).toUpperCase()}</div>
-          <span class="forum-post-author">${nombre}</span>
-          <span class="forum-post-time">${timeAgo(r.created_at)}</span>
+      <div class="fc-post" id="fcpost_${r.id}">
+        <div class="fc-post-sidebar">
+          <div class="fc-post-avatar" style="background:${ac.bg};color:${ac.color};">${nombre.substring(0,2).toUpperCase()}</div>
+          <div class="fc-post-nick">${nombre}</div>
+          <span class="fc-post-rank-badge rank-${rango.id}">${rango.icon} ${rango.label}</span>
         </div>
-        <div class="forum-reply-content">${escHtml(r.contenido || '')}</div>
-      </div>
-    `;
+        <div class="fc-post-body">
+          <div class="fc-post-header">
+            <span class="fc-post-num">#${i + 2}</span>
+            <span class="fc-post-time">${timeAgo(r.created_at)}</span>
+            <div class="fc-post-actions-top">
+              ${usuario ? `<button class="fc-action-btn" onclick="citarPostForo('${escHtml(nombre)}', \`${escHtml(r.contenido||'').replace(/`/g,"'").substring(0,200)}\`)">💬 Citar</button>` : ''}
+              ${usuario ? `<button class="fc-action-btn" onclick="mencionarEnForo('${escHtml(r.nickname)}')">@</button>` : ''}
+            </div>
+          </div>
+          <div class="fc-post-content">${contenidoHtml}</div>
+        </div>
+      </div>`;
   }
+  html += `</div>`;
   el.innerHTML = html;
+}
+
+function renderForumContent(text) {
+  if (!text) return '';
+  let html = text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  // Citas anidadas [cite:autor]...[/cite]
+  html = html.replace(/\[cite:([^\]]+)\]([\s\S]*?)\[\/cite\]/g, (_,autor,cuerpo) =>
+    `<div class="fc-quote"><div class="fc-quote-from">${escHtml(autor)} dijo:</div><div class="fc-quote-body">${cuerpo}</div></div>`);
+  // @menciones
+  html = html.replace(/@([\w\-\.]+)/g, '<span style="color:var(--blue);font-weight:600;">@$1</span>');
+  // Saltos de línea
+  return html.replace(/\n/g,'<br>');
 }
 
 async function enviarRespuestaForo() {
   if (!usuario) { toast('❌ Inicia sesión para responder'); return; }
-  const input = document.getElementById('forumReplyInput');
-  const texto = input.value.trim();
-  if (!texto) { toast('❌ Escribe algo'); return; }
   if (!forumPostActual) return;
+
+  const input = document.getElementById('forumReplyInput');
+  let texto = '';
+  if (input && input.tagName === 'DIV') {
+    const rawText = input.textContent.trim();
+    if (fcCitaActiva) {
+      texto = `[cite:${fcCitaActiva.nickname}]${fcCitaActiva.contenido.substring(0,200)}[/cite]\n${rawText}`;
+    } else {
+      texto = rawText;
+    }
+    if (!texto) { toast('❌ Escribe algo'); return; }
+    input.innerHTML = '';
+  } else if (input) {
+    texto = input.value.trim();
+    if (!texto) { toast('❌ Escribe algo'); return; }
+    input.value = '';
+  }
 
   const { error } = await db.from('foro_replies').insert({
     post_id: forumPostActual,
@@ -6596,11 +7143,8 @@ async function enviarRespuestaForo() {
     contenido: texto,
   });
 
-  if (error) {
-    toast('❌ Error: ' + error.message);
-    return;
-  }
-  input.value = '';
+  if (error) { toast('❌ Error: ' + error.message); return; }
+  clearForumCita();
   toast('✅ Respuesta publicada');
   await cargarRespuestasForo(forumPostActual);
 }
@@ -6662,6 +7206,174 @@ async function publicarPostForo() {
 function escHtml(str) {
   if (!str) return '';
   return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ═══════════════════════════════════════════
+// HAMBURGER DRAWER
+// ═══════════════════════════════════════════
+function toggleSideDrawer() {
+  const drawer = document.getElementById('sideDrawer');
+  const overlay = document.getElementById('drawerOverlay');
+  drawer.classList.toggle('open');
+  overlay.classList.toggle('open');
+}
+function closeSideDrawer() {
+  document.getElementById('sideDrawer').classList.remove('open');
+  document.getElementById('drawerOverlay').classList.remove('open');
+}
+
+// ═══════════════════════════════════════════
+// MODALES RANGOS / TOP USUARIOS / TOP MÓVILES
+// ═══════════════════════════════════════════
+function abrirModalRangos() {
+  document.getElementById('modalRangos').classList.add('open');
+  // Render rangos en el modal
+  const grid = document.getElementById('modalRanksGrid');
+  if (!grid) return;
+  const pts = usuario?.puntos || 0;
+  const rol = usuario?.rol || 'usuario';
+  const rangoActual = getRango(pts, rol);
+  grid.innerHTML = RANGOS.map(r => {
+    const unlocked = pts >= r.min || rol === 'admin';
+    const current = rangoActual.id === r.id;
+    return `
+      <div class="rank-card ${unlocked ? 'unlocked' : ''} ${current ? 'current' : ''}">
+        <div class="rank-card-icon">${r.icon}</div>
+        <div class="rank-card-name">${r.label}</div>
+        <div class="rank-card-pts">${r.min === 0 ? '0 pts' : `${r.min}+ pts`}</div>
+        <div class="rank-card-perk ${!unlocked ? 'locked' : ''}">${r.perk}</div>
+      </div>`;
+  }).join('');
+}
+function cerrarModalRangos() { document.getElementById('modalRangos').classList.remove('open'); }
+
+async function abrirModalTopUsuarios() {
+  document.getElementById('modalTopUsuarios').classList.add('open');
+  const body = document.getElementById('modalTopUsuariosBody');
+  body.innerHTML = '<div class="loading">⏳ Cargando...</div>';
+  const { data } = await db.from('usuarios').select('nickname,puntos,rol').order('puntos', { ascending: false }).limit(20);
+  if (!data || data.length === 0) { body.innerHTML = '<div style="text-align:center;color:var(--text-3);padding:20px;">Sin datos</div>'; return; }
+  const medals = ['🥇','🥈','🥉'];
+  let html = '';
+  data.forEach((u, i) => {
+    const ac = avatarColor(u.nickname);
+    const rango = getRango(u.puntos || 0, u.rol);
+    html += `
+      <div class="top-usuarios-item">
+        <div class="top-usuarios-rank">${medals[i] || `#${i+1}`}</div>
+        <div class="top-usuarios-avatar" style="background:${ac.bg};color:${ac.color};">${cap(u.nickname).substring(0,2).toUpperCase()}</div>
+        <div class="top-usuarios-info">
+          <div class="top-usuarios-name">${cap(u.nickname)}</div>
+          <div class="top-usuarios-badge">${rango.icon} ${rango.label}</div>
+        </div>
+        <div class="top-usuarios-score">
+          <div class="top-usuarios-score-value">${u.puntos || 0}</div>
+          <div class="top-usuarios-score-label">pts</div>
+        </div>
+      </div>`;
+  });
+  body.innerHTML = html;
+}
+function cerrarModalTopUsuarios() { document.getElementById('modalTopUsuarios').classList.remove('open'); }
+
+async function abrirModalTopMoviles() {
+  document.getElementById('modalTopMoviles').classList.add('open');
+  const body = document.getElementById('modalTopMovilesBody');
+  body.innerHTML = '<div class="loading">⏳ Cargando...</div>';
+  // Reusar lógica de top móviles
+  const { data } = await db.from('respuestas')
+    .select('modelo_canonico, votos_util, votos_no_util')
+    .not('modelo_canonico', 'is', null)
+    .order('votos_util', { ascending: false })
+    .limit(20);
+  if (!data || data.length === 0) { body.innerHTML = '<div style="text-align:center;color:var(--text-3);padding:20px;">Sin datos</div>'; return; }
+  // Agregar por modelo
+  const map = {};
+  for (const r of data) {
+    const m = r.modelo_canonico;
+    if (!m) continue;
+    if (!map[m]) map[m] = { votos: 0, menciones: 0 };
+    map[m].votos += (r.votos_util || 0);
+    map[m].menciones++;
+  }
+  const sorted = Object.entries(map).sort((a,b) => b[1].votos - a[1].votos).slice(0, 10);
+  const medals = ['🥇','🥈','🥉'];
+  let html = '';
+  sorted.forEach(([modelo, d], i) => {
+    html += `
+      <div class="top-usuarios-item">
+        <div class="top-usuarios-rank" style="font-size:18px;">${medals[i] || `#${i+1}`}</div>
+        <div class="top-usuarios-info">
+          <div class="top-usuarios-name" style="font-size:13px;">${modelo}</div>
+          <div class="top-usuarios-badge">💬 ${d.menciones} mención${d.menciones>1?'es':''}</div>
+        </div>
+        <div class="top-usuarios-score">
+          <div class="top-usuarios-score-value">👍 ${d.votos}</div>
+        </div>
+      </div>`;
+  });
+  body.innerHTML = html;
+}
+function cerrarModalTopMoviles() { document.getElementById('modalTopMoviles').classList.remove('open'); }
+
+// ═══════════════════════════════════════════
+// FORO FC STYLE
+// ═══════════════════════════════════════════
+let fcCitaActiva = null; // { nickname, contenido }
+let fcMultiCitas = []; // array de { nickname, contenido } para multicita
+
+function clearForumCita() {
+  fcCitaActiva = null;
+  const preview = document.getElementById('fcQuotePreview');
+  if (preview) preview.style.display = 'none';
+}
+
+function citarPostForo(nickname, contenido) {
+  fcCitaActiva = { nickname, contenido };
+  const preview = document.getElementById('fcQuotePreview');
+  const authorEl = document.getElementById('fcQuoteAuthor');
+  const textEl = document.getElementById('fcQuoteText');
+  if (preview && authorEl && textEl) {
+    authorEl.textContent = nickname + ' dijo:';
+    textEl.textContent = contenido.replace(/<[^>]+>/g, '').substring(0, 120) + (contenido.length > 120 ? '…' : '');
+    preview.style.display = 'flex';
+  }
+  // Scroll al reply box
+  const box = document.getElementById('forumReplyBox');
+  if (box) { box.style.display = 'block'; box.scrollIntoView({ behavior: 'smooth', block: 'end' }); }
+  const input = document.getElementById('forumReplyInput');
+  if (input) input.focus();
+}
+
+function mencionarEnForo(nickname) {
+  const input = document.getElementById('forumReplyInput');
+  if (!input) return;
+  const mencion = `<span class="fc-mention">@${nickname}</span>&nbsp;`;
+  input.focus();
+  document.execCommand('insertHTML', false, mencion);
+  const box = document.getElementById('forumReplyBox');
+  if (box) { box.style.display = 'block'; box.scrollIntoView({ behavior: 'smooth', block: 'end' }); }
+}
+
+// Toolbar WYSIWYG
+function fcFormat(cmd) {
+  document.getElementById('forumReplyInput').focus();
+  document.execCommand(cmd, false, null);
+}
+
+function fcInsertImg() {
+  const url = prompt('URL de la imagen:');
+  if (!url) return;
+  document.getElementById('forumReplyInput').focus();
+  document.execCommand('insertHTML', false, `<img src="${escHtml(url)}" style="max-width:100%;border-radius:8px;" />`);
+}
+
+function fcInsertLink() {
+  const url = prompt('URL del enlace:');
+  if (!url) return;
+  const texto = prompt('Texto del enlace (opcional):') || url;
+  document.getElementById('forumReplyInput').focus();
+  document.execCommand('insertHTML', false, `<a href="${escHtml(url)}" target="_blank" rel="noopener">${escHtml(texto)}</a>`);
 }
 
 
