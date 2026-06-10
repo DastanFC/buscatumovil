@@ -562,36 +562,103 @@ body {
 }
 .forum-section.open { display: block; }
 
-.forum-categories {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 12px;
+.forum-categories { display: none; } /* ya no se usa */
+
+/* ─── LISTA DE SUBFOROS ESTILO FOROCOCHES ─── */
+.fc-cats-list {
+  background: white;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
   margin-bottom: 20px;
-}
-@media (max-width: 600px) {
-  .forum-categories { grid-template-columns: 1fr; gap: 10px; }
+  width: 100%;
 }
 
-.forum-cat-card {
-  background: var(--surface);
-  border-radius: var(--radius);
-  padding: 18px 20px;
-  border: 1.5px solid var(--border);
-  box-shadow: var(--shadow);
-  cursor: pointer;
-  transition: all 0.18s;
+.fc-cats-header-row {
   display: flex;
   align-items: center;
-  gap: 14px;
+  background: #2c3e50;
+  color: white;
+  font-family: 'Roboto', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 8px 16px 8px 56px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
 }
-.forum-cat-card:hover { border-color: var(--blue); box-shadow: var(--shadow-lg); transform: translateY(-2px); }
-.forum-cat-card.active { border-color: var(--blue); background: var(--blue-pale); }
+.fc-cats-header-name { flex: 1; }
+.fc-cats-header-count { min-width: 70px; text-align: right; }
 
-.forum-cat-icon { font-size: 28px; flex-shrink: 0; }
-.forum-cat-info { flex: 1; min-width: 0; }
-.forum-cat-name { font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 14px; color: var(--navy); margin-bottom: 3px; }
-.forum-cat-desc { font-size: 12px; color: var(--text-3); }
-.forum-cat-count { font-size: 11px; font-weight: 700; color: var(--blue); background: var(--blue-pale); border-radius: 999px; padding: 2px 8px; flex-shrink: 0; }
+.fc-cat-row {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #e8ecf0;
+  cursor: pointer;
+  transition: background 0.12s;
+  min-height: 62px;
+  background: white;
+}
+.fc-cat-row:last-child { border-bottom: none; }
+.fc-cat-row:hover { background: #f4f7fb; }
+
+.fc-cat-icon-col {
+  width: 56px;
+  min-width: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  align-self: stretch;
+}
+
+.fc-cat-body {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 8px 10px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.fc-cat-name {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a2744;
+  line-height: 1.3;
+}
+.fc-cat-row:hover .fc-cat-name { color: var(--blue); }
+.fc-cat-desc {
+  font-size: 12px;
+  color: #888;
+  line-height: 1.4;
+}
+
+.fc-cat-count-col {
+  min-width: 70px;
+  padding: 10px 16px 10px 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--blue);
+  text-align: right;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .fc-cats-header-row { display: none; }
+  .fc-cat-icon-col { width: 44px; min-width: 44px; font-size: 18px; }
+  .fc-cat-name { font-size: 13px; }
+  .fc-cat-desc { font-size: 11px; }
+  .fc-cat-count-col { min-width: 56px; padding-right: 12px; font-size: 11px; }
+  .fc-cats-list {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    margin: 0 -12px;
+    width: calc(100% + 24px);
+  }
+}
 
 .forum-thread-area { display: none; }
 .forum-thread-area.open { display: block; }
@@ -3972,41 +4039,50 @@ body {
         </button>
         <span class="forum-exit-title">💬 Foro</span>
       </div>
-      <div class="forum-categories">
-        <div class="forum-cat-card" onclick="abrirCategoria('android')">
-          <div class="forum-cat-info">
-            <div class="forum-cat-name">Foro Android</div>
-            <div class="forum-cat-desc">Noticias, dudas y debate sobre Android</div>
-          </div>
-          <span class="forum-cat-count" id="fcat_count_android">...</span>
+      <div class="fc-cats-list">
+        <div class="fc-cats-header-row">
+          <div class="fc-cats-header-name">Subforo</div>
+          <div class="fc-cats-header-count">Posts</div>
         </div>
-        <div class="forum-cat-card" onclick="abrirCategoria('ios')">
-          <div class="forum-cat-info">
-            <div class="forum-cat-name">Foro iOS</div>
-            <div class="forum-cat-desc">Todo sobre iPhone, iPad y Apple</div>
+        <div class="fc-cat-row" onclick="abrirCategoria('android')">
+          <div class="fc-cat-icon-col">🤖</div>
+          <div class="fc-cat-body">
+            <div class="fc-cat-name">Foro Android</div>
+            <div class="fc-cat-desc">Noticias, dudas y debate sobre Android</div>
           </div>
-          <span class="forum-cat-count" id="fcat_count_ios">...</span>
+          <div class="fc-cat-count-col" id="fcat_count_android">...</div>
         </div>
-        <div class="forum-cat-card" onclick="abrirCategoria('personalizacion')">
-          <div class="forum-cat-info">
-            <div class="forum-cat-name">Personalización</div>
-            <div class="forum-cat-desc">Launchers, widgets, temas y fondos</div>
+        <div class="fc-cat-row" onclick="abrirCategoria('ios')">
+          <div class="fc-cat-icon-col">🍎</div>
+          <div class="fc-cat-body">
+            <div class="fc-cat-name">Foro iOS</div>
+            <div class="fc-cat-desc">Todo sobre iPhone, iPad y Apple</div>
           </div>
-          <span class="forum-cat-count" id="fcat_count_personalizacion">...</span>
+          <div class="fc-cat-count-col" id="fcat_count_ios">...</div>
         </div>
-        <div class="forum-cat-card" onclick="abrirCategoria('apps')">
-          <div class="forum-cat-info">
-            <div class="forum-cat-name">Apps y juegos</div>
-            <div class="forum-cat-desc">Recomendaciones y novedades <span style="color:var(--accent-red);font-size:10px;font-weight:700;">⚠️ No piratería</span></div>
+        <div class="fc-cat-row" onclick="abrirCategoria('personalizacion')">
+          <div class="fc-cat-icon-col">🎨</div>
+          <div class="fc-cat-body">
+            <div class="fc-cat-name">Personalización</div>
+            <div class="fc-cat-desc">Launchers, widgets, temas y fondos</div>
           </div>
-          <span class="forum-cat-count" id="fcat_count_apps">...</span>
+          <div class="fc-cat-count-col" id="fcat_count_personalizacion">...</div>
         </div>
-        <div class="forum-cat-card" onclick="abrirCategoria('ayuda')">
-          <div class="forum-cat-info">
-            <div class="forum-cat-name">Foro Ayuda</div>
-            <div class="forum-cat-desc">Problemas técnicos y soporte</div>
+        <div class="fc-cat-row" onclick="abrirCategoria('apps')">
+          <div class="fc-cat-icon-col">📲</div>
+          <div class="fc-cat-body">
+            <div class="fc-cat-name">Apps y juegos</div>
+            <div class="fc-cat-desc">Recomendaciones y novedades <span style="color:var(--accent-red);font-size:10px;font-weight:700;">⚠️ No piratería</span></div>
           </div>
-          <span class="forum-cat-count" id="fcat_count_ayuda">...</span>
+          <div class="fc-cat-count-col" id="fcat_count_apps">...</div>
+        </div>
+        <div class="fc-cat-row" onclick="abrirCategoria('ayuda')">
+          <div class="fc-cat-icon-col">🆘</div>
+          <div class="fc-cat-body">
+            <div class="fc-cat-name">Foro Ayuda</div>
+            <div class="fc-cat-desc">Problemas técnicos y soporte</div>
+          </div>
+          <div class="fc-cat-count-col" id="fcat_count_ayuda">...</div>
         </div>
       </div>
     </div>
