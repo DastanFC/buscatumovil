@@ -7704,38 +7704,44 @@ function cerrarModalTopUsuarios() { document.getElementById('modalTopUsuarios').
 async function abrirModalTopMoviles() {
   document.getElementById('modalTopMoviles').classList.add('open');
   const body = document.getElementById('modalTopMovilesBody');
-  body.innerHTML = '<div class="loading">⏳ Cargando...</div>';
-  // Reusar lógica de top móviles
-  const { data } = await db.from('respuestas')
-    .select('modelo_canonico, votos_util, votos_no_util')
-    .not('modelo_canonico', 'is', null)
-    .order('votos_util', { ascending: false })
-    .limit(20);
-  if (!data || data.length === 0) { body.innerHTML = '<div style="text-align:center;color:var(--text-3);padding:20px;">Sin datos</div>'; return; }
-  // Agregar por modelo
+  body.innerHTML = '<div class="loading">\u23f3 Cargando...</div>';
+
+  const { data: hilos, error } = await db.from('hilos').select(`
+    id, presupuesto,
+    respuestas ( id, contenido, movil_nombre, votos_util, created_at, nickname )
+  `).not('respuestas', 'is', null);
+
+  if (error || !hilos) { body.innerHTML = '<div style="text-align:center;color:var(--text-3);padding:20px;">\u274c Error al cargar</div>'; return; }
+
   const map = {};
-  for (const r of data) {
-    const m = r.modelo_canonico;
-    if (!m) continue;
-    if (!map[m]) map[m] = { votos: 0, menciones: 0 };
-    map[m].votos += (r.votos_util || 0);
-    map[m].menciones++;
+  for (const hilo of hilos) {
+    for (const r of hilo.respuestas) {
+      let nombre = r.movil_nombre;
+      if (!nombre) {
+        const extraidos = extraerModelos(r.contenido);
+        if (extraidos.length > 0) nombre = extraidos[0];
+      }
+      if (!nombre) continue;
+      const key = nombre.toLowerCase();
+      const votos = r.votos_util || 0;
+      if (!map[key]) map[key] = { nombre: formatearModelo(nombre), votos: 0, menciones: 0 };
+      map[key].votos += votos;
+      map[key].menciones++;
+    }
   }
-  const sorted = Object.entries(map).sort((a,b) => b[1].votos - a[1].votos).slice(0, 10);
-  const medals = ['🥇','🥈','🥉'];
+
+  const sorted = Object.values(map).sort((a, b) => b.votos - a.votos || b.menciones - a.menciones).slice(0, 10);
+  if (sorted.length === 0) { body.innerHTML = '<div style="text-align:center;color:var(--text-3);padding:20px;">\ud83d\udce6 Sin m\u00f3viles recomendados todav\u00eda</div>'; return; }
+
+  const medals = ['\ud83e\udd47','\ud83e\udd48','\ud83e\udd49'];
   let html = '';
-  sorted.forEach(([modelo, d], i) => {
-    html += `
-      <div class="top-usuarios-item">
-        <div class="top-usuarios-rank" style="font-size:18px;">${medals[i] || `#${i+1}`}</div>
-        <div class="top-usuarios-info">
-          <div class="top-usuarios-name" style="font-size:13px;">${modelo}</div>
-          <div class="top-usuarios-badge">💬 ${d.menciones} mención${d.menciones>1?'es':''}</div>
-        </div>
-        <div class="top-usuarios-score">
-          <div class="top-usuarios-score-value">👍 ${d.votos}</div>
-        </div>
-      </div>`;
+  sorted.forEach((m, i) => {
+    html += '<div class="top-usuarios-item">'
+      + '<div class="top-usuarios-rank" style="font-size:18px;">' + (medals[i] || '#' + (i+1)) + '</div>'
+      + '<div class="top-usuarios-info">'
+      + '<div class="top-usuarios-name" style="font-size:13px;">' + m.nombre + '</div>'
+      + '<div class="top-usuarios-badge">\ud83d\udcac ' + m.menciones + ' menci\u00f3n' + (m.menciones>1?'es':'') + ' \u00b7 \ud83d\udc4d ' + m.votos + ' votos</div>'
+      + '</div></div>';
   });
   body.innerHTML = html;
 }
