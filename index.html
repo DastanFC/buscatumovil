@@ -206,6 +206,64 @@ body {
   .user-chip { max-width: 80px; }
 }
 
+.topbar-login-btn {
+  background: var(--blue);
+  border: none;
+  border-radius: 999px;
+  padding: 6px 14px;
+  color: white;
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.topbar-login-btn:hover { background: var(--blue-light); }
+
+.user-dropdown {
+  display: none;
+  position: absolute;
+  top: 52px;
+  right: 12px;
+  background: white;
+  border-radius: 14px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+  min-width: 180px;
+  z-index: 500;
+  overflow: hidden;
+}
+.user-dropdown.open { display: block; }
+.user-dropdown-nick {
+  padding: 12px 16px 2px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy);
+}
+.user-dropdown-pts {
+  padding: 0 16px 10px;
+  font-size: 11px;
+  color: var(--text-3);
+  border-bottom: 1px solid var(--border);
+}
+.user-dropdown-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 12px 16px;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--accent-red);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.user-dropdown-item:hover { background: var(--surface-2); }
+
 /* ─── HERO STRIP ─── */
 .hero-strip {
   background: var(--navy);
@@ -3615,6 +3673,7 @@ body {
   max-width: 560px;
   padding: 0 0 max(20px, env(safe-area-inset-bottom, 16px));
   animation: slideUpModal 0.28s cubic-bezier(.22,1,.36,1);
+  overflow: hidden;
 }
 @media (min-width: 600px) {
   .fc-newpost-sheet { border-radius: 20px; max-width: 540px; margin: 20px; }
@@ -3664,71 +3723,81 @@ body {
 .fc-newpost-input {
   display: block;
   width: 100%;
-  padding: 14px 20px;
+  padding: 16px 20px;
   border: none;
   border-bottom: 1px solid var(--border);
-  font-size: 16px;
+  font-size: 17px;
+  font-weight: 400;
   font-family: 'Roboto', sans-serif;
   color: var(--text);
   background: white;
   box-sizing: border-box;
   outline: none;
 }
-.fc-newpost-input::placeholder { color: var(--text-3); }
+.fc-newpost-input::placeholder { color: var(--text-3); font-weight: 400; }
 
 .fc-newpost-textarea {
   display: block;
   width: 100%;
-  padding: 14px 20px;
+  padding: 16px 20px;
   border: none;
   border-bottom: 1px solid var(--border);
-  font-size: 14px;
-  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  font-family: 'Roboto', sans-serif;
   color: var(--text);
   background: white;
   resize: none;
-  min-height: 120px;
+  min-height: 140px;
   box-sizing: border-box;
   outline: none;
   line-height: 1.6;
 }
-.fc-newpost-textarea::placeholder { color: var(--text-3); }
+.fc-newpost-textarea::placeholder { color: var(--text-3); font-weight: 400; }
 
 .fc-newpost-actions {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  flex-direction: column;
   gap: 10px;
-  padding: 12px 20px 0;
+  padding: 16px 20px 0;
 }
 
 .fc-newpost-cancel {
   background: none;
-  border: 1.5px solid var(--border);
+  border: 1.5px solid var(--accent-red);
   border-radius: 999px;
-  padding: 9px 20px;
+  padding: 12px 20px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   font-family: 'Roboto', sans-serif;
-  color: var(--text-2);
+  color: var(--accent-red);
   cursor: pointer;
   transition: all 0.18s;
+  width: 100%;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
-.fc-newpost-cancel:hover { border-color: var(--text-2); }
+.fc-newpost-cancel:hover { background: rgba(232,59,59,0.05); }
 
 .fc-newpost-publish {
-  background: var(--navy);
+  background: var(--accent-red);
   border: none;
   border-radius: 999px;
-  padding: 9px 24px;
-  font-size: 13px;
+  padding: 14px 24px;
+  font-size: 14px;
   font-weight: 700;
   font-family: 'Roboto', sans-serif;
   color: white;
   cursor: pointer;
   transition: all 0.18s;
+  width: 100%;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
-.fc-newpost-publish:hover { background: var(--blue); }
+.fc-newpost-publish:hover { background: #c0392b; }
 
 /* ─── FORUM POST LIST — estilo lista ForoCoches ─── */
 #forumPostList {
@@ -3917,14 +3986,25 @@ body {
     <em>EL RECOMENDADOR</em>
   </div>
   <div class="topbar-right">
-    <button class="notif-btn" id="notifBtn" onclick="toggleNotifPanel()">
+    <button class="notif-btn" id="notifBtn" onclick="toggleNotifPanel()" style="display:none;">
       🔔
       <span class="notif-badge" id="notifBadge"></span>
     </button>
-    <div class="user-chip" id="userChip" onclick="toggleUserMenu()">
+    <!-- Botón Login (solo cuando no hay sesión) -->
+    <button class="topbar-login-btn" id="topbarLoginBtn" onclick="mostrarModalAuth()">
+      👤 Login
+    </button>
+    <!-- Chip usuario (solo cuando hay sesión) -->
+    <div class="user-chip" id="userChip" onclick="toggleUserMenu()" style="display:none;">
       <div class="user-chip-avatar" id="chipAvatar">👤</div>
-      <span class="user-chip-name" id="chipName">Invitado</span>
+      <span class="user-chip-name" id="chipName"></span>
       <span class="user-chip-pts" id="chipPts"></span>
+    </div>
+    <!-- Menú desplegable usuario -->
+    <div class="user-dropdown" id="userDropdown">
+      <div class="user-dropdown-nick" id="dropdownNick"></div>
+      <div class="user-dropdown-pts" id="dropdownPts"></div>
+      <button class="user-dropdown-item" onclick="cerrarSesion()">🚪 Cerrar sesión</button>
     </div>
   </div>
 </div>
@@ -5361,7 +5441,22 @@ function onLogin() {
 }
 
 function mostrarUsuario() {
-  if (!usuario) return;
+  const loginBtn = document.getElementById('topbarLoginBtn');
+  const chip = document.getElementById('userChip');
+  const notifBtn = document.getElementById('notifBtn');
+
+  if (!usuario) {
+    if (loginBtn) loginBtn.style.display = '';
+    if (chip) chip.style.display = 'none';
+    if (notifBtn) notifBtn.style.display = 'none';
+    return;
+  }
+
+  // Logueado: ocultar login btn, mostrar chip y notif
+  if (loginBtn) loginBtn.style.display = 'none';
+  if (chip) chip.style.display = '';
+  if (notifBtn) notifBtn.style.display = '';
+
   const nombre = cap(usuario.nickname);
   const rango = getRango(usuario.puntos || 0, usuario.rol);
   const ac = avatarColor(usuario.nickname);
@@ -5374,14 +5469,16 @@ function mostrarUsuario() {
   }
 
   const nameEl = document.getElementById('chipName');
-  if (nameEl) {
-    nameEl.textContent = nombre + (esAdmin() ? ' 👑' : '');
-  }
+  if (nameEl) nameEl.textContent = nombre + (esAdmin() ? ' 👑' : '');
 
   const ptsEl = document.getElementById('chipPts');
-  if (ptsEl) {
-    ptsEl.textContent = `${rango.icon} ${usuario.puntos || 0}pts`;
-  }
+  if (ptsEl) ptsEl.textContent = `${rango.icon} ${usuario.puntos || 0}pts`;
+
+  // Dropdown
+  const dropNick = document.getElementById('dropdownNick');
+  const dropPts = document.getElementById('dropdownPts');
+  if (dropNick) dropNick.textContent = nombre + (esAdmin() ? ' 👑' : '');
+  if (dropPts) dropPts.textContent = `${rango.icon} ${rango.label} · ${usuario.puntos || 0} pts`;
 }
 
 function toggleUserMenu() {
@@ -5389,7 +5486,31 @@ function toggleUserMenu() {
     mostrarModalAuth();
     return;
   }
-  // Podría expandirse con un menú de usuario, por ahora muestra info
+  const dropdown = document.getElementById('userDropdown');
+  if (!dropdown) return;
+  dropdown.classList.toggle('open');
+  // Close on outside click
+  if (dropdown.classList.contains('open')) {
+    setTimeout(() => {
+      document.addEventListener('click', function closeDD(e) {
+        if (!dropdown.contains(e.target) && e.target.id !== 'userChip') {
+          dropdown.classList.remove('open');
+        }
+        document.removeEventListener('click', closeDD);
+      });
+    }, 0);
+  }
+}
+
+function cerrarSesion() {
+  // Eliminar token y limpiar sesión
+  try { localStorage.removeItem('moviles_token'); } catch(e) {}
+  usuario = null;
+  document.getElementById('userDropdown')?.classList.remove('open');
+  mostrarUsuario();
+  // Mostrar modal auth de nuevo
+  mostrarModalAuth();
+  toast('👋 Sesión cerrada');
 }
 // ═══════════════════════════════════════════
 // TABS
@@ -7702,8 +7823,8 @@ async function editarPostForo(postId) {
         <input class="fc-newpost-input" type="text" id="editForumTitulo" value="${escHtml(post.titulo)}" maxlength="200" />
         <textarea class="fc-newpost-textarea" id="editForumContenido" rows="5">${escHtml(post.contenido)}</textarea>
         <div class="fc-newpost-actions">
+          <button class="fc-newpost-publish" onclick="guardarEdicionPostForo('${postId}')">Guardar cambios</button>
           <button class="fc-newpost-cancel" onclick="document.getElementById('editForumPostModal').remove()">Cancelar</button>
-          <button class="fc-newpost-publish" onclick="guardarEdicionPostForo('${postId}')">Guardar</button>
         </div>
       </div>
     </div>`;
@@ -7815,8 +7936,8 @@ function abrirNuevoPostForo() {
         <input class="fc-newpost-input" type="text" id="forumPostTitulo" placeholder="Título del post" maxlength="200" />
         <textarea class="fc-newpost-textarea" id="forumPostContenido" rows="5" placeholder="Describe tu consulta, opinión o tema..."></textarea>
         <div class="fc-newpost-actions">
-          <button class="fc-newpost-cancel" onclick="cerrarNuevoPostForo()">Cancelar</button>
-          <button class="fc-newpost-publish" onclick="publicarPostForo()">Publicar</button>
+          <button class="fc-newpost-publish" onclick="publicarPostForo()">ENVIAR NUEVO TEMA</button>
+          <button class="fc-newpost-cancel" onclick="cerrarNuevoPostForo()">VISTA PREVIA DE MENSAJE</button>
         </div>
       </div>
     </div>
@@ -8302,6 +8423,7 @@ function aceptarCookies() {
 // INIT
 // ═══════════════════════════════════════════
 async function init() {
+    mostrarUsuario(); // Mostrar estado inicial (botón login o chip)
     cargarBannerGlobal();
     cargarStats();
     restaurarEstadoTop();
