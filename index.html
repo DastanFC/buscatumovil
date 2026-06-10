@@ -74,17 +74,24 @@ body {
 
 .logo {
   font-family: 'Roboto', sans-serif;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   color: white;
   display: flex;
   align-items: center;
   gap: 7px;
-  letter-spacing: -0.3px;
+  letter-spacing: 0.2px;
   white-space: nowrap;
-  flex-shrink: 1;
+  flex-shrink: 0;
   min-width: 0;
+}
+
+.logo-text {
+  color: white;
   overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 130px;
 }
 
 .logo-icon {
@@ -97,11 +104,6 @@ body {
   justify-content: center;
   font-size: 14px;
   flex-shrink: 0;
-}
-
-.logo em {
-  color: var(--accent);
-  font-style: normal;
 }
 
 .topbar-right {
@@ -162,7 +164,7 @@ body {
   gap: 6px;
   cursor: pointer;
   transition: background 0.2s;
-  max-width: 150px;
+  max-width: 110px;
   min-width: 0;
   flex-shrink: 0;
 }
@@ -184,25 +186,14 @@ body {
   font-size: 12px;
   font-weight: 500;
   color: white;
-  max-width: 55px;
+  max-width: 70px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.user-chip-pts {
-  font-size: 10px;
-  color: var(--accent);
-  font-weight: 600;
-  white-space: nowrap;
-  max-width: 48px;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 @media (max-width: 360px) {
-  .user-chip-name { display: none; }
-  .user-chip { max-width: 80px; }
+  .user-chip-name { max-width: 44px; }
 }
 
 .topbar-login-btn {
@@ -497,51 +488,30 @@ body {
   font-weight: 500;
   cursor: pointer;
   transition: color 0.18s;
-  padding: 0 4px;
+  padding: 0 2px;
   position: relative;
 }
 .bnav-btn:active { opacity: 0.7; }
 .bnav-btn.active { color: white; }
 .bnav-btn.active .bnav-icon { color: var(--blue-light); }
+.bnav-btn.active::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 20%;
+  right: 20%;
+  height: 2px;
+  background: var(--blue-light);
+  border-radius: 0 0 2px 2px;
+}
 
 .bnav-icon {
-  font-size: 20px;
+  font-size: 19px;
   line-height: 1;
   transition: color 0.18s;
 }
 
-.bnav-label { white-space: nowrap; letter-spacing: 0.2px; }
-
-/* Forum center button in bottom nav */
-.bnav-forum {
-  flex: 1.4;
-  position: relative;
-}
-
-.bnav-forum-pill {
-  background: var(--blue);
-  border-radius: 18px;
-  margin: 6px 6px;
-  height: 46px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  color: white;
-  font-size: 9px;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 700;
-  cursor: pointer;
-  border: none;
-  transition: all 0.18s;
-  box-shadow: 0 2px 12px rgba(29,111,232,0.5);
-  width: calc(100% - 12px);
-}
-.bnav-forum-pill:active { transform: scale(0.95); }
-.bnav-forum-pill.active { background: var(--blue-light); box-shadow: 0 3px 16px rgba(29,111,232,0.7); }
-.bnav-forum-icon { font-size: 20px; line-height: 1; }
-.bnav-forum-label { font-size: 9px; font-weight: 700; letter-spacing: 0.3px; }
+.bnav-label { white-space: nowrap; letter-spacing: 0.2px; font-size: 8.5px; }
 
 /* ─── MINI RANKING BAR (above bottom nav on mobile) ─── */
 .mini-rank-bar {
@@ -1896,34 +1866,35 @@ body {
 /* FAB periódico para admin */
 .fab-news {
   position: fixed;
-  bottom: 90px;
-  right: 20px;
-  z-index: 400;
-  background: var(--accent);
-  color: var(--navy);
+  bottom: 76px;
+  right: 12px;
+  z-index: 460;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
   border: none;
-  border-radius: 999px;
-  height: 48px;
-  padding: 0 18px 0 14px;
+  background: linear-gradient(135deg, #F5A623, #E8890A);
+  color: white;
+  font-size: 19px;
+  box-shadow: 0 3px 12px rgba(245,166,35,0.5);
+  cursor: pointer;
   display: none;
   align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  box-shadow: 0 4px 16px rgba(245,166,35,0.4);
-  font-family: 'Roboto', sans-serif;
-  font-weight: 600;
-  font-size: 13px;
-  transition: all 0.2s;
+  justify-content: center;
+  transition: transform 0.15s, box-shadow 0.15s;
 }
-
 .fab-news:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(245,166,35,0.5);
 }
-
-/* fab-news stays hidden on mobile too (admin uses desktop mostly) */
 @media (max-width: 600px) {
-  .fab-news { display: none !important; }
+  .fab-news {
+    width: 40px;
+    height: 40px;
+    bottom: 70px;
+    right: 10px;
+    font-size: 17px;
+  }
 }
 @media (max-width: 380px) {
   .fab-label { display: none; }
@@ -3977,29 +3948,22 @@ body {
 
 <!-- TOPBAR -->
 <div class="topbar">
-  <button class="hamburger-btn" onclick="toggleSideDrawer()" aria-label="Menú">
-    <span></span><span></span><span></span>
-  </button>
   <div class="logo" ondblclick="emergenciaAdmin()">
     <div class="logo-icon">📱</div>
-    <em>EL RECOMENDADOR</em>
+    <span class="logo-text">RECOMENDADOR</span>
   </div>
   <div class="topbar-right">
     <button class="notif-btn" id="notifBtn" onclick="toggleNotifPanel()" style="display:none;">
       🔔
       <span class="notif-badge" id="notifBadge"></span>
     </button>
-    <!-- Botón Login (solo cuando no hay sesión) -->
     <button class="topbar-login-btn" id="topbarLoginBtn" onclick="mostrarModalAuth()">
       👤 Login
     </button>
-    <!-- Chip usuario (solo cuando hay sesión) -->
     <div class="user-chip" id="userChip" onclick="toggleUserMenu()" style="display:none;">
       <div class="user-chip-avatar" id="chipAvatar">👤</div>
       <span class="user-chip-name" id="chipName"></span>
-      <span class="user-chip-pts" id="chipPts"></span>
     </div>
-    <!-- Menú desplegable usuario -->
     <div class="user-dropdown" id="userDropdown">
       <div class="user-dropdown-nick" id="dropdownNick"></div>
       <div class="user-dropdown-pts" id="dropdownPts"></div>
@@ -4084,11 +4048,7 @@ body {
 </div>
 
 <!-- HERO -->
-<div class="hero-strip" id="heroStrip">
-  <div class="hero-sub">SOLO OPINIONES REALES.</div>
-  <div class="stats-row" id="statsRow">
-    <div class="stat-chip">⏳ Cargando...</div>
-  </div>
+<div class="hero-strip" id="heroStrip" style="display:none;">
   <div class="rank-progress" id="rankProgressWrap" style="display:none;">
     <div class="rank-progress-top">
       <div class="rank-bar-wrap"><div class="rank-bar-fill" id="rankBarFill" style="width:0%"></div></div>
@@ -4341,11 +4301,8 @@ body {
 <!-- BOTÓN ADMIN FLOTANTE (solo dastan) -->
 <button id="adminBtn" onclick="emergenciaAdmin()">👑</button>
 
-<!-- FAB periódico (solo admin) -->
-<button class="fab-news" id="fabNewsBtn" onclick="abrirModalNuevaNoticia()" style="display:none;">
-  <span class="fab-icon">📰</span>
-  <span class="fab-label">Nueva noticia</span>
-</button>
+<!-- FAB noticias admin (solo dastan, derecha) -->
+<button class="fab-news" id="fabNewsBtn" onclick="abrirModalNuevaNoticia()" style="display:none;" title="Nueva noticia">📰</button>
 
 <!-- BARRA MULTICITA -->
 <div class="fc-multicita-bar" id="fcMulticitaBar">
@@ -4364,27 +4321,24 @@ body {
   <div class="bottom-nav-inner">
     <button class="bnav-btn active" id="bnav_abiertas" onclick="setTab('abiertas', this); syncBnav('abiertas')">
       <span class="bnav-icon">🏠</span>
-      <span class="bnav-label">Consultas</span>
+      <span class="bnav-label">Inicio</span>
+    </button>
+    <button class="bnav-btn" id="bnav_sin_responder" onclick="setTab('sin_responder', this); syncBnav('sin_responder')">
+      <span class="bnav-icon">💬</span>
+      <span class="bnav-label">Sin resp.</span>
     </button>
     <button class="bnav-btn" id="bnav_mis_abiertas" onclick="setTab('mis_abiertas', this); syncBnav('mis_abiertas')">
       <span class="bnav-icon">📝</span>
       <span class="bnav-label">Las mías</span>
     </button>
-    <div class="bnav-forum">
-      <button class="bnav-forum-pill" id="bnav_foro" onclick="setTab('foro', document.getElementById('forumTabBtn')); syncBnav('foro')">
-        <span class="bnav-forum-icon">💬</span>
-        <span class="bnav-forum-label">FORO</span>
-      </button>
-    </div>
-    <button class="bnav-btn" id="bnav_nueva" onclick="bnavNueva()">
-      <span class="bnav-icon" id="bnavNuevaIcon">✏️</span>
-      <span class="bnav-label" id="bnavNuevaLabel">Nueva</span>
+    <button class="bnav-btn" id="bnav_foro" onclick="setTab('foro', document.getElementById('forumTabBtn')); syncBnav('foro')">
+      <span class="bnav-icon">🗣️</span>
+      <span class="bnav-label">Foro</span>
     </button>
-    <button class="bnav-btn bnav-admin-only" id="bnav_mis_cerradas" onclick="setTab('mis_cerradas', this); syncBnav('mis_cerradas')" style="display:none;">
-      <span class="bnav-icon">✅</span>
-      <span class="bnav-label">Cerradas</span>
+    <button class="bnav-btn" id="bnav_noticias" onclick="setTab('noticias', this); syncBnav('noticias')">
+      <span class="bnav-icon">📰</span>
+      <span class="bnav-label">Noticias</span>
     </button>
-    <!-- Botón contextual: en foro = nuevo post, si no = back a consultas -->
   </div>
 </nav>
 
@@ -5202,7 +5156,13 @@ function togglePerks() {
 }
 
 function actualizarBarraRango() {
-  if (!usuario) return;
+  if (!usuario) {
+    const heroEl = document.getElementById('heroStrip');
+    if (heroEl) heroEl.style.display = 'none';
+    return;
+  }
+  const heroEl = document.getElementById('heroStrip');
+  if (heroEl) heroEl.style.display = '';
   const pts = usuario.puntos || 0;
   const wrap = document.getElementById('rankProgressWrap');
   wrap.style.display = 'block';
@@ -5430,11 +5390,11 @@ function onLogin() {
   
   // Mostrar botones de admin si corresponde
   if (usuario && usuario.nickname === 'dastan') {
+  if (usuario && usuario.nickname === 'dastan') {
     const newNoticiaBtn = document.getElementById('newNoticiaBtn');
     const fabNewsBtn = document.getElementById('fabNewsBtn');
     if (newNoticiaBtn) newNoticiaBtn.style.display = 'flex';
     if (fabNewsBtn) fabNewsBtn.style.display = 'flex';
-    // Mostrar tab Cerradas solo para admin
     document.querySelectorAll('.admin-only-tab, .bnav-admin-only').forEach(el => el.style.display = '');
   }
 }
@@ -5469,9 +5429,6 @@ function mostrarUsuario() {
 
   const nameEl = document.getElementById('chipName');
   if (nameEl) nameEl.textContent = nombre + (esAdmin() ? ' 👑' : '');
-
-  const ptsEl = document.getElementById('chipPts');
-  if (ptsEl) ptsEl.textContent = `${rango.icon} ${usuario.puntos || 0}pts`;
 
   // Dropdown
   const dropNick = document.getElementById('dropdownNick');
@@ -5519,9 +5476,8 @@ function setTab(tab, el) {
   currentPage = 1;
   noticiasPagina = 1;
   document.querySelectorAll('.tab, .forum-tab-btn').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
+  if (el && el.classList) el.classList.add('active');
   syncBnav(tab);
-  actualizarBnavNueva();
 
   const hilosEl = document.getElementById('hilosList');
   const pagEl = document.getElementById('pagination');
@@ -5531,7 +5487,6 @@ function setTab(tab, el) {
   const topMovilesEl = document.getElementById('topMovilesSection');
   const topUsuariosEl = document.getElementById('topUsuariosSection');
 
-  // Reset forum state
   if (tab !== 'foro') {
     if (forumEl) forumEl.classList.remove('open');
   }
@@ -5542,8 +5497,8 @@ function setTab(tab, el) {
     noticiasEl.style.display = 'block';
     if (formEl) formEl.style.display = 'none';
     if (forumEl) forumEl.classList.remove('open');
-    if (topMovilesEl) topMovilesEl.style.display = '';
-    if (topUsuariosEl) topUsuariosEl.style.display = '';
+    if (topMovilesEl) topMovilesEl.style.display = 'none';
+    if (topUsuariosEl) topUsuariosEl.style.display = 'none';
     cargarNoticias();
   } else if (tab === 'foro') {
     hilosEl.style.display = 'none';
@@ -5553,7 +5508,6 @@ function setTab(tab, el) {
     if (forumEl) forumEl.classList.add('open');
     if (topMovilesEl) topMovilesEl.style.display = 'none';
     if (topUsuariosEl) topUsuariosEl.style.display = 'none';
-    // Ocultar botón foro shortcut cuando estamos en el foro
     const shortcut = document.getElementById('forumShortcutBtn');
     if (shortcut) shortcut.style.display = 'none';
     cargarContadoresForo();
@@ -5563,11 +5517,10 @@ function setTab(tab, el) {
     pagEl.style.display = 'block';
     noticiasEl.style.display = 'none';
     if (forumEl) forumEl.classList.remove('open');
-    if (topMovilesEl) topMovilesEl.style.display = '';
-    if (topUsuariosEl) topUsuariosEl.style.display = '';
-    // Restaurar botón acceso al foro
+    if (topMovilesEl) topMovilesEl.style.display = (tab === 'abiertas') ? '' : 'none';
+    if (topUsuariosEl) topUsuariosEl.style.display = (tab === 'abiertas') ? '' : 'none';
     const shortcut = document.getElementById('forumShortcutBtn');
-    if (shortcut) shortcut.style.display = '';
+    if (shortcut) shortcut.style.display = (tab === 'abiertas') ? '' : 'none';
     cargarHilos();
   }
 }
@@ -5581,6 +5534,7 @@ async function cargarHilos() {
 
   let query = db.from('hilos').select('*, respuestas(count)');
   if (tabActual === 'abiertas') query = query.eq('resuelto', false);
+  else if (tabActual === 'sin_responder') query = query.eq('resuelto', false);
   else if (tabActual === 'mis_abiertas') query = query.eq('nickname', usuario.nickname).eq('resuelto', false);
   else if (tabActual === 'mis_cerradas') query = query.eq('nickname', usuario.nickname).eq('resuelto', true);
 
@@ -5588,8 +5542,14 @@ async function cargarHilos() {
   const { data: hilos } = await query;
   hilosData = hilos || [];
 
-  if (hilosData.length === 0) {
-    const msgs = { abiertas: 'Sé el primero en preguntar 👆', mis_abiertas: 'No tienes consultas abiertas', mis_cerradas: 'No tienes consultas cerradas' };
+  // Para sin_responder: filtrar los que tienen 0 respuestas
+  let hilosFiltrados = hilosData;
+  if (tabActual === 'sin_responder') {
+    hilosFiltrados = hilosData.filter(h => (h.respuestas?.[0]?.count || 0) === 0);
+  }
+
+  if (hilosFiltrados.length === 0) {
+    const msgs = { abiertas: 'Sé el primero en preguntar 👆', sin_responder: 'No hay consultas sin responder 🎉', mis_abiertas: 'No tienes consultas abiertas', mis_cerradas: 'No tienes consultas cerradas' };
     document.getElementById('hilosList').innerHTML = `
       <div class="empty-state">
         <div class="empty-state-icon">📭</div>
@@ -5599,6 +5559,7 @@ async function cargarHilos() {
     return;
   }
 
+  hilosData = hilosFiltrados;
   renderPaginacion();
   const start = (currentPage - 1) * ITEMS_PER_PAGE;
   const pag = hilosData.slice(start, start + ITEMS_PER_PAGE);
@@ -7450,12 +7411,8 @@ function restaurarEstadoTop() {
 // ═══════════════════════════════════════════
 function syncBnav(tab) {
   document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.bnav-forum-pill').forEach(b => b.classList.remove('active'));
   const el = document.getElementById(`bnav_${tab}`);
   if (el) el.classList.add('active');
-  // Also hide/show mini rank bar
-  const miniBar = document.getElementById('miniRankBar');
-  if (miniBar) miniBar.style.display = (tab === 'foro') ? 'none' : 'flex';
 }
 
 function scrollToTopMoviles() {
@@ -8473,11 +8430,15 @@ function initKeyboardHandler() {
         nav.style.bottom = Math.max(0, offsetFromBottom) + 'px';
       }
 
-      // Keep admin button above nav
+      // Keep admin button and fab news above nav
       const adminBtn = document.getElementById('adminBtn');
+      const fabNewsBtn = document.getElementById('fabNewsBtn');
+      const offsetFromBottom = window.innerHeight - (vv.offsetTop + vv.height);
       if (adminBtn && adminBtn.style.display !== 'none') {
-        const offsetFromBottom = window.innerHeight - (vv.offsetTop + vv.height);
         adminBtn.style.bottom = (Math.max(0, offsetFromBottom) + 70) + 'px';
+      }
+      if (fabNewsBtn && fabNewsBtn.style.display !== 'none') {
+        fabNewsBtn.style.bottom = (Math.max(0, offsetFromBottom) + 70) + 'px';
       }
 
       // Ranking modal keyboard adjust
