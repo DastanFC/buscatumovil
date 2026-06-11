@@ -4310,10 +4310,19 @@ body {
 </div>
 
 <!-- BANNER GLOBAL DE AVISOS (solo visible si el admin lo activa) -->
-<div id="globalBanner" style="display:none;align-items:center;gap:12px;padding:10px 20px;background:linear-gradient(90deg,#1D6FE8,#1A2D45);color:white;font-size:0.82rem;font-weight:500;border-bottom:1px solid rgba(255,255,255,0.1);position:relative;z-index:100;flex-wrap:wrap;">
-  <span style="font-size:1rem;flex-shrink:0;">📢</span>
-  <span id="globalBannerText" style="flex:1;min-width:0;line-height:1.45;"></span>
-  <button onclick="ocultarBannerGlobal()" style="background:rgba(255,255,255,0.15);border:none;color:white;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:0.85rem;flex-shrink:0;" title="Cerrar aviso">✕</button>
+<div id="globalBannerWrap" style="display:none;">
+  <!-- Barra expandida -->
+  <div id="globalBanner" style="display:flex;align-items:center;gap:12px;padding:10px 20px;background:linear-gradient(90deg,#1D6FE8,#1A2D45);color:white;font-size:0.82rem;font-weight:500;border-bottom:1px solid rgba(255,255,255,0.1);position:relative;z-index:100;flex-wrap:wrap;">
+    <span style="font-size:1rem;flex-shrink:0;">📢</span>
+    <span id="globalBannerText" style="flex:1;min-width:0;line-height:1.45;"></span>
+    <button onclick="ocultarBannerGlobal()" style="background:rgba(255,255,255,0.15);border:none;color:white;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:0.85rem;flex-shrink:0;" title="Cerrar aviso">✕</button>
+  </div>
+  <!-- Barra colapsada (pill) -->
+  <div id="globalBannerCollapsed" style="display:none;justify-content:center;padding:5px 16px;background:linear-gradient(90deg,#1D6FE8,#1A2D45);border-bottom:1px solid rgba(255,255,255,0.1);z-index:100;">
+    <button onclick="expandirBannerGlobal()" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:white;border-radius:999px;padding:4px 14px;font-size:0.75rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'DM Sans',sans-serif;transition:background 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">
+      🔔 Nuevo aviso &nbsp;·&nbsp; Haz click aquí para verlo
+    </button>
+  </div>
 </div>
 
 <!-- PANEL ACTUALIZACIONES (visible para todos los usuarios) -->
@@ -7619,16 +7628,39 @@ async function adminBorrarBanner() {
 }
 
 function mostrarBannerGlobal(msg) {
-  let banner = document.getElementById('globalBanner');
-  if (!banner) return;
+  const wrap = document.getElementById('globalBannerWrap');
+  const banner = document.getElementById('globalBanner');
+  const collapsed = document.getElementById('globalBannerCollapsed');
+  if (!wrap || !banner || !collapsed) return;
   const escaped = msg.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   banner.querySelector('#globalBannerText').innerHTML = escaped.replace(/\n/g, '<br>');
-  banner.style.display = 'flex';
+  wrap.style.display = 'block';
+  // Respetar si el usuario ya lo cerró en esta sesión
+  let cerrado = false;
+  try { cerrado = sessionStorage.getItem('banner_cerrado') === '1'; } catch(e) {}
+  if (cerrado) {
+    banner.style.display = 'none';
+    collapsed.style.display = 'flex';
+  } else {
+    banner.style.display = 'flex';
+    collapsed.style.display = 'none';
+  }
 }
 
 function ocultarBannerGlobal() {
   const banner = document.getElementById('globalBanner');
+  const collapsed = document.getElementById('globalBannerCollapsed');
   if (banner) banner.style.display = 'none';
+  if (collapsed) collapsed.style.display = 'flex';
+  try { sessionStorage.setItem('banner_cerrado', '1'); } catch(e) {}
+}
+
+function expandirBannerGlobal() {
+  const banner = document.getElementById('globalBanner');
+  const collapsed = document.getElementById('globalBannerCollapsed');
+  if (banner) banner.style.display = 'flex';
+  if (collapsed) collapsed.style.display = 'none';
+  try { sessionStorage.removeItem('banner_cerrado'); } catch(e) {}
 }
 
 async function cargarBannerGlobal() {
