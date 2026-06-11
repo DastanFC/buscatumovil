@@ -4045,6 +4045,119 @@ body {
   }
 }
 
+/* ─── PERFIL MODAL ─── */
+.perfil-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15,27,45,0.55);
+  z-index: 900;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.perfil-overlay.open { display: flex; }
+.perfil-modal {
+  background: white;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 440px;
+  max-height: 88vh;
+  overflow-y: auto;
+  box-shadow: 0 16px 48px rgba(15,27,45,0.22);
+  position: relative;
+}
+.perfil-header {
+  background: var(--navy);
+  border-radius: 20px 20px 0 0;
+  padding: 28px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+.perfil-close-btn {
+  position: absolute; top: 12px; right: 14px;
+  background: rgba(255,255,255,0.15); border: none; border-radius: 50%;
+  width: 30px; height: 30px; color: white; font-size: 16px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.perfil-avatar-wrap { position: relative; cursor: pointer; }
+.perfil-avatar-wrap img,
+.perfil-avatar-grande {
+  width: 72px; height: 72px; border-radius: 50%; object-fit: cover;
+  border: 3px solid rgba(255,255,255,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; font-weight: 700;
+}
+.perfil-avatar-edit-badge {
+  position: absolute; bottom: 0; right: 0; background: var(--blue);
+  border-radius: 50%; width: 22px; height: 22px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; border: 2px solid white;
+}
+.perfil-nick { font-family: 'Roboto',sans-serif; font-size: 18px; font-weight: 800; color: white; }
+.perfil-rango-badge { font-size: 12px; color: rgba(255,255,255,0.7); }
+.perfil-stats-row { display: flex; justify-content: center; gap: 24px; margin-top: 4px; }
+.perfil-stat { text-align: center; cursor: pointer; }
+.perfil-stat-val { font-family: 'Roboto',sans-serif; font-size: 16px; font-weight: 800; color: white; }
+.perfil-stat-label { font-size: 10px; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 0.4px; }
+.perfil-seguir-btn {
+  background: var(--blue); border: none; border-radius: 999px; padding: 7px 22px;
+  color: white; font-family: 'Roboto',sans-serif; font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: background 0.18s; margin-top: 4px;
+}
+.perfil-seguir-btn:hover { background: var(--blue-light); }
+.perfil-seguir-btn.siguiendo { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.3); }
+.perfil-seguir-btn.siguiendo:hover { background: rgba(220,30,30,0.3); }
+.perfil-body { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+.perfil-section-title {
+  font-family: 'Roboto',sans-serif; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-3); margin-bottom: 6px;
+}
+.perfil-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.perfil-info-chip {
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px;
+  padding: 8px 10px; font-size: 12px; color: var(--text-2);
+  display: flex; align-items: center; gap: 6px;
+}
+.perfil-info-chip b { color: var(--navy); font-weight: 600; display: block; font-size: 11px; }
+.perfil-sobre-mi {
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px;
+  padding: 12px; font-size: 13px; color: var(--text-2); line-height: 1.5;
+}
+.perfil-historial-item {
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px;
+  padding: 10px 12px; font-size: 12px; color: var(--text-2);
+  cursor: pointer; transition: background 0.15s; margin-bottom: 6px;
+}
+.perfil-historial-item:hover { background: var(--blue-pale); border-color: var(--blue); }
+.perfil-edit-field { display: flex; flex-direction: column; gap: 4px; }
+.perfil-edit-field label { font-size: 11px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.4px; }
+.perfil-edit-field input, .perfil-edit-field textarea {
+  border: 1.5px solid var(--border); border-radius: 10px; padding: 9px 12px;
+  font-size: 13px; font-family: 'DM Sans',sans-serif; color: var(--navy); outline: none; transition: border-color 0.18s;
+}
+.perfil-edit-field input:focus, .perfil-edit-field textarea:focus { border-color: var(--blue); }
+.perfil-save-btn {
+  background: var(--blue); border: none; border-radius: 999px; padding: 10px 24px;
+  color: white; font-family: 'Roboto',sans-serif; font-weight: 700; font-size: 14px;
+  cursor: pointer; width: 100%; transition: background 0.18s;
+}
+.perfil-save-btn:hover { background: var(--blue-light); }
+.nick-link { cursor: pointer; }
+.nick-link:hover { text-decoration: underline; color: var(--blue); }
+.perfil-tabs { display: flex; border-bottom: 1.5px solid var(--border); margin: 0 20px; }
+.perfil-tab {
+  flex: 1; text-align: center; padding: 10px 0; font-size: 12px; font-weight: 600;
+  color: var(--text-3); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1.5px;
+  transition: all 0.18s;
+}
+.perfil-tab.active { color: var(--blue); border-bottom-color: var(--blue); }
+.perfil-tab-panel { display: none; padding: 16px 20px; }
+.perfil-tab-panel.active { display: block; }
+
 </style>
 </head>
 <body>
@@ -5059,6 +5172,20 @@ function avatarColor(nick) {
   return AVATAR_COLORS[Math.abs(h) % AVATAR_COLORS.length];
 }
 
+const _fotoCache = {};
+function invalidarFotoCache(nick) { delete _fotoCache[nick]; }
+
+function renderAvatar(nick, fotoUrl, clsName, size) {
+  const ac = avatarColor(nick);
+  const initials = cap(nick).substring(0,2).toUpperCase();
+  const sz = size ? 'width:'+size+'px;height:'+size+'px;' : '';
+  if (fotoUrl) {
+    const fallback = "this.outerHTML='<div class=\""+clsName+"\" style=\"background:"+ac.bg+";color:"+ac.color+";"+sz+"display:flex;align-items:center;justify-content:center;font-weight:700;border-radius:50%;\">" + initials + "</div>'";
+    return '<img src="'+fotoUrl+'" class="'+clsName+'" style="'+sz+'border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="'+fallback+'">';
+  }
+  return '<div class="'+clsName+'" style="background:'+ac.bg+';color:'+ac.color+';'+sz+'">'+initials+'</div>';
+}
+
 function getRango(puntos, rol) {
   if (rol === 'admin') return { label: 'Admin', icon: '👑', id: 'admin', min: 0, max: 0 };
   // Ordenar de mayor a menor para que el primero que cumpla sea el más alto
@@ -5623,9 +5750,13 @@ function mostrarUsuario() {
 
   const avatarEl = document.getElementById('chipAvatar');
   if (avatarEl) {
-    avatarEl.style.background = ac.bg;
-    avatarEl.style.color = ac.color;
-    avatarEl.textContent = nombre.substring(0, 2).toUpperCase();
+    if (usuario?.foto_url) {
+      actualizarChipAvatar();
+    } else {
+      avatarEl.style.background = ac.bg;
+      avatarEl.style.color = ac.color;
+      avatarEl.textContent = nombre.substring(0, 2).toUpperCase();
+    }
   }
 
   const nameEl = document.getElementById('chipName');
@@ -5789,9 +5920,10 @@ function renderPaginacion() {
 function goToPage(p) { currentPage = p; cargarHilos(); }
 
 async function renderHilo(h) {
-  const { data: uData } = await db.from('usuarios').select('puntos, rol').eq('nickname', h.nickname).single();
+  const { data: uData } = await db.from('usuarios').select('puntos, rol, foto_url').eq('nickname', h.nickname).single();
   const pts = uData?.puntos || 0;
   const rol = uData?.rol || 'usuario';
+  const fotoHilo = uData?.foto_url || null;
   const replyCount = h.respuestas?.[0]?.count || 0;
   const ac = avatarColor(h.nickname);
   const nombre = cap(h.nickname);
@@ -5837,9 +5969,9 @@ async function renderHilo(h) {
     <div class="thread-card" id="thread_${h.id}">
       <div class="thread-header">
         <div class="thread-meta">
-          <div class="avatar" style="background:${ac.bg};color:${ac.color};">${nombre.substring(0,2).toUpperCase()}</div>
+          ${renderAvatar(h.nickname, fotoHilo, 'avatar', 40)}
           <div class="author-block">
-            <div class="author-name">${nombre} ${getBadgeHtml(pts, rol)}</div>
+            <div class="author-name"><span class="nick-link" onclick="abrirPerfil('${h.nickname}')">${nombre}</span> ${getBadgeHtml(pts, rol)}</div>
           </div>
           <div class="thread-time">${timeAgo(h.created_at)}${haParticipado ? '<span class="participated-icon">✏️ Participé</span>' : ''}</div>
         </div>
@@ -6054,7 +6186,7 @@ for (const r of respuestas) {
   }
 
   const nicknames = [...new Set(respuestas.map(r => r.nickname))];
-  const { data: usuariosData } = await db.from('usuarios').select('nickname, puntos, rol').in('nickname', nicknames);
+  const { data: usuariosData } = await db.from('usuarios').select('nickname, puntos, rol, foto_url').in('nickname', nicknames);
   const usuariosMap = {};
   if (usuariosData) usuariosData.forEach(u => usuariosMap[u.nickname] = u);
 
@@ -6133,8 +6265,8 @@ for (const r of respuestas) {
     html += `
       <div class="${topClass}" id="reply_${r.id}" data-reply-id="${r.id}">
         <div class="reply-header">
-          <div class="reply-avatar" style="background:${ac.bg};color:${ac.color};">${nombre.substring(0,2).toUpperCase()}</div>
-          <span class="reply-author">${nombre}</span>
+          ${renderAvatar(r.nickname, uData?.foto_url||null, 'reply-avatar', 32)}
+          <span class="reply-author nick-link" onclick="abrirPerfil('${r.nickname}')">${nombre}</span>
           ${getBadgeHtml(uData?.puntos || 0, uData?.rol || 'usuario')}
           ${esTopVotada ? `<span class="top-voted-badge">🏅 Más votada</span>` : ''}
           ${editadoBadge}
@@ -6333,8 +6465,8 @@ async function enviarConRanking() {
   const nuevoHtmlRanking = `
     <div class="reply-item" id="temp_${Date.now()}">
       <div class="reply-header">
-        <div class="reply-avatar" style="background:${ac2.bg};color:${ac2.color};">${nombre2.substring(0,2).toUpperCase()}</div>
-        <span class="reply-author">${nombre2}</span>
+        ${renderAvatar(usuario.nickname, usuario.foto_url||null, 'reply-avatar', 32)}
+        <span class="reply-author nick-link" onclick="abrirPerfil('${usuario.nickname}')">${nombre2}</span>
         ${getBadgeHtml(usuario.puntos || 0, usuario.rol || 'usuario')}
         <span class="reply-time">ahora</span>
       </div>
@@ -6420,8 +6552,8 @@ async function enviarRespuesta(hiloId) {
   const nuevoHtml = `
     <div class="reply-item" id="${tempId}">
       <div class="reply-header">
-        <div class="reply-avatar" style="background:${ac.bg};color:${ac.color};">${nombre.substring(0,2).toUpperCase()}</div>
-        <span class="reply-author">${nombre}</span>
+        ${renderAvatar(usuario.nickname, usuario.foto_url||null, 'reply-avatar', 32)}
+        <span class="reply-author nick-link" onclick="abrirPerfil('${usuario.nickname}')">${nombre}</span>
         ${getBadgeHtml(usuario.puntos || 0, usuario.rol || 'usuario')}
         <span class="reply-time">ahora</span>
       </div>
@@ -7665,7 +7797,7 @@ async function cargarTopUsuarios() {
 
   const { data: usuarios, error } = await db
     .from('usuarios')
-    .select('nickname, puntos, rol')
+    .select('nickname, puntos, rol, foto_url')
     .order('puntos', { ascending: false })
     .limit(5);
 
@@ -7684,8 +7816,8 @@ async function cargarTopUsuarios() {
     html += `
       <div class="top-usuarios-item">
         <div class="top-usuarios-rank">${medalla}</div>
-        <div class="top-usuarios-avatar" style="background:${ac.bg};color:${ac.color};">${nombre.substring(0,2).toUpperCase()}</div>
-        <div class="top-usuarios-info">
+        ${renderAvatar(u.nickname, u.foto_url||null, 'top-usuarios-avatar', 36)}
+        <div class="top-usuarios-info" style="cursor:pointer;" onclick="abrirPerfil('${u.nickname}')">
           <div class="top-usuarios-name">${nombre}${u.rol === 'admin' ? ' 👑' : ''}</div>
           <div class="top-usuarios-badge">${rango.icon} ${rango.label}</div>
         </div>
@@ -7835,7 +7967,7 @@ async function abrirPost(postId) {
   const ac = avatarColor(post.nickname);
   const nombre = cap(post.nickname);
   const catInfo = FORUM_CATS[post.categoria] || { icon: '💬', name: post.categoria };
-  const { data: uPost } = await db.from('usuarios').select('puntos,rol').eq('nickname', post.nickname).single();
+  const { data: uPost } = await db.from('usuarios').select('puntos,rol,foto_url').eq('nickname', post.nickname).single();
   const rangoPost = getRango(uPost?.puntos || 0, uPost?.rol || 'usuario');
 
   const esAutor = usuario && usuario.nickname === post.nickname;
@@ -7857,8 +7989,8 @@ async function abrirPost(postId) {
       <div class="fc-post">
         <div class="fc-post-body">
           <div class="fc-post-header">
-            <div class="fc-post-avatar-inline" style="background:${ac.bg};color:${ac.color};">${nombre.substring(0,2).toUpperCase()}</div>
-            <span class="fc-post-nick-inline">${nombre}</span>
+            ${renderAvatar(post.nickname, uPost?.foto_url||null, 'fc-post-avatar-inline', 28)}
+            <span class="fc-post-nick-inline nick-link" onclick="abrirPerfil('${post.nickname}')">${nombre}</span>
             <span class="fc-post-rank-inline rank-${rangoPost.id}">${rangoPost.icon} ${rangoPost.label}</span>
             <span class="fc-post-time">${timeAgo(post.created_at)}</span>
             <span class="fc-post-num">#1</span>
@@ -7893,7 +8025,7 @@ async function cargarRespuestasForo(postId) {
     const r = replies[i];
     const ac = avatarColor(r.nickname);
     const nombre = cap(r.nickname);
-    const { data: uData } = await db.from('usuarios').select('puntos,rol').eq('nickname', r.nickname).single();
+    const { data: uData } = await db.from('usuarios').select('puntos,rol,foto_url').eq('nickname', r.nickname).single();
     const rango = getRango(uData?.puntos || 0, uData?.rol || 'usuario');
     const contenidoHtml = renderForumContent(r.contenido || '');
     const contenidoSafe = (r.contenido || '').replace(/`/g,"'").replace(/\\/g,'');
@@ -7914,8 +8046,8 @@ async function cargarRespuestasForo(postId) {
       <div class="fc-post" id="fcpost_${r.id}">
         <div class="fc-post-body">
           <div class="fc-post-header">
-            <div class="fc-post-avatar-inline" style="background:${ac.bg};color:${ac.color};">${nombre.substring(0,2).toUpperCase()}</div>
-            <span class="fc-post-nick-inline">${nombre}</span>
+            ${renderAvatar(r.nickname, uData?.foto_url||null, 'fc-post-avatar-inline', 28)}
+            <span class="fc-post-nick-inline nick-link" onclick="abrirPerfil('${r.nickname}')">${nombre}</span>
             <span class="fc-post-rank-inline rank-${rango.id}">${rango.icon} ${rango.label}</span>
             <span class="fc-post-time">${timeAgo(r.created_at)}</span>
             <span class="fc-post-num">#${i + 2}</span>
@@ -8217,7 +8349,7 @@ async function abrirModalTopUsuarios() {
   document.getElementById('modalTopUsuarios').classList.add('open');
   const body = document.getElementById('modalTopUsuariosBody');
   body.innerHTML = '<div class="loading">⏳ Cargando...</div>';
-  const { data } = await db.from('usuarios').select('nickname,puntos,rol').order('puntos', { ascending: false }).limit(20);
+  const { data } = await db.from('usuarios').select('nickname,puntos,rol,foto_url').order('puntos', { ascending: false }).limit(20);
   if (!data || data.length === 0) { body.innerHTML = '<div style="text-align:center;color:var(--text-3);padding:20px;">Sin datos</div>'; return; }
   const medals = ['🥇','🥈','🥉'];
   let html = '';
@@ -8227,7 +8359,7 @@ async function abrirModalTopUsuarios() {
     html += `
       <div class="top-usuarios-item">
         <div class="top-usuarios-rank">${medals[i] || `#${i+1}`}</div>
-        <div class="top-usuarios-avatar" style="background:${ac.bg};color:${ac.color};">${cap(u.nickname).substring(0,2).toUpperCase()}</div>
+        ${renderAvatar(u.nickname, u.foto_url||null, 'top-usuarios-avatar', 36)}
         <div class="top-usuarios-info">
           <div class="top-usuarios-name">${cap(u.nickname)}</div>
           <div class="top-usuarios-badge">${rango.icon} ${rango.label}</div>
@@ -8691,6 +8823,219 @@ function initKeyboardHandler() {
   // Run once on load
   adjust();
 }
+// ═══════════════════════════════════════════
+// PERFIL DE USUARIO
+// ═══════════════════════════════════════════
+
+async function abrirPerfil(nick) {
+  if (!nick) return;
+  const overlay = document.getElementById('perfilOverlay');
+  const cont = document.getElementById('perfilContent');
+  overlay.classList.add('open');
+  cont.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-3);">⏳ Cargando...</div>';
+
+  const { data: u } = await db.from('usuarios')
+    .select('nickname,puntos,rol,foto_url,ciudad,movil_actual,sistema_operativo,capa_ui,sobre_mi')
+    .eq('nickname', nick).single();
+  if (!u) { cont.innerHTML = '<div style="padding:30px;text-align:center;">❌ Usuario no encontrado</div>'; return; }
+
+  const esPropio = usuario && usuario.nickname === nick;
+
+  const [{ count: seguidores }, { count: seguidos }] = await Promise.all([
+    db.from('seguidores').select('id', { count: 'exact', head: true }).eq('seguido', nick),
+    db.from('seguidores').select('id', { count: 'exact', head: true }).eq('seguidor', nick),
+  ]);
+
+  let yaSigo = false;
+  if (usuario && !esPropio) {
+    const { count } = await db.from('seguidores').select('id', { count: 'exact', head: true })
+      .eq('seguidor', usuario.nickname).eq('seguido', nick);
+    yaSigo = (count || 0) > 0;
+  }
+
+  const [{ count: nConsultas }, { count: nPosts }] = await Promise.all([
+    db.from('hilos').select('id', { count: 'exact', head: true }).eq('nickname', nick),
+    db.from('foro_posts').select('id', { count: 'exact', head: true }).eq('nickname', nick),
+  ]);
+
+  const rango = getRango(u.puntos || 0, u.rol);
+  const ac = avatarColor(nick);
+  const initials = cap(nick).substring(0,2).toUpperCase();
+  const avatarHtml = u.foto_url
+    ? '<img src="' + escHtml(u.foto_url) + '" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,0.3);">'
+    : '<div class="perfil-avatar-grande" style="background:' + ac.bg + ';color:' + ac.color + ';">' + initials + '</div>';
+
+  const seguirBtn = (!esPropio && usuario) ? '<button class="perfil-seguir-btn ' + (yaSigo ? 'siguiendo' : '') + '" id="perfilSeguirBtn" onclick="toggleSeguir('' + nick + '')">' + (yaSigo ? '✓ Siguiendo' : '+ Seguir') + '</button>' : '';
+  const editBtn   = esPropio ? '<button class="perfil-seguir-btn" onclick="mostrarEditPerfil()">✏️ Editar perfil</button>' : '';
+
+  const infoItems = [
+    u.ciudad        && { icon: '📍', label: 'Ciudad',   val: u.ciudad },
+    u.movil_actual  && { icon: '📱', label: 'Móvil',    val: u.movil_actual },
+    u.sistema_operativo && { icon: '🤖', label: 'SO',   val: u.sistema_operativo },
+    u.capa_ui       && { icon: '🎨', label: 'Capa UI',  val: u.capa_ui },
+  ].filter(Boolean);
+
+  const infoHtml = infoItems.length ? '<div><div class="perfil-section-title">📋 Información</div><div class="perfil-info-grid">'
+    + infoItems.map(it => '<div class="perfil-info-chip"><span>' + it.icon + '</span><div><b>' + it.label + '</b>' + escHtml(it.val) + '</div></div>').join('')
+    + '</div></div>' : '';
+
+  const sobreHtml = u.sobre_mi ? '<div><div class="perfil-section-title">💬 Sobre mí</div><div class="perfil-sobre-mi">' + escHtml(u.sobre_mi) + '</div></div>' : '';
+
+  cont.innerHTML = '<div class="perfil-header">'
+    + '<button class="perfil-close-btn" onclick="cerrarPerfil()">✕</button>'
+    + '<div class="perfil-avatar-wrap"' + (esPropio ? ' onclick="mostrarEditPerfil()"' : '') + '>' + avatarHtml + (esPropio ? '<div class="perfil-avatar-edit-badge">✏️</div>' : '') + '</div>'
+    + '<div class="perfil-nick">' + cap(nick) + (u.rol==='admin'?' 👑':'') + '</div>'
+    + '<div class="perfil-rango-badge">' + rango.icon + ' ' + rango.label + ' · ' + (u.puntos||0) + ' pts</div>'
+    + '<div class="perfil-stats-row">'
+    + '<div class="perfil-stat" onclick="verSeguidoresPerfil('' + nick + '','seguidores')"><div class="perfil-stat-val">' + (seguidores||0) + '</div><div class="perfil-stat-label">Seguidores</div></div>'
+    + '<div class="perfil-stat" onclick="verSeguidoresPerfil('' + nick + '','seguidos')"><div class="perfil-stat-val">' + (seguidos||0) + '</div><div class="perfil-stat-label">Siguiendo</div></div>'
+    + '<div class="perfil-stat"><div class="perfil-stat-val">' + ((nConsultas||0)+(nPosts||0)) + '</div><div class="perfil-stat-label">Posts</div></div>'
+    + '</div>' + seguirBtn + editBtn + '</div>'
+    + '<div class="perfil-tabs">'
+    + '<div class="perfil-tab active" onclick="switchPerfilTab('info',this)">Info</div>'
+    + '<div class="perfil-tab" onclick="switchPerfilTab('menciones',this)">Menciones</div>'
+    + '<div class="perfil-tab" onclick="switchPerfilTab('citas',this)">Citas recibidas</div>'
+    + '</div>'
+    + '<div class="perfil-tab-panel active" id="ptab_info">' + infoHtml + sobreHtml + (!infoItems.length && !u.sobre_mi ? '<div style="color:var(--text-3);font-size:13px;text-align:center;padding:16px 0;">Sin información de perfil todavía</div>' : '') + '</div>'
+    + '<div class="perfil-tab-panel" id="ptab_menciones"><div id="perfilMencionesList"><div style="color:var(--text-3);font-size:13px;text-align:center;padding:20px;">⏳ Cargando...</div></div></div>'
+    + '<div class="perfil-tab-panel" id="ptab_citas"><div id="perfilCitasList"><div style="color:var(--text-3);font-size:13px;text-align:center;padding:20px;">⏳ Cargando...</div></div></div>';
+
+  cargarMencionesPerfil(nick);
+  cargarCitasPerfil(nick);
+}
+
+function cerrarPerfil() { document.getElementById('perfilOverlay').classList.remove('open'); }
+
+function switchPerfilTab(id, el) {
+  document.querySelectorAll('.perfil-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.perfil-tab-panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('ptab_' + id).classList.add('active');
+}
+
+async function cargarMencionesPerfil(nick) {
+  const el = document.getElementById('perfilMencionesList');
+  if (!el) return;
+  const [{ data: mc }, { data: mf }] = await Promise.all([
+    db.from('respuestas').select('id,hilo_id,nickname,contenido,created_at').ilike('contenido','%@'+nick+'%').order('created_at',{ascending:false}).limit(15),
+    db.from('foro_replies').select('id,post_id,nickname,contenido,created_at').ilike('contenido','%@'+nick+'%').order('created_at',{ascending:false}).limit(15),
+  ]);
+  const todas = [...(mc||[]).map(r=>({...r,tipo:'consulta',destId:r.hilo_id})),...(mf||[]).map(r=>({...r,tipo:'foro',destId:r.post_id}))].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,20);
+  if (!todas.length) { el.innerHTML = '<div style="color:var(--text-3);font-size:13px;text-align:center;padding:16px;">Sin menciones</div>'; return; }
+  el.innerHTML = todas.map(m => '<div class="perfil-historial-item" onclick='cerrarPerfil();' + (m.tipo==='foro' ? 'setTimeout(()=>abrirPost("'+m.destId+'"),100)' : 'irAHilo("'+m.destId+'","",false)') + ''><span style="font-weight:600;color:var(--navy);">' + cap(m.nickname) + '</span> <span style="color:var(--text-3);">· ' + (m.tipo==='foro'?'💬 Foro':'📋 Consultas') + ' · ' + timeAgo(m.created_at) + '</span><br><span style="color:var(--text-2);">' + escHtml((m.contenido||'').substring(0,80)) + (m.contenido?.length>80?'…':'') + '</span></div>').join('');
+}
+
+async function cargarCitasPerfil(nick) {
+  const el = document.getElementById('perfilCitasList');
+  if (!el) return;
+  const { data: misResp } = await db.from('respuestas').select('id').eq('nickname',nick).limit(100);
+  const misIds = (misResp||[]).map(r=>r.id);
+  let citasC = [];
+  if (misIds.length) { const { data } = await db.from('respuestas').select('id,hilo_id,nickname,contenido,created_at,cita_id').in('cita_id',misIds).order('created_at',{ascending:false}).limit(15); citasC = data||[]; }
+  const { data: citasF } = await db.from('foro_replies').select('id,post_id,nickname,contenido,created_at').ilike('contenido','%[cite:'+nick+'%').order('created_at',{ascending:false}).limit(15);
+  const todas = [...citasC.map(r=>({...r,tipo:'consulta',destId:r.hilo_id})),...(citasF||[]).map(r=>({...r,tipo:'foro',destId:r.post_id}))].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,20);
+  if (!todas.length) { el.innerHTML = '<div style="color:var(--text-3);font-size:13px;text-align:center;padding:16px;">Sin citas recibidas</div>'; return; }
+  el.innerHTML = todas.map(c => '<div class="perfil-historial-item" onclick='cerrarPerfil();' + (c.tipo==='foro'?'setTimeout(()=>abrirPost("'+c.destId+'"),100)':'irAHilo("'+c.destId+'","",false)') + ''><span style="font-weight:600;color:var(--navy);">' + cap(c.nickname) + '</span> te citó <span style="color:var(--text-3);">· ' + (c.tipo==='foro'?'💬 Foro':'📋 Consultas') + ' · ' + timeAgo(c.created_at) + '</span><br><span style="color:var(--text-2);">' + escHtml((c.contenido||'').substring(0,80)) + (c.contenido?.length>80?'…':'') + '</span></div>').join('');
+}
+
+async function toggleSeguir(nick) {
+  if (!usuario) { mostrarModalAuth(); return; }
+  const btn = document.getElementById('perfilSeguirBtn');
+  if (!btn) return;
+  const yaSigo = btn.classList.contains('siguiendo');
+  if (yaSigo) {
+    await db.from('seguidores').delete().eq('seguidor',usuario.nickname).eq('seguido',nick);
+    btn.classList.remove('siguiendo'); btn.textContent = '+ Seguir';
+  } else {
+    await db.from('seguidores').insert({ seguidor: usuario.nickname, seguido: nick });
+    btn.classList.add('siguiendo'); btn.textContent = '✓ Siguiendo';
+  }
+  const { count } = await db.from('seguidores').select('id',{count:'exact',head:true}).eq('seguido',nick);
+  const statVal = document.querySelector('.perfil-stat-val');
+  if (statVal) statVal.textContent = count || 0;
+}
+
+async function verSeguidoresPerfil(nick, tipo) {
+  const q = tipo==='seguidores'
+    ? db.from('seguidores').select('seguidor').eq('seguido',nick).limit(50)
+    : db.from('seguidores').select('seguido').eq('seguidor',nick).limit(50);
+  const { data } = await q;
+  const lista = (data||[]).map(r => tipo==='seguidores' ? r.seguidor : r.seguido);
+  const infoTab = document.getElementById('ptab_info');
+  if (!infoTab) return;
+  infoTab.innerHTML = '<div style="font-weight:700;font-size:14px;margin-bottom:12px;color:var(--navy);"><button onclick='abrirPerfil("'+nick+'")' style="background:none;border:none;cursor:pointer;font-size:16px;margin-right:8px;">←</button>' + (tipo==='seguidores'?'Seguidores':'Siguiendo') + '</div>'
+    + (lista.length ? lista.map(n=>'<div class="perfil-historial-item" onclick='abrirPerfil("'+n+'")'>' + cap(n) + '</div>').join('') : '<div style="color:var(--text-3);font-size:13px;">Sin ' + tipo + '</div>');
+  document.querySelectorAll('.perfil-tab').forEach((t,i)=>t.classList.toggle('active',i===0));
+  document.querySelectorAll('.perfil-tab-panel').forEach((p,i)=>p.classList.toggle('active',i===0));
+}
+
+function mostrarEditPerfil() {
+  if (!usuario) return;
+  const u = usuario;
+  const cont = document.getElementById('perfilContent');
+  cont.innerHTML = '<div class="perfil-header" style="padding-bottom:16px;"><button class="perfil-close-btn" onclick="cerrarPerfil()">✕</button><div style="color:white;font-family:'Roboto',sans-serif;font-size:16px;font-weight:700;margin-top:8px;">Editar perfil</div></div>'
+    + '<div class="perfil-body">'
+    + '<div class="perfil-edit-field"><label>🖼️ URL foto de perfil</label><input id="ep_foto" type="url" placeholder="https://..." value="' + escHtml(u.foto_url||'') + '"></div>'
+    + '<div class="perfil-edit-field"><label>📍 Ciudad</label><input id="ep_ciudad" type="text" placeholder="ej. Madrid" value="' + escHtml(u.ciudad||'') + '"></div>'
+    + '<div class="perfil-edit-field"><label>📱 Móvil actual</label><input id="ep_movil" type="text" placeholder="ej. Xiaomi 14T Pro" value="' + escHtml(u.movil_actual||'') + '"></div>'
+    + '<div class="perfil-edit-field"><label>🤖 Sistema operativo</label><input id="ep_so" type="text" placeholder="Android / iOS" value="' + escHtml(u.sistema_operativo||'') + '"></div>'
+    + '<div class="perfil-edit-field"><label>🎨 Capa UI</label><input id="ep_capa" type="text" placeholder="ej. HyperOS, OxygenOS, One UI..." value="' + escHtml(u.capa_ui||'') + '"></div>'
+    + '<div class="perfil-edit-field"><label>💬 Sobre mí</label><textarea id="ep_sobre" rows="3" placeholder="Cuéntanos algo sobre ti...">' + escHtml(u.sobre_mi||'') + '</textarea></div>'
+    + '<button class="perfil-save-btn" onclick="guardarPerfil()">💾 Guardar cambios</button>'
+    + '<button onclick='abrirPerfil("' + u.nickname + '")' style="background:none;border:none;color:var(--text-3);font-size:13px;cursor:pointer;text-align:center;width:100%;margin-top:4px;">Cancelar</button>'
+    + '</div>';
+}
+
+async function guardarPerfil() {
+  if (!usuario) return;
+  const foto_url          = document.getElementById('ep_foto')?.value.trim() || null;
+  const ciudad            = document.getElementById('ep_ciudad')?.value.trim() || null;
+  const movil_actual      = document.getElementById('ep_movil')?.value.trim() || null;
+  const sistema_operativo = document.getElementById('ep_so')?.value.trim() || null;
+  const capa_ui           = document.getElementById('ep_capa')?.value.trim() || null;
+  const sobre_mi          = document.getElementById('ep_sobre')?.value.trim() || null;
+
+  const { error } = await db.from('usuarios').update({ foto_url, ciudad, movil_actual, sistema_operativo, capa_ui, sobre_mi }).eq('id', usuario.id);
+  if (error) { toast('❌ Error: ' + error.message); return; }
+
+  Object.assign(usuario, { foto_url, ciudad, movil_actual, sistema_operativo, capa_ui, sobre_mi });
+  invalidarFotoCache(usuario.nickname);
+  actualizarChipAvatar();
+  toast('✅ Perfil actualizado');
+  abrirPerfil(usuario.nickname);
+}
+
+function actualizarChipAvatar() {
+  const u = usuario;
+  if (!u) return;
+  const avatarEl = document.getElementById('chipAvatar');
+  if (!avatarEl) return;
+  const ac = avatarColor(u.nickname);
+  const nombre = cap(u.nickname);
+  const initials = nombre.substring(0,2).toUpperCase();
+  if (u.foto_url) {
+    const img = document.createElement('img');
+    img.id = 'chipAvatar';
+    img.src = u.foto_url;
+    img.style.cssText = 'width:22px;height:22px;border-radius:50%;object-fit:cover;flex-shrink:0;';
+    img.onerror = function() {
+      this.outerHTML = '<div id="chipAvatar" style="background:'+ac.bg+';color:'+ac.color+';width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;">'+initials+'</div>';
+    };
+    avatarEl.replaceWith(img);
+  } else {
+    avatarEl.style.background = ac.bg;
+    avatarEl.style.color = ac.color;
+    avatarEl.textContent = initials;
+  }
+}
+
 </script>
+
+<!-- ═══ PERFIL MODAL ═══ -->
+<div class="perfil-overlay" id="perfilOverlay" onclick="if(event.target===this)cerrarPerfil()">
+  <div class="perfil-modal" id="perfilModal">
+    <div id="perfilContent"><!-- se rellena por JS --></div>
+  </div>
+</div>
 </body>
 </html>
