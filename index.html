@@ -1333,6 +1333,10 @@ body {
   color: var(--text-2);
   line-height: 1.5;
   margin-left: 36px;
+  word-break: break-word;
+}
+
+.reply-content .reply-text {
   white-space: pre-wrap;
   word-break: break-word;
 }
@@ -6348,11 +6352,7 @@ for (const r of respuestas) {
     if (r.cita_id) {
       const citada = respuestas.find(rx => rx.id === r.cita_id);
       if (citada) {
-        citaHtml = `
-          <div class="quote-block">
-            <div class="quote-author">↩ ${cap(citada.nickname)}</div>
-            ${citada.contenido.slice(0, 120)}${citada.contenido.length > 120 ? '…' : ''}
-          </div>`;
+        citaHtml = `<div class="quote-block"><div class="quote-author">↩ ${cap(citada.nickname)}</div>${citada.contenido.slice(0, 120)}${citada.contenido.length > 120 ? '…' : ''}</div>`;
       }
     }
 
@@ -6388,38 +6388,11 @@ for (const r of respuestas) {
         .filter(cat => scoresFinales[cat.key] != null)
         .map(cat => `<span class="reply-ranking-chip">${cat.icon} ${cat.label} <b>${scoresFinales[cat.key]}/10</b></span>`)
         .join('');
-      rankingHtml = `
-        <div class="reply-ranking-block">
-          ${mediaFinal != null ? `<div class="reply-ranking-media">⭐ Media <span style="margin-left:4px;font-size:1.05rem;">${mediaFinal}/10</span></div>` : ''}
-          ${chipsHtml ? `<div class="reply-ranking-chips">${chipsHtml}</div>` : ''}
-        </div>`;
+      rankingHtml = `<div class="reply-ranking-block">${mediaFinal != null ? `<div class="reply-ranking-media">⭐ Media <span style="margin-left:4px;font-size:1.05rem;">${mediaFinal}/10</span></div>` : ''}${chipsHtml ? `<div class="reply-ranking-chips">${chipsHtml}</div>` : ''}</div>`;
     }
 
-    html += `
-      <div class="${topClass}" id="reply_${r.id}" data-reply-id="${r.id}">
-        <div class="reply-header">
-          ${renderAvatar(r.nickname, uData?.foto_url||null, 'reply-avatar', 32)}
-          <span class="reply-author nick-link" onclick="abrirPerfil('${r.nickname}')">${nombre}</span>
-          ${getBadgeHtml(uData?.puntos || 0, uData?.rol || 'usuario')}
-          ${esTopVotada ? `<span class="top-voted-badge">🏅 Más votada</span>` : ''}
-          ${editadoBadge}
-          <span class="reply-time">${timeAgo(r.created_at)}</span>
-        </div>
-        <div class="reply-content">
-          ${citaHtml}
-          ${modelosAMostrar.length > 0 ? `<div class="reply-model-title">${modelosAMostrar.map(m => `<span class="phone-title-tag">📱 ${formatearModelo(m)}</span>`).join('')}</div>` : ''}
-          ${rankingHtml}
-          ${contenidoLimpio}
-        </div>
-        <div class="reply-actions">
-          <button class="vote-btn ${miVoto === 'util' ? 'voted-util' : ''}" onclick="votar('${r.id}','util','${hiloId}','${r.nickname}')">👍 ${votosUtil}</button>
-          <button class="vote-btn ${miVoto === 'noutil' ? 'voted-noutil' : ''}" onclick="votar('${r.id}','noutil','${hiloId}','${r.nickname}')">👎 ${r.votos_noutil || 0}</button>
-          <button class="cite-btn" data-hilo="${hiloId}" data-reply="${r.id}" data-autor="${r.nickname}" data-contenido="${r.contenido.replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/\n/g,' ')}">↩ Citar</button>
-          ${editBtn}
-          ${deleteBtn}
-        </div>
-      </div>
-    `;
+    const modelosTitleHtml = modelosAMostrar.length > 0 ? `<div class="reply-model-title">${modelosAMostrar.map(m => `<span class="phone-title-tag">📱 ${formatearModelo(m)}</span>`).join('')}</div>` : '';
+    html += `<div class="${topClass}" id="reply_${r.id}" data-reply-id="${r.id}"><div class="reply-header">${renderAvatar(r.nickname, uData?.foto_url||null, 'reply-avatar', 32)}<span class="reply-author nick-link" onclick="abrirPerfil('${r.nickname}')">${nombre}</span>${getBadgeHtml(uData?.puntos || 0, uData?.rol || 'usuario')}${esTopVotada ? `<span class="top-voted-badge">🏅 Más votada</span>` : ''}${editadoBadge}<span class="reply-time">${timeAgo(r.created_at)}</span></div><div class="reply-content">${citaHtml}${modelosTitleHtml}${rankingHtml}<span class="reply-text">${contenidoLimpio}</span></div><div class="reply-actions"><button class="vote-btn ${miVoto === 'util' ? 'voted-util' : ''}" onclick="votar('${r.id}','util','${hiloId}','${r.nickname}')">👍 ${votosUtil}</button><button class="vote-btn ${miVoto === 'noutil' ? 'voted-noutil' : ''}" onclick="votar('${r.id}','noutil','${hiloId}','${r.nickname}')">👎 ${r.votos_noutil || 0}</button><button class="cite-btn" data-hilo="${hiloId}" data-reply="${r.id}" data-autor="${r.nickname}" data-contenido="${r.contenido.replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/\n/g,' ')}">↩ Citar</button>${editBtn}${deleteBtn}</div></div>`;
   }
 
   container.innerHTML = html;
