@@ -5863,7 +5863,7 @@ function setTab(tab, el) {
     const shortcut = document.getElementById('forumShortcutBtn');
     if (shortcut) shortcut.style.display = 'none';
     cargarContadoresForo();
-    mostrarForumCats();
+    mostrarForumCats(true);
   } else {
     hilosEl.style.display = 'block';
     pagEl.style.display = 'block';
@@ -5879,8 +5879,46 @@ function setTab(tab, el) {
 }
 
 // ═══════════════════════════════════════════
-// HILOS
+// HISTORIAL: botón atrás del navegador
 // ═══════════════════════════════════════════
+
+// Estado base al cargar la página (evita salir al pulsar atrás desde el inicio)
+history.replaceState({ spa: 'home' }, '');
+
+window.addEventListener('popstate', (e) => {
+  const state = e.state;
+  if (!state) return;
+
+  if (state.spa === 'home') {
+    // Estamos en el inicio: volver a poner estado home para no salir
+    history.pushState({ spa: 'home' }, '');
+    return;
+  }
+
+  if (state.spa === 'foro') {
+    // Atrás desde categoría → lista de categorías
+    if (tabActual !== 'foro') {
+      setTab('foro', document.getElementById('forumTabBtn'));
+    } else {
+      mostrarForumCats(false);
+    }
+    return;
+  }
+
+  if (state.spa === 'foro-cat') {
+    // Atrás desde post → lista de posts de la categoría
+    if (state.cat) abrirCategoria(state.cat, false);
+    return;
+  }
+
+  if (state.spa === 'foro-post') {
+    // Atrás desde dentro de un post → lista de posts
+    if (state.cat) abrirCategoria(state.cat, false);
+    return;
+  }
+});
+
+
 async function cargarHilos() {
   if (!usuario) return;
   document.getElementById('hilosList').innerHTML = '<div class="loading">⏳ Cargando...</div>';
@@ -7873,10 +7911,11 @@ const FORUM_CATS = {
 let forumCatActual = null;
 let forumPostActual = null;
 
-function mostrarForumCats() {
+function mostrarForumCats(pushHistory = true) {
   document.getElementById('forumCats').style.display = 'block';
   document.getElementById('forumThreadArea').classList.remove('open');
   document.getElementById('forumDetailArea').classList.remove('open');
+  if (pushHistory) history.pushState({ spa: 'foro' }, '');
 }
 
 function volverForumCats() {
@@ -7900,7 +7939,7 @@ async function cargarContadoresForo() {
   }
 }
 
-async function abrirCategoria(cat) {
+async function abrirCategoria(cat, pushHistory = true) {
   forumCatActual = cat;
   const catInfo = FORUM_CATS[cat];
   document.getElementById('forumCats').style.display = 'none';
@@ -7908,6 +7947,7 @@ async function abrirCategoria(cat) {
   document.getElementById('forumThreadArea').classList.add('open');
   document.getElementById('forumCatTitle').textContent = `${catInfo.icon} ${catInfo.name}`;
   document.getElementById('forumPostList').innerHTML = '<div class="loading">⏳ Cargando...</div>';
+  if (pushHistory) history.pushState({ spa: 'foro-cat', cat }, '');
 
   const { data: posts, error } = await db.from('foro_posts')
     .select('*, foro_replies(count)')
@@ -7961,7 +8001,7 @@ async function abrirCategoria(cat) {
   document.getElementById('forumPostList').innerHTML = html;
 }
 
-async function abrirPost(postId) {
+async function abrirPost(postId, pushHistory = true) {
   forumPostActual = postId;
   fcMultiCitas = [];
   actualizarBarraMulticita();
@@ -7971,6 +8011,7 @@ async function abrirPost(postId) {
   document.getElementById('forumDetailContent').innerHTML = '<div class="loading" style="padding:20px;">⏳ Cargando...</div>';
   document.getElementById('forumRepliesSection').innerHTML = '';
   document.getElementById('forumReplyBox').style.display = 'none';
+  if (pushHistory) history.pushState({ spa: 'foro-post', postId, cat: forumCatActual }, '');
 
   const { data: post, error } = await db.from('foro_posts').select('*').eq('id', postId).single();
   if (error || !post) {
