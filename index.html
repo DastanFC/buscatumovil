@@ -5107,62 +5107,117 @@ function clearCita(hiloId) {
 // ═══════════════════════════════════════════
 async function cargarNotificaciones() {
   if (!usuario) return;
-  
-  // Hilos propios
-  const { data: misHilos } = await db.from('hilos')
-    .select('id, datos_extra, created_at')
-    .eq('nickname', usuario.nickname);
-  
-  if (!misHilos || misHilos.length === 0) return;
-  
-  const hilosIds = misHilos.map(h => h.id);
+
   const vistoKey = `notif_visto_${usuario.nickname}`;
   let visto = {};
   try { visto = JSON.parse(localStorage.getItem(vistoKey) || '{}'); } catch(e) {}
-  
-  // Respuestas a mis hilos
-  const { data: respuestas } = await db.from('respuestas')
-    .select('*, hilo_id')
-    .in('hilo_id', hilosIds)
-    .neq('nickname', usuario.nickname)
-    .order('created_at', { ascending: false })
-    .limit(20);
-
-  // Menciones a mí
-  const { data: menciones } = await db.from('respuestas')
-    .select('*, hilo_id')
-    .ilike('contenido', `%@${usuario.nickname}%`)
-    .neq('nickname', usuario.nickname)
-    .order('created_at', { ascending: false })
-    .limit(10);
 
   const todas = [];
-  
-  if (respuestas) {
-    for (const r of respuestas) {
-      todas.push({
-        id: `resp_${r.id}`,
-        texto: `<span class="notif-bold">${cap(r.nickname)}</span> respondió en tu consulta`,
-        tiempo: timeAgo(r.created_at),
-        hiloId: r.hilo_id,
-        leido: !!visto[`resp_${r.id}`],
-      });
-    }
-  }
 
-  if (menciones) {
-    for (const m of menciones) {
-      if (!todas.find(t => t.id === `resp_${m.id}`)) {
+  // ── Consultas: respuestas a mis hilos ──
+  const { data: misHilos } = await db.from('hilos')
+    .select('id, datos_extra, created_at')
+    .eq('nickname', usuario.nickname);
+
+  if (misHilos && misHilos.length > 0) {
+    const hilosIds = misHilos.map(h => h.id);
+
+    const { data: respuestas } = await db.from('respuestas')
+      .select('*, hilo_id')
+      .in('hilo_id', hilosIds)
+      .neq('nickname', usuario.nickname)
+      .order('created_at', { ascending: false })
+      .limit(20);
+
+    if (respuestas) {
+      for (const r of respuestas) {
         todas.push({
-          id: `men_${m.id}`,
-          texto: `<span class="notif-bold">${cap(m.nickname)}</span> te mencionó`,
-          tiempo: timeAgo(m.created_at),
-          hiloId: m.hilo_id,
-          leido: !!visto[`men_${m.id}`],
+          id: `resp_${r.id}`,
+          texto: `<span class="notif-bold">${cap(r.nickname)}</span> respondió en tu consulta`,
+          tiempo: timeAgo(r.created_at),
+          hiloId: r.hilo_id,
+          esForo: false,
+          leido: !!visto[`resp_${r.id}`],
         });
       }
     }
+
+    // Menciones en consultas
+    const { data: menciones } = await db.from('respuestas')
+      .select('*, hilo_id')
+      .ilike('contenido', `%@${usuario.nickname}%`)
+      .neq('nickname', usuario.nickname)
+      .order('created_at', { ascending: false })
+      .limit(10);
+
+    if (menciones) {
+      for (const m of menciones) {
+        if (!todas.find(t => t.id === `resp_${m.id}`)) {
+          todas.push({
+            id: `men_${m.id}`,
+            texto: `<span class="notif-bold">${cap(m.nickname)}</span> te mencionó en consultas`,
+            tiempo: timeAgo(m.created_at),
+            hiloId: m.hilo_id,
+            esForo: false,
+            leido: !!visto[`men_${m.id}`],
+          });
+        }
+      }
+    }
   }
+
+  // ── Foro: respuestas y menciones ──
+  try {
+    const { data: misPostsForo } = await db.from('foro_posts')
+      .select('id')
+      .eq('nickname', usuario.nickname);
+
+    if (misPostsForo && misPostsForo.length > 0) {
+      const misPostsIds = misPostsForo.map(p => p.id);
+      const { data: respsForo } = await db.from('foro_replies')
+        .select('*, post_id')
+        .in('post_id', misPostsIds)
+        .neq('nickname', usuario.nickname)
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (respsForo) {
+        for (const r of respsForo) {
+          todas.push({
+            id: `foro_resp_${r.id}`,
+            texto: `<span class="notif-bold">${cap(r.nickname)}</span> respondió en tu post del foro`,
+            tiempo: timeAgo(r.created_at),
+            hiloId: r.post_id,
+            esForo: true,
+            leido: !!visto[`foro_resp_${r.id}`],
+          });
+        }
+      }
+    }
+
+    // Menciones en el foro
+    const { data: mencionesF } = await db.from('foro_replies')
+      .select('*, post_id')
+      .ilike('contenido', `%@${usuario.nickname}%`)
+      .neq('nickname', usuario.nickname)
+      .order('created_at', { ascending: false })
+      .limit(10);
+
+    if (mencionesF) {
+      for (const m of mencionesF) {
+        if (!todas.find(t => t.id === `foro_resp_${m.id}`)) {
+          todas.push({
+            id: `foro_men_${m.id}`,
+            texto: `<span class="notif-bold">${cap(m.nickname)}</span> te mencionó en el foro`,
+            tiempo: timeAgo(m.created_at),
+            hiloId: m.post_id,
+            esForo: true,
+            leido: !!visto[`foro_men_${m.id}`],
+          });
+        }
+      }
+    }
+  } catch(e) { /* foro_replies puede no existir aún */ }
 
   todas.sort((a, b) => (a.leido === b.leido ? 0 : a.leido ? 1 : -1));
 
@@ -5184,13 +5239,14 @@ async function cargarNotificaciones() {
   }
 
   list.innerHTML = todas.slice(0, 10).map(n => `
-    <div class="notif-item ${n.leido ? '' : 'unread'}" onclick="irAHilo('${n.hiloId}', '${n.id}')">
+    <div class="notif-item ${n.leido ? '' : 'unread'}" data-notif-id="${n.id}" data-hilo-id="${n.hiloId}" data-es-foro="${n.esForo ? '1' : '0'}" onclick="irAHilo('${n.hiloId}', '${n.id}', ${n.esForo ? 'true' : 'false'})">
       ${n.texto} · <span style="color:var(--text-3)">${n.tiempo}</span>
     </div>
   `).join('');
 }
 
-function irAHilo(hiloId, notifId) {
+function irAHilo(hiloId, notifId, esForo) {
+  // Guardar como leída
   const vistoKey = `notif_visto_${usuario.nickname}`;
   let visto = {};
   try { visto = JSON.parse(localStorage.getItem(vistoKey) || '{}'); } catch(e) {}
@@ -5198,17 +5254,34 @@ function irAHilo(hiloId, notifId) {
   try { localStorage.setItem(vistoKey, JSON.stringify(visto)); } catch(e) {}
   toggleNotifPanel();
 
-  const el = document.getElementById(`thread_${hiloId}`);
-  if (el) {
-    // Abrir las respuestas si están cerradas
-    const rep = document.getElementById(`replies_${hiloId}`);
-    const box = document.getElementById(`replybox_${hiloId}`);
-    if (rep && rep.style.display === 'none') {
-      rep.style.display = 'block';
-      if (box) box.style.display = 'block';
-      if (rep.innerHTML === '') cargarRespuestas(hiloId);
+  if (esForo) {
+    // Navegar al foro y abrir el post correspondiente
+    const forumTabBtn = document.getElementById('forumTabBtn');
+    if (forumTabBtn) setTab('foro', forumTabBtn);
+    syncBnav('foro');
+    setTimeout(() => abrirPost(hiloId), 250);
+  } else {
+    // Navegar a consultas si no estamos ya ahí
+    const tabActualEl = document.querySelector('.tab.active');
+    const estaEnConsultas = tabActual && tabActual !== 'foro' && tabActual !== 'noticias';
+    if (!estaEnConsultas) {
+      const tabAbiertas = document.querySelector('.tab[onclick*="abiertas"]');
+      if (tabAbiertas) setTab('abiertas', tabAbiertas);
+      syncBnav('abiertas');
     }
-    setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+    setTimeout(() => {
+      const el = document.getElementById(`thread_${hiloId}`);
+      if (el) {
+        const rep = document.getElementById(`replies_${hiloId}`);
+        const box = document.getElementById(`replybox_${hiloId}`);
+        if (rep && rep.style.display === 'none') {
+          rep.style.display = 'block';
+          if (box) box.style.display = 'block';
+          if (rep.innerHTML === '') cargarRespuestas(hiloId);
+        }
+        setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+      }
+    }, estaEnConsultas ? 0 : 400);
   }
   cargarNotificaciones();
 }
@@ -5219,8 +5292,8 @@ function marcarTodasLeidas() {
   let visto = {};
   try { visto = JSON.parse(localStorage.getItem(vistoKey) || '{}'); } catch(e) {}
   document.querySelectorAll('.notif-item').forEach(el => {
-    const match = el.getAttribute('onclick')?.match(/'([^']+)', '([^']+)'/);
-    if (match) visto[match[2]] = true;
+    const notifId = el.dataset.notifId;
+    if (notifId) visto[notifId] = true;
   });
   try { localStorage.setItem(vistoKey, JSON.stringify(visto)); } catch(e) {}
   cargarNotificaciones();
