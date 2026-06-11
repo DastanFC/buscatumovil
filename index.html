@@ -5820,7 +5820,7 @@ function cerrarSesion() {
 // ═══════════════════════════════════════════
 // TABS
 // ═══════════════════════════════════════════
-function setTab(tab, el) {
+function setTab(tab, el, pushHistory = true) {
   tabActual = tab;
   currentPage = 1;
   noticiasPagina = 1;
@@ -5828,6 +5828,7 @@ function setTab(tab, el) {
   el.classList.add('active');
   syncBnav(tab);
   actualizarBnavNueva();
+  if (pushHistory && tab !== 'foro') spaReplace({});
 
   const hilosEl = document.getElementById('hilosList');
   const pagEl = document.getElementById('pagination');
@@ -5879,44 +5880,124 @@ function setTab(tab, el) {
 }
 
 // ═══════════════════════════════════════════
-// HISTORIAL: botón atrás del navegador
+// HISTORIAL + URLs COMPARTIBLES
 // ═══════════════════════════════════════════
 
-// Estado base al cargar la página (evita salir al pulsar atrás desde el inicio)
-history.replaceState({ spa: 'home' }, '');
+function spaUrl(params) {
+  if (!params || Object.keys(params).length === 0) return location.pathname;
+  return location.pathname + '?' + new URLSearchParams(params).toString();
+}
 
-window.addEventListener('popstate', (e) => {
-  const state = e.state;
-  if (!state) return;
+function spaPush(params) {
+  history.pushState(params, '', spaUrl(params));
+}
 
-  if (state.spa === 'home') {
-    // Estamos en el inicio: volver a poner estado home para no salir
-    history.pushState({ spa: 'home' }, '');
+function spaReplace(params) {
+  history.replaceState(params, '', spaUrl(params));
+}
+
+// Estado base al cargar
+spaReplace({});
+
+window.addEventListener('popstate', async (e) => {
+  const state = e.state || {};
+
+  if (state['foro-post']) {
+    const forumTabBtn = document.getElementById('forumTabBtn');
+    if (tabActual !== 'foro') setTab('foro', forumTabBtn, false);
+    if (state['foro-cat']) await abrirCategoria(state['foro-cat'], false);
+    await abrirPost(state['foro-post'], false);
     return;
   }
 
-  if (state.spa === 'foro') {
-    // Atrás desde categoría → lista de categorías
-    if (tabActual !== 'foro') {
-      setTab('foro', document.getElementById('forumTabBtn'));
-    } else {
-      mostrarForumCats(false);
+  if (state['foro-cat']) {
+    const forumTabBtn = document.getElementById('forumTabBtn');
+    if (tabActual !== 'foro') setTab('foro', forumTabBtn, false);
+    await abrirCategoria(state['foro-cat'], false);
+    return;
+  }
+
+  if (state.tab === 'foro') {
+    const forumTabBtn = document.getElementById('forumTabBtn');
+    setTab('foro', forumTabBtn, false);
+    mostrarForumCats(false);
+    return;
+  }
+
+  if (state.hilo) {
+    // Consulta: hacer scroll al hilo
+    const el = document.getElementById(`thread_${state.hilo}`);
+    if (el) {
+      const rep = document.getElementById(`replies_${state.hilo}`);
+      const box = document.getElementById(`replybox_${state.hilo}`);
+      if (rep && rep.style.display === 'none') {
+        rep.style.display = 'block';
+        if (box) box.style.display = 'block';
+        if (rep.innerHTML === '') cargarRespuestas(state.hilo);
+      }
+      setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
     }
     return;
   }
 
-  if (state.spa === 'foro-cat') {
-    // Atrás desde post → lista de posts de la categoría
-    if (state.cat) abrirCategoria(state.cat, false);
+  // Inicio: no salir de la página
+  spaReplace({});
+});
+
+// Función para leer los params de la URL al cargar y navegar al contenido correcto
+async function navegarDesdeUrl() {
+  const p = new URLSearchParams(location.search);
+  const foroPost = p.get('post');
+  const foroCat  = p.get('cat');
+  const hiloId   = p.get('hilo');
+  const tab      = p.get('tab');
+
+  if (foroPost) {
+    const forumTabBtn = document.getElementById('forumTabBtn');
+    setTab('foro', forumTabBtn, false);
+    if (foroCat) await abrirCategoria(foroCat, false);
+    await abrirPost(foroPost, false);
+    spaReplace({ 'foro-post': foroPost, 'foro-cat': foroCat || '' });
     return;
   }
 
-  if (state.spa === 'foro-post') {
-    // Atrás desde dentro de un post → lista de posts
-    if (state.cat) abrirCategoria(state.cat, false);
+  if (foroCat) {
+    const forumTabBtn = document.getElementById('forumTabBtn');
+    setTab('foro', forumTabBtn, false);
+    await abrirCategoria(foroCat, false);
+    spaReplace({ 'foro-cat': foroCat });
     return;
   }
-});
+
+  if (tab === 'foro') {
+    const forumTabBtn = document.getElementById('forumTabBtn');
+    setTab('foro', forumTabBtn, false);
+    spaReplace({ tab: 'foro' });
+    return;
+  }
+
+  if (hiloId) {
+    // Esperar a que los hilos carguen y hacer scroll
+    spaReplace({ hilo: hiloId });
+    const intentar = (intentos = 0) => {
+      const el = document.getElementById(`thread_${hiloId}`);
+      if (el) {
+        const rep = document.getElementById(`replies_${hiloId}`);
+        const box = document.getElementById(`replybox_${hiloId}`);
+        if (rep && rep.style.display === 'none') {
+          rep.style.display = 'block';
+          if (box) box.style.display = 'block';
+          if (rep.innerHTML === '') cargarRespuestas(hiloId);
+        }
+        setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+      } else if (intentos < 15) {
+        setTimeout(() => intentar(intentos + 1), 300);
+      }
+    };
+    setTimeout(intentar, 600);
+    return;
+  }
+}
 
 
 async function cargarHilos() {
@@ -6097,13 +6178,13 @@ function toggleReplies(hiloId) {
   if (isOpen) {
     rep.style.display = 'none';
     if (box) box.style.display = 'none';
+    spaReplace({});
   } else {
     rep.style.display = 'block';
     if (box) box.style.display = 'block';
-    // Siempre recargar al abrir para tener datos frescos
     cargarRespuestas(hiloId);
-    // Marcar como leídas
     marcarRespuestasVistas(hiloId);
+    spaPush({ hilo: hiloId });
   }
 }
 
@@ -7915,7 +7996,7 @@ function mostrarForumCats(pushHistory = true) {
   document.getElementById('forumCats').style.display = 'block';
   document.getElementById('forumThreadArea').classList.remove('open');
   document.getElementById('forumDetailArea').classList.remove('open');
-  if (pushHistory) history.pushState({ spa: 'foro' }, '');
+  if (pushHistory) spaPush({ tab: 'foro' });
 }
 
 function volverForumCats() {
@@ -7947,7 +8028,7 @@ async function abrirCategoria(cat, pushHistory = true) {
   document.getElementById('forumThreadArea').classList.add('open');
   document.getElementById('forumCatTitle').textContent = `${catInfo.icon} ${catInfo.name}`;
   document.getElementById('forumPostList').innerHTML = '<div class="loading">⏳ Cargando...</div>';
-  if (pushHistory) history.pushState({ spa: 'foro-cat', cat }, '');
+  if (pushHistory) spaPush({ tab: 'foro', cat });
 
   const { data: posts, error } = await db.from('foro_posts')
     .select('*, foro_replies(count)')
@@ -8011,7 +8092,7 @@ async function abrirPost(postId, pushHistory = true) {
   document.getElementById('forumDetailContent').innerHTML = '<div class="loading" style="padding:20px;">⏳ Cargando...</div>';
   document.getElementById('forumRepliesSection').innerHTML = '';
   document.getElementById('forumReplyBox').style.display = 'none';
-  if (pushHistory) history.pushState({ spa: 'foro-post', postId, cat: forumCatActual }, '');
+  if (pushHistory) spaPush({ tab: 'foro', cat: forumCatActual || '', post: postId });
 
   const { data: post, error } = await db.from('foro_posts').select('*').eq('id', postId).single();
   if (error || !post) {
@@ -8828,6 +8909,7 @@ async function init() {
                 usuario = usuarioDB; 
                 cerrarModalAuth();
                 onLogin();
+                await navegarDesdeUrl();
                 return; 
             }
         }
@@ -8835,6 +8917,7 @@ async function init() {
 
     // Sin token o sesión inválida: mostrar botón login en topbar (no forzar modal)
     mostrarUsuario();
+    await navegarDesdeUrl();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
