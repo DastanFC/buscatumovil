@@ -8865,7 +8865,7 @@ async function abrirPerfil(nick) {
     ? '<img src="' + escHtml(u.foto_url) + '" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,0.3);">'
     : '<div class="perfil-avatar-grande" style="background:' + ac.bg + ';color:' + ac.color + ';">' + initials + '</div>';
 
-  const seguirBtn = (!esPropio && usuario) ? '<button class="perfil-seguir-btn ' + (yaSigo ? 'siguiendo' : '') + '" id="perfilSeguirBtn" onclick="toggleSeguir('' + nick + '')">' + (yaSigo ? '✓ Siguiendo' : '+ Seguir') + '</button>' : '';
+  const seguirBtn = (!esPropio && usuario) ? '<button class="perfil-seguir-btn ' + (yaSigo ? 'siguiendo' : '') + '" id="perfilSeguirBtn" onclick="toggleSeguir(\'' + nick + '\')">' + (yaSigo ? '✓ Siguiendo' : '+ Seguir') + '</button>' : '';
   const editBtn   = esPropio ? '<button class="perfil-seguir-btn" onclick="mostrarEditPerfil()">✏️ Editar perfil</button>' : '';
 
   const infoItems = [
@@ -8887,14 +8887,14 @@ async function abrirPerfil(nick) {
     + '<div class="perfil-nick">' + cap(nick) + (u.rol==='admin'?' 👑':'') + '</div>'
     + '<div class="perfil-rango-badge">' + rango.icon + ' ' + rango.label + ' · ' + (u.puntos||0) + ' pts</div>'
     + '<div class="perfil-stats-row">'
-    + '<div class="perfil-stat" onclick="verSeguidoresPerfil('' + nick + '','seguidores')"><div class="perfil-stat-val">' + (seguidores||0) + '</div><div class="perfil-stat-label">Seguidores</div></div>'
-    + '<div class="perfil-stat" onclick="verSeguidoresPerfil('' + nick + '','seguidos')"><div class="perfil-stat-val">' + (seguidos||0) + '</div><div class="perfil-stat-label">Siguiendo</div></div>'
+    + '<div class="perfil-stat" onclick="verSeguidoresPerfil(\'' + nick + '\',\'seguidores\')"><div class="perfil-stat-val">' + (seguidores||0) + '</div><div class="perfil-stat-label">Seguidores</div></div>'
+    + '<div class="perfil-stat" onclick="verSeguidoresPerfil(\'' + nick + '\',\'seguidos\')"><div class="perfil-stat-val">' + (seguidos||0) + '</div><div class="perfil-stat-label">Siguiendo</div></div>'
     + '<div class="perfil-stat"><div class="perfil-stat-val">' + ((nConsultas||0)+(nPosts||0)) + '</div><div class="perfil-stat-label">Posts</div></div>'
     + '</div>' + seguirBtn + editBtn + '</div>'
     + '<div class="perfil-tabs">'
-    + '<div class="perfil-tab active" onclick="switchPerfilTab('info',this)">Info</div>'
-    + '<div class="perfil-tab" onclick="switchPerfilTab('menciones',this)">Menciones</div>'
-    + '<div class="perfil-tab" onclick="switchPerfilTab('citas',this)">Citas recibidas</div>'
+    + '<div class="perfil-tab active" onclick="switchPerfilTab(\'info\',this)">Info</div>'
+    + '<div class="perfil-tab" onclick="switchPerfilTab(\'menciones\',this)">Menciones</div>'
+    + '<div class="perfil-tab" onclick="switchPerfilTab(\'citas\',this)">Citas recibidas</div>'
     + '</div>'
     + '<div class="perfil-tab-panel active" id="ptab_info">' + infoHtml + sobreHtml + (!infoItems.length && !u.sobre_mi ? '<div style="color:var(--text-3);font-size:13px;text-align:center;padding:16px 0;">Sin información de perfil todavía</div>' : '') + '</div>'
     + '<div class="perfil-tab-panel" id="ptab_menciones"><div id="perfilMencionesList"><div style="color:var(--text-3);font-size:13px;text-align:center;padding:20px;">⏳ Cargando...</div></div></div>'
@@ -8922,7 +8922,7 @@ async function cargarMencionesPerfil(nick) {
   ]);
   const todas = [...(mc||[]).map(r=>({...r,tipo:'consulta',destId:r.hilo_id})),...(mf||[]).map(r=>({...r,tipo:'foro',destId:r.post_id}))].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,20);
   if (!todas.length) { el.innerHTML = '<div style="color:var(--text-3);font-size:13px;text-align:center;padding:16px;">Sin menciones</div>'; return; }
-  el.innerHTML = todas.map(m => '<div class="perfil-historial-item" onclick='cerrarPerfil();' + (m.tipo==='foro' ? 'setTimeout(()=>abrirPost("'+m.destId+'"),100)' : 'irAHilo("'+m.destId+'","",false)') + ''><span style="font-weight:600;color:var(--navy);">' + cap(m.nickname) + '</span> <span style="color:var(--text-3);">· ' + (m.tipo==='foro'?'💬 Foro':'📋 Consultas') + ' · ' + timeAgo(m.created_at) + '</span><br><span style="color:var(--text-2);">' + escHtml((m.contenido||'').substring(0,80)) + (m.contenido?.length>80?'…':'') + '</span></div>').join('');
+  el.innerHTML = todas.map(m => '<div class="perfil-historial-item" onclick="' + (m.tipo==='foro' ? 'cerrarPerfil();setTimeout(()=>abrirPost(\"'+m.destId+'\"),100)' : 'cerrarPerfil();irAHilo(\"'+m.destId+'\",\"\",false)') + '"><span style="font-weight:600;color:var(--navy);">' + cap(m.nickname) + '</span> <span style="color:var(--text-3);">· ' + (m.tipo==='foro'?'💬 Foro':'📋 Consultas') + ' · ' + timeAgo(m.created_at) + '</span><br><span style="color:var(--text-2);">' + escHtml((m.contenido||'').substring(0,80)) + (m.contenido?.length>80?'…':'') + '</span></div>').join('');
 }
 
 async function cargarCitasPerfil(nick) {
@@ -8935,7 +8935,7 @@ async function cargarCitasPerfil(nick) {
   const { data: citasF } = await db.from('foro_replies').select('id,post_id,nickname,contenido,created_at').ilike('contenido','%[cite:'+nick+'%').order('created_at',{ascending:false}).limit(15);
   const todas = [...citasC.map(r=>({...r,tipo:'consulta',destId:r.hilo_id})),...(citasF||[]).map(r=>({...r,tipo:'foro',destId:r.post_id}))].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,20);
   if (!todas.length) { el.innerHTML = '<div style="color:var(--text-3);font-size:13px;text-align:center;padding:16px;">Sin citas recibidas</div>'; return; }
-  el.innerHTML = todas.map(c => '<div class="perfil-historial-item" onclick='cerrarPerfil();' + (c.tipo==='foro'?'setTimeout(()=>abrirPost("'+c.destId+'"),100)':'irAHilo("'+c.destId+'","",false)') + ''><span style="font-weight:600;color:var(--navy);">' + cap(c.nickname) + '</span> te citó <span style="color:var(--text-3);">· ' + (c.tipo==='foro'?'💬 Foro':'📋 Consultas') + ' · ' + timeAgo(c.created_at) + '</span><br><span style="color:var(--text-2);">' + escHtml((c.contenido||'').substring(0,80)) + (c.contenido?.length>80?'…':'') + '</span></div>').join('');
+  el.innerHTML = todas.map(c => '<div class="perfil-historial-item" onclick="' + (c.tipo==='foro'?'cerrarPerfil();setTimeout(()=>abrirPost(\"'+c.destId+'\"),100)':'cerrarPerfil();irAHilo(\"'+c.destId+'\",\"\",false)') + '"><span style="font-weight:600;color:var(--navy);">' + cap(c.nickname) + '</span> te citó <span style="color:var(--text-3);">· ' + (c.tipo==='foro'?'💬 Foro':'📋 Consultas') + ' · ' + timeAgo(c.created_at) + '</span><br><span style="color:var(--text-2);">' + escHtml((c.contenido||'').substring(0,80)) + (c.contenido?.length>80?'…':'') + '</span></div>').join('');
 }
 
 async function toggleSeguir(nick) {
@@ -8963,8 +8963,8 @@ async function verSeguidoresPerfil(nick, tipo) {
   const lista = (data||[]).map(r => tipo==='seguidores' ? r.seguidor : r.seguido);
   const infoTab = document.getElementById('ptab_info');
   if (!infoTab) return;
-  infoTab.innerHTML = '<div style="font-weight:700;font-size:14px;margin-bottom:12px;color:var(--navy);"><button onclick='abrirPerfil("'+nick+'")' style="background:none;border:none;cursor:pointer;font-size:16px;margin-right:8px;">←</button>' + (tipo==='seguidores'?'Seguidores':'Siguiendo') + '</div>'
-    + (lista.length ? lista.map(n=>'<div class="perfil-historial-item" onclick='abrirPerfil("'+n+'")'>' + cap(n) + '</div>').join('') : '<div style="color:var(--text-3);font-size:13px;">Sin ' + tipo + '</div>');
+  infoTab.innerHTML = '<div style="font-weight:700;font-size:14px;margin-bottom:12px;color:var(--navy);"><button onclick="abrirPerfil(\''+nick+'\');" style="background:none;border:none;cursor:pointer;font-size:16px;margin-right:8px;">←</button>' + (tipo==='seguidores'?'Seguidores':'Siguiendo') + '</div>'
+    + (lista.length ? lista.map(n=>'<div class="perfil-historial-item" onclick="abrirPerfil(\''+n+'\')">' + cap(n) + '</div>').join('') : '<div style="color:var(--text-3);font-size:13px;">Sin ' + tipo + '</div>');
   document.querySelectorAll('.perfil-tab').forEach((t,i)=>t.classList.toggle('active',i===0));
   document.querySelectorAll('.perfil-tab-panel').forEach((p,i)=>p.classList.toggle('active',i===0));
 }
@@ -8973,7 +8973,7 @@ function mostrarEditPerfil() {
   if (!usuario) return;
   const u = usuario;
   const cont = document.getElementById('perfilContent');
-  cont.innerHTML = '<div class="perfil-header" style="padding-bottom:16px;"><button class="perfil-close-btn" onclick="cerrarPerfil()">✕</button><div style="color:white;font-family:'Roboto',sans-serif;font-size:16px;font-weight:700;margin-top:8px;">Editar perfil</div></div>'
+  cont.innerHTML = '<div class="perfil-header" style="padding-bottom:16px;"><button class="perfil-close-btn" onclick="cerrarPerfil()">✕</button><div style="color:white;font-family:Roboto,sans-serif;font-size:16px;font-weight:700;margin-top:8px;">Editar perfil</div></div>'
     + '<div class="perfil-body">'
     + '<div class="perfil-edit-field"><label>🖼️ URL foto de perfil</label><input id="ep_foto" type="url" placeholder="https://..." value="' + escHtml(u.foto_url||'') + '"></div>'
     + '<div class="perfil-edit-field"><label>📍 Ciudad</label><input id="ep_ciudad" type="text" placeholder="ej. Madrid" value="' + escHtml(u.ciudad||'') + '"></div>'
@@ -8982,7 +8982,7 @@ function mostrarEditPerfil() {
     + '<div class="perfil-edit-field"><label>🎨 Capa UI</label><input id="ep_capa" type="text" placeholder="ej. HyperOS, OxygenOS, One UI..." value="' + escHtml(u.capa_ui||'') + '"></div>'
     + '<div class="perfil-edit-field"><label>💬 Sobre mí</label><textarea id="ep_sobre" rows="3" placeholder="Cuéntanos algo sobre ti...">' + escHtml(u.sobre_mi||'') + '</textarea></div>'
     + '<button class="perfil-save-btn" onclick="guardarPerfil()">💾 Guardar cambios</button>'
-    + '<button onclick='abrirPerfil("' + u.nickname + '")' style="background:none;border:none;color:var(--text-3);font-size:13px;cursor:pointer;text-align:center;width:100%;margin-top:4px;">Cancelar</button>'
+    + '<button onclick="abrirPerfil(\''+u.nickname+'\');" style="background:none;border:none;color:var(--text-3);font-size:13px;cursor:pointer;text-align:center;width:100%;margin-top:4px;">Cancelar</button>'
     + '</div>';
 }
 
