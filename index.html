@@ -82,9 +82,7 @@ body {
   gap: 7px;
   letter-spacing: -0.3px;
   white-space: nowrap;
-  flex-shrink: 1;
-  min-width: 0;
-  overflow: hidden;
+  flex-shrink: 0;
 }
 
 .logo-icon {
@@ -162,9 +160,9 @@ body {
   gap: 6px;
   cursor: pointer;
   transition: background 0.2s;
-  max-width: 150px;
+  max-width: 110px;
   min-width: 0;
-  flex-shrink: 0;
+  flex-shrink: 1;
 }
 .user-chip:hover { background: rgba(255,255,255,0.18); }
 
@@ -184,25 +182,18 @@ body {
   font-size: 12px;
   font-weight: 500;
   color: white;
-  max-width: 55px;
+  max-width: 70px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .user-chip-pts {
-  font-size: 10px;
-  color: var(--accent);
-  font-weight: 600;
-  white-space: nowrap;
-  max-width: 48px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  display: none;
 }
 
 @media (max-width: 360px) {
-  .user-chip-name { display: none; }
-  .user-chip { max-width: 80px; }
+  .user-chip { max-width: 90px; }
 }
 
 .topbar-login-btn {
@@ -491,13 +482,13 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
-  font-size: 9px;
+  gap: 2px;
+  font-size: 8.5px;
   font-family: 'Roboto', sans-serif;
   font-weight: 500;
   cursor: pointer;
   transition: color 0.18s;
-  padding: 0 4px;
+  padding: 0 2px;
   position: relative;
 }
 .bnav-btn:active { opacity: 0.7; }
@@ -505,43 +496,30 @@ body {
 .bnav-btn.active .bnav-icon { color: var(--blue-light); }
 
 .bnav-icon {
-  font-size: 20px;
+  font-size: 19px;
   line-height: 1;
   transition: color 0.18s;
 }
 
-.bnav-label { white-space: nowrap; letter-spacing: 0.2px; }
+.bnav-label { white-space: nowrap; letter-spacing: 0.1px; text-align: center; }
 
-/* Forum center button in bottom nav */
-.bnav-forum {
-  flex: 1.4;
-  position: relative;
+/* Foro center highlight */
+.bnav-btn.bnav-foro-center {
+  flex: 1.2;
 }
-
-.bnav-forum-pill {
+.bnav-btn.bnav-foro-center .bnav-icon-wrap {
   background: var(--blue);
-  border-radius: 18px;
-  margin: 6px 6px;
-  height: 46px;
+  border-radius: 14px;
+  width: 44px;
+  height: 30px;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
-  color: white;
-  font-size: 9px;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 700;
-  cursor: pointer;
-  border: none;
+  box-shadow: 0 2px 10px rgba(29,111,232,0.5);
   transition: all 0.18s;
-  box-shadow: 0 2px 12px rgba(29,111,232,0.5);
-  width: calc(100% - 12px);
 }
-.bnav-forum-pill:active { transform: scale(0.95); }
-.bnav-forum-pill.active { background: var(--blue-light); box-shadow: 0 3px 16px rgba(29,111,232,0.7); }
-.bnav-forum-icon { font-size: 20px; line-height: 1; }
-.bnav-forum-label { font-size: 9px; font-weight: 700; letter-spacing: 0.3px; }
+.bnav-btn.bnav-foro-center.active .bnav-icon-wrap { background: var(--blue-light); box-shadow: 0 3px 14px rgba(29,111,232,0.7); }
+.bnav-btn.bnav-foro-center .bnav-icon { color: white !important; font-size: 18px; }
 
 /* ─── MINI RANKING BAR (above bottom nav on mobile) ─── */
 .mini-rank-bar {
@@ -2488,6 +2466,38 @@ body {
   }
 }
 
+/* ─── FAB NOTICIA ADMIN (derecha, solo móvil admin) ─── */
+#fabNoticiaMovil {
+  display: none;
+  position: fixed;
+  bottom: 76px;
+  right: 12px;
+  z-index: 460;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #1D6FE8, #1A3A7A);
+  color: white;
+  font-size: 19px;
+  box-shadow: 0 3px 12px rgba(29,111,232,0.5);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+#fabNoticiaMovil:hover { transform: scale(1.1); box-shadow: 0 5px 18px rgba(29,111,232,0.7); }
+@media (max-width: 600px) {
+  #fabNoticiaMovil {
+    display: flex;
+    width: 40px;
+    height: 40px;
+    bottom: 70px;
+    right: 10px;
+    font-size: 17px;
+  }
+}
+
 /* ─── BADGE SIN RESPONDER ─── */
 .badge-sin-responder {
   display: inline-flex;
@@ -4016,6 +4026,11 @@ body {
     <button class="drawer-close" onclick="closeSideDrawer()">✕</button>
   </div>
   <div class="drawer-menu">
+    <button class="drawer-item" onclick="closeSideDrawer(); abrirForm()">
+      <span class="drawer-item-icon">✏️</span>
+      <span class="drawer-item-label">Nueva consulta</span>
+      <span class="drawer-item-arrow">›</span>
+    </button>
     <button class="drawer-item" onclick="closeSideDrawer(); abrirModalRangos()">
       <span class="drawer-item-icon">🏆</span>
       <span class="drawer-item-label">Rangos de usuarios</span>
@@ -4030,6 +4045,17 @@ body {
       <span class="drawer-item-icon">📱</span>
       <span class="drawer-item-label">Top móviles</span>
       <span class="drawer-item-arrow">›</span>
+    </button>
+    <div id="drawerAdminItems" style="display:none;">
+      <button class="drawer-item" onclick="closeSideDrawer(); abrirModalNuevaNoticia()">
+        <span class="drawer-item-icon">📰</span>
+        <span class="drawer-item-label">Nueva noticia</span>
+        <span class="drawer-item-arrow">›</span>
+      </button>
+    </div>
+    <button class="drawer-item" id="drawerLogoutBtn" style="display:none;" onclick="closeSideDrawer(); cerrarSesion()">
+      <span class="drawer-item-icon">🚪</span>
+      <span class="drawer-item-label" style="color:var(--accent-red);">Cerrar sesión</span>
     </button>
   </div>
 </div>
@@ -4086,9 +4112,6 @@ body {
 <!-- HERO -->
 <div class="hero-strip" id="heroStrip">
   <div class="hero-sub">SOLO OPINIONES REALES.</div>
-  <div class="stats-row" id="statsRow">
-    <div class="stat-chip">⏳ Cargando...</div>
-  </div>
   <div class="rank-progress" id="rankProgressWrap" style="display:none;">
     <div class="rank-progress-top">
       <div class="rank-bar-wrap"><div class="rank-bar-fill" id="rankBarFill" style="width:0%"></div></div>
@@ -4265,9 +4288,11 @@ body {
   <div class="tabs-bar">
     <button class="inicio-btn" onclick="location.reload()" title="Volver al inicio">🏠</button>
     <button class="tab active" onclick="setTab('abiertas', this)">📋 Abiertas</button>
+    <button class="tab" onclick="setTab('sin_responder', this)">⚡ Sin responder</button>
     <button class="tab" onclick="setTab('mis_abiertas', this)">📝 Mis consultas</button>
     <button class="tab admin-only-tab" onclick="setTab('mis_cerradas', this)" style="display:none;">✅ Cerradas</button>
     <button class="forum-tab-btn" id="forumTabBtn" onclick="setTab('foro', this)">💬 Foro</button>
+    <button class="tab" onclick="setTab('noticias', this)">📰 Noticias</button>
     <button class="new-btn" onclick="abrirForm()"><span>✏️</span> Nueva consulta</button>
     <button class="new-noticia-btn" id="newNoticiaBtn" style="display:none;" onclick="abrirModalNuevaNoticia()"><span>📰</span> Nueva noticia</button>
   </div>
@@ -4341,6 +4366,9 @@ body {
 <!-- BOTÓN ADMIN FLOTANTE (solo dastan) -->
 <button id="adminBtn" onclick="emergenciaAdmin()">👑</button>
 
+<!-- FAB NOTICIA MOVIL (solo admin, derecha) -->
+<button id="fabNoticiaMovil" onclick="abrirModalNuevaNoticia()" style="display:none;" title="Nueva noticia">📰</button>
+
 <!-- FAB periódico (solo admin) -->
 <button class="fab-news" id="fabNewsBtn" onclick="abrirModalNuevaNoticia()" style="display:none;">
   <span class="fab-icon">📰</span>
@@ -4364,27 +4392,24 @@ body {
   <div class="bottom-nav-inner">
     <button class="bnav-btn active" id="bnav_abiertas" onclick="setTab('abiertas', this); syncBnav('abiertas')">
       <span class="bnav-icon">🏠</span>
-      <span class="bnav-label">Consultas</span>
+      <span class="bnav-label">Inicio</span>
+    </button>
+    <button class="bnav-btn" id="bnav_sin_responder" onclick="setTab('sin_responder', this); syncBnav('sin_responder')">
+      <span class="bnav-icon">⚡</span>
+      <span class="bnav-label">Sin resp.</span>
+    </button>
+    <button class="bnav-btn bnav-foro-center" id="bnav_foro" onclick="setTab('foro', document.getElementById('forumTabBtn')); syncBnav('foro')">
+      <span class="bnav-icon-wrap"><span class="bnav-icon">💬</span></span>
+      <span class="bnav-label">Foro</span>
     </button>
     <button class="bnav-btn" id="bnav_mis_abiertas" onclick="setTab('mis_abiertas', this); syncBnav('mis_abiertas')">
       <span class="bnav-icon">📝</span>
-      <span class="bnav-label">Las mías</span>
+      <span class="bnav-label">Mis consul.</span>
     </button>
-    <div class="bnav-forum">
-      <button class="bnav-forum-pill" id="bnav_foro" onclick="setTab('foro', document.getElementById('forumTabBtn')); syncBnav('foro')">
-        <span class="bnav-forum-icon">💬</span>
-        <span class="bnav-forum-label">FORO</span>
-      </button>
-    </div>
-    <button class="bnav-btn" id="bnav_nueva" onclick="bnavNueva()">
-      <span class="bnav-icon" id="bnavNuevaIcon">✏️</span>
-      <span class="bnav-label" id="bnavNuevaLabel">Nueva</span>
+    <button class="bnav-btn" id="bnav_noticias" onclick="setTab('noticias', this); syncBnav('noticias')">
+      <span class="bnav-icon">📰</span>
+      <span class="bnav-label">Noticias</span>
     </button>
-    <button class="bnav-btn bnav-admin-only" id="bnav_mis_cerradas" onclick="setTab('mis_cerradas', this); syncBnav('mis_cerradas')" style="display:none;">
-      <span class="bnav-icon">✅</span>
-      <span class="bnav-label">Cerradas</span>
-    </button>
-    <!-- Botón contextual: en foro = nuevo post, si no = back a consultas -->
   </div>
 </nav>
 
@@ -5156,17 +5181,7 @@ function cerrarNotifPanelFuera(e) {
 // STATS
 // ═══════════════════════════════════════════
 async function cargarStats() {
-  const [{ count: abiertas }, { count: resueltas }, { count: miembros }] = await Promise.all([
-    db.from('hilos').select('*', { count: 'exact', head: true }).eq('resuelto', false),
-    db.from('hilos').select('*', { count: 'exact', head: true }).eq('resuelto', true),
-    db.from('usuarios').select('*', { count: 'exact', head: true }),
-  ]);
-
-  document.getElementById('statsRow').innerHTML = `
-    <div class="stat-chip">📋 <b>${abiertas || 0}</b> abiertas</div>
-    <div class="stat-chip">✅ <b>${resueltas || 0}</b> resueltas</div>
-    <div class="stat-chip">👥 <b>${miembros || 0}</b> miembros</div>
-  `;
+  // Stats removed from UI — function kept for compatibility
 }
 
 // ═══════════════════════════════════════════
@@ -5432,8 +5447,10 @@ function onLogin() {
   if (usuario && usuario.nickname === 'dastan') {
     const newNoticiaBtn = document.getElementById('newNoticiaBtn');
     const fabNewsBtn = document.getElementById('fabNewsBtn');
+    const fabNoticiaMovil = document.getElementById('fabNoticiaMovil');
     if (newNoticiaBtn) newNoticiaBtn.style.display = 'flex';
     if (fabNewsBtn) fabNewsBtn.style.display = 'flex';
+    if (fabNoticiaMovil) fabNoticiaMovil.style.display = 'flex';
     // Mostrar tab Cerradas solo para admin
     document.querySelectorAll('.admin-only-tab, .bnav-admin-only').forEach(el => el.style.display = '');
   }
@@ -5443,11 +5460,13 @@ function mostrarUsuario() {
   const loginBtn = document.getElementById('topbarLoginBtn');
   const chip = document.getElementById('userChip');
   const notifBtn = document.getElementById('notifBtn');
+  const drawerLogout = document.getElementById('drawerLogoutBtn');
 
   if (!usuario) {
     if (loginBtn) loginBtn.style.display = '';
     if (chip) chip.style.display = 'none';
     if (notifBtn) notifBtn.style.display = 'none';
+    if (drawerLogout) drawerLogout.style.display = 'none';
     return;
   }
 
@@ -5455,6 +5474,11 @@ function mostrarUsuario() {
   if (loginBtn) loginBtn.style.display = 'none';
   if (chip) chip.style.display = '';
   if (notifBtn) notifBtn.style.display = '';
+  if (drawerLogout) drawerLogout.style.display = '';
+  if (usuario.nickname === 'dastan') {
+    const drawerAdmin = document.getElementById('drawerAdminItems');
+    if (drawerAdmin) drawerAdmin.style.display = '';
+  }
 
   const nombre = cap(usuario.nickname);
   const rango = getRango(usuario.puntos || 0, usuario.rol);
@@ -5581,6 +5605,7 @@ async function cargarHilos() {
 
   let query = db.from('hilos').select('*, respuestas(count)');
   if (tabActual === 'abiertas') query = query.eq('resuelto', false);
+  else if (tabActual === 'sin_responder') query = query.eq('resuelto', false);
   else if (tabActual === 'mis_abiertas') query = query.eq('nickname', usuario.nickname).eq('resuelto', false);
   else if (tabActual === 'mis_cerradas') query = query.eq('nickname', usuario.nickname).eq('resuelto', true);
 
@@ -5588,8 +5613,13 @@ async function cargarHilos() {
   const { data: hilos } = await query;
   hilosData = hilos || [];
 
+  // Filtrar sin responder: solo hilos con 0 respuestas
+  if (tabActual === 'sin_responder') {
+    hilosData = hilosData.filter(h => (h.respuestas?.[0]?.count || 0) === 0);
+  }
+
   if (hilosData.length === 0) {
-    const msgs = { abiertas: 'Sé el primero en preguntar 👆', mis_abiertas: 'No tienes consultas abiertas', mis_cerradas: 'No tienes consultas cerradas' };
+    const msgs = { abiertas: 'Sé el primero en preguntar 👆', sin_responder: '✅ ¡No hay consultas sin responder!', mis_abiertas: 'No tienes consultas abiertas', mis_cerradas: 'No tienes consultas cerradas' };
     document.getElementById('hilosList').innerHTML = `
       <div class="empty-state">
         <div class="empty-state-icon">📭</div>
@@ -7450,12 +7480,18 @@ function restaurarEstadoTop() {
 // ═══════════════════════════════════════════
 function syncBnav(tab) {
   document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.bnav-forum-pill').forEach(b => b.classList.remove('active'));
-  const el = document.getElementById(`bnav_${tab}`);
+  // Map tab names to button IDs
+  const tabToBtn = {
+    'abiertas': 'bnav_abiertas',
+    'sin_responder': 'bnav_sin_responder',
+    'foro': 'bnav_foro',
+    'mis_abiertas': 'bnav_mis_abiertas',
+    'mis_cerradas': 'bnav_mis_abiertas', // fallback
+    'noticias': 'bnav_noticias',
+  };
+  const btnId = tabToBtn[tab] || `bnav_${tab}`;
+  const el = document.getElementById(btnId);
   if (el) el.classList.add('active');
-  // Also hide/show mini rank bar
-  const miniBar = document.getElementById('miniRankBar');
-  if (miniBar) miniBar.style.display = (tab === 'foro') ? 'none' : 'flex';
 }
 
 function scrollToTopMoviles() {
@@ -8478,6 +8514,13 @@ function initKeyboardHandler() {
       if (adminBtn && adminBtn.style.display !== 'none') {
         const offsetFromBottom = window.innerHeight - (vv.offsetTop + vv.height);
         adminBtn.style.bottom = (Math.max(0, offsetFromBottom) + 70) + 'px';
+      }
+
+      // Keep fabNoticiaMovil above nav
+      const fabNoticia = document.getElementById('fabNoticiaMovil');
+      if (fabNoticia && fabNoticia.style.display !== 'none') {
+        const offsetFromBottom = window.innerHeight - (vv.offsetTop + vv.height);
+        fabNoticia.style.bottom = (Math.max(0, offsetFromBottom) + 70) + 'px';
       }
 
       // Ranking modal keyboard adjust
