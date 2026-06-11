@@ -2282,9 +2282,8 @@ body {
   border-radius: 999px;
   border: 1px solid rgba(29,111,232,0.15);
   max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  word-break: break-word;
+  white-space: normal;
   font-family: 'Roboto', sans-serif;
 }
 
@@ -4751,39 +4750,40 @@ body {
 <option value="mas-1000">Más de 1000€</option>
           </select>
         </div>
-        <div class="form-field"><label>📱 Móvil actual</label><input type="text" id="f_movil_actual" placeholder="ej. Redmi Note 10" /></div>
-        <div class="form-field"><label>⭐ Marca preferida</label><input type="text" id="f_marca_pref" placeholder="Sin preferencia" /></div>
-        <div class="form-field"><label>🚫 Marca que NO quieres</label><input type="text" id="f_marca_no" placeholder="ej. Apple" /></div>
+        <div class="form-field required-field"><label>📱 Móvil actual <span class="req-badge">Obligatorio</span></label><input type="text" id="f_movil_actual" placeholder="ej. Redmi Note 10" /></div>
+        <div class="form-field required-field"><label>⭐ Marca preferida <span class="req-badge">Obligatorio</span></label><input type="text" id="f_marca_pref" placeholder="Sin preferencia" /></div>
+        <div class="form-field required-field"><label>🚫 Marca que NO quieres <span class="req-badge">Obligatorio</span></label><input type="text" id="f_marca_no" placeholder="ej. Apple" /></div>
       </div>
 
       <div class="form-section-label">⚙️ Características técnicas</div>
       <div class="form-grid">
-        <div class="form-field"><label>🛡️ Garantía España</label>
-          <select id="f_garantia"><option value="Sí">Sí</option><option value="No">No</option></select>
+        <div class="form-field required-field"><label>🛡️ Garantía España <span class="req-badge">Obligatorio</span></label>
+          <select id="f_garantia"><option value="">— Elige —</option><option value="Sí">Sí</option><option value="No">No</option></select>
         </div>
-        <div class="form-field"><label>📅 Modelos</label>
-          <select id="f_modelos"><option value="Actuales">Actuales</option><option value="Puede ser antiguo">Puede ser antiguo</option></select>
+        <div class="form-field required-field"><label>📅 Modelos <span class="req-badge">Obligatorio</span></label>
+          <select id="f_modelos"><option value="">— Elige —</option><option value="Actuales">Actuales</option><option value="Puede ser antiguo">Puede ser antiguo</option></select>
         </div>
-        <div class="form-field full"><label>🎯 Uso principal</label><input type="text" id="f_uso" placeholder="ej. WhatsApp, fotos, redes..." /></div>
-        <div class="form-field"><label>📏 Tamaño pantalla</label>
+        <div class="form-field required-field full"><label>🎯 Uso principal <span class="req-badge">Obligatorio</span></label><input type="text" id="f_uso" placeholder="ej. WhatsApp, fotos, redes..." /></div>
+        <div class="form-field required-field"><label>📏 Tamaño pantalla <span class="req-badge">Obligatorio</span></label>
           <select id="f_tamano">
+            <option value="">— Elige —</option>
             <option value="Sin preferencia">Sin preferencia</option>
             <option value='Pequeño <6"'>Pequeño &lt;6"</option>
             <option value='Normal 6-6.5"'>Normal 6-6.5"</option>
             <option value='Grande >6.5"'>Grande &gt;6.5"</option>
           </select>
         </div>
-        <div class="form-field"><label>🎮 ¿Juegas?</label>
-          <select id="f_juegos"><option value="No">No</option><option value="Algún casual">Algún casual</option><option value="Sí, bastante">Sí, bastante</option></select>
+        <div class="form-field required-field"><label>🎮 ¿Juegas? <span class="req-badge">Obligatorio</span></label>
+          <select id="f_juegos"><option value="">— Elige —</option><option value="No">No</option><option value="Algún casual">Algún casual</option><option value="Sí, bastante">Sí, bastante</option></select>
         </div>
-        <div class="form-field"><label>📸 Cámara</label>
-          <select id="f_camara"><option value="No mucho">No mucho</option><option value="Sí, importante">Sí, importante</option></select>
+        <div class="form-field required-field"><label>📸 Cámara <span class="req-badge">Obligatorio</span></label>
+          <select id="f_camara"><option value="">— Elige —</option><option value="No mucho">No mucho</option><option value="Sí, importante">Sí, importante</option></select>
         </div>
-        <div class="form-field"><label>🔋 Batería</label>
-          <select id="f_bateria"><option value="Normal">Normal</option><option value="Sí, prioritaria">Sí, prioritaria</option></select>
+        <div class="form-field required-field"><label>🔋 Batería <span class="req-badge">Obligatorio</span></label>
+          <select id="f_bateria"><option value="">— Elige —</option><option value="Normal">Normal</option><option value="Sí, prioritaria">Sí, prioritaria</option></select>
         </div>
-        <div class="form-field"><label>⚡ Carga rápida</label>
-          <select id="f_carga"><option value="No necesaria">No necesaria</option><option value="Sí">Sí</option></select>
+        <div class="form-field required-field"><label>⚡ Carga rápida <span class="req-badge">Obligatorio</span></label>
+          <select id="f_carga"><option value="">— Elige —</option><option value="No necesaria">No necesaria</option><option value="Sí">Sí</option></select>
         </div>
       </div>
 
@@ -7002,24 +7002,42 @@ async function publicarHilo() {
 
   let hasError = false;
 
-  const presupuesto = document.getElementById('f_presupuesto').value;
-  if (!presupuesto) {
-    document.getElementById('f_presupuesto').closest('.form-field').classList.add('has-error');
-    hasError = true;
-  }
-  const extra = document.getElementById('f_extra').value.trim();
-  if (!extra || extra.length < 10) {
-    document.getElementById('f_extra').closest('.form-field').classList.add('has-error');
-    hasError = true;
+  const checks = [
+    { id: 'f_presupuesto', type: 'select' },
+    { id: 'f_movil_actual', type: 'text' },
+    { id: 'f_marca_pref', type: 'text' },
+    { id: 'f_marca_no', type: 'text' },
+    { id: 'f_garantia', type: 'select' },
+    { id: 'f_modelos', type: 'select' },
+    { id: 'f_uso', type: 'text' },
+    { id: 'f_tamano', type: 'select' },
+    { id: 'f_juegos', type: 'select' },
+    { id: 'f_camara', type: 'select' },
+    { id: 'f_bateria', type: 'select' },
+    { id: 'f_carga', type: 'select' },
+    { id: 'f_extra', type: 'textarea', minLen: 10 },
+  ];
+
+  for (const c of checks) {
+    const el = document.getElementById(c.id);
+    if (!el) continue;
+    const val = el.value.trim();
+    const empty = !val || (c.minLen && val.length < c.minLen);
+    if (empty) {
+      el.closest('.form-field').classList.add('has-error');
+      hasError = true;
+    }
   }
 
   if (hasError) {
-    toast('⚠️ Rellena los campos obligatorios marcados en rojo');
-    // Scroll to first error
+    toast('⚠️ Rellena todos los campos obligatorios');
     const firstErr = document.querySelector('#newForm .has-error');
     if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
     return;
   }
+
+  const presupuesto = document.getElementById('f_presupuesto').value;
+  const extra = document.getElementById('f_extra').value.trim();
   const { error } = await db.from('hilos').insert({
     usuario_id: usuario.id,
     nickname: usuario.nickname,
@@ -7895,15 +7913,15 @@ function mostrarBannerGlobal(msg) {
   const escaped = msg.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   banner.querySelector('#globalBannerText').innerHTML = escaped.replace(/\n/g, '<br>');
   wrap.style.display = 'block';
-  // Respetar si el usuario ya lo cerró en esta sesión
-  let cerrado = false;
-  try { cerrado = sessionStorage.getItem('banner_cerrado') === '1'; } catch(e) {}
-  if (cerrado) {
-    banner.style.display = 'none';
-    collapsed.style.display = 'flex';
-  } else {
+  // Comienza colapsado por defecto; se expande solo si el usuario lo abrió explícitamente
+  let expandido = false;
+  try { expandido = sessionStorage.getItem('banner_expandido') === '1'; } catch(e) {}
+  if (expandido) {
     banner.style.display = 'flex';
     collapsed.style.display = 'none';
+  } else {
+    banner.style.display = 'none';
+    collapsed.style.display = 'flex';
   }
 }
 
@@ -7912,7 +7930,7 @@ function ocultarBannerGlobal() {
   const collapsed = document.getElementById('globalBannerCollapsed');
   if (banner) banner.style.display = 'none';
   if (collapsed) collapsed.style.display = 'flex';
-  try { sessionStorage.setItem('banner_cerrado', '1'); } catch(e) {}
+  try { sessionStorage.removeItem('banner_expandido'); } catch(e) {}
 }
 
 function expandirBannerGlobal() {
@@ -7920,7 +7938,7 @@ function expandirBannerGlobal() {
   const collapsed = document.getElementById('globalBannerCollapsed');
   if (banner) banner.style.display = 'flex';
   if (collapsed) collapsed.style.display = 'none';
-  try { sessionStorage.removeItem('banner_cerrado'); } catch(e) {}
+  try { sessionStorage.setItem('banner_expandido', '1'); } catch(e) {}
 }
 
 async function cargarBannerGlobal() {
