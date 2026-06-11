@@ -5180,10 +5180,11 @@ function renderAvatar(nick, fotoUrl, clsName, size) {
   const initials = cap(nick).substring(0,2).toUpperCase();
   const sz = size ? 'width:'+size+'px;height:'+size+'px;' : '';
   if (fotoUrl) {
-    const fallback = "this.outerHTML='<div class=\""+clsName+"\" style=\"background:"+ac.bg+";color:"+ac.color+";"+sz+"display:flex;align-items:center;justify-content:center;font-weight:700;border-radius:50%;\">" + initials + "</div>'";
+    const fallbackStyle = 'background:'+ac.bg+';color:'+ac.color+';'+sz+'display:flex;align-items:center;justify-content:center;font-weight:700;border-radius:50%;';
+    const fallback = "this.style.cssText='"+fallbackStyle+"';this.src='';this.alt='"+initials+"';this.className='"+clsName+"';";
     return '<img src="'+fotoUrl+'" class="'+clsName+'" style="'+sz+'border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="'+fallback+'">';
   }
-  return '<div class="'+clsName+'" style="background:'+ac.bg+';color:'+ac.color+';'+sz+'">'+initials+'</div>';
+  return '<div class="'+clsName+'" style="background:'+ac.bg+';color:'+ac.color+';'+sz+'display:flex;align-items:center;justify-content:center;font-weight:700;border-radius:50%;">'+initials+'</div>';
 }
 
 function getRango(puntos, rol) {
