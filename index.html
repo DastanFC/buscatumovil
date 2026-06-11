@@ -1333,6 +1333,8 @@ body {
   color: var(--text-2);
   line-height: 1.5;
   margin-left: 36px;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .mention {
@@ -5216,8 +5218,11 @@ function esAdmin() { return usuario?.rol === 'admin'; }
 // ═══════════════════════════════════════════
 function renderizarContenido(texto) {
   if (!texto) return '';
+  const escaped = texto.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   // @menciones
-  return texto.replace(/@([a-zA-Z0-9_\-\.]+)/g, '<span class="mention">@$1</span>');
+  return escaped
+    .replace(/@([a-zA-Z0-9_\-\.]+)/g, '<span class="mention">@$1</span>')
+    .replace(/\n/g, '<br>');
 }
 
 function setCita(hiloId, replyId, autor, texto) {
@@ -8070,6 +8075,31 @@ async function cargarRespuestasForo(postId) {
   el.innerHTML = html;
 }
 
+function getTextFromContentEditable(el) {
+  // Recorre el DOM del contenteditable preservando saltos de línea
+  // que el navegador inserta como <br> o <div> al pulsar Enter
+  let result = '';
+  function walk(node) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      result += node.textContent;
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      const tag = node.tagName.toUpperCase();
+      if (tag === 'BR') {
+        result += '\n';
+      } else {
+        const isBlock = ['DIV','P','LI','BLOCKQUOTE'].includes(tag);
+        // Añadir salto antes del bloque si ya hay contenido (no el primero)
+        if (isBlock && result && !result.endsWith('\n')) result += '\n';
+        node.childNodes.forEach(walk);
+        if (isBlock && !result.endsWith('\n')) result += '\n';
+      }
+    }
+  }
+  el.childNodes.forEach(walk);
+  // Eliminar salto de línea final extra
+  return result.replace(/\n$/, '');
+}
+
 function renderForumContent(text) {
   if (!text) return '';
   let html = text
@@ -8090,7 +8120,7 @@ async function enviarRespuestaForo() {
   const input = document.getElementById('forumReplyInput');
   let texto = '';
   if (input && input.tagName === 'DIV') {
-    const rawText = input.textContent.trim();
+    const rawText = getTextFromContentEditable(input).trim();
     if (fcCitaActiva) {
       if (fcCitaActiva.isMulti) {
         // Multicita: el contenido ya viene formateado
