@@ -4230,6 +4230,11 @@ body {
         <span class="drawer-item-arrow">›</span>
       </button>
     </div>
+    <button class="drawer-item" id="drawerPerfilBtn" style="display:none;" onclick="closeSideDrawer(); if(usuario) abrirPerfil(usuario.nickname)">
+      <span class="drawer-item-icon">👤</span>
+      <span class="drawer-item-label">Mi perfil</span>
+      <span class="drawer-item-arrow">›</span>
+    </button>
     <button class="drawer-item" id="drawerLogoutBtn" style="display:none;" onclick="closeSideDrawer(); cerrarSesion()">
       <span class="drawer-item-icon">🚪</span>
       <span class="drawer-item-label" style="color:var(--accent-red);">Cerrar sesión</span>
@@ -5726,12 +5731,14 @@ function mostrarUsuario() {
   const chip = document.getElementById('userChip');
   const notifBtn = document.getElementById('notifBtn');
   const drawerLogout = document.getElementById('drawerLogoutBtn');
+  const drawerPerfil = document.getElementById('drawerPerfilBtn');
 
   if (!usuario) {
     if (loginBtn) loginBtn.style.display = '';
     if (chip) chip.style.display = 'none';
     if (notifBtn) notifBtn.style.display = 'none';
     if (drawerLogout) drawerLogout.style.display = 'none';
+    if (drawerPerfil) drawerPerfil.style.display = 'none';
     return;
   }
 
@@ -5740,6 +5747,7 @@ function mostrarUsuario() {
   if (chip) chip.style.display = '';
   if (notifBtn) notifBtn.style.display = '';
   if (drawerLogout) drawerLogout.style.display = '';
+  if (drawerPerfil) drawerPerfil.style.display = '';
   if (usuario.nickname === 'dastan') {
     const drawerAdmin = document.getElementById('drawerAdminItems');
     if (drawerAdmin) drawerAdmin.style.display = '';
