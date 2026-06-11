@@ -1495,13 +1495,14 @@ body {
   font-size: 15px;
   font-family: 'Roboto', sans-serif;
   resize: none;
-  background: var(--surface-2);
+  background: white;
   transition: all 0.18s;
   min-height: 44px;
   max-height: 160px;
   box-sizing: border-box;
   -webkit-appearance: none;
   display: block;
+  color: #111;
 }
 .reply-input:focus {
   outline: none;
@@ -4164,6 +4165,171 @@ body {
 .perfil-tab-panel { display: none; padding: 16px 20px; }
 .perfil-tab-panel.active { display: block; }
 
+/* ─── THREAD FLEX LAYOUT (sidebar + main) ─── */
+.thread-flex {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+}
+.thread-flex-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.thread-recs-sidebar {
+  width: 240px;
+  min-width: 240px;
+  flex-shrink: 0;
+  background: var(--surface-2);
+  border-left: 1px solid var(--border);
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: sticky;
+  top: 72px;
+  max-height: calc(100vh - 90px);
+  overflow-y: auto;
+}
+.rec-sidebar-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-3);
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.rec-sidebar-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.rec-sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--surface-3);
+}
+.rec-sidebar-item:last-child { border-bottom: none; }
+.rec-sidebar-medal {
+  font-size: 22px;
+  flex-shrink: 0;
+  width: 28px;
+  text-align: center;
+}
+.rec-sidebar-info {
+  flex: 1;
+  min-width: 0;
+}
+.rec-sidebar-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1.2;
+}
+.rec-sidebar-author {
+  font-size: 10px;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+.rec-sidebar-votes {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-top: 2px;
+}
+.rec-sidebar-empty {
+  font-size: 12px;
+  color: var(--text-3);
+  text-align: center;
+  padding: 20px 0;
+}
+@media (max-width: 800px) {
+  .thread-flex { flex-direction: column; }
+  .thread-recs-sidebar {
+    width: 100%;
+    min-width: unset;
+    border-left: none;
+    border-top: 1px solid var(--border);
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 10px;
+    padding: 12px 16px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    position: static;
+    max-height: none;
+  }
+  .thread-recs-sidebar::-webkit-scrollbar { display: none; }
+  .thread-recs-sidebar .rec-sidebar-title { display: none; }
+  .thread-recs-sidebar .rec-sidebar-list {
+    flex-direction: row;
+    gap: 10px;
+    width: max-content;
+  }
+  .thread-recs-sidebar .rec-sidebar-item {
+    flex: 0 0 auto;
+    border-bottom: none;
+    padding: 8px 12px;
+    background: var(--surface-3);
+    border-radius: var(--radius-sm);
+    min-width: 140px;
+    white-space: nowrap;
+  }
+}
+/* ─── BBCODE TOOLBAR ─── */
+.bbcode-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-bottom: 8px;
+  padding: 6px 8px;
+  background: var(--surface-2);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+.bbcode-toolbar button {
+  background: none;
+  border: none;
+  padding: 4px 7px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-3);
+  font-family: 'Roboto', sans-serif;
+  transition: all 0.15s;
+  line-height: 1;
+}
+.bbcode-toolbar button:hover { background: var(--surface-3); color: var(--text); }
+.bbcode-toolbar button b { font-weight: 700; }
+.bbcode-toolbar button i { font-style: italic; }
+.bbcode-toolbar button u { text-decoration: underline; }
+.bbcode-toolbar button s { text-decoration: line-through; }
+.bbcode-toolbar .bbcode-sep {
+  width: 1px;
+  background: var(--border);
+  margin: 2px 2px;
+}
+/* ─── MENTION & REPORT BUTTONS IN REPLIES ─── */
+.mention-btn, .report-btn {
+  background: none;
+  border: none;
+  font-size: 11px;
+  color: var(--text-3);
+  cursor: pointer;
+  padding: 3px 6px;
+  border-radius: 6px;
+  font-family: 'Roboto', sans-serif;
+  transition: all 0.18s;
+}
+.mention-btn:hover { background: var(--surface-3); color: var(--blue); }
+.report-btn:hover { background: #FEF2F2; color: #EF4444; }
+
 </style>
 </head>
 <body>
@@ -4513,35 +4679,36 @@ body {
 <option value="mas-1000">Más de 1000€</option>
           </select>
         </div>
-        <div class="form-field"><label>📱 Móvil actual</label><input type="text" id="f_movil_actual" placeholder="ej. Redmi Note 10" /></div>
-        <div class="form-field"><label>⭐ Marca preferida</label><input type="text" id="f_marca_pref" placeholder="Sin preferencia" /></div>
-        <div class="form-field"><label>🚫 Marca que NO quieres</label><input type="text" id="f_marca_no" placeholder="ej. Apple" /></div>
-        <div class="form-field"><label>🛡️ Garantía España</label>
-          <select id="f_garantia"><option value="Sí">Sí</option><option value="No">No</option></select>
+        <div class="form-field"><label>📱 Móvil actual <span style="color:var(--accent-red);font-size:10px;font-weight:700;margin-left:4px;">OBLIGATORIO</span></label><input type="text" id="f_movil_actual" placeholder="ej. Redmi Note 10" required /></div>
+        <div class="form-field"><label>⭐ Marca preferida <span style="color:var(--accent-red);font-size:10px;font-weight:700;margin-left:4px;">OBLIGATORIO</span></label><input type="text" id="f_marca_pref" placeholder="Sin preferencia" required /></div>
+        <div class="form-field"><label>🚫 Marca que NO quieres <span style="color:var(--accent-red);font-size:10px;font-weight:700;margin-left:4px;">OBLIGATORIO</span></label><input type="text" id="f_marca_no" placeholder="ej. Apple" required /></div>
+        <div class="form-field"><label>🛡️ Garantía España <span style="color:var(--accent-red);font-size:10px;font-weight:700;margin-left:4px;">OBLIGATORIO</span></label>
+          <select id="f_garantia" required><option value="Sí">Sí</option><option value="No">No</option></select>
         </div>
-        <div class="form-field"><label>📅 Modelos</label>
-          <select id="f_modelos"><option value="Actuales">Actuales</option><option value="Puede ser antiguo">Puede ser antiguo</option></select>
+        <div class="form-field"><label>📅 Modelos <span style="color:var(--accent-red);font-size:10px;font-weight:700;margin-left:4px;">OBLIGATORIO</span></label>
+          <select id="f_modelos" required><option value="Actuales">Actuales</option><option value="Puede ser antiguo">Puede ser antiguo</option></select>
         </div>
-        <div class="form-field full"><label>🎯 Uso principal</label><input type="text" id="f_uso" placeholder="ej. WhatsApp, fotos, redes..." /></div>
-        <div class="form-field"><label>📏 Tamaño pantalla</label>
-          <select id="f_tamano">
+        <div class="form-field full"><label>🎯 Uso principal <span style="color:var(--accent-red);font-size:10px;font-weight:700;margin-left:4px;">OBLIGATORIO</span></label><input type="text" id="f_uso" placeholder="ej. WhatsApp, fotos, redes..." required /></div>
+        <div class="form-field"><label>📏 Tamaño pantalla <span style="color:var(--accent-red);font-size:10px;font-weight:700;margin-left:4px;">OBLIGATORIO</span></label>
+          <select id="f_tamano" required>
+            <option value="">Selecciona una opción</option>
             <option value="Sin preferencia">Sin preferencia</option>
             <option value='Pequeño <6"'>Pequeño &lt;6"</option>
             <option value='Normal 6-6.5"'>Normal 6-6.5"</option>
             <option value='Grande >6.5"'>Grande &gt;6.5"</option>
           </select>
         </div>
-        <div class="form-field"><label>🎮 ¿Juegas?</label>
-          <select id="f_juegos"><option value="No">No</option><option value="Algún casual">Algún casual</option><option value="Sí, bastante">Sí, bastante</option></select>
+        <div class="form-field"><label>🎮 ¿Juegas? <span style="color:var(--accent-red);font-size:10px;font-weight:700;margin-left:4px;">OBLIGATORIO</span></label>
+          <select id="f_juegos" required><option value="">Selecciona una opción</option><option value="No">No</option><option value="Algún casual">Algún casual</option><option value="Sí, bastante">Sí, bastante</option></select>
         </div>
-        <div class="form-field"><label>📸 ¿Usas mucho la cámara?</label>
-          <select id="f_camara"><option value="No mucho">No mucho</option><option value="Sí, importante">Sí, importante</option></select>
+        <div class="form-field"><label>📸 ¿Usas mucho la cámara? <span style="color:var(--accent-red);font-size:10px;font-weight:700;margin-left:4px;">OBLIGATORIO</span></label>
+          <select id="f_camara" required><option value="">Selecciona una opción</option><option value="No mucho">No mucho</option><option value="Sí, importante">Sí, importante</option></select>
         </div>
-        <div class="form-field"><label>🔋 ¿Mucha batería?</label>
-          <select id="f_bateria"><option value="Normal">Normal</option><option value="Sí, prioritaria">Sí, prioritaria</option></select>
+        <div class="form-field"><label>🔋 ¿Mucha batería? <span style="color:var(--accent-red);font-size:10px;font-weight:700;margin-left:4px;">OBLIGATORIO</span></label>
+          <select id="f_bateria" required><option value="">Selecciona una opción</option><option value="Normal">Normal</option><option value="Sí, prioritaria">Sí, prioritaria</option></select>
         </div>
-        <div class="form-field"><label>⚡ ¿Carga rápida?</label>
-          <select id="f_carga"><option value="No necesaria">No necesaria</option><option value="Sí">Sí</option></select>
+        <div class="form-field"><label>⚡ ¿Carga rápida? <span style="color:var(--accent-red);font-size:10px;font-weight:700;margin-left:4px;">OBLIGATORIO</span></label>
+          <select id="f_carga" required><option value="">Selecciona una opción</option><option value="No necesaria">No necesaria</option><option value="Sí">Sí</option></select>
         </div>
         <div class="form-field full"><label>📝 Cuéntanos más <span style="color:var(--accent-red);font-size:10px;font-weight:700;margin-left:4px;">OBLIGATORIO</span></label><textarea id="f_extra" placeholder="Explica con detalle: ¿para qué lo usarás? ¿qué valoras más? ¿alguna condición importante? Cuanto más detallado, mejor consejo recibirás." style="min-height:80px;" required></textarea></div>
       </div>
@@ -6113,67 +6280,94 @@ async function renderHilo(h) {
 
   return `
     <div class="thread-card" id="thread_${h.id}">
-      <div class="thread-header">
-        <div class="thread-meta">
-          ${renderAvatar(h.nickname, fotoHilo, 'avatar', 40)}
-          <div class="author-block">
-            <div class="author-name"><span class="nick-link" onclick="abrirPerfil('${h.nickname}')">${nombre}</span> ${getBadgeHtml(pts, rol)}</div>
+      <div class="thread-flex">
+        <div class="thread-flex-main">
+          <div class="thread-header">
+            <div class="thread-meta">
+              ${renderAvatar(h.nickname, fotoHilo, 'avatar', 40)}
+              <div class="author-block">
+                <div class="author-name"><span class="nick-link" onclick="abrirPerfil('${h.nickname}')">${nombre}</span> ${getBadgeHtml(pts, rol)}</div>
+              </div>
+              <div class="thread-time">${timeAgo(h.created_at)}${haParticipado ? '<span class="participated-icon">✏️ Participé</span>' : ''}</div>
+            </div>
+
+            ${budgetSpec ? `<div class="thread-budget-badge">${budgetSpec.icon} ${budgetSpec.val}</div>` : ''}
+
+            ${otherSpecs.length ? `
+              <div class="thread-specs-grid">
+                ${otherSpecs.map(s => `
+                  <div class="spec-row">
+                    <span class="spec-row-icon">${s.icon}</span>
+                    <div class="spec-row-content">
+                      <span class="spec-row-label">${s.label}</span>
+                      <span class="spec-row-val">${s.val}</span>
+                    </div>
+                  </div>`).join('')}
+              </div>` : ''}
+
+            ${h.datos_extra ? `
+              <div class="extra-note-clean">
+                <span class="extra-note-lead">💬</span>
+                <span>${h.datos_extra}</span>
+              </div>` : ''}
           </div>
-          <div class="thread-time">${timeAgo(h.created_at)}${haParticipado ? '<span class="participated-icon">✏️ Participé</span>' : ''}</div>
+
+          <div id="topRec_${h.id}"></div>
+
+          <div class="thread-bar">
+            <button class="reply-count-btn" onclick="toggleReplies('${h.id}')">
+              💬 <span class="cnt" id="rcnt_${h.id}">${replyCount}</span> respuestas${replyCount === 0 ? '<span class="badge-sin-responder">⚡ Sin responder</span>' : ''}${unreadCount > 0 ? `<span class="unread-badge" id="unread_${h.id}">${unreadCount} nuevo${unreadCount > 1 ? 's' : ''}</span>` : `<span class="unread-badge" id="unread_${h.id}" style="display:none"></span>`}
+            </button>
+            ${h.resuelto
+              ? '<div class="resolved-pill">✅ Resuelta</div>'
+              : (puedeCerrar ? `<button class="resolve-btn" onclick="marcarResuelta('${h.id}')">🔒 Marcar resuelta</button>` : '')}
+          </div>
+
+          <div class="replies-section" id="replies_${h.id}" style="display:none;"></div>
+
+          ${!h.resuelto ? `
+            <div class="reply-box" id="replybox_${h.id}" style="display:none;">
+              <div class="quote-preview" id="qpreview_${h.id}">
+                <span class="quote-preview-text"></span>
+                <button class="quote-clear" onclick="clearCita('${h.id}')">✕</button>
+              </div>
+              <div class="bbcode-toolbar">
+                <button onclick="insertBBCode('rinput_${h.id}','[b]','[/b]')" title="Negrita"><b>B</b></button>
+                <button onclick="insertBBCode('rinput_${h.id}','[i]','[/i]')" title="Cursiva"><i>I</i></button>
+                <button onclick="insertBBCode('rinput_${h.id}','[u]','[/u]')" title="Subrayado"><u>U</u></button>
+                <button onclick="insertBBCode('rinput_${h.id}','[s]','[/s]')" title="Tachado"><s>S</s></button>
+                <span class="bbcode-sep"></span>
+                <button onclick="insertBBCode('rinput_${h.id}','[color=red]','[/color]')" title="Color">🎨</button>
+                <button onclick="insertBBCode('rinput_${h.id}','[size=12]','[/size]')" title="Tamaño">🔤</button>
+                <button onclick="insertBBCode('rinput_${h.id}','[img]','[/img]')" title="Imagen">🖼️</button>
+                <button onclick="insertBBCode('rinput_${h.id}','[url]','[/url]')" title="Enlace">🔗</button>
+                <span class="bbcode-sep"></span>
+                <button onclick="insertBBCode('rinput_${h.id}','[quote]','[/quote]')" title="Cita">💬</button>
+                <button onclick="insertBBCode('rinput_${h.id}','[code]','[/code]')" title="Código">📄</button>
+                <button onclick="insertBBCode('rinput_${h.id}','[list]','[/list]')" title="Lista">📋</button>
+                <button onclick="insertBBCode('rinput_${h.id}','[hr]','')" title="Línea horizontal">➖</button>
+              </div>
+              <div class="reply-input-row">
+                <textarea class="reply-input" id="rinput_${h.id}" placeholder="Escribe tu respuesta..."
+                  rows="2"
+                  onkeydown="if(event.key==='Enter'&&!event.shiftKey&&!/Android|iPhone|iPad/i.test(navigator.userAgent)){event.preventDefault();enviarRespuesta('${h.id}')}"
+                  oninput="autoResize(this)"
+                ></textarea>
+                <div class="reply-actions-row">
+                  <button class="send-btn" id="sendbtn_${h.id}" onclick="enviarRespuesta('${h.id}')">➤ Enviar respuesta</button>
+                  <button class="recommend-icon-btn" onclick="abrirModalRanking('${h.id}')" title="Recomendar un móvil">📱</button>
+                </div>
+              </div>
+            </div>` : ''}
         </div>
 
-        ${budgetSpec ? `<div class="thread-budget-badge">${budgetSpec.icon} ${budgetSpec.val}</div>` : ''}
-
-        ${otherSpecs.length ? `
-          <div class="thread-specs-grid">
-            ${otherSpecs.map(s => `
-              <div class="spec-row">
-                <span class="spec-row-icon">${s.icon}</span>
-                <div class="spec-row-content">
-                  <span class="spec-row-label">${s.label}</span>
-                  <span class="spec-row-val">${s.val}</span>
-                </div>
-              </div>`).join('')}
-          </div>` : ''}
-
-        ${h.datos_extra ? `
-          <div class="extra-note-clean">
-            <span class="extra-note-lead">💬</span>
-            <span>${h.datos_extra}</span>
-          </div>` : ''}
-      </div>
-
-      <div id="topRec_${h.id}"></div>
-
-      <div class="thread-bar">
-        <button class="reply-count-btn" onclick="toggleReplies('${h.id}')">
-          💬 <span class="cnt" id="rcnt_${h.id}">${replyCount}</span> respuestas${replyCount === 0 ? '<span class="badge-sin-responder">⚡ Sin responder</span>' : ''}${unreadCount > 0 ? `<span class="unread-badge" id="unread_${h.id}">${unreadCount} nuevo${unreadCount > 1 ? 's' : ''}</span>` : `<span class="unread-badge" id="unread_${h.id}" style="display:none"></span>`}
-        </button>
-        ${h.resuelto
-          ? '<div class="resolved-pill">✅ Resuelta</div>'
-          : (puedeCerrar ? `<button class="resolve-btn" onclick="marcarResuelta('${h.id}')">🔒 Marcar resuelta</button>` : '')}
-      </div>
-
-      <div class="replies-section" id="replies_${h.id}" style="display:none;"></div>
-
-      ${!h.resuelto ? `
-        <div class="reply-box" id="replybox_${h.id}" style="display:none;">
-          <div class="quote-preview" id="qpreview_${h.id}">
-            <span class="quote-preview-text"></span>
-            <button class="quote-clear" onclick="clearCita('${h.id}')">✕</button>
+        <div class="thread-recs-sidebar" id="sidebar_${h.id}">
+          <div class="rec-sidebar-title">📱 Recomendaciones</div>
+          <div class="rec-sidebar-list" id="recList_${h.id}">
+            <div class="rec-sidebar-empty">Aún no hay recomendaciones</div>
           </div>
-          <div class="reply-input-row">
-            <textarea class="reply-input" id="rinput_${h.id}" placeholder="Escribe tu respuesta..."
-              rows="2"
-              onkeydown="if(event.key==='Enter'&&!event.shiftKey&&!/Android|iPhone|iPad/i.test(navigator.userAgent)){event.preventDefault();enviarRespuesta('${h.id}')}"
-              oninput="autoResize(this)"
-            ></textarea>
-            <div class="reply-actions-row">
-              <button class="send-btn" id="sendbtn_${h.id}" onclick="enviarRespuesta('${h.id}')">➤ Enviar respuesta</button>
-              <button class="recommend-icon-btn" onclick="abrirModalRanking('${h.id}')" title="Recomendar un móvil">📱</button>
-            </div>
-          </div>
-        </div>` : ''}
+        </div>
+      </div>
     </div>
   `;
 }
@@ -6181,6 +6375,18 @@ async function renderHilo(h) {
 function autoResize(el) {
   el.style.height = 'auto';
   el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function insertBBCode(textareaId, before, after) {
+  const ta = document.getElementById(textareaId);
+  if (!ta) return;
+  const start = ta.selectionStart;
+  const end = ta.selectionEnd;
+  const sel = ta.value.substring(start, end);
+  ta.value = ta.value.substring(0, start) + before + sel + after + ta.value.substring(end);
+  ta.focus();
+  ta.selectionStart = ta.selectionEnd = start + before.length + sel.length + after.length;
+  autoResize(ta);
 }
 
 function toggleReplies(hiloId) {
@@ -6273,43 +6479,32 @@ async function cargarRespuestas(hiloId, forceVisible = false) {
     container.innerHTML = '<div class="replies-empty">💬 Sé el primero en recomendar</div>';
     const topRecEl0 = document.getElementById(`topRec_${hiloId}`);
     if (topRecEl0) topRecEl0.innerHTML = '';
+    const sidebarList = document.getElementById(`recList_${hiloId}`);
+    if (sidebarList) sidebarList.innerHTML = '<div class="rec-sidebar-empty">Aún no hay recomendaciones</div>';
     return;
   }
 
-// Calcular respuesta más votada (incluye las de ranking aunque no tengan modelo detectado)
-let mejorRespuesta = null;
-let maxVotos = -1;
-for (const r of respuestas) {
-  const votosUtil = r.votos_util || 0;
-  
-  // 👇 AÑADE ESTOS CONSOLE.LOG 👇
-  const modelosDetectados = extraerModelos(r.contenido);
-  console.log('🔍 DEBUG - Respuesta de:', r.nickname);
-  console.log('📝 Contenido:', r.contenido);
-  console.log('📱 Modelos detectados:', modelosDetectados);
-  console.log('---');
-  
-  const tieneModelo = r.movil_nombre || modelosDetectados.length > 0;
-  if (tieneModelo && votosUtil > maxVotos) {
-    maxVotos = votosUtil;
-    mejorRespuesta = r;
-  }
-}
+  // ── Calcular top recomendaciones con medallas ──
+  const recs = respuestas.filter(r => r.movil_nombre || extraerModelos(r.contenido).length > 0);
+  recs.sort((a, b) => (b.votos_util || 0) - (a.votos_util || 0));
+  const topRecs = recs.slice(0, 3);
+  const medallas = ['🥇', '🥈', '🥉'];
 
-  // Top recommendation
+  // Top recommendation (existing topRec)
   const topRecEl = document.getElementById(`topRec_${hiloId}`);
   if (topRecEl) {
-    if (mejorRespuesta && maxVotos > 0) {
-      const modeloTop = mejorRespuesta.movil_nombre
-        ? formatearModelo(mejorRespuesta.movil_nombre)
-        : (() => { const m = extraerModelos(mejorRespuesta.contenido); return m.length > 0 ? m.map(mod => formatearModelo(mod)).join(' / ') : 'Respuesta útil'; })();
+    const mejor = topRecs[0];
+    if (mejor && (mejor.votos_util || 0) > 0) {
+      const modeloTop = mejor.movil_nombre
+        ? formatearModelo(mejor.movil_nombre)
+        : (() => { const m = extraerModelos(mejor.contenido); return m.length > 0 ? m.map(mod => formatearModelo(mod)).join(' / ') : 'Respuesta útil'; })();
       topRecEl.innerHTML = `
         <div class="top-rec">
           <div class="top-rec-icon">🏅</div>
           <div>
-            <div class="top-rec-text">Más votado por la comunidad (${maxVotos} 👍)</div>
+            <div class="top-rec-text">Más votado por la comunidad (${mejor.votos_util} 👍)</div>
             <div class="top-rec-model">${modeloTop}</div>
-            <div style="font-size:0.90rem;color:rgba(255,255,255);">Recomendado por ${cap(mejorRespuesta.nickname)}</div>
+            <div style="font-size:0.90rem;color:rgba(255,255,255);">Recomendado por ${cap(mejor.nickname)}</div>
           </div>
         </div>
       `;
@@ -6318,10 +6513,35 @@ for (const r of respuestas) {
     }
   }
 
+  // ── Sidebar con top 3 recomendaciones ──
+  const sidebarList = document.getElementById(`recList_${hiloId}`);
+  if (sidebarList) {
+    if (topRecs.length > 0) {
+      sidebarList.innerHTML = topRecs.map((r, i) => {
+        const nombreModelo = r.movil_nombre || extraerModelos(r.contenido)[0] || 'Recomendación';
+        return `
+          <div class="rec-sidebar-item">
+            <div class="rec-sidebar-medal">${medallas[i] || ''}</div>
+            <div class="rec-sidebar-info">
+              <div class="rec-sidebar-name">${formatearModelo(nombreModelo)}</div>
+              <div class="rec-sidebar-author">por ${cap(r.nickname)}</div>
+              <div class="rec-sidebar-votes">👍 ${r.votos_util || 0}</div>
+            </div>
+          </div>`;
+      }).join('');
+    } else {
+      sidebarList.innerHTML = '<div class="rec-sidebar-empty">Aún no hay recomendaciones</div>';
+    }
+  }
+
+  // ── Mejor respuesta (para destacar) ──
+  const mejorRespuesta = topRecs[0] || null;
+  const maxVotos = mejorRespuesta ? (mejorRespuesta.votos_util || 0) : 0;
+
   const cntEl = document.getElementById(`rcnt_${hiloId}`);
   if (cntEl) cntEl.textContent = respuestas.length;
 
-  // ── Cargar votos y usuarios en batch (una sola query cada uno, mucho más rápido) ──
+  // ── Cargar votos y usuarios en batch ──
   let votosUsuario = {};
   if (usuario) {
     const { data: vots } = await db.from('votos')
@@ -6336,6 +6556,8 @@ for (const r of respuestas) {
   const usuariosMap = {};
   if (usuariosData) usuariosData.forEach(u => usuariosMap[u.nickname] = u);
 
+  const esAdminUser = usuario && esAdmin();
+
   let html = '';
   for (const r of respuestas) {
     const uData = usuariosMap[r.nickname] || null;
@@ -6346,17 +6568,18 @@ for (const r of respuestas) {
     const esTopVotada = (mejorRespuesta && mejorRespuesta.id === r.id && maxVotos > 0);
     const topClass = esTopVotada ? 'reply-item top-voted' : 'reply-item';
 
-    // INDICADOR DE EDITADO
     const editadoBadge = r.editado ? `<span class="editado-badge"><i>✏️</i> Editado ${r.editado_en ? timeAgo(r.editado_en) : ''}</span>` : '';
 
-    // BOTONES EDITAR Y BORRAR (solo para el autor)
     const esAutor = usuario && usuario.nickname === r.nickname;
     const editBtn = esAutor ?
       `<button class="edit-reply-btn" data-edit-id="${r.id}">✏️ Editar</button>` : '';
-    const deleteBtn = esAutor ?
+    const deleteBtn = (esAutor || esAdminUser) ?
       `<button class="delete-reply-btn" data-delete-id="${r.id}" data-delete-hilo="${hiloId}">🗑 Borrar</button>` : '';
+    const mentionBtn = usuario ?
+      `<button class="mention-btn" data-nick="${r.nickname}" data-hilo="${hiloId}">@ Mencionar</button>` : '';
+    const reportBtn = usuario ?
+      `<button class="report-btn" data-reply-id="${r.id}" data-hilo="${hiloId}">⚠️ Reportar</button>` : '';
 
-    // Cita
     let citaHtml = '';
     if (r.cita_id) {
       const citada = respuestas.find(rx => rx.id === r.cita_id);
@@ -6365,7 +6588,6 @@ for (const r of respuestas) {
       }
     }
 
-    // ── Limpiar texto: quitar [Scores:...] y la primera línea si es el nombre del móvil ──
     let textoLimpio = (r.contenido || '').replace(/\[Scores:[^\]]*\]/g, '').trim();
     if (r.movil_nombre && textoLimpio) {
       const lineas = textoLimpio.split('\n');
@@ -6374,12 +6596,10 @@ for (const r of respuestas) {
     }
     const contenidoLimpio = renderizarContenido(textoLimpio);
 
-    // ── Modelo a mostrar ──
     const modelosAMostrar = r.movil_nombre
       ? [r.movil_nombre]
       : extraerModelos(r.contenido);
 
-    // ── Scores: primero columnas de BD, si no hay, parsear desde el campo contenido ──
     const scoresEnBD = RANKING_CATS.some(c => r[c.key] != null);
     const scoresFinales = scoresEnBD ? r : parsearScoresDesdeContenido(r.contenido);
     const mediaFinal = r.sc_media != null
@@ -6389,7 +6609,6 @@ for (const r of respuestas) {
           return vs.length ? parseFloat((vs.reduce((a,b) => a+b, 0) / vs.length).toFixed(1)) : null;
         })();
 
-    // ── Bloque de ranking ──
     let rankingHtml = '';
     const tieneScores = RANKING_CATS.some(c => scoresFinales[c.key] != null);
     if (r.tiene_ranking || r.movil_nombre || tieneScores) {
@@ -6401,12 +6620,12 @@ for (const r of respuestas) {
     }
 
     const modelosTitleHtml = modelosAMostrar.length > 0 ? `<div class="reply-model-title">${modelosAMostrar.map(m => `<span class="phone-title-tag">📱 ${formatearModelo(m)}</span>`).join('')}</div>` : '';
-    html += `<div class="${topClass}" id="reply_${r.id}" data-reply-id="${r.id}"><div class="reply-header">${renderAvatar(r.nickname, uData?.foto_url||null, 'reply-avatar', 32)}<span class="reply-author nick-link" onclick="abrirPerfil('${r.nickname}')">${nombre}</span>${getBadgeHtml(uData?.puntos || 0, uData?.rol || 'usuario')}${esTopVotada ? `<span class="top-voted-badge">🏅 Más votada</span>` : ''}${editadoBadge}<span class="reply-time">${timeAgo(r.created_at)}</span></div><div class="reply-content">${citaHtml}${modelosTitleHtml}${rankingHtml}<span class="reply-text">${contenidoLimpio}</span></div><div class="reply-actions"><button class="vote-btn ${miVoto === 'util' ? 'voted-util' : ''}" onclick="votar('${r.id}','util','${hiloId}','${r.nickname}')">👍 ${votosUtil}</button><button class="vote-btn ${miVoto === 'noutil' ? 'voted-noutil' : ''}" onclick="votar('${r.id}','noutil','${hiloId}','${r.nickname}')">👎 ${r.votos_noutil || 0}</button><button class="cite-btn" data-hilo="${hiloId}" data-reply="${r.id}" data-autor="${r.nickname}" data-contenido="${r.contenido.replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/\n/g,' ')}">↩ Citar</button>${editBtn}${deleteBtn}</div></div>`;
+    html += `<div class="${topClass}" id="reply_${r.id}" data-reply-id="${r.id}"><div class="reply-header">${renderAvatar(r.nickname, uData?.foto_url||null, 'reply-avatar', 32)}<span class="reply-author nick-link" onclick="abrirPerfil('${r.nickname}')">${nombre}</span>${getBadgeHtml(uData?.puntos || 0, uData?.rol || 'usuario')}${esTopVotada ? `<span class="top-voted-badge">🏅 Más votada</span>` : ''}${editadoBadge}<span class="reply-time">${timeAgo(r.created_at)}</span></div><div class="reply-content">${citaHtml}${modelosTitleHtml}${rankingHtml}<span class="reply-text">${contenidoLimpio}</span></div><div class="reply-actions"><button class="vote-btn ${miVoto === 'util' ? 'voted-util' : ''}" onclick="votar('${r.id}','util','${hiloId}','${r.nickname}')">👍 ${votosUtil}</button><button class="vote-btn ${miVoto === 'noutil' ? 'voted-noutil' : ''}" onclick="votar('${r.id}','noutil','${hiloId}','${r.nickname}')">👎 ${r.votos_noutil || 0}</button><button class="cite-btn" data-hilo="${hiloId}" data-reply="${r.id}" data-autor="${r.nickname}" data-contenido="${r.contenido.replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/\n/g,' ')}">↩ Citar</button>${mentionBtn}${editBtn}${deleteBtn}${reportBtn}</div></div>`;
   }
 
   container.innerHTML = html;
 
-  // Event delegation para citar y editar (evita problemas con comillas en onclick inline)
+  // Event delegation (citar, editar, borrar, mencionar, reportar)
   container.querySelectorAll('.cite-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const hiloId = btn.dataset.hilo;
@@ -6419,7 +6638,6 @@ for (const r of respuestas) {
   container.querySelectorAll('.edit-reply-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.dataset.editId;
-      // Buscar el contenido original en la respuesta ya cargada
       const resp = respuestas.find(r => r.id === id);
       const contenido = resp ? resp.contenido : '';
       abrirModalEditarRespuesta(id, contenido);
@@ -6427,11 +6645,25 @@ for (const r of respuestas) {
   });
   container.querySelectorAll('.delete-reply-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      borrarRespuestaPropia(btn.dataset.deleteId, btn.dataset.deleteHilo);
+      if (esAdminUser) {
+        borrarRespuestaAdmin(btn.dataset.deleteId, btn.dataset.deleteHilo);
+      } else {
+        borrarRespuestaPropia(btn.dataset.deleteId, btn.dataset.deleteHilo);
+      }
+    });
+  });
+  container.querySelectorAll('.mention-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const nick = btn.dataset.nick;
+      mencionarUsuario(nick, btn.dataset.hilo);
+    });
+  });
+  container.querySelectorAll('.report-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      reportarRespuestaConsulta(btn.dataset.replyId);
     });
   });
 
-  // Si forceVisible: asegurarse de que box sigue visible después de reescribir innerHTML
   if (forceVisible && box) box.style.display = 'block';
 }
 
@@ -7460,6 +7692,43 @@ async function confirmarBorradoRespuesta(respId, hiloId) {
   const { data: u } = await db.from('usuarios').select('puntos').eq('nickname', usuario.nickname).single();
   if (u) await db.from('usuarios').update({ puntos: Math.max(0, (u.puntos || 0) - 2) }).eq('nickname', usuario.nickname);
   toast('🗑 Respuesta eliminada');
+  cargarRespuestas(hiloId);
+  cargarTopMoviles();
+}
+
+function mencionarUsuario(nick, hiloId) {
+  const ta = document.getElementById(`rinput_${hiloId}`);
+  if (!ta) return;
+  ta.value += `@${nick} `;
+  ta.focus();
+  autoResize(ta);
+}
+
+async function reportarRespuestaConsulta(respId) {
+  if (!usuario) { toast('⚠️ Debes iniciar sesión para reportar'); return; }
+  try {
+    await db.from('foro_reports').insert({
+      post_id: respId,
+      reporter_nickname: usuario.nickname,
+      created_at: new Date().toISOString(),
+    });
+  } catch(e) {}
+  const { data: config } = await db.from('configuracion').select('valor').eq('clave', 'reportes').single();
+  let lista = [];
+  try { lista = config?.valor ? JSON.parse(config.valor) : []; } catch(e) {}
+  if (!lista.some(r => r.id === respId)) {
+    lista.push({ id: respId, reporter: usuario.nickname, ts: new Date().toISOString() });
+    await db.from('configuracion').upsert({ clave: 'reportes', valor: JSON.stringify(lista) });
+  }
+  toast('⚠️ Reportado para revisión');
+}
+
+async function borrarRespuestaAdmin(respId, hiloId) {
+  if (!usuario || !esAdmin()) return;
+  if (!confirm('¿Eliminar esta respuesta como administrador?')) return;
+  await db.from('votos').delete().eq('respuesta_id', respId);
+  await db.from('respuestas').delete().eq('id', respId);
+  toast('🗑 Respuesta eliminada (admin)');
   cargarRespuestas(hiloId);
   cargarTopMoviles();
 }
