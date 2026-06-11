@@ -893,31 +893,85 @@ body {
 .form-card {
   background: var(--surface);
   border-radius: var(--radius);
-  padding: 24px;
   margin-bottom: 20px;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
+  border: 1.5px solid var(--blue);
+  box-shadow: 0 8px 40px rgba(29,111,232,0.10);
   width: 100%;
   box-sizing: border-box;
   overflow: hidden;
 }
 
-@media (max-width: 600px) {
-  .form-card { padding: 16px 14px; }
+.form-card-header {
+  background: linear-gradient(135deg, var(--navy) 0%, #1A3558 100%);
+  padding: 18px 24px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
+
+.form-card-header-icon {
+  width: 38px;
+  height: 38px;
+  background: var(--blue);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.form-card-header-text { flex: 1; }
 
 .form-title {
   font-family: 'Roboto', sans-serif;
-  font-size: 17px;
+  font-size: 16px;
+  font-weight: 800;
+  color: white;
+  letter-spacing: -0.2px;
+  margin: 0;
+}
+
+.form-subtitle {
+  font-size: 12px;
+  color: rgba(255,255,255,0.45);
+  margin-top: 2px;
+}
+
+.form-body {
+  padding: 22px 24px 20px;
+}
+
+@media (max-width: 600px) {
+  .form-card-header { padding: 14px 16px; }
+  .form-body { padding: 16px; }
+}
+
+.form-section-label {
+  font-family: 'Roboto', sans-serif;
+  font-size: 10px;
   font-weight: 700;
-  margin-bottom: 20px;
-  color: var(--navy);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-3);
+  margin-bottom: 10px;
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.form-section-label:first-child { margin-top: 0; }
+.form-section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
 }
 
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 14px;
+  gap: 12px;
 }
 
 .form-field {
@@ -932,8 +986,25 @@ body {
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.5px;
   color: var(--text-3);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Obligatorio badge */
+.req-badge {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(232,59,59,0.1);
+  color: var(--accent-red);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
+  letter-spacing: 0.3px;
+  border: 1px solid rgba(232,59,59,0.2);
 }
 
 .form-field input,
@@ -947,6 +1018,7 @@ body {
   background: var(--surface-2);
   color: var(--text);
   transition: all 0.18s;
+  -webkit-appearance: none;
 }
 
 .form-field input:focus,
@@ -958,43 +1030,76 @@ body {
   box-shadow: 0 0 0 3px rgba(29,111,232,0.08);
 }
 
-.form-field textarea { resize: vertical; min-height: 72px; }
+/* Required fields glow red when empty on submit attempt */
+.form-field.has-error input,
+.form-field.has-error select,
+.form-field.has-error textarea {
+  border-color: var(--accent-red);
+  background: #fff5f5;
+  box-shadow: 0 0 0 3px rgba(232,59,59,0.08);
+}
+
+.form-field textarea { resize: vertical; min-height: 80px; line-height: 1.55; }
+
+/* Required field indicator on left */
+.form-field.required-field input,
+.form-field.required-field select,
+.form-field.required-field textarea {
+  border-left: 3px solid var(--blue);
+}
+.form-field.required-field.has-error input,
+.form-field.required-field.has-error select,
+.form-field.required-field.has-error textarea {
+  border-left: 3px solid var(--accent-red);
+}
 
 .form-actions {
   display: flex;
   gap: 10px;
   justify-content: flex-end;
-  margin-top: 18px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
 }
 
 .btn-cancel {
-  padding: 9px 18px;
+  padding: 10px 20px;
   background: var(--surface-3);
-  border: none;
-  border-radius: 999px;
-  font-weight: 500;
-  font-size: 13px;
-  cursor: pointer;
-  font-family: 'Roboto', sans-serif;
-}
-
-.btn-submit {
-  padding: 9px 22px;
-  background: var(--navy);
-  color: white;
-  border: none;
+  border: 1.5px solid var(--border);
   border-radius: 999px;
   font-weight: 600;
   font-size: 13px;
   cursor: pointer;
   font-family: 'Roboto', sans-serif;
+  color: var(--text-2);
   transition: all 0.18s;
 }
-.btn-submit:hover { background: var(--blue); }
+.btn-cancel:hover { border-color: var(--text-3); background: var(--border); }
+
+.btn-submit {
+  padding: 10px 24px;
+  background: var(--blue);
+  color: white;
+  border: none;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: 'Roboto', sans-serif;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  box-shadow: 0 3px 12px rgba(29,111,232,0.35);
+}
+.btn-submit:hover { background: var(--blue-light); transform: translateY(-1px); box-shadow: 0 5px 18px rgba(29,111,232,0.45); }
+.btn-submit:active { transform: translateY(0); }
 
 @media (max-width: 600px) {
   .form-grid { grid-template-columns: 1fr; }
   .form-field.full { grid-column: span 1; }
+  .form-actions { flex-direction: column-reverse; }
+  .btn-submit { justify-content: center; }
 }
 
 /* ─── THREAD CARD ─── */
@@ -2093,8 +2198,132 @@ body {
   .perks-banner-sub { font-size: 11px; }
 }
 
-/* ─── THREAD CARD NUEVO DISEÑO ─── */
-.thread-header-top {
+/* ─── THREAD CARD CUADRO-DE-CONSULTA REDESIGN ─── */
+
+/* Author strip at top of card */
+.thread-author-strip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 20px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.thread-author-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.thread-author-name {
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.thread-author-meta {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* Budget pill — prominent, right side */
+.thread-budget-pill {
+  flex-shrink: 0;
+  background: var(--navy);
+  color: var(--accent);
+  font-family: 'Roboto', sans-serif;
+  font-weight: 800;
+  font-size: 14px;
+  padding: 5px 13px;
+  border-radius: 999px;
+  letter-spacing: -0.2px;
+  border: 2px solid rgba(245,166,35,0.25);
+}
+
+/* Specs table — the Q&A rows like the screenshot */
+.thread-specs-table {
+  padding: 4px 20px 0;
+}
+
+.tst-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--surface-3);
+}
+.tst-row:last-child { border-bottom: none; }
+
+.tst-label {
+  font-size: 13px;
+  color: var(--text-2);
+  min-width: 140px;
+  flex-shrink: 0;
+  font-weight: 500;
+}
+
+.tst-val {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(29,111,232,0.08);
+  color: var(--navy);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 3px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(29,111,232,0.15);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: 'Roboto', sans-serif;
+}
+
+@media (max-width: 600px) {
+  .thread-specs-table { padding: 0 14px; }
+  .tst-label { min-width: 110px; font-size: 12px; }
+  .tst-val { font-size: 12px; }
+  .thread-author-strip { padding: 13px 14px 11px; }
+  .thread-budget-pill { font-size: 13px; padding: 4px 10px; }
+}
+
+/* Extra / datos adicionales section */
+.thread-extra-note {
+  margin: 12px 20px;
+  padding: 12px 14px;
+  background: linear-gradient(135deg, #EBF3FF 0%, #F0F7FF 100%);
+  border-radius: 12px;
+  border: 1px solid rgba(29,111,232,0.12);
+}
+
+.ten-lead {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--blue);
+  margin-bottom: 5px;
+}
+
+.ten-text {
+  font-size: 13.5px;
+  color: var(--text-2);
+  line-height: 1.55;
+}
+
+@media (max-width: 600px) {
+  .thread-extra-note { margin: 10px 14px; }
+  .ten-text { font-size: 13px; }
+}
   display: flex;
   align-items: center;
   gap: 10px;
@@ -4497,10 +4726,19 @@ body {
   <!-- Form -->
   <div id="newForm" style="display:none;">
     <div class="form-card">
-      <div class="form-title">📱 Cuéntanos qué buscas</div>
+      <div class="form-card-header">
+        <div class="form-card-header-icon">📱</div>
+        <div class="form-card-header-text">
+          <div class="form-title">Nueva consulta</div>
+          <div class="form-subtitle">Cuéntanos qué buscas y la comunidad te ayudará</div>
+        </div>
+      </div>
+      <div class="form-body">
+      <div class="form-section-label">💰 Presupuesto & preferencias</div>
       <div class="form-grid">
-        <div class="form-field"><label>💰 Presupuesto <span style="color:var(--accent-red);font-size:10px;font-weight:700;margin-left:4px;">OBLIGATORIO</span></label>
+        <div class="form-field required-field"><label>Presupuesto <span class="req-badge">Obligatorio</span></label>
           <select id="f_presupuesto">
+            <option value="">— Elige tu presupuesto —</option>
             <option value="sin-limite">Sin límite</option>
 <option value="0-100">Menos de 100€</option>
 <option value="100-150">100€ - 150€</option>
@@ -4516,6 +4754,10 @@ body {
         <div class="form-field"><label>📱 Móvil actual</label><input type="text" id="f_movil_actual" placeholder="ej. Redmi Note 10" /></div>
         <div class="form-field"><label>⭐ Marca preferida</label><input type="text" id="f_marca_pref" placeholder="Sin preferencia" /></div>
         <div class="form-field"><label>🚫 Marca que NO quieres</label><input type="text" id="f_marca_no" placeholder="ej. Apple" /></div>
+      </div>
+
+      <div class="form-section-label">⚙️ Características técnicas</div>
+      <div class="form-grid">
         <div class="form-field"><label>🛡️ Garantía España</label>
           <select id="f_garantia"><option value="Sí">Sí</option><option value="No">No</option></select>
         </div>
@@ -4534,20 +4776,24 @@ body {
         <div class="form-field"><label>🎮 ¿Juegas?</label>
           <select id="f_juegos"><option value="No">No</option><option value="Algún casual">Algún casual</option><option value="Sí, bastante">Sí, bastante</option></select>
         </div>
-        <div class="form-field"><label>📸 ¿Usas mucho la cámara?</label>
+        <div class="form-field"><label>📸 Cámara</label>
           <select id="f_camara"><option value="No mucho">No mucho</option><option value="Sí, importante">Sí, importante</option></select>
         </div>
-        <div class="form-field"><label>🔋 ¿Mucha batería?</label>
+        <div class="form-field"><label>🔋 Batería</label>
           <select id="f_bateria"><option value="Normal">Normal</option><option value="Sí, prioritaria">Sí, prioritaria</option></select>
         </div>
-        <div class="form-field"><label>⚡ ¿Carga rápida?</label>
+        <div class="form-field"><label>⚡ Carga rápida</label>
           <select id="f_carga"><option value="No necesaria">No necesaria</option><option value="Sí">Sí</option></select>
         </div>
-        <div class="form-field full"><label>📝 Cuéntanos más <span style="color:var(--accent-red);font-size:10px;font-weight:700;margin-left:4px;">OBLIGATORIO</span></label><textarea id="f_extra" placeholder="Explica con detalle: ¿para qué lo usarás? ¿qué valoras más? ¿alguna condición importante? Cuanto más detallado, mejor consejo recibirás." style="min-height:80px;" required></textarea></div>
       </div>
+
+      <div class="form-section-label">💬 Cuéntanos más</div>
+      <div class="form-field required-field full"><label>Detalles adicionales <span class="req-badge">Obligatorio</span></label><textarea id="f_extra" placeholder="Explica para qué lo usarás, qué valoras más, si tienes alguna condición especial... Cuanto más detallado, mejor consejo recibirás." style="min-height:88px;"></textarea></div>
+
       <div class="form-actions">
         <button class="btn-cancel" onclick="cerrarForm()">Cancelar</button>
-        <button class="btn-submit" onclick="publicarHilo()">Publicar consulta</button>
+        <button class="btn-submit" onclick="publicarHilo()">📤 Publicar consulta</button>
+      </div>
       </div>
     </div>
   </div>
@@ -6113,38 +6359,40 @@ async function renderHilo(h) {
 
   return `
     <div class="thread-card" id="thread_${h.id}">
-      <div class="thread-header">
-        <div class="thread-meta">
-          ${renderAvatar(h.nickname, fotoHilo, 'avatar', 40)}
-          <div class="author-block">
-            <div class="author-name"><span class="nick-link" onclick="abrirPerfil('${h.nickname}')">${nombre}</span> ${getBadgeHtml(pts, rol)}</div>
+      <!-- CARD HEADER: author strip -->
+      <div class="thread-author-strip">
+        ${renderAvatar(h.nickname, fotoHilo, 'avatar', 36)}
+        <div class="thread-author-info">
+          <div class="thread-author-name">
+            <span class="nick-link" onclick="abrirPerfil('${h.nickname}')">${nombre}</span>
+            ${getBadgeHtml(pts, rol)}
           </div>
-          <div class="thread-time">${timeAgo(h.created_at)}${haParticipado ? '<span class="participated-icon">✏️ Participé</span>' : ''}</div>
+          <div class="thread-author-meta">${timeAgo(h.created_at)}${haParticipado ? '<span class="participated-icon">✏️ Participé</span>' : ''}</div>
         </div>
-
-        ${budgetSpec ? `<div class="thread-budget-badge">${budgetSpec.icon} ${budgetSpec.val}</div>` : ''}
-
-        ${otherSpecs.length ? `
-          <div class="thread-specs-grid">
-            ${otherSpecs.map(s => `
-              <div class="spec-row">
-                <span class="spec-row-icon">${s.icon}</span>
-                <div class="spec-row-content">
-                  <span class="spec-row-label">${s.label}</span>
-                  <span class="spec-row-val">${s.val}</span>
-                </div>
-              </div>`).join('')}
-          </div>` : ''}
-
-        ${h.datos_extra ? `
-          <div class="extra-note-clean">
-            <span class="extra-note-lead">💬</span>
-            <span>${h.datos_extra}</span>
-          </div>` : ''}
+        ${budgetSpec ? `<div class="thread-budget-pill">${budgetSpec.icon} ${budgetSpec.val}</div>` : ''}
       </div>
 
+      <!-- SPECS TABLE -->
+      ${otherSpecs.length ? `
+        <div class="thread-specs-table">
+          ${otherSpecs.map(s => `
+            <div class="tst-row">
+              <span class="tst-label">${s.icon} ${s.label}</span>
+              <span class="tst-val">${s.val}</span>
+            </div>`).join('')}
+        </div>` : ''}
+
+      <!-- EXTRA NOTE -->
+      ${h.datos_extra ? `
+        <div class="thread-extra-note">
+          <div class="ten-lead">📋 Datos adicionales</div>
+          <div class="ten-text">${h.datos_extra}</div>
+        </div>` : ''}
+
+      <!-- TOP RECOMMENDATION -->
       <div id="topRec_${h.id}"></div>
 
+      <!-- FOOTER BAR -->
       <div class="thread-bar">
         <button class="reply-count-btn" onclick="toggleReplies('${h.id}')">
           💬 <span class="cnt" id="rcnt_${h.id}">${replyCount}</span> respuestas${replyCount === 0 ? '<span class="badge-sin-responder">⚡ Sin responder</span>' : ''}${unreadCount > 0 ? `<span class="unread-badge" id="unread_${h.id}">${unreadCount} nuevo${unreadCount > 1 ? 's' : ''}</span>` : `<span class="unread-badge" id="unread_${h.id}" style="display:none"></span>`}
@@ -6748,16 +6996,28 @@ function cerrarForm() {
 
 async function publicarHilo() {
   if (!usuario) { mostrarModalAuth(); return; }
+
+  // Clear previous errors
+  document.querySelectorAll('#newForm .form-field').forEach(f => f.classList.remove('has-error'));
+
+  let hasError = false;
+
   const presupuesto = document.getElementById('f_presupuesto').value;
   if (!presupuesto) {
-    toast('⚠️ Selecciona un presupuesto (o "Sin límite")');
-    document.getElementById('f_presupuesto').focus();
-    return;
+    document.getElementById('f_presupuesto').closest('.form-field').classList.add('has-error');
+    hasError = true;
   }
   const extra = document.getElementById('f_extra').value.trim();
   if (!extra || extra.length < 10) {
-    toast('⚠️ El campo "Cuéntanos más" es obligatorio y debe tener al menos 10 caracteres');
-    document.getElementById('f_extra').focus();
+    document.getElementById('f_extra').closest('.form-field').classList.add('has-error');
+    hasError = true;
+  }
+
+  if (hasError) {
+    toast('⚠️ Rellena los campos obligatorios marcados en rojo');
+    // Scroll to first error
+    const firstErr = document.querySelector('#newForm .has-error');
+    if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
     return;
   }
   const { error } = await db.from('hilos').insert({
