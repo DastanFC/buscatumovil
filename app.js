@@ -2249,17 +2249,17 @@ function crearQuillNoticia() {
     placeholder: 'Escribe aquí el cuerpo completo de la noticia...',
     modules: {
       table: false,
+      keyboard: {
+        bindings: BetterTableLib
+          ? Object.assign({}, Quill.import('modules/keyboard').DEFAULTS.bindings, BetterTableLib.keyboardBindings)
+          : {}
+      },
       'better-table': {
         operationMenu: {
           items: {
             unmergeCells: { text: 'Separar celdas' }
           }
         }
-      },
-      keyboard: {
-        bindings: BetterTableLib
-          ? Object.assign({}, Quill.import('modules/keyboard').DEFAULTS.bindings, BetterTableLib.keyboardBindings)
-          : {}
       },
       toolbar: {
         container: [
