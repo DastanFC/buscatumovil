@@ -2242,6 +2242,25 @@ function crearQuillNoticia() {
     Quill.register({ 'modules/better-table': BetterTableLib }, true);
   }
 
+  // PATCH: quill-better-table@1.2.10 busca bindings['Backspace'] / bindings['Delete']
+  // como strings, pero Quill 1.3.7 los indexa por keycode numérico (8 y 46).
+  // Parcheamos addBinding para crear el alias string justo después de cada inserción,
+  // evitando el "can't access property pop, bindings.Backspace is undefined".
+  if (BetterTableLib) {
+    const Keyboard = Quill.import('modules/keyboard');
+    const origAddBinding = Keyboard.prototype.addBinding;
+    Keyboard.prototype.addBinding = function(key) {
+      const result = origAddBinding.apply(this, arguments);
+      if (!this.bindings['Backspace'] && this.bindings[8]) {
+        this.bindings['Backspace'] = this.bindings[8];
+      }
+      if (!this.bindings['Delete'] && this.bindings[46]) {
+        this.bindings['Delete'] = this.bindings[46];
+      }
+      return result;
+    };
+  }
+
   const COLORES_NOTICIA = ['#0F1B2D', '#1D6FE8', '#F5A623', '#10B981', '#E83B3B', '#9333EA', '#6B7280', '#FFFFFF'];
 
   const quill = new Quill('#noticiaQuillEditor', {
