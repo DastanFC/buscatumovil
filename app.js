@@ -2237,8 +2237,9 @@ function crearQuillNoticia() {
   }
 
   // Registrar módulo de tablas (una sola vez)
-  if (window.QuillBetterTable && !Quill.imports['modules/better-table']) {
-    Quill.register({ 'modules/better-table': QuillBetterTable }, true);
+  const BetterTableLib = window.QuillBetterTable || window.quillBetterTable;
+  if (BetterTableLib && !Quill.imports['modules/better-table']) {
+    Quill.register({ 'modules/better-table': BetterTableLib }, true);
   }
 
   const COLORES_NOTICIA = ['#0F1B2D', '#1D6FE8', '#F5A623', '#10B981', '#E83B3B', '#9333EA', '#6B7280', '#FFFFFF'];
@@ -2256,7 +2257,7 @@ function crearQuillNoticia() {
         }
       },
       keyboard: {
-        bindings: window.QuillBetterTable ? QuillBetterTable.keyboardBindings : {}
+        bindings: BetterTableLib ? BetterTableLib.keyboardBindings : {}
       },
       toolbar: {
         container: [
