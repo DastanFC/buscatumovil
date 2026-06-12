@@ -2807,20 +2807,68 @@ body {
 }
 
 /* ─── NOTICIAS ─── */
+/* ─── NOTICIAS GRID ─── */
+#noticiasList {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+#noticiasList > .noticias-empty,
+#noticiasList > .pagination {
+  grid-column: 1 / -1;
+}
+@media (max-width: 900px) {
+  #noticiasList { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  #noticiasList { grid-template-columns: 1fr; gap: 14px; }
+}
+
 .noticia-card {
   background: var(--surface);
   border-radius: var(--radius);
   border: 1px solid var(--border);
   box-shadow: var(--shadow);
   overflow: hidden;
-  margin-bottom: 20px;
-  transition: box-shadow 0.2s, transform 0.15s;
+  transition: box-shadow 0.22s, transform 0.18s, border-color 0.18s;
   cursor: pointer;
   width: 100%;
   box-sizing: border-box;
-  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
 }
-.noticia-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+.noticia-card:hover {
+  box-shadow: 0 12px 36px rgba(15,27,45,0.14);
+  transform: translateY(-3px);
+  border-color: var(--blue);
+}
+
+/* Featured (primera noticia) ocupa 2 columnas */
+.noticia-card.noticia-featured {
+  grid-column: span 2;
+  flex-direction: row;
+}
+@media (max-width: 900px) {
+  .noticia-card.noticia-featured { grid-column: span 2; flex-direction: column; }
+}
+@media (max-width: 560px) {
+  .noticia-card.noticia-featured { grid-column: span 1; flex-direction: column; }
+}
+
+.noticia-card.noticia-featured .noticia-img-wrap {
+  width: 55%;
+  aspect-ratio: unset;
+  min-height: 220px;
+  flex-shrink: 0;
+}
+@media (max-width: 900px) {
+  .noticia-card.noticia-featured .noticia-img-wrap { width: 100%; min-height: unset; aspect-ratio: 16/9; }
+}
+
+.noticia-card.noticia-featured .noticia-titulo { font-size: 20px; }
+.noticia-card.noticia-featured .noticia-resumen { display: block; }
 
 /* Modal de noticia */
 .noticia-modal-overlay {
@@ -2898,43 +2946,63 @@ body {
   overflow: hidden;
   background: var(--surface-3);
   cursor: pointer;
+  flex-shrink: 0;
 }
 .noticia-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.3s;
+  transition: transform 0.35s cubic-bezier(.25,.46,.45,.94);
 }
-.noticia-card:hover .noticia-img { transform: scale(1.03); }
+.noticia-card:hover .noticia-img { transform: scale(1.05); }
+
+/* No image placeholder */
+.noticia-no-img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  flex-shrink: 0;
+}
 
 .noticia-body {
   padding: 18px 20px 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 @media (max-width: 600px) { .noticia-body { padding: 14px 16px 12px; } }
 
 .noticia-cat {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.7px;
+  letter-spacing: 0.6px;
   text-transform: uppercase;
-  padding: 3px 9px;
+  padding: 3px 10px;
   border-radius: 999px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  width: fit-content;
 }
-.noticia-cat-rumor { background: #FEF3C7; color: #B45309; }
-.noticia-cat-oficial { background: #D1FAE5; color: #065F46; }
+.noticia-cat-rumor    { background: #FEF3C7; color: #B45309; }
+.noticia-cat-oficial  { background: #D1FAE5; color: #065F46; }
 .noticia-cat-analisis { background: #EDE9FE; color: #6D28D9; }
 .noticia-cat-comunidad { background: #DBEAFE; color: #1E40AF; }
 
 .noticia-titulo {
   font-family: 'Roboto', sans-serif;
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 800;
   color: var(--navy);
-  line-height: 1.3;
+  line-height: 1.35;
   margin-bottom: 8px;
+  flex: 1;
 }
 @media (max-width: 600px) { .noticia-titulo { font-size: 15px; } }
 
@@ -2943,6 +3011,10 @@ body {
   color: var(--text-2);
   line-height: 1.6;
   margin-bottom: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .noticia-meta {
@@ -2951,6 +3023,19 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.noticia-leer-mas {
+  margin-left: auto;
+  color: var(--blue);
+  font-weight: 600;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
 }
 
 .noticias-empty {
@@ -6105,7 +6190,7 @@ function setTab(tab, el, pushHistory = true) {
   if (tab === 'noticias') {
     hilosEl.style.display = 'none';
     pagEl.style.display = 'none';
-    noticiasEl.style.display = 'block';
+    noticiasEl.style.display = 'grid';
     if (formEl) formEl.style.display = 'none';
     if (forumEl) forumEl.classList.remove('open');
     if (topMovilesEl) topMovilesEl.style.display = '';
@@ -7101,21 +7186,29 @@ function renderNoticiasPagina() {
   const start = (noticiasPagina - 1) * NOTICIAS_POR_PAGINA;
   const pag = noticiasCache.slice(start, start + NOTICIAS_POR_PAGINA);
   
+  const CAT_ICONS = { rumor: '💬', oficial: '✅', analisis: '🔍', comunidad: '👥' };
   const noticiasHtml = pag.map((n, idx) => {
     const globalIdx = noticiasCache.findIndex(item => item.id === n.id);
+    const isFeatured = idx === 0 && noticiasPagina === 1;
     const catClass = 'noticia-cat-' + (n.categoria || 'comunidad');
     const catLabel = NOTICIA_CAT_LABELS[n.categoria] || n.categoria;
+    const catIcon = CAT_ICONS[n.categoria] || '📰';
+    const resumenTexto = n.resumen ? n.resumen.replace(/<[^>]*>/g, ' ').trim() : '';
+    const resumenCorto = resumenTexto.substring(0, isFeatured ? 220 : 110) + (resumenTexto.length > (isFeatured ? 220 : 110) ? '…' : '');
     const imgHtml = n.imagen_url
-      ? `<div class="noticia-img-wrap"><img class="noticia-img" src="${n.imagen_url}" alt="${n.titulo}" onerror="this.parentElement.style.display='none'" /></div>`
-      : '';
+      ? `<div class="noticia-img-wrap"><img class="noticia-img" src="${n.imagen_url}" alt="${n.titulo}" onerror="this.parentElement.style.display='none'" loading="lazy" /></div>`
+      : `<div class="noticia-no-img">📰</div>`;
     return `
-      <div class="noticia-card" onclick="abrirNoticia(${globalIdx})">
+      <div class="noticia-card${isFeatured ? ' noticia-featured' : ''}" onclick="abrirNoticia(${globalIdx})">
         ${imgHtml}
         <div class="noticia-body">
-          <span class="noticia-cat ${catClass}">${catLabel}</span>
+          <span class="noticia-cat ${catClass}">${catIcon} ${catLabel}</span>
           <div class="noticia-titulo">${n.titulo}</div>
-          <div class="noticia-resumen">${n.resumen ? n.resumen.replace(/<[^>]*>/g, ' ').substring(0, 180).trim() + (n.resumen.replace(/<[^>]*>/g, '').length > 180 ? '…' : '') : ''}</div>
-          <div class="noticia-meta">📅 ${n.fecha || ''}</div>
+          <div class="noticia-resumen">${resumenCorto}</div>
+          <div class="noticia-meta">
+            <span>📅 ${n.fecha || ''}</span>
+            <span class="noticia-leer-mas">Leer más →</span>
+          </div>
         </div>
       </div>
     `;
