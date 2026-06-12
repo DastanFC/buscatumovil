@@ -2159,13 +2159,89 @@ function irAPaginaNoticias(pagina) {
 // ═══════════════════════════════════════════
 
 // Lista de emojis frecuentes para el picker
-const EMOJIS_NOTICIA = ['😀','😂','😍','🤔','😎','🔥','💯','👍','👎','❤️','⭐','🎉','📱','💰','🚀','⚡','✅','❌','⚠️','📢','🆕','🔝','😱','🤩','😏','😴','🤯','👀','🙌','💪','📸','🎮','🕹️','💎','🔋','📶','📷','🆚','➡️','⬇️'];
+const EMOJIS_NOTICIA = [
+  '😀','😂','😍','🤔','😎','🔥','💯','👍','👎','❤️','⭐','🎉','📱','💰','🚀','⚡','✅','❌','⚠️','📢',
+  '🆕','🔝','😱','🤩','😏','😴','🤯','👀','🙌','💪','📸','🎮','🕹️','💎','🔋','📶','📷','🆚',
+  // ── Flechas y dirección (ideales para comparativas y guías) ──
+  '➡️','⬅️','⬆️','⬇️','↗️','↘️','↙️','↖️','🔄','🔁','↔️','↕️','▶️','◀️',
+  // ── Símbolos para destacar contenido en la noticia ──
+  '📌','🏷️','🔖','💡','📝','🔍','🔒','🔓','🎯','🆓','💲','🟢','🟡','🔴','🔵','⚪','⚫','◾','◽','✳️','❗','❓','‼️','⁉️','✔️','➕','➖'
+];
 
 function crearQuillNoticia() {
+  // Inyectar estilos propios del editor (callout, separador, embeds) una sola vez
+  if (!document.getElementById('noticiaQuillStyles')) {
+    const style = document.createElement('style');
+    style.id = 'noticiaQuillStyles';
+    style.textContent = `
+      .noticia-callout {
+        background: #FFF8E1;
+        border-left: 4px solid #F5A623;
+        border-radius: 6px;
+        padding: 10px 14px;
+        margin: 8px 0;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+      .noticia-hr {
+        border: none;
+        border-top: 2px dashed #D1D5DB;
+        margin: 16px 0;
+      }
+      .noticia-embed-yt { position: relative; width: 100%; padding-bottom: 56.25%; height: 0; margin: 8px 0; border-radius: 8px; overflow: hidden; }
+      .noticia-embed-yt iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+      .noticia-embed-tt { display: flex; justify-content: center; margin: 8px 0; }
+      #emojiPicker {
+        position: absolute;
+        display: none;
+        grid-template-columns: repeat(8, 1fr);
+        gap: 4px;
+        background: #fff;
+        border: 1px solid #D1D5DB;
+        border-radius: 8px;
+        padding: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        z-index: 50;
+        max-height: 220px;
+        overflow-y: auto;
+      }
+      #emojiPicker span { cursor: pointer; font-size: 18px; text-align: center; padding: 4px; border-radius: 4px; }
+      #emojiPicker span:hover { background: #F3F4F6; }
+      .noticia-compare-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 12px 0;
+        font-size: 13px;
+      }
+      .noticia-compare-table th, .noticia-compare-table td {
+        border: 1px solid #D1D5DB;
+        padding: 8px 10px;
+        text-align: left;
+        vertical-align: top;
+      }
+      .noticia-compare-table th {
+        background: #0F1B2D;
+        color: #fff;
+        font-weight: 700;
+      }
+      .noticia-compare-table td:first-child {
+        font-weight: 600;
+        background: #F3F4F6;
+        white-space: nowrap;
+      }
+      .noticia-compare-table tr:nth-child(even) td:not(:first-child) {
+        background: #FAFAFA;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
   // Registrar módulo de tablas (una sola vez)
   if (window.QuillBetterTable && !Quill.imports['modules/better-table']) {
     Quill.register({ 'modules/better-table': QuillBetterTable }, true);
   }
+
+  const COLORES_NOTICIA = ['#0F1B2D', '#1D6FE8', '#F5A623', '#10B981', '#E83B3B', '#9333EA', '#6B7280', '#FFFFFF'];
 
   const quill = new Quill('#noticiaQuillEditor', {
     theme: 'snow',
@@ -2186,22 +2262,25 @@ function crearQuillNoticia() {
         container: [
           [{ 'header': [1, 2, 3, false] }],
           ['bold', 'italic', 'underline', 'strike'],
-          [{ 'color': ['#0F1B2D', '#1D6FE8', '#F5A623', '#10B981', '#E83B3B'] }],
-          ['blockquote'],
+          [{ 'color': COLORES_NOTICIA }, { 'background': COLORES_NOTICIA }],
+          ['blockquote', 'callout', 'hr'],
           [{ 'align': [] }],
           [{ 'list': 'ordered' }, { 'list': 'bullet' }],
           ['link', 'image'],
           ['emoji'],
-          ['insertTable'],
+          ['insertTable', 'compareTable'],
           ['embed-tw', 'embed-yt', 'embed-tt'],
           ['clean']
         ],
         handlers: {
           emoji: function () { toggleEmojiPicker(quill); },
+          callout: function () { insertCalloutNoticia(quill); },
+          hr: function () { insertHrNoticia(quill); },
           insertTable: function () {
             const tableModule = quill.getModule('better-table');
             tableModule.insertTable(3, 3);
           },
+          compareTable: function () { insertCompareTableNoticia(quill); },
           'embed-tw': function () { insertEmbedNoticia(quill, 'tw'); },
           'embed-yt': function () { insertEmbedNoticia(quill, 'yt'); },
           'embed-tt': function () { insertEmbedNoticia(quill, 'tt'); }
@@ -2210,7 +2289,43 @@ function crearQuillNoticia() {
     }
   });
 
+  // Iconos personalizados para los botones de la toolbar
+  setTimeout(() => {
+    const toolbar = document.querySelector('#noticiaModalAdmin .ql-toolbar');
+    if (!toolbar) return;
+    const emojiBtn = toolbar.querySelector('.ql-emoji');
+    if (emojiBtn) emojiBtn.innerHTML = '😀';
+    const calloutBtn = toolbar.querySelector('.ql-callout');
+    if (calloutBtn) { calloutBtn.innerHTML = '💡'; calloutBtn.title = 'Insertar caja destacada'; }
+    const hrBtn = toolbar.querySelector('.ql-hr');
+    if (hrBtn) { hrBtn.innerHTML = '➖'; hrBtn.title = 'Insertar línea separadora'; }
+    const tableBtn = toolbar.querySelector('.ql-insertTable');
+    if (tableBtn) { tableBtn.innerHTML = '🔲'; tableBtn.title = 'Insertar tabla'; }
+    const compareBtn = toolbar.querySelector('.ql-compareTable');
+    if (compareBtn) { compareBtn.innerHTML = '📊'; compareBtn.title = 'Insertar tabla comparativa de móviles'; }
+    const ytBtn = toolbar.querySelector('.ql-embed-yt');
+    if (ytBtn) { ytBtn.innerHTML = '▶️'; ytBtn.title = 'Insertar vídeo de YouTube'; }
+    const twBtn = toolbar.querySelector('.ql-embed-tw');
+    if (twBtn) { twBtn.innerHTML = '🐦'; twBtn.title = 'Insertar tweet (X/Twitter)'; }
+    const ttBtn = toolbar.querySelector('.ql-embed-tt');
+    if (ttBtn) { ttBtn.innerHTML = '🎵'; ttBtn.title = 'Insertar vídeo de TikTok'; }
+  }, 0);
+
   return quill;
+}
+
+// ─── Caja destacada (callout) ────────────────────────────
+function insertCalloutNoticia(quill) {
+  const range = quill.getSelection(true) || { index: quill.getLength() };
+  const html = `<div class="noticia-callout">💡 <strong>Dato destacado:</strong> escribe aquí el texto importante...</div><p><br></p>`;
+  quill.clipboard.dangerouslyPasteHTML(range.index, html, 'user');
+}
+
+// ─── Línea separadora (hr) ────────────────────────────────
+function insertHrNoticia(quill) {
+  const range = quill.getSelection(true) || { index: quill.getLength() };
+  const html = `<hr class="noticia-hr"><p><br></p>`;
+  quill.clipboard.dangerouslyPasteHTML(range.index, html, 'user');
 }
 
 function toggleEmojiPicker(quill) {
@@ -2280,7 +2395,53 @@ function insertEmbedNoticia(quill, tipo) {
   }, 100);
 }
 
-function abrirModalNuevaNoticia() {
+// ─── Tabla comparativa de móviles (2-4 columnas) ──────────
+const COMPARE_FILAS = [
+  'Sistema y capa',
+  'Pantalla',
+  'Dimensiones',
+  'Peso',
+  'Procesador',
+  'Memoria RAM',
+  'Almacenamiento',
+  'Cámaras traseras',
+  'Cámara frontal',
+  'Batería',
+  'Carga rápida',
+  'Conectividad',
+  'Extras (IP68, sensores, audio)',
+  'Precio'
+];
+
+function insertCompareTableNoticia(quill) {
+  let numColsStr = prompt('¿Cuántos móviles vas a comparar? (2, 3 o 4):', '2');
+  if (!numColsStr) return;
+  let numCols = parseInt(numColsStr, 10);
+  if (![2, 3, 4].includes(numCols)) { toast('❌ Introduce 2, 3 o 4'); return; }
+
+  const nombres = [];
+  for (let i = 1; i <= numCols; i++) {
+    const nombre = prompt(`Nombre del móvil ${i}:`, `Modelo ${i}`);
+    nombres.push(nombre && nombre.trim() ? nombre.trim() : `Modelo ${i}`);
+  }
+
+  let html = '<table class="noticia-compare-table"><thead><tr><th>Especificación</th>';
+  nombres.forEach(n => { html += `<th>${escHtml(n)}</th>`; });
+  html += '</tr></thead><tbody>';
+
+  COMPARE_FILAS.forEach(fila => {
+    html += `<tr><td>${escHtml(fila)}</td>`;
+    for (let i = 0; i < numCols; i++) html += '<td>&nbsp;</td>';
+    html += '</tr>';
+  });
+
+  html += '</tbody></table><p><br></p>';
+
+  const range = quill.getSelection(true) || { index: quill.getLength() };
+  quill.clipboard.dangerouslyPasteHTML(range.index, html, 'user');
+}
+
+
   if (!usuario || usuario.nickname !== 'dastan') {
     toast('⛔ Solo el administrador puede crear noticias');
     return;
