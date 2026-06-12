@@ -2442,6 +2442,7 @@ function insertCompareTableNoticia(quill) {
 }
 
 
+function abrirModalNuevaNoticia() {
   if (!usuario || usuario.nickname !== 'dastan') {
     toast('⛔ Solo el administrador puede crear noticias');
     return;
