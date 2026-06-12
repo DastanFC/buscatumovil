@@ -2257,7 +2257,9 @@ function crearQuillNoticia() {
         }
       },
       keyboard: {
-        bindings: BetterTableLib ? BetterTableLib.keyboardBindings : {}
+        bindings: BetterTableLib
+          ? Object.assign({}, Quill.import('modules/keyboard').DEFAULTS.bindings, BetterTableLib.keyboardBindings)
+          : {}
       },
       toolbar: {
         container: [
