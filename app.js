@@ -1265,42 +1265,42 @@ async function cargarHilos() {
   if (!usuario) return;
   document.getElementById('hilosList').innerHTML = '<div class="loading">⏳ Cargando...</div>';
 
-  // ── FIX 1: traer solo el COUNT total (sin datos) para la paginación ──
-  let countQuery = db.from('hilos').select('id', { count: 'exact', head: true });
-  if (tabActual === 'abiertas') countQuery = countQuery.eq('resuelto', false);
-  else if (tabActual === 'mis_abiertas') countQuery = countQuery.eq('nickname', usuario.nickname).eq('resuelto', false);
-  else if (tabActual === 'mis_cerradas') countQuery = countQuery.eq('nickname', usuario.nickname).eq('resuelto', true);
-
-  // sin_responder necesita filtrar en cliente (count=0), así que traemos más margen
   const esSinResponder = tabActual === 'sin_responder';
-  let totalCount = 0;
+  const start = (currentPage - 1) * ITEMS_PER_PAGE;
 
-  if (!esSinResponder) {
-    const { count } = await countQuery;
-    totalCount = count || 0;
-  }
+  // ── Construir queries de hilos y count ──
+  const buildHilosQuery = () => {
+    let q = db.from('hilos').select('*, respuestas(count)');
+    if (tabActual === 'abiertas' || esSinResponder) q = q.eq('resuelto', false);
+    else if (tabActual === 'mis_abiertas') q = q.eq('nickname', usuario.nickname).eq('resuelto', false);
+    else if (tabActual === 'mis_cerradas') q = q.eq('nickname', usuario.nickname).eq('resuelto', true);
+    return q.order('created_at', { ascending: false });
+  };
 
-  // ── FIX 2: paginación server-side — solo traer los hilos de esta página ──
-  let query = db.from('hilos').select('*, respuestas(count)');
-  if (tabActual === 'abiertas') query = query.eq('resuelto', false);
-  else if (tabActual === 'sin_responder') query = query.eq('resuelto', false);
-  else if (tabActual === 'mis_abiertas') query = query.eq('nickname', usuario.nickname).eq('resuelto', false);
-  else if (tabActual === 'mis_cerradas') query = query.eq('nickname', usuario.nickname).eq('resuelto', true);
+  const buildCountQuery = () => {
+    let q = db.from('hilos').select('id', { count: 'exact', head: true });
+    if (tabActual === 'abiertas') q = q.eq('resuelto', false);
+    else if (tabActual === 'mis_abiertas') q = q.eq('nickname', usuario.nickname).eq('resuelto', false);
+    else if (tabActual === 'mis_cerradas') q = q.eq('nickname', usuario.nickname).eq('resuelto', true);
+    return q;
+  };
 
-  query = query.order('created_at', { ascending: false });
+  let pag, totalCount;
 
-  let pag;
   if (esSinResponder) {
-    // Para sin_responder hay que filtrar en cliente, traemos hasta 200 y filtramos
-    const { data: hilos } = await query.limit(200);
+    // sin_responder: filtrar en cliente, una sola query
+    const { data: hilos } = await buildHilosQuery().limit(200);
     hilosData = (hilos || []).filter(h => (h.respuestas?.[0]?.count || 0) === 0);
     totalCount = hilosData.length;
-    const start = (currentPage - 1) * ITEMS_PER_PAGE;
     pag = hilosData.slice(start, start + ITEMS_PER_PAGE);
   } else {
-    hilosData = []; // no necesitamos el array completo, usamos totalCount
-    const start = (currentPage - 1) * ITEMS_PER_PAGE;
-    const { data: hilos } = await query.range(start, start + ITEMS_PER_PAGE - 1);
+    // Lanzar count e hilos EN PARALELO — una sola ronda de red
+    const [{ count }, { data: hilos }] = await Promise.all([
+      buildCountQuery(),
+      buildHilosQuery().range(start, start + ITEMS_PER_PAGE - 1)
+    ]);
+    totalCount = count || 0;
+    hilosData = [];
     pag = hilos || [];
   }
 
@@ -1317,7 +1317,10 @@ async function cargarHilos() {
 
   renderPaginacionTotal(totalCount);
 
-  // ── FIX 3: Una sola query para los datos de todos los autores de esta página ──
+  // ── Render esqueleto inmediato con los datos que ya tenemos ──
+  document.getElementById('hilosList').innerHTML = pag.map(h => renderHilo(h, {}, new Set())).join('');
+
+  // ── Traer datos de autores y participación en paralelo (enriquecimiento) ──
   const nicknames = [...new Set(pag.map(h => h.nickname))];
   const hiloIds   = pag.map(h => h.id);
 
@@ -1328,14 +1331,11 @@ async function cargarHilos() {
       : Promise.resolve({ data: [] })
   ]);
 
-  // Mapas para acceso O(1) dentro de renderHilo
   const usuariosMap  = Object.fromEntries((usuariosData || []).map(u => [u.nickname, u]));
   const participaSet = new Set((participacionData || []).map(r => r.hilo_id));
 
-  // renderHilo ahora es síncrono — sin awaits, sin queries
-  const htmlParts = pag.map(h => renderHilo(h, usuariosMap, participaSet));
-  document.getElementById('hilosList').innerHTML = htmlParts.join('');
-  // ── FIX 4: NO cargar respuestas automáticamente — se cargan al hacer clic ──
+  // ── Re-render con datos completos (avatares, rangos, participación) ──
+  document.getElementById('hilosList').innerHTML = pag.map(h => renderHilo(h, usuariosMap, participaSet)).join('');
 }
 
 function renderPaginacion() {
