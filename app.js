@@ -1317,8 +1317,23 @@ async function cargarHilos() {
 
   renderPaginacionTotal(totalCount);
 
-  // ── FIX 3: renderizar todos los hilos EN PARALELO en lugar de en serie ──
-  const htmlParts = await Promise.all(pag.map(h => renderHilo(h)));
+  // ── FIX 3: Una sola query para los datos de todos los autores de esta página ──
+  const nicknames = [...new Set(pag.map(h => h.nickname))];
+  const hiloIds   = pag.map(h => h.id);
+
+  const [{ data: usuariosData }, { data: participacionData }] = await Promise.all([
+    db.from('usuarios').select('nickname, puntos, rol, foto_url').in('nickname', nicknames),
+    usuario
+      ? db.from('respuestas').select('hilo_id').in('hilo_id', hiloIds).eq('nickname', usuario.nickname)
+      : Promise.resolve({ data: [] })
+  ]);
+
+  // Mapas para acceso O(1) dentro de renderHilo
+  const usuariosMap  = Object.fromEntries((usuariosData || []).map(u => [u.nickname, u]));
+  const participaSet = new Set((participacionData || []).map(r => r.hilo_id));
+
+  // renderHilo ahora es síncrono — sin awaits, sin queries
+  const htmlParts = pag.map(h => renderHilo(h, usuariosMap, participaSet));
   document.getElementById('hilosList').innerHTML = htmlParts.join('');
   // ── FIX 4: NO cargar respuestas automáticamente — se cargan al hacer clic ──
 }
@@ -1339,20 +1354,15 @@ function renderPaginacionTotal(totalItems) {
 
 function goToPage(p) { currentPage = p; cargarHilos(); }
 
-async function renderHilo(h) {
-  // ── FIX: lanzar ambas queries en paralelo en lugar de en serie ──
-  const [{ data: uData }, participacionResult] = await Promise.all([
-    db.from('usuarios').select('puntos, rol, foto_url').eq('nickname', h.nickname).single(),
-    (usuario && h.nickname !== usuario.nickname)
-      ? db.from('respuestas').select('id', { count: 'exact', head: true }).eq('hilo_id', h.id).eq('nickname', usuario.nickname)
-      : Promise.resolve({ count: 0 })
-  ]);
-  const pts = uData?.puntos || 0;
-  const rol = uData?.rol || 'usuario';
-  const fotoHilo = uData?.foto_url || null;
+function renderHilo(h, usuariosMap = {}, participaSet = new Set()) {
+  // Datos del autor precargados — sin queries adicionales
+  const uData      = usuariosMap[h.nickname] || {};
+  const pts        = uData.puntos || 0;
+  const rol        = uData.rol || 'usuario';
+  const fotoHilo   = uData.foto_url || null;
   const replyCount = h.respuestas?.[0]?.count || 0;
-  const ac = avatarColor(h.nickname);
-  const nombre = cap(h.nickname);
+  const ac         = avatarColor(h.nickname);
+  const nombre     = cap(h.nickname);
   const puedeCerrar = usuario && (usuario.nickname === h.nickname || esAdmin());
 
   // ── Unread replies logic ──
@@ -1361,8 +1371,8 @@ async function renderHilo(h) {
   try { seenCount = parseInt(localStorage.getItem(seenKey) || '0', 10); } catch(e) {}
   const unreadCount = Math.max(0, replyCount - seenCount);
 
-  // ── Participation check ──
-  const haParticipado = (participacionResult?.count || 0) > 0;
+  // ── Participation check (desde el Set precargado) ──
+  const haParticipado = participaSet.has(h.id);
 
   const specs = [
     { label: 'Presupuesto', val: h.presupuesto, icon: '💰' },
