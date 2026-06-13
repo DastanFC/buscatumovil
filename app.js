@@ -1265,6 +1265,22 @@ async function cargarHilos() {
   if (!usuario) return;
   document.getElementById('hilosList').innerHTML = '<div class="loading">⏳ Cargando...</div>';
 
+  // ── FIX 1: traer solo el COUNT total (sin datos) para la paginación ──
+  let countQuery = db.from('hilos').select('id', { count: 'exact', head: true });
+  if (tabActual === 'abiertas') countQuery = countQuery.eq('resuelto', false);
+  else if (tabActual === 'mis_abiertas') countQuery = countQuery.eq('nickname', usuario.nickname).eq('resuelto', false);
+  else if (tabActual === 'mis_cerradas') countQuery = countQuery.eq('nickname', usuario.nickname).eq('resuelto', true);
+
+  // sin_responder necesita filtrar en cliente (count=0), así que traemos más margen
+  const esSinResponder = tabActual === 'sin_responder';
+  let totalCount = 0;
+
+  if (!esSinResponder) {
+    const { count } = await countQuery;
+    totalCount = count || 0;
+  }
+
+  // ── FIX 2: paginación server-side — solo traer los hilos de esta página ──
   let query = db.from('hilos').select('*, respuestas(count)');
   if (tabActual === 'abiertas') query = query.eq('resuelto', false);
   else if (tabActual === 'sin_responder') query = query.eq('resuelto', false);
@@ -1272,15 +1288,23 @@ async function cargarHilos() {
   else if (tabActual === 'mis_cerradas') query = query.eq('nickname', usuario.nickname).eq('resuelto', true);
 
   query = query.order('created_at', { ascending: false });
-  const { data: hilos } = await query;
-  hilosData = hilos || [];
 
-  // Filtrar sin responder: solo hilos con 0 respuestas
-  if (tabActual === 'sin_responder') {
-    hilosData = hilosData.filter(h => (h.respuestas?.[0]?.count || 0) === 0);
+  let pag;
+  if (esSinResponder) {
+    // Para sin_responder hay que filtrar en cliente, traemos hasta 200 y filtramos
+    const { data: hilos } = await query.limit(200);
+    hilosData = (hilos || []).filter(h => (h.respuestas?.[0]?.count || 0) === 0);
+    totalCount = hilosData.length;
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    pag = hilosData.slice(start, start + ITEMS_PER_PAGE);
+  } else {
+    hilosData = []; // no necesitamos el array completo, usamos totalCount
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    const { data: hilos } = await query.range(start, start + ITEMS_PER_PAGE - 1);
+    pag = hilos || [];
   }
 
-  if (hilosData.length === 0) {
+  if (totalCount === 0 && pag.length === 0) {
     const msgs = { abiertas: 'Sé el primero en preguntar 👆', sin_responder: '✅ ¡No hay consultas sin responder!', mis_abiertas: 'No tienes consultas abiertas', mis_cerradas: 'No tienes consultas cerradas' };
     document.getElementById('hilosList').innerHTML = `
       <div class="empty-state">
@@ -1291,18 +1315,20 @@ async function cargarHilos() {
     return;
   }
 
-  renderPaginacion();
-  const start = (currentPage - 1) * ITEMS_PER_PAGE;
-  const pag = hilosData.slice(start, start + ITEMS_PER_PAGE);
+  renderPaginacionTotal(totalCount);
 
-  let html = '';
-  for (const h of pag) html += await renderHilo(h);
-  document.getElementById('hilosList').innerHTML = html;
-  for (const h of pag) cargarRespuestas(h.id);
+  // ── FIX 3: renderizar todos los hilos EN PARALELO en lugar de en serie ──
+  const htmlParts = await Promise.all(pag.map(h => renderHilo(h)));
+  document.getElementById('hilosList').innerHTML = htmlParts.join('');
+  // ── FIX 4: NO cargar respuestas automáticamente — se cargan al hacer clic ──
 }
 
 function renderPaginacion() {
-  const total = Math.ceil(hilosData.length / ITEMS_PER_PAGE);
+  renderPaginacionTotal(hilosData.length);
+}
+
+function renderPaginacionTotal(totalItems) {
+  const total = Math.ceil(totalItems / ITEMS_PER_PAGE);
   if (total <= 1) { document.getElementById('pagination').innerHTML = ''; return; }
   let html = '';
   for (let i = 1; i <= total; i++) {
@@ -1314,7 +1340,13 @@ function renderPaginacion() {
 function goToPage(p) { currentPage = p; cargarHilos(); }
 
 async function renderHilo(h) {
-  const { data: uData } = await db.from('usuarios').select('puntos, rol, foto_url').eq('nickname', h.nickname).single();
+  // ── FIX: lanzar ambas queries en paralelo en lugar de en serie ──
+  const [{ data: uData }, participacionResult] = await Promise.all([
+    db.from('usuarios').select('puntos, rol, foto_url').eq('nickname', h.nickname).single(),
+    (usuario && h.nickname !== usuario.nickname)
+      ? db.from('respuestas').select('id', { count: 'exact', head: true }).eq('hilo_id', h.id).eq('nickname', usuario.nickname)
+      : Promise.resolve({ count: 0 })
+  ]);
   const pts = uData?.puntos || 0;
   const rol = uData?.rol || 'usuario';
   const fotoHilo = uData?.foto_url || null;
@@ -1330,16 +1362,7 @@ async function renderHilo(h) {
   const unreadCount = Math.max(0, replyCount - seenCount);
 
   // ── Participation check ──
-  let haParticipado = false;
-  if (usuario && h.nickname !== usuario.nickname) {
-    try {
-      const { count } = await db.from('respuestas')
-        .select('id', { count: 'exact', head: true })
-        .eq('hilo_id', h.id)
-        .eq('nickname', usuario.nickname);
-      haParticipado = (count || 0) > 0;
-    } catch(e) {}
-  }
+  const haParticipado = (participacionResult?.count || 0) > 0;
 
   const specs = [
     { label: 'Presupuesto', val: h.presupuesto, icon: '💰' },
