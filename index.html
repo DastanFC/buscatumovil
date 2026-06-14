@@ -6607,7 +6607,7 @@ async function renderHilo(h, usersMap = {}) {
           <div class="avatar" style="background:${ac.bg};color:${ac.color};">${nombre.substring(0,2).toUpperCase()}</div>
           <div class="author-block">
             <div class="author-name">${nombre} ${getBadgeHtml(pts, rol)}</div>
-            <div class="thread-time">${timeAgo(h.created_at)}${haParticipado ? \'<span class="participated-icon">✏️ Participé</span>\' : \'\'}${renderEdicionLog(h.edicion_log)}</div>
+            <div class="thread-time">${timeAgo(h.created_at)}${haParticipado ? '<span class="participated-icon">✏️ Participé</span>' : ''}${renderEdicionLog(h.edicion_log)}</div>
           </div>
         </div>
 
