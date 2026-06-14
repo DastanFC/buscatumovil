@@ -7471,14 +7471,17 @@ function mostrarActualizacionesUsuario(items) {
   panel.style.display = 'block';
   const body = document.getElementById('actualizacionesBody');
   const arrow = document.getElementById('actualizacionesArrow');
-  // Nunca tocar body.style.display — el CSS y la clase .open lo controlan todo
-  const esMobil = window.innerWidth <= 600;
-  if (!esMobil) {
+  // Siempre empezar sin .open (colapsado). Solo en desktop abrimos si el usuario no lo cerró.
+  if (body) body.classList.remove('open');
+  if (arrow) arrow.textContent = '▼';
+  const anchoReal = document.documentElement.clientWidth || window.innerWidth;
+  if (anchoReal > 600) {
     const colapsadoDesktop = sessionStorage.getItem('actualizacionesColapsado') === 'true';
-    if (body) body.classList.toggle('open', !colapsadoDesktop);
-    if (arrow) arrow.textContent = colapsadoDesktop ? '▼' : '▲';
+    if (!colapsadoDesktop) {
+      if (body) body.classList.add('open');
+      if (arrow) arrow.textContent = '▲';
+    }
   }
-  // Móvil: no tocar nada — CSS lo colapsa, .open lo expande al hacer clic
 }
 
 function toggleActualizaciones() {
