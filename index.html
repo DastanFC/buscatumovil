@@ -6088,9 +6088,9 @@ function cerrarCodeModal() {
   document.getElementById('codeModal').classList.add('hidden');
 }
 
-function onLogin() {
+function onLogin(prefetchedData = null) {
   mostrarUsuario();
-  cargarHilos();
+  cargarHilos(prefetchedData);
   cargarStats();
   cargarNotificaciones();
   actualizarBarraRango();
@@ -6279,21 +6279,26 @@ function setTab(tab, el) {
 // ═══════════════════════════════════════════
 // HILOS
 // ═══════════════════════════════════════════
-async function cargarHilos() {
+async function cargarHilos(prefetchedData = null) {
   if (!usuario) return;
   document.getElementById('hilosList').innerHTML = '<div class="loading">⏳ Cargando...</div>';
 
-  let query = db.from('hilos').select('*, respuestas(count)');
-  if (tabActual === 'abiertas') query = query.eq('resuelto', false);
-  else if (tabActual === 'sin_responder') query = query.eq('resuelto', false);
-  else if (tabActual === 'mis_abiertas') query = query.eq('nickname', usuario.nickname).eq('resuelto', false);
-  else if (tabActual === 'mis_cerradas') query = query.eq('nickname', usuario.nickname).eq('resuelto', true);
+  let hilos;
+  if (prefetchedData && tabActual === 'abiertas') {
+    hilos = prefetchedData;
+  } else {
+    let query = db.from('hilos').select('*, respuestas(count)');
+    if (tabActual === 'abiertas') query = query.eq('resuelto', false);
+    else if (tabActual === 'sin_responder') query = query.eq('resuelto', false);
+    else if (tabActual === 'mis_abiertas') query = query.eq('nickname', usuario.nickname).eq('resuelto', false);
+    else if (tabActual === 'mis_cerradas') query = query.eq('nickname', usuario.nickname).eq('resuelto', true);
+    query = query.order('created_at', { ascending: false });
+    const { data } = await query;
+    hilos = data;
+  }
 
-  query = query.order('created_at', { ascending: false });
-  const { data: hilos } = await query;
   hilosData = hilos || [];
 
-  // Filtrar sin responder: solo hilos con 0 respuestas
   if (tabActual === 'sin_responder') {
     hilosData = hilosData.filter(h => (h.respuestas?.[0]?.count || 0) === 0);
   }
@@ -6313,8 +6318,30 @@ async function cargarHilos() {
   const start = (currentPage - 1) * ITEMS_PER_PAGE;
   const pag = hilosData.slice(start, start + ITEMS_PER_PAGE);
 
+  // Batch: una sola query para todos los usuarios de esta página
+  const nicknames = [...new Set(pag.map(h => h.nickname))];
+  const { data: usersData } = await db.from('usuarios').select('nickname, puntos, rol').in('nickname', nicknames);
+  const usersMap = {};
+  if (usersData) usersData.forEach(u => usersMap[u.nickname] = u);
+
   let html = '';
-  for (const h of pag) html += await renderHilo(h);
+  for (const h of pag) html += await renderHilo(h, usersMap);
+  document.getElementById('hilosList').innerHTML = html;
+  for (const h of pag) cargarRespuestas(h.id);
+}
+
+async function renderHilosPrefetched(data) {
+  if (!data || data.length === 0) return;
+  hilosData = data;
+  renderPaginacion();
+  const start = (currentPage - 1) * ITEMS_PER_PAGE;
+  const pag = hilosData.slice(start, start + ITEMS_PER_PAGE);
+  const nicknames = [...new Set(pag.map(h => h.nickname))];
+  const { data: usersData } = await db.from('usuarios').select('nickname, puntos, rol').in('nickname', nicknames);
+  const usersMap = {};
+  if (usersData) usersData.forEach(u => usersMap[u.nickname] = u);
+  let html = '';
+  for (const h of pag) html += await renderHilo(h, usersMap);
   document.getElementById('hilosList').innerHTML = html;
   for (const h of pag) cargarRespuestas(h.id);
 }
@@ -6331,8 +6358,8 @@ function renderPaginacion() {
 
 function goToPage(p) { currentPage = p; cargarHilos(); }
 
-async function renderHilo(h) {
-  const { data: uData } = await db.from('usuarios').select('puntos, rol').eq('nickname', h.nickname).single();
+async function renderHilo(h, usersMap = {}) {
+  const uData = usersMap[h.nickname] || null;
   const pts = uData?.puntos || 0;
   const rol = uData?.rol || 'usuario';
   const replyCount = h.respuestas?.[0]?.count || 0;
@@ -9232,33 +9259,47 @@ function aceptarCookies() {
 // INIT
 // ═══════════════════════════════════════════
 async function init() {
-    mostrarUsuario(); // Mostrar estado inicial (botón login o chip)
+    mostrarUsuario();
     cargarBannerGlobal();
     cargarStats();
     restaurarEstadoTop();
     cargarTopUsuarios();
     const token = leerToken();
-    console.log("TOKEN manual en localStorage:", token ? "encontrado" : "no encontrado");
+
+    // Prefetch hilos en paralelo con la validación del token
+    const hilosPrefetch = prefetchHilos();
 
     if (token) {
-        const { data: sesion, error: errorSesion } = await db.from('sesiones').select('*').eq('token', token).single();
-        console.log("SESION en DB:", JSON.stringify(sesion), "ERR:", errorSesion);
+        const { data: sesion } = await db.from('sesiones').select('*').eq('token', token).single();
 
         if (sesion) {
-            const { data: usuarioDB, error: errorUsuario } = await db.from('usuarios').select('*').eq('nickname', sesion.nickname).single();
-            console.log("USER en DB:", JSON.stringify(usuarioDB), "ERR:", errorUsuario);
+            const { data: usuarioDB } = await db.from('usuarios').select('*').eq('nickname', sesion.nickname).single();
 
             if (usuarioDB) {
-                usuario = usuarioDB; 
+                usuario = usuarioDB;
                 cerrarModalAuth();
-                onLogin();
-                return; 
+                // Pasar los datos prefetched para no repetir la query
+                const prefetched = await hilosPrefetch;
+                onLogin(prefetched);
+                return;
             }
         }
     }
 
-    // Sin token o sesión inválida: mostrar botón login en topbar (no forzar modal)
+    // Sin sesión: mostrar hilos igualmente (modo lectura)
+    const prefetched = await hilosPrefetch;
+    renderHilosPrefetched(prefetched);
     mostrarUsuario();
+}
+
+async function prefetchHilos() {
+    try {
+        const { data } = await db.from('hilos')
+            .select('*, respuestas(count)')
+            .eq('resuelto', false)
+            .order('created_at', { ascending: false });
+        return data || [];
+    } catch(e) { return []; }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
