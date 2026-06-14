@@ -5132,12 +5132,22 @@ function cap(nick) {
 }
 
 function timeAgo(ts) {
+  // Para cosas muy recientes (menos de 1 hora) mantener relativo
   const diff = (Date.now() - new Date(ts)) / 1000;
   if (diff < 60) return 'ahora';
   if (diff < 3600) return `hace ${Math.floor(diff/60)} min`;
-  if (diff < 86400) return `hace ${Math.floor(diff/3600)} h`;
-  if (diff < 86400*7) return `hace ${Math.floor(diff/86400)} d`;
-  return new Date(ts).toLocaleDateString('es-ES', { day:'numeric', month:'short' });
+  return fechaAbsoluta(ts);
+}
+
+function fechaAbsoluta(ts) {
+  const d = new Date(ts);
+  const ahora = new Date();
+  const esEsteAnio = d.getFullYear() === ahora.getFullYear();
+  const hora = d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+  if (esEsteAnio) {
+    return d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) + ' · ' + hora;
+  }
+  return d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' }) + ' · ' + hora;
 }
 
 function generarCodigo() {
@@ -6678,7 +6688,7 @@ function renderNoticiasPagina() {
           <span class="noticia-cat ${catClass}">${catLabel}</span>
           <div class="noticia-titulo">${n.titulo}</div>
           <div class="noticia-resumen">${n.resumen ? n.resumen.replace(/<[^>]*>/g, ' ').substring(0, 180).trim() + (n.resumen.replace(/<[^>]*>/g, '').length > 180 ? '…' : '') : ''}</div>
-          <div class="noticia-meta">📅 ${n.fecha || ''}</div>
+          <div class="noticia-meta">🗓️ ${n.fecha || ''}</div>
         </div>
       </div>
     `;
@@ -6873,7 +6883,7 @@ function abrirNoticia(idx) {
           <span class="noticia-cat ${catClass}">${catLabel}</span>
           <div class="noticia-modal-titulo">${n.titulo}</div>
           <div class="noticia-modal-resumen ql-editor" style="padding:0;">${n.resumen || ''}</div>
-          <div class="noticia-modal-meta">📅 ${n.fecha || ''}</div>
+          <div class="noticia-modal-meta">🗓️ ${n.fecha || ''}</div>
         </div>
         <button class="noticia-modal-close" onclick="cerrarNoticia()">✕ Cerrar</button>
       </div>
