@@ -68,15 +68,14 @@ body {
 /* ─── TOPBAR ─── */
 .topbar {
   background: var(--navy);
-  padding: 0 12px;
+  padding: 0 14px;
   height: 52px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 10px;
   position: sticky;
   top: 0;
   z-index: 200;
-  gap: 6px;
   max-width: 100vw;
   overflow: hidden;
 }
@@ -88,49 +87,61 @@ body {
   color: white;
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   letter-spacing: -0.3px;
   white-space: nowrap;
   flex: 1 1 auto;
   min-width: 0;
   overflow: hidden;
+  text-decoration: none;
 }
 
 .logo-text {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  min-width: 0;
 }
 
 .logo-icon {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   background: var(--blue);
-  border-radius: 7px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: 15px;
   flex-shrink: 0;
 }
 
-.logo em {
-  color: var(--accent);
-  font-style: normal;
-}
+.logo em { color: var(--accent); font-style: normal; }
 
 .topbar-right {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   flex-shrink: 0;
-  flex: 0 0 auto;
 }
 
-@media (max-width: 400px) {
-  .logo-text-secondary { display: none; }
+/* Avatar button — solo círculo, sin nombre */
+.avatar-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.2s;
+  background: var(--blue);
+  color: white;
+  font-family: 'Roboto', sans-serif;
 }
+.avatar-btn:hover { border-color: rgba(255,255,255,0.5); }
 
 .notif-btn {
   position: relative;
@@ -351,8 +362,12 @@ body {
   .hero-sub { display: none; }
   .stats-row { gap: 5px; flex-wrap: wrap; }
   .stat-chip { font-size: 10px; padding: 3px 7px; }
-  /* Forzar panel de avisos colapsado en móvil hasta que el usuario lo abra */
-  #actualizacionesBody:not(.force-open) { display: none !important; }
+}
+
+/* Panel avisos: en móvil siempre parte colapsado — JS añade .open para abrirlo */
+@media (max-width: 600px) {
+  #actualizacionesBody { display: none; }
+  #actualizacionesBody.open { display: block; }
 }
 
 /* ─── CONTAINER ─── */
@@ -4221,11 +4236,11 @@ body {
       👤 Login
     </button>
     <!-- Chip usuario (solo cuando hay sesión) -->
-    <div class="user-chip" id="userChip" onclick="toggleUserMenu()" style="display:none;">
-      <div class="user-chip-avatar" id="chipAvatar">👤</div>
-      <span class="user-chip-name" id="chipName"></span>
-      <span class="user-chip-pts" id="chipPts"></span>
-    </div>
+    <button class="avatar-btn" id="userChip" onclick="toggleUserMenu()" style="display:none;" aria-label="Perfil">
+      <span id="chipAvatar">👤</span>
+    </button>
+    <span id="chipName" style="display:none;"></span>
+    <span id="chipPts" style="display:none;"></span>
     <!-- Menú desplegable usuario -->
     <div class="user-dropdown" id="userDropdown">
       <div class="user-dropdown-nick" id="dropdownNick"></div>
@@ -5724,10 +5739,15 @@ function mostrarUsuario() {
   const rango = getRango(usuario.puntos || 0, usuario.rol);
   const ac = avatarColor(usuario.nickname);
 
+  // Avatar-btn: iniciales con color del usuario
+  const avatarBtn = document.getElementById('userChip');
   const avatarEl = document.getElementById('chipAvatar');
+  if (avatarBtn) {
+    avatarBtn.style.background = ac.bg;
+    avatarBtn.style.color = ac.color;
+    avatarBtn.style.borderColor = ac.color + '55';
+  }
   if (avatarEl) {
-    avatarEl.style.background = ac.bg;
-    avatarEl.style.color = ac.color;
     avatarEl.textContent = nombre.substring(0, 2).toUpperCase();
   }
 
@@ -7450,16 +7470,13 @@ function mostrarActualizacionesUsuario(items) {
   const body = document.getElementById('actualizacionesBody');
   const arrow = document.getElementById('actualizacionesArrow');
   const esMobil = window.innerWidth <= 600;
-  if (esMobil) {
-    // Móvil: SIEMPRE colapsado, sin excepción
-    if (body) body.style.display = 'none';
-    if (arrow) arrow.textContent = '▼';
-  } else {
-    // Escritorio: expandido por defecto salvo que el usuario lo haya cerrado
+  if (!esMobil) {
+    // Escritorio: expandido por defecto salvo preferencia guardada
     const colapsado = sessionStorage.getItem('actualizacionesColapsado') === 'true';
     if (body) body.style.display = colapsado ? 'none' : 'block';
     if (arrow) arrow.textContent = colapsado ? '▼' : '▲';
   }
+  // Móvil: CSS lo mantiene oculto, no tocar style.display
 }
 
 function toggleActualizaciones() {
@@ -7468,8 +7485,9 @@ function toggleActualizaciones() {
   if (!body) return;
   const esMobil = window.innerWidth <= 600;
   if (esMobil) {
-    const abierto = body.classList.contains('force-open');
-    body.classList.toggle('force-open', !abierto);
+    // En móvil: CSS controla via .open, nunca tocar style.display
+    const abierto = body.classList.contains('open');
+    body.classList.toggle('open', !abierto);
     if (arrow) arrow.textContent = abierto ? '▼' : '▲';
   } else {
     const colapsado = body.style.display === 'none';
