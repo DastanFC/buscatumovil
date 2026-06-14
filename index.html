@@ -4364,6 +4364,7 @@ body {
   <span id="globalBannerText" style="flex:1;min-width:0;line-height:1.45;"></span>
   <button onclick="ocultarBannerGlobal()" style="background:rgba(255,255,255,0.15);border:none;color:white;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:0.85rem;flex-shrink:0;" title="Cerrar aviso">✕</button>
 </div>
+<div id="globalBannerPill" onclick="expandirBannerGlobal()" style="display:none;align-items:center;gap:8px;padding:5px 14px;background:linear-gradient(90deg,#1D6FE8,#1A2D45);color:white;font-size:0.75rem;font-weight:600;border-bottom:1px solid rgba(255,255,255,0.1);cursor:pointer;z-index:100;">  <span>📢</span>  <span>Nuevo aviso — pulsa para ver</span>  <span style="margin-left:auto;font-size:0.7rem;opacity:0.8;">▼</span></div>
 
 <!-- PANEL ACTUALIZACIONES (visible para todos los usuarios) -->
 <div id="actualizacionesPanel" style="display:none;">
@@ -7582,23 +7583,32 @@ async function adminBorrarBanner() {
 }
 
 function mostrarBannerGlobal(msg) {
-  let banner = document.getElementById('globalBanner');
+  const banner = document.getElementById('globalBanner');
+  const pill = document.getElementById('globalBannerPill');
   if (!banner) return;
   const escaped = msg.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   banner.querySelector('#globalBannerText').innerHTML = escaped.replace(/\n/g, '<br>');
+  // Mostrar expandido, ocultar pastilla
   banner.style.display = 'flex';
+  if (pill) pill.style.display = 'none';
 }
 
 function ocultarBannerGlobal() {
   const banner = document.getElementById('globalBanner');
+  const pill = document.getElementById('globalBannerPill');
   if (banner) banner.style.display = 'none';
-  // Guardar que el usuario lo cerró en esta sesión
-  try { sessionStorage.setItem('bannerGlobalCerrado', '1'); } catch(e) {}
+  // Mostrar pastilla colapsada en su lugar
+  if (pill) pill.style.display = 'flex';
+}
+
+function expandirBannerGlobal() {
+  const banner = document.getElementById('globalBanner');
+  const pill = document.getElementById('globalBannerPill');
+  if (banner) banner.style.display = 'flex';
+  if (pill) pill.style.display = 'none';
 }
 
 async function cargarBannerGlobal() {
-  // Si el usuario ya cerró el banner en esta sesión, no mostrarlo
-  try { if (sessionStorage.getItem('bannerGlobalCerrado') === '1') return; } catch(e) {}
   let msg = '';
   try {
     const { data } = await db.from('configuracion').select('valor').eq('clave', 'mensaje_masivo').single();
