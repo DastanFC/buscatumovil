@@ -56,7 +56,7 @@ html {
 
 body {
   font-family: 'DM Sans', -apple-system, sans-serif;
-  background: var(--surface-2);
+  background: #0a1628;
   color: var(--text);
   line-height: 1.5;
   min-height: 100vh;
@@ -68,11 +68,11 @@ body {
 /* ─── TOPBAR ─── */
 .topbar {
   background: #0a1628;
-  padding: 0 12px;
-  height: 68px;
+  padding: 0 10px;
+  height: 64px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   position: sticky;
   top: 0;
   z-index: 200;
@@ -88,12 +88,11 @@ body {
   color: white;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   letter-spacing: -0.3px;
   white-space: nowrap;
   flex: 1 1 auto;
   min-width: 0;
-  overflow: hidden;
   text-decoration: none;
 }
 
@@ -102,17 +101,17 @@ body {
   flex-direction: column;
   gap: 1px;
   min-width: 0;
-  overflow: hidden;
 }
 
 .logo-title {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 800;
   letter-spacing: -0.5px;
   line-height: 1.1;
   display: flex;
   align-items: center;
   gap: 0;
+  white-space: nowrap;
 }
 .logo-title-el { color: white; }
 .logo-title-rec { background: linear-gradient(90deg, #3D8EF8, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
@@ -134,14 +133,14 @@ body {
 }
 
 .logo-icon {
-  width: 46px;
-  height: 46px;
+  width: 40px;
+  height: 40px;
   background: linear-gradient(135deg, #1a3a6e 0%, #1D6FE8 100%);
-  border-radius: 14px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: 20px;
   flex-shrink: 0;
   box-shadow: 0 0 0 2px rgba(61,142,248,0.5), 0 4px 12px rgba(29,111,232,0.4);
 }
@@ -1912,20 +1911,7 @@ body {
 @media (max-width: 600px) {
   .rank-desktop-only { display: none !important; }
   .rank-mobile-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 999px;
-    padding: 3px 10px 3px 6px;
-    font-size: 12px;
-    color: rgba(255,255,255,0.85);
-    font-weight: 500;
-    white-space: nowrap;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    display: none !important;
   }
 }
 
@@ -4499,6 +4485,11 @@ body {
       <span class="drawer-item-label">Mi perfil</span>
       <span class="drawer-item-arrow">›</span>
     </button>
+    <!-- Puntos y rango — solo visible cuando hay sesión -->
+    <div id="drawerRankInfo" style="display:none; padding: 6px 16px 10px; border-bottom: 1px solid rgba(255,255,255,0.08);">
+      <div style="font-size:11px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Puntos y rango</div>
+      <div id="drawerRankText" style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.85);"></div>
+    </div>
     <button class="drawer-item" id="drawerLogoutBtn" style="display:none;" onclick="closeSideDrawer(); cerrarSesion()">
       <span class="drawer-item-icon">🚪</span>
       <span class="drawer-item-label" style="color:var(--accent-red);">Cerrar sesión</span>
@@ -6061,6 +6052,14 @@ function mostrarUsuario() {
   if (drawerLogout) drawerLogout.style.display = '';
   const drawerPerfil = document.getElementById('drawerPerfilBtn');
   if (drawerPerfil) drawerPerfil.style.display = '';
+  // Mostrar puntos y rango en el drawer
+  const drawerRankInfo = document.getElementById('drawerRankInfo');
+  const drawerRankText = document.getElementById('drawerRankText');
+  if (drawerRankInfo && drawerRankText) {
+    drawerRankInfo.style.display = '';
+    const r = getRango(usuario.puntos || 0, usuario.rol);
+    drawerRankText.innerHTML = `${r.icon} ${r.label} &nbsp;·&nbsp; <span style="color:var(--accent);font-weight:700;">${usuario.puntos || 0} pts</span>`;
+  }
   if (usuario.nickname === 'dastan') {
     const drawerAdmin = document.getElementById('drawerAdminItems');
     if (drawerAdmin) drawerAdmin.style.display = '';
