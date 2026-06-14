@@ -7471,17 +7471,14 @@ function mostrarActualizacionesUsuario(items) {
   panel.style.display = 'block';
   const body = document.getElementById('actualizacionesBody');
   const arrow = document.getElementById('actualizacionesArrow');
-  // Siempre empezar sin .open (colapsado). Solo en desktop abrimos si el usuario no lo cerró.
-  if (body) body.classList.remove('open');
-  if (arrow) arrow.textContent = '▼';
-  const anchoReal = document.documentElement.clientWidth || window.innerWidth;
-  if (anchoReal > 600) {
+  // Nunca tocar body.style.display — el CSS y la clase .open lo controlan todo
+  const esMobil = window.innerWidth <= 600;
+  if (!esMobil) {
     const colapsadoDesktop = sessionStorage.getItem('actualizacionesColapsado') === 'true';
-    if (!colapsadoDesktop) {
-      if (body) body.classList.add('open');
-      if (arrow) arrow.textContent = '▲';
-    }
+    if (body) body.classList.toggle('open', !colapsadoDesktop);
+    if (arrow) arrow.textContent = colapsadoDesktop ? '▼' : '▲';
   }
+  // Móvil: no tocar nada — CSS lo colapsa, .open lo expande al hacer clic
 }
 
 function toggleActualizaciones() {
@@ -7595,9 +7592,13 @@ function mostrarBannerGlobal(msg) {
 function ocultarBannerGlobal() {
   const banner = document.getElementById('globalBanner');
   if (banner) banner.style.display = 'none';
+  // Guardar que el usuario lo cerró en esta sesión
+  try { sessionStorage.setItem('bannerGlobalCerrado', '1'); } catch(e) {}
 }
 
 async function cargarBannerGlobal() {
+  // Si el usuario ya cerró el banner en esta sesión, no mostrarlo
+  try { if (sessionStorage.getItem('bannerGlobalCerrado') === '1') return; } catch(e) {}
   let msg = '';
   try {
     const { data } = await db.from('configuracion').select('valor').eq('clave', 'mensaje_masivo').single();
