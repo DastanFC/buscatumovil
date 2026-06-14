@@ -2570,9 +2570,9 @@ body {
   gap: 8px;
   margin-top: 10px;
   padding: 12px 14px;
-  background: var(--surface-2);
+  background: #f7f8ce;
   border-radius: 12px;
-  border-left: 3px solid var(--blue);
+  border: 1px solid #1A2D45;
 }
 
 .extra-note-lead {
@@ -2596,6 +2596,92 @@ body {
 @media (max-width: 600px) {
   .spec-chip { padding: 4px 9px 4px 7px; }
   .spec-chip-label { font-size: 10px; }
+}
+
+/* ── Q&A pill rows (hilo card) ── */
+.qa-rows { display:flex; flex-direction:column; margin:12px 0 0; }
+.qa-row-item {
+  display:flex; align-items:center; justify-content:space-between;
+  gap:10px; padding:8px 0; border-bottom:1px solid var(--border);
+}
+.qa-row-item:last-child { border-bottom:none; }
+.qa-row-label { font-size:13px; color:var(--text-2); flex-shrink:0; }
+.qa-row-pill {
+  font-size:12px; font-weight:600;
+  background:#D1FAE5; color:#065F46;
+  padding:4px 12px; border-radius:999px;
+  white-space:nowrap; max-width:55%;
+  overflow:hidden; text-overflow:ellipsis; text-align:right;
+}
+@media (max-width:600px) {
+  .qa-row-label { font-size:12px; }
+  .qa-row-pill  { font-size:11px; padding:3px 9px; max-width:52%; }
+}
+
+/* ── Top-rec ranking cards ── */
+.top-rec-section {
+  padding:14px 20px 16px;
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  background:var(--surface-2);
+}
+@media (max-width:600px) { .top-rec-section { padding:12px 14px 14px; } }
+.top-rec-header { display:flex; align-items:center; gap:6px; margin-bottom:10px; }
+.top-rec-header-label {
+  font-size:10px; font-weight:700; color:var(--text-3);
+  text-transform:uppercase; letter-spacing:0.7px;
+}
+.top-rec-list { display:flex; flex-direction:column; gap:8px; }
+.top-rec-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius-sm); padding:10px 14px;
+  display:flex; align-items:center; gap:12px;
+  transition:border-color 0.2s, box-shadow 0.2s;
+}
+.top-rec-card:hover { border-color:var(--blue-light); box-shadow:var(--shadow); }
+.top-rec-card.gold  { background:var(--navy-mid); border:1.5px solid var(--green); }
+.top-rec-emoji {
+  font-size:22px; width:42px; height:42px;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--surface-3); border-radius:10px;
+  flex-shrink:0; border:1px solid var(--border);
+}
+.top-rec-card.gold .top-rec-emoji { background:var(--navy); border-color:rgba(16,185,129,0.35); }
+.top-rec-info { flex:1; min-width:0; }
+.top-rec-name {
+  font-size:13px; font-weight:700; color:var(--text);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.top-rec-card.gold .top-rec-name { color:var(--accent); }
+.top-rec-by { font-size:11px; color:var(--text-3); margin-top:2px; }
+.top-rec-card.gold .top-rec-by { color:rgba(255,255,255,0.45); }
+.top-rec-right { display:flex; flex-direction:column; align-items:center; gap:5px; flex-shrink:0; }
+.top-rec-medal { font-size:10px; font-weight:700; padding:2px 8px; border-radius:999px; white-space:nowrap; }
+.top-rec-medal.gold   { background:rgba(16,185,129,0.18); color:var(--green); }
+.top-rec-medal.silver { background:rgba(61,142,248,0.14); color:var(--blue-light); }
+.top-rec-medal.bronze { background:rgba(245,166,35,0.15); color:var(--accent); }
+.top-rec-vote-btn {
+  display:flex; align-items:center; gap:4px;
+  background:var(--surface-3); border:1px solid var(--border);
+  border-radius:8px; padding:5px 10px; cursor:pointer;
+  font-family:'DM Sans',sans-serif; font-size:12px; font-weight:600;
+  color:var(--text-2); transition:all 0.15s; position:relative;
+}
+.top-rec-vote-btn:hover { background:#D1FAE5; border-color:var(--green); color:#065F46; }
+.top-rec-vote-btn.voted { background:#D1FAE5; border-color:var(--green); color:#065F46; }
+.top-rec-card.gold .top-rec-vote-btn { background:rgba(255,255,255,0.08); border-color:rgba(16,185,129,0.3); color:rgba(255,255,255,0.7); }
+.top-rec-card.gold .top-rec-vote-btn:hover,
+.top-rec-card.gold .top-rec-vote-btn.voted { background:rgba(16,185,129,0.22); border-color:var(--green); color:var(--green); }
+.top-rec-pop { position:relative; }
+.top-rec-pop-anim {
+  position:absolute; top:-20px; left:50%; transform:translateX(-50%);
+  font-size:11px; font-weight:700; color:var(--green);
+  pointer-events:none; opacity:0; white-space:nowrap;
+}
+.top-rec-pop-anim.show { animation:topRecPop 0.65s ease forwards; }
+@keyframes topRecPop {
+  0%   { opacity:1; transform:translateX(-50%) translateY(0); }
+  100% { opacity:0; transform:translateX(-50%) translateY(-12px); }
 }
 
 #adminPanel {
@@ -4550,7 +4636,7 @@ body {
 
 <!-- HERO -->
 <div class="hero-strip" id="heroStrip">
-  <div class="hero-sub">SOLO OPINIONES REALES.</div>
+  <div class="hero-sub">TÚ PREGUNTAS , NOSOTROS DE AYUDAMOS.</div>
   <div class="rank-progress" id="rankProgressWrap" style="display:none;">
     <!-- Desktop: barra con progreso -->
     <div class="rank-progress-top rank-desktop-only">
@@ -6385,27 +6471,25 @@ async function renderHilo(h, usersMap = {}) {
     } catch(e) {}
   }
 
-  const specs = [
-    { label: 'Presupuesto', val: h.presupuesto, icon: '💰' },
-    { label: 'Móvil actual', val: h.movil_actual, icon: '📱' },
-    { label: 'Marca pref.', val: h.marca_preferida, icon: '⭐' },
-    { label: 'Marca NO', val: h.marca_no_quiere, icon: '🚫' },
-    { label: 'Garantía ES', val: h.garantia_espana, icon: '🛡️' },
-    { label: 'Uso', val: h.uso_principal, icon: '🎯' },
-    { label: 'Pantalla', val: h.tamano_pantalla, icon: '📏' },
-    { label: 'Juegos', val: h.juegos, icon: '🎮' },
-    { label: 'Cámara', val: h.camara, icon: '📸' },
-    { label: 'Batería', val: h.bateria, icon: '🔋' },
-    { label: 'Carga rápida', val: h.carga_rapida, icon: '⚡' },
-  ].filter(s => s.val && !['Sin preferencia','No','No mucho','Normal','No necesaria',''].includes(s.val));
-
-  // Extract budget for header badge
-  const budgetSpec = specs.find(s => s.label === 'Presupuesto');
-  const otherSpecs = specs.filter(s => s.label !== 'Presupuesto');
+  // ── Filas Q&A con pill verde ──
+  const qaRows = [
+    { label: 'Presupuesto',   val: h.presupuesto },
+    { label: 'Móvil actual',  val: h.movil_actual },
+    { label: 'Marca pref.',   val: h.marca_preferida },
+    { label: 'Marca que no quieres',      val: h.marca_no_quiere },
+    { label: 'Garantía España',   val: h.garantia_espana },
+    { label: 'Uso principal', val: h.uso_principal },
+    { label: 'Pantalla',      val: h.tamano_pantalla },
+    { label: 'Juegos',        val: h.juegos },
+    { label: 'Cámara',        val: h.camara },
+    { label: 'Batería',       val: h.bateria },
+    { label: 'Carga rápida',  val: h.carga_rapida },
+  ].filter(s => s.val && s.val.trim() !== '');
 
   return `
     <div class="thread-card" id="thread_${h.id}">
       <div class="thread-header">
+
         <div class="thread-meta">
           <div class="avatar" style="background:${ac.bg};color:${ac.color};">${nombre.substring(0,2).toUpperCase()}</div>
           <div class="author-block">
@@ -6414,22 +6498,17 @@ async function renderHilo(h, usersMap = {}) {
           <div class="thread-time">${timeAgo(h.created_at)}${haParticipado ? '<span class="participated-icon">✏️ Participé</span>' : ''}</div>
         </div>
 
-        ${budgetSpec ? `<div class="thread-budget-badge">${budgetSpec.icon} ${budgetSpec.val}</div>` : ''}
-
-        ${otherSpecs.length ? `
-          <div class="thread-specs-grid">
-            ${otherSpecs.map(s => `
-              <div class="spec-row">
-                <span class="spec-row-icon">${s.icon}</span>
-                <div class="spec-row-content">
-                  <span class="spec-row-label">${s.label}</span>
-                  <span class="spec-row-val">${s.val}</span>
-                </div>
+        ${qaRows.length ? `
+          <div class="qa-rows">
+            ${qaRows.map(s => `
+              <div class="qa-row-item">
+                <span class="qa-row-label">${s.label}</span>
+                <span class="qa-row-pill">${s.val}</span>
               </div>`).join('')}
           </div>` : ''}
 
         ${h.datos_extra ? `
-          <div class="extra-note-clean">
+          <div class="extra-note-clean" style="margin-top:12px;">
             <span class="extra-note-lead">💬</span>
             <span>${h.datos_extra}</span>
           </div>` : ''}
@@ -6608,44 +6687,68 @@ async function cargarRespuestas(hiloId, forceVisible = false) {
     return;
   }
 
-// Calcular respuesta más votada — usa moviles_recomendados si existe, si no fallback al parser
-let mejorRespuesta = null;
-let maxVotos = -1;
-for (const r of respuestas) {
-  const votosUtil = r.votos_util || 0;
-  const tieneModelo = (r.moviles_recomendados && r.moviles_recomendados.length > 0)
-    || r.movil_nombre
-    || extraerModelos(r.contenido).length > 0;
-  if (tieneModelo && votosUtil > maxVotos) {
-    maxVotos = votosUtil;
-    mejorRespuesta = r;
+  // ── Top-3 recomendados: recopilar candidatos con modelo, ordenar por votos ──
+  const _topCandidatos = [];
+  for (const r of respuestas) {
+    let modelos = [];
+    if (r.moviles_recomendados && r.moviles_recomendados.length > 0) {
+      modelos = r.moviles_recomendados.map(m => formatearModelo(m));
+    } else if (r.movil_nombre) {
+      modelos = [formatearModelo(r.movil_nombre)];
+    } else {
+      const m = extraerModelos(r.contenido);
+      if (m.length > 0) modelos = m.map(mod => formatearModelo(mod));
+    }
+    if (modelos.length > 0) _topCandidatos.push({ r, votos: r.votos_util || 0, modelos });
   }
-}
+  _topCandidatos.sort((a, b) => b.votos - a.votos);
+  const _top3 = _topCandidatos.slice(0, 3);
 
-  // Top recommendation
+  // ── Variable legacy para compatibilidad con esTopVotada ──
+  let mejorRespuesta = _top3.length > 0 ? _top3[0].r : null;
+  let maxVotos = _top3.length > 0 ? _top3[0].votos : -1;
+
   const topRecEl = document.getElementById(`topRec_${hiloId}`);
   if (topRecEl) {
-    if (mejorRespuesta && maxVotos > 0) {
-      // Prioridad: nuevo campo array > movil_nombre > parser texto
-      let modeloTop;
-      if (mejorRespuesta.moviles_recomendados && mejorRespuesta.moviles_recomendados.length > 0) {
-        modeloTop = mejorRespuesta.moviles_recomendados.map(m => formatearModelo(m)).join(' · ');
-      } else if (mejorRespuesta.movil_nombre) {
-        modeloTop = formatearModelo(mejorRespuesta.movil_nombre);
-      } else {
-        const m = extraerModelos(mejorRespuesta.contenido);
-        modeloTop = m.length > 0 ? m.map(mod => formatearModelo(mod)).join(' / ') : 'Respuesta útil';
-      }
+    if (_top3.length > 0) {
+      const _medallas = [
+        { cls:'gold',   emoji:'🥇', label:'#1' },
+        { cls:'silver', emoji:'🥈', label:'#2' },
+        { cls:'bronze', emoji:'🥉', label:'#3' },
+      ];
+      const _cards = _top3.map((item, idx) => {
+        const med = _medallas[idx];
+        const uid = `tv_${hiloId}_${item.r.id}`;
+        const nombre_movil = item.modelos.join(' · ');
+        return `
+          <div class="top-rec-card ${med.cls}" id="trc_${uid}">
+            <div class="top-rec-emoji">📱</div>
+            <div class="top-rec-info">
+              <div class="top-rec-name">${nombre_movil}</div>
+              <div class="top-rec-by">por ${cap(item.r.nickname)}</div>
+            </div>
+            <div class="top-rec-right">
+              <span class="top-rec-medal ${med.cls}">${med.emoji} ${med.label}</span>
+              <div class="top-rec-pop">
+                <span class="top-rec-pop-anim" id="tpa_${uid}">+1</span>
+                <button class="top-rec-vote-btn" id="tvb_${uid}"
+                  onclick="topRecVotar('${uid}','${item.r.id}','${hiloId}')"
+                  aria-label="Votar ${nombre_movil}">
+                  👍 <span id="tvc_${uid}">${item.votos}</span>
+                </button>
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+
       topRecEl.innerHTML = `
-        <div class="top-rec">
-          <div class="top-rec-icon">🏅</div>
-          <div style="min-width:0;flex:1;overflow:hidden;">
-            <div class="top-rec-text">Más votado · ${maxVotos} 👍</div>
-            <div class="top-rec-model">${modeloTop}</div>
-            <div style="font-size:11px;color:rgba(255,255,255,0.5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">por ${cap(mejorRespuesta.nickname)}</div>
+        <div class="top-rec-section">
+          <div class="top-rec-header">
+            <span style="font-size:14px">🏆</span>
+            <span class="top-rec-header-label">Más recomendados</span>
           </div>
-        </div>
-      `;
+          <div class="top-rec-list" id="topRecList_${hiloId}">${_cards}</div>
+        </div>`;
     } else {
       topRecEl.innerHTML = '';
     }
@@ -7100,6 +7203,34 @@ async function votar(respuestaId, tipo, hiloId, nickAsesor) {
   cargarRespuestas(hiloId);
   // Actualizar TOP después de votar
   setTimeout(() => cargarTopMoviles(), 1000);
+}
+
+// ── Votar desde el bloque de ranking visual ──
+const _topRecVotados = new Set();
+async function topRecVotar(uid, respuestaId, hiloId) {
+  if (!usuario) { mostrarModalAuth(); return; }
+  if (_topRecVotados.has(uid)) { toast('Ya has votado esta recomendación'); return; }
+  _topRecVotados.add(uid);
+  const btn = document.getElementById(`tvb_${uid}`);
+  const cnt = document.getElementById(`tvc_${uid}`);
+  const pop = document.getElementById(`tpa_${uid}`);
+  if (btn) btn.classList.add('voted');
+  if (cnt) cnt.textContent = (parseInt(cnt.textContent, 10) || 0) + 1;
+  if (pop) { pop.classList.remove('show'); void pop.offsetWidth; pop.classList.add('show'); }
+  try {
+    const { data: yaVoto } = await db.from('votos')
+      .select('id').eq('respuesta_id', respuestaId).eq('usuario_id', usuario.id).single();
+    if (!yaVoto) {
+      await db.from('votos').insert({ respuesta_id: respuestaId, usuario_id: usuario.id, tipo: 'util' });
+      const { data: resp } = await db.from('respuestas').select('votos_util').eq('id', respuestaId).single();
+      await db.from('respuestas').update({ votos_util: (resp?.votos_util || 0) + 1 }).eq('id', respuestaId);
+    }
+    setTimeout(() => cargarRespuestas(hiloId), 900);
+  } catch(e) {
+    _topRecVotados.delete(uid);
+    if (btn) btn.classList.remove('voted');
+    if (cnt) cnt.textContent = (parseInt(cnt.textContent, 10) || 1) - 1;
+  }
 }
 
 // ═══════════════════════════════════════════
