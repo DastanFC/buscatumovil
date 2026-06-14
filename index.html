@@ -702,7 +702,151 @@ body {
 .forum-tab-btn.active { background: var(--blue); border-color: var(--blue); box-shadow: 0 2px 10px rgba(29,111,232,0.4); }
 @media (max-width: 600px) { .forum-tab-btn { display: none; } }
 
-/* ─── FORUM SECTION ─── */
+/* ─── PERFIL MODAL ─── */
+.perfil-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15,27,45,0.65);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 950;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+}
+@media (min-width: 600px) {
+  .perfil-overlay { align-items: center; padding: 20px; }
+}
+.perfil-overlay.open { display: flex; }
+.perfil-modal {
+  background: white;
+  border-radius: 24px 24px 0 0;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  animation: slideUpModal 0.28s cubic-bezier(.22,1,.36,1);
+  position: relative;
+}
+@media (min-width: 600px) {
+  .perfil-modal { border-radius: 24px; max-height: 88vh; }
+}
+.perfil-header {
+  background: linear-gradient(160deg, #0F1B2D 0%, #1A2D45 100%);
+  border-radius: 24px 24px 0 0;
+  padding: 28px 20px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+.perfil-close-btn {
+  position: absolute; top: 14px; right: 14px;
+  background: rgba(255,255,255,0.15); border: none; border-radius: 50%;
+  width: 32px; height: 32px; color: white; font-size: 15px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; transition: background 0.2s;
+}
+.perfil-close-btn:hover { background: rgba(255,255,255,0.25); }
+.perfil-avatar-wrap { position: relative; cursor: pointer; }
+.perfil-avatar-grande {
+  width: 80px; height: 80px; border-radius: 50%; object-fit: cover;
+  border: 3px solid rgba(255,255,255,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px; font-weight: 700; color: white; overflow: hidden;
+  background: linear-gradient(135deg, #f472b6, #a855f7);
+}
+.perfil-avatar-grande img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.perfil-avatar-edit-badge {
+  position: absolute; bottom: 0; right: 0; background: var(--blue);
+  border-radius: 50%; width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; border: 2px solid #0F1B2D;
+}
+.perfil-nick { font-family: 'Roboto',sans-serif; font-size: 20px; font-weight: 800; color: white; letter-spacing: -0.3px; }
+.perfil-rango-badge { font-size: 12px; color: rgba(255,255,255,0.65); }
+.perfil-stats-row { display: flex; justify-content: center; gap: 20px; margin-top: 6px; }
+.perfil-stat { text-align: center; cursor: pointer; padding: 4px 8px; border-radius: 10px; transition: background 0.15s; }
+.perfil-stat:hover { background: rgba(255,255,255,0.08); }
+.perfil-stat-val { font-family: 'Roboto',sans-serif; font-size: 17px; font-weight: 800; color: white; }
+.perfil-stat-label { font-size: 10px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.4px; margin-top: 1px; }
+.perfil-seguir-btn {
+  background: var(--blue); border: none; border-radius: 999px; padding: 8px 28px;
+  color: white; font-family: 'Roboto',sans-serif; font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: all 0.18s; margin-top: 4px;
+}
+.perfil-seguir-btn:hover { background: var(--blue-light); }
+.perfil-seguir-btn.siguiendo { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.3); }
+.perfil-seguir-btn.siguiendo:hover { background: rgba(220,30,30,0.3); color: #ff6b6b; }
+.perfil-tabs {
+  display: flex; border-bottom: 1.5px solid var(--border);
+  position: sticky; top: 0; background: white; z-index: 2;
+}
+.perfil-tab {
+  flex: 1; text-align: center; padding: 11px 4px; font-size: 11px; font-weight: 600;
+  color: var(--text-3); cursor: pointer; border-bottom: 2.5px solid transparent;
+  margin-bottom: -1.5px; transition: all 0.18s; white-space: nowrap;
+}
+.perfil-tab.active { color: var(--blue); border-bottom-color: var(--blue); }
+.perfil-tab-panel { display: none; padding: 18px 20px 24px; }
+.perfil-tab-panel.active { display: block; }
+.perfil-section-title {
+  font-family: 'Roboto',sans-serif; font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-3); margin-bottom: 8px;
+}
+.perfil-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.perfil-info-chip {
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px;
+  padding: 10px 12px; font-size: 13px; color: var(--text-2);
+  display: flex; align-items: flex-start; gap: 8px;
+}
+.perfil-info-chip span:first-child { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.perfil-info-chip b { color: var(--text-3); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; display: block; margin-bottom: 2px; }
+.perfil-sobre-mi {
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px;
+  padding: 12px 14px; font-size: 13px; color: var(--text-2); line-height: 1.6;
+  font-style: italic;
+}
+.perfil-edit-field { display: flex; flex-direction: column; gap: 5px; }
+.perfil-edit-field label {
+  font-size: 11px; font-weight: 600; color: var(--text-3);
+  text-transform: uppercase; letter-spacing: 0.4px;
+}
+.perfil-edit-field input,
+.perfil-edit-field textarea,
+.perfil-edit-field select {
+  border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 12px;
+  font-size: 14px; font-family: 'DM Sans',sans-serif; color: var(--navy);
+  outline: none; transition: border-color 0.18s; background: var(--surface-2);
+}
+.perfil-edit-field input:focus,
+.perfil-edit-field textarea:focus,
+.perfil-edit-field select:focus { border-color: var(--blue); background: white; }
+.perfil-save-btn {
+  background: var(--blue); border: none; border-radius: 999px; padding: 12px 24px;
+  color: white; font-family: 'Roboto',sans-serif; font-weight: 700; font-size: 14px;
+  cursor: pointer; width: 100%; transition: background 0.18s;
+}
+.perfil-save-btn:hover { background: var(--blue-light); }
+/* Items de citas/menciones en perfil */
+.perfil-cita-item, .perfil-mencion-item {
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px;
+  padding: 12px 14px; margin-bottom: 8px; font-size: 13px; color: var(--text-2);
+  line-height: 1.5; cursor: pointer; transition: all 0.15s;
+}
+.perfil-cita-item:hover, .perfil-mencion-item:hover {
+  border-color: var(--blue); background: var(--blue-pale);
+}
+.perfil-cita-meta, .perfil-mencion-meta {
+  font-size: 11px; color: var(--text-3); margin-bottom: 5px;
+  display: flex; align-items: center; gap: 6px;
+}
+.nick-link { cursor: pointer; color: var(--blue); font-weight: 600; }
+.nick-link:hover { text-decoration: underline; }
+
+
 .forum-section {
   display: none;
   animation: fadeIn 0.25s ease;
@@ -4301,7 +4445,7 @@ body {
       👤 Login
     </button>
     <!-- Avatar usuario (solo cuando hay sesión) -->
-    <button class="avatar-btn" id="userChip" onclick="toggleUserMenu()" style="display:none;" aria-label="Perfil">
+    <button class="avatar-btn" id="userChip" onclick="abrirMiPerfil()" style="display:none;" aria-label="Mi perfil">
       <span class="avatar-initials" id="chipAvatar"></span>
     </button>
     <span id="chipName" style="display:none;"></span>
@@ -4350,6 +4494,11 @@ body {
         <span class="drawer-item-arrow">›</span>
       </button>
     </div>
+    <button class="drawer-item" id="drawerPerfilBtn" style="display:none;" onclick="closeSideDrawer(); abrirMiPerfil()">
+      <span class="drawer-item-icon">👤</span>
+      <span class="drawer-item-label">Mi perfil</span>
+      <span class="drawer-item-arrow">›</span>
+    </button>
     <button class="drawer-item" id="drawerLogoutBtn" style="display:none;" onclick="closeSideDrawer(); cerrarSesion()">
       <span class="drawer-item-icon">🚪</span>
       <span class="drawer-item-label" style="color:var(--accent-red);">Cerrar sesión</span>
@@ -4768,6 +4917,120 @@ body {
     </div>
     <button class="modal-btn" onclick="procesarRecuperacion()" id="recoveryBtn">Ver mi código →</button>
     <p style="font-size:0.68rem;color:var(--text-3);text-align:center;margin-top:10px;cursor:pointer;" onclick="cerrarRecuperacion()">← Volver al login</p>
+  </div>
+</div>
+
+<!-- MODAL PERFIL COMPLETO -->
+<div class="perfil-overlay" id="perfilOverlay" onclick="if(event.target===this)cerrarPerfil()">
+  <div class="perfil-modal">
+    <!-- CABECERA -->
+    <div class="perfil-header" id="perfilHeader">
+      <button class="perfil-close-btn" onclick="cerrarPerfil()">✕</button>
+      <div class="perfil-avatar-wrap" onclick="triggerAvatarUpload()" title="Cambiar foto">
+        <div class="perfil-avatar-grande" id="perfilAvatarEl"></div>
+        <div class="perfil-avatar-edit-badge">📷</div>
+      </div>
+      <input type="file" id="avatarFileInput" accept="image/*" style="display:none;" onchange="subirAvatar(this)">
+      <div class="perfil-nick" id="perfilNickEl"></div>
+      <div class="perfil-rango-badge" id="perfilRangoEl"></div>
+      <div class="perfil-stats-row">
+        <div class="perfil-stat" onclick="perfilSetTab('citas')">
+          <div class="perfil-stat-val" id="perfilStatCitas">0</div>
+          <div class="perfil-stat-label">Citas</div>
+        </div>
+        <div class="perfil-stat" onclick="perfilSetTab('menciones')">
+          <div class="perfil-stat-val" id="perfilStatMenciones">0</div>
+          <div class="perfil-stat-label">Menciones</div>
+        </div>
+        <div class="perfil-stat">
+          <div class="perfil-stat-val" id="perfilStatPts">0</div>
+          <div class="perfil-stat-label">Puntos</div>
+        </div>
+        <div class="perfil-stat">
+          <div class="perfil-stat-val" id="perfilStatResp">0</div>
+          <div class="perfil-stat-label">Respuestas</div>
+        </div>
+      </div>
+      <!-- Botón seguir (visible solo viendo perfil ajeno) -->
+      <button class="perfil-seguir-btn" id="perfilSeguirBtn" style="display:none;" onclick="toggleSeguir()">Seguir</button>
+    </div>
+
+    <!-- TABS -->
+    <div class="perfil-tabs">
+      <div class="perfil-tab active" id="ptab_info" onclick="perfilSetTab('info')">👤 Perfil</div>
+      <div class="perfil-tab" id="ptab_citas" onclick="perfilSetTab('citas')">💬 Citas</div>
+      <div class="perfil-tab" id="ptab_menciones" onclick="perfilSetTab('menciones')">@ Menciones</div>
+      <div class="perfil-tab" id="ptab_editar" onclick="perfilSetTab('editar')">✏️ Editar</div>
+    </div>
+
+    <!-- TAB: INFO -->
+    <div class="perfil-tab-panel active" id="ptabpanel_info">
+      <div class="perfil-section-title">Información</div>
+      <div class="perfil-info-grid" id="perfilInfoGrid">
+        <div class="perfil-info-chip"><span>📍</span><div><b>Ciudad</b><span id="pi_ciudad">—</span></div></div>
+        <div class="perfil-info-chip"><span>📱</span><div><b>Móvil actual</b><span id="pi_movil">—</span></div></div>
+        <div class="perfil-info-chip"><span>🤖</span><div><b>Sistema</b><span id="pi_so">—</span></div></div>
+        <div class="perfil-info-chip"><span>🎨</span><div><b>Capa</b><span id="pi_capa">—</span></div></div>
+      </div>
+      <div class="perfil-section-title" style="margin-top:14px;">Sobre mí</div>
+      <div class="perfil-sobre-mi" id="perfilSobreMi">—</div>
+    </div>
+
+    <!-- TAB: CITAS -->
+    <div class="perfil-tab-panel" id="ptabpanel_citas">
+      <div class="perfil-section-title">Respuestas que otros han citado</div>
+      <div id="perfilCitasLista"><div class="loading">⏳ Cargando...</div></div>
+    </div>
+
+    <!-- TAB: MENCIONES -->
+    <div class="perfil-tab-panel" id="ptabpanel_menciones">
+      <div class="perfil-section-title">Veces que te han mencionado</div>
+      <div id="perfilMencionesLista"><div class="loading">⏳ Cargando...</div></div>
+    </div>
+
+    <!-- TAB: EDITAR (solo propio perfil) -->
+    <div class="perfil-tab-panel" id="ptabpanel_editar">
+      <div class="perfil-section-title">Foto de perfil</div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+        <div id="perfilAvatarPreviewEdit" style="width:56px;height:56px;border-radius:50%;overflow:hidden;flex-shrink:0;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;"></div>
+        <div style="flex:1;">
+          <button onclick="triggerAvatarUpload()" style="background:var(--blue);color:white;border:none;border-radius:999px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Roboto',sans-serif;">📷 Cambiar foto</button>
+          <div id="avatarUploadStatus" style="font-size:11px;color:var(--text-3);margin-top:5px;"></div>
+        </div>
+      </div>
+
+      <div class="perfil-section-title">Datos personales</div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div class="perfil-edit-field">
+          <label>📍 Ciudad</label>
+          <input type="text" id="edit_ciudad" placeholder="ej: Madrid, Barcelona..." maxlength="60">
+        </div>
+        <div class="perfil-edit-field">
+          <label>📱 Móvil actual</label>
+          <input type="text" id="edit_movil" placeholder="ej: Samsung Galaxy S25" maxlength="80">
+        </div>
+        <div class="perfil-edit-field">
+          <label>🤖 Sistema operativo</label>
+          <select id="edit_so" style="border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--navy);outline:none;background:var(--surface-2);">
+            <option value="">Sin especificar</option>
+            <option value="Android">Android</option>
+            <option value="iOS">iOS (iPhone)</option>
+            <option value="HarmonyOS">HarmonyOS (Huawei)</option>
+          </select>
+        </div>
+        <div class="perfil-edit-field">
+          <label>🎨 Capa de personalización</label>
+          <input type="text" id="edit_capa" placeholder="ej: One UI 7, MIUI 14, ColorOS 15..." maxlength="60">
+        </div>
+        <div class="perfil-edit-field">
+          <label>✍️ Sobre mí</label>
+          <textarea id="edit_sobre" rows="3" placeholder="Cuéntanos algo sobre ti, tus gustos tecnológicos..." maxlength="300" style="resize:none;"></textarea>
+        </div>
+      </div>
+      <div style="margin-top:16px;">
+        <button class="perfil-save-btn" onclick="guardarPerfil()">💾 Guardar cambios</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -5796,6 +6059,8 @@ function mostrarUsuario() {
   if (chip) chip.style.display = '';
   if (notifBtn) notifBtn.style.display = '';
   if (drawerLogout) drawerLogout.style.display = '';
+  const drawerPerfil = document.getElementById('drawerPerfilBtn');
+  if (drawerPerfil) drawerPerfil.style.display = '';
   if (usuario.nickname === 'dastan') {
     const drawerAdmin = document.getElementById('drawerAdminItems');
     if (drawerAdmin) drawerAdmin.style.display = '';
@@ -8976,6 +9241,318 @@ function initKeyboardHandler() {
   // Run once on load
   adjust();
 }
+
+// ═══════════════════════════════════════════
+// SISTEMA DE PERFIL COMPLETO
+// ═══════════════════════════════════════════
+
+let perfilUsuarioActual = null;
+let perfilTabActiva = 'info';
+
+async function abrirMiPerfil() {
+  if (!usuario) { mostrarModalAuth(); return; }
+  await abrirPerfil(usuario.nickname);
+}
+
+async function abrirPerfil(nick) {
+  perfilTabActiva = 'info';
+  perfilUsuarioActual = nick;
+  document.getElementById('perfilOverlay').classList.add('open');
+
+  const { data: u } = await db.from('usuarios').select('*').eq('nickname', nick).single();
+  if (!u) { cerrarPerfil(); toast('❌ Usuario no encontrado'); return; }
+
+  const nombre = cap(nick);
+  const rango = getRango(u.puntos || 0, u.rol);
+  const ac = avatarColor(nick);
+  const esPropioUsuario = usuario && usuario.nickname === nick;
+
+  // Avatar header
+  const avatarEl = document.getElementById('perfilAvatarEl');
+  if (u.avatar_url) {
+    avatarEl.innerHTML = `<img src="${u.avatar_url}" alt="${nombre}" onerror="this.parentElement.textContent='${nombre.substring(0,2).toUpperCase()}'">`;
+    avatarEl.style.background = 'transparent';
+  } else {
+    avatarEl.textContent = nombre.substring(0, 2).toUpperCase();
+    avatarEl.style.background = `linear-gradient(135deg, #f472b6, #a855f7)`;
+  }
+
+  // Avatar preview editar
+  const previewEdit = document.getElementById('perfilAvatarPreviewEdit');
+  if (previewEdit) {
+    if (u.avatar_url) {
+      previewEdit.innerHTML = `<img src="${u.avatar_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+      previewEdit.style.background = 'transparent';
+    } else {
+      previewEdit.textContent = nombre.substring(0, 2).toUpperCase();
+      previewEdit.style.background = `linear-gradient(135deg, #f472b6, #a855f7)`;
+      previewEdit.style.color = 'white';
+    }
+  }
+
+  document.getElementById('perfilNickEl').textContent = nombre;
+  document.getElementById('perfilRangoEl').textContent = `${rango.icon} ${rango.label} · ${u.puntos || 0} pts`;
+  document.getElementById('perfilStatPts').textContent = u.puntos || 0;
+
+  // Info pública
+  document.getElementById('pi_ciudad').textContent = u.ciudad || '—';
+  document.getElementById('pi_movil').textContent = u.movil_propio || '—';
+  document.getElementById('pi_so').textContent = u.sistema_operativo || '—';
+  document.getElementById('pi_capa').textContent = u.capa || '—';
+  document.getElementById('perfilSobreMi').textContent = u.sobre_mi || 'Este usuario aún no ha escrito nada sobre sí mismo.';
+
+  // Prellenar edición
+  if (esPropioUsuario) {
+    document.getElementById('edit_ciudad').value = u.ciudad || '';
+    document.getElementById('edit_movil').value = u.movil_propio || '';
+    document.getElementById('edit_so').value = u.sistema_operativo || '';
+    document.getElementById('edit_capa').value = u.capa || '';
+    document.getElementById('edit_sobre').value = u.sobre_mi || '';
+  }
+
+  // Tab editar y botón seguir
+  const tabEditar = document.getElementById('ptab_editar');
+  const btnSeguir = document.getElementById('perfilSeguirBtn');
+  if (esPropioUsuario) {
+    if (tabEditar) tabEditar.style.display = '';
+    if (btnSeguir) btnSeguir.style.display = 'none';
+  } else {
+    if (tabEditar) tabEditar.style.display = 'none';
+    if (btnSeguir) { btnSeguir.style.display = ''; await actualizarBtnSeguir(nick); }
+  }
+
+  // Estadísticas en paralelo
+  const [respRes, citasRes, mencionesRes] = await Promise.all([
+    db.from('respuestas').select('id', { count: 'exact', head: true }).eq('nickname', nick),
+    db.from('respuestas').select('id', { count: 'exact', head: true }).eq('nickname', nick).not('cita_id', 'is', null),
+    db.from('respuestas').select('id', { count: 'exact', head: true }).ilike('contenido', `%@${nick}%`).neq('nickname', nick)
+  ]);
+  document.getElementById('perfilStatResp').textContent = respRes.count || 0;
+  document.getElementById('perfilStatCitas').textContent = citasRes.count || 0;
+  document.getElementById('perfilStatMenciones').textContent = mencionesRes.count || 0;
+
+  perfilSetTab('info', false);
+}
+
+function cerrarPerfil() {
+  document.getElementById('perfilOverlay').classList.remove('open');
+  perfilUsuarioActual = null;
+}
+
+function perfilSetTab(tab, cargar = true) {
+  perfilTabActiva = tab;
+  document.querySelectorAll('.perfil-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.perfil-tab-panel').forEach(p => p.classList.remove('active'));
+  const tabEl = document.getElementById(`ptab_${tab}`);
+  const panelEl = document.getElementById(`ptabpanel_${tab}`);
+  if (tabEl) tabEl.classList.add('active');
+  if (panelEl) panelEl.classList.add('active');
+  if (!cargar) return;
+  if (tab === 'citas') cargarCitasPerfil();
+  if (tab === 'menciones') cargarMencionesPerfil();
+}
+
+async function cargarCitasPerfil() {
+  const nick = perfilUsuarioActual;
+  const el = document.getElementById('perfilCitasLista');
+  el.innerHTML = '<div class="loading">⏳ Cargando...</div>';
+
+  // Primero obtenemos las respuestas del usuario
+  const { data: misResp } = await db.from('respuestas')
+    .select('id, contenido, hilo_id, created_at').eq('nickname', nick).limit(200);
+
+  if (!misResp || misResp.length === 0) {
+    el.innerHTML = '<div style="color:var(--text-3);font-size:13px;text-align:center;padding:20px 0;">Nadie ha citado aún tus respuestas.</div>';
+    return;
+  }
+
+  const ids = misResp.map(r => r.id);
+  const { data: citas } = await db.from('respuestas')
+    .select('id, nickname, contenido, created_at, hilo_id, cita_id')
+    .in('cita_id', ids).order('created_at', { ascending: false }).limit(30);
+
+  if (!citas || citas.length === 0) {
+    el.innerHTML = '<div style="color:var(--text-3);font-size:13px;text-align:center;padding:20px 0;">Nadie ha citado aún tus respuestas.</div>';
+    return;
+  }
+
+  el.innerHTML = citas.map(c => {
+    const citada = misResp.find(r => r.id === c.cita_id);
+    const textoCitado = citada ? `"${(citada.contenido||'').slice(0,80)}${(citada.contenido||'').length>80?'…':''}"` : '';
+    const textoResp = (c.contenido||'').replace(/\[cite:[^\]]*\][\s\S]*?\[\/cite\]/g,'').trim();
+    return `<div class="perfil-cita-item" onclick="cerrarPerfil()">
+      <div class="perfil-cita-meta">
+        <span class="nick-link" onclick="event.stopPropagation();abrirPerfil('${c.nickname}')">${cap(c.nickname)}</span>
+        <span>citó tu respuesta</span>
+        <span style="margin-left:auto;">${timeAgo(c.created_at)}</span>
+      </div>
+      ${textoCitado ? `<div style="font-style:italic;color:var(--text-3);font-size:12px;margin-bottom:5px;border-left:2px solid var(--border);padding-left:8px;">${textoCitado}</div>` : ''}
+      <div style="color:var(--text-2);">${textoResp.slice(0,120)}${textoResp.length>120?'…':''}</div>
+    </div>`;
+  }).join('');
+}
+
+async function cargarMencionesPerfil() {
+  const nick = perfilUsuarioActual;
+  const el = document.getElementById('perfilMencionesLista');
+  el.innerHTML = '<div class="loading">⏳ Cargando...</div>';
+
+  const { data: menciones } = await db.from('respuestas')
+    .select('id, nickname, contenido, created_at, hilo_id')
+    .ilike('contenido', `%@${nick}%`)
+    .neq('nickname', nick)
+    .order('created_at', { ascending: false }).limit(30);
+
+  if (!menciones || menciones.length === 0) {
+    el.innerHTML = '<div style="color:var(--text-3);font-size:13px;text-align:center;padding:20px 0;">Nadie te ha mencionado aún.</div>';
+    return;
+  }
+
+  el.innerHTML = menciones.map(m => {
+    const textoHtml = (m.contenido||'').replace(
+      new RegExp(`@${nick}`, 'gi'),
+      `<strong style="color:var(--blue);">@${nick}</strong>`
+    );
+    return `<div class="perfil-mencion-item">
+      <div class="perfil-mencion-meta">
+        <span class="nick-link" onclick="abrirPerfil('${m.nickname}')">${cap(m.nickname)}</span>
+        <span>te mencionó</span>
+        <span style="margin-left:auto;">${timeAgo(m.created_at)}</span>
+      </div>
+      <div>${textoHtml.slice(0,200)}${m.contenido.length>200?'…':''}</div>
+    </div>`;
+  }).join('');
+}
+
+async function guardarPerfil() {
+  if (!usuario) return;
+  const btn = document.querySelector('.perfil-save-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Guardando...'; }
+
+  const updates = {
+    ciudad:            document.getElementById('edit_ciudad').value.trim() || null,
+    movil_propio:      document.getElementById('edit_movil').value.trim() || null,
+    sistema_operativo: document.getElementById('edit_so').value || null,
+    capa:              document.getElementById('edit_capa').value.trim() || null,
+    sobre_mi:          document.getElementById('edit_sobre').value.trim() || null,
+  };
+
+  const { error } = await db.from('usuarios').update(updates).eq('id', usuario.id);
+  if (btn) { btn.disabled = false; btn.textContent = '💾 Guardar cambios'; }
+  if (error) { toast('❌ Error: ' + error.message); return; }
+
+  Object.assign(usuario, updates);
+  toast('✅ Perfil actualizado');
+
+  // Refrescar vista info
+  document.getElementById('pi_ciudad').textContent = updates.ciudad || '—';
+  document.getElementById('pi_movil').textContent = updates.movil_propio || '—';
+  document.getElementById('pi_so').textContent = updates.sistema_operativo || '—';
+  document.getElementById('pi_capa').textContent = updates.capa || '—';
+  document.getElementById('perfilSobreMi').textContent = updates.sobre_mi || 'Este usuario aún no ha escrito nada sobre sí mismo.';
+  perfilSetTab('info', false);
+}
+
+function triggerAvatarUpload() {
+  if (!usuario || usuario.nickname !== perfilUsuarioActual) return;
+  document.getElementById('avatarFileInput').click();
+}
+
+async function subirAvatar(input) {
+  if (!input.files || !input.files[0]) return;
+  const file = input.files[0];
+  if (file.size > 3 * 1024 * 1024) { toast('❌ Máximo 3 MB'); return; }
+  if (!file.type.startsWith('image/')) { toast('❌ Solo imágenes'); return; }
+
+  const statusEl = document.getElementById('avatarUploadStatus');
+  if (statusEl) statusEl.textContent = '⏳ Subiendo...';
+  toast('⏳ Subiendo foto...');
+
+  try {
+    const ext = file.name.split('.').pop().toLowerCase() || 'jpg';
+    const fileName = `${usuario.nickname}_${Date.now()}.${ext}`;
+
+    const { error: uploadError } = await db.storage
+      .from('avatars').upload(fileName, file, { upsert: true, contentType: file.type });
+    if (uploadError) throw uploadError;
+
+    const { data: urlData } = db.storage.from('avatars').getPublicUrl(fileName);
+    const avatarUrl = urlData.publicUrl;
+
+    const { error: dbError } = await db.from('usuarios').update({ avatar_url: avatarUrl }).eq('id', usuario.id);
+    if (dbError) throw dbError;
+
+    usuario.avatar_url = avatarUrl;
+    actualizarAvatarEnUI(avatarUrl);
+    if (statusEl) statusEl.textContent = '✅ Foto actualizada';
+    toast('✅ Foto actualizada');
+  } catch(err) {
+    if (statusEl) statusEl.textContent = '❌ Error';
+    toast('❌ ' + (err.message || 'Error al subir la foto'));
+  }
+  input.value = '';
+}
+
+function actualizarAvatarEnUI(avatarUrl) {
+  const nombre = cap(usuario.nickname);
+  // Header del modal
+  const avatarEl = document.getElementById('perfilAvatarEl');
+  if (avatarEl) {
+    avatarEl.innerHTML = `<img src="${avatarUrl}" alt="${nombre}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    avatarEl.style.background = 'transparent';
+  }
+  // Preview editar
+  const previewEdit = document.getElementById('perfilAvatarPreviewEdit');
+  if (previewEdit) {
+    previewEdit.innerHTML = `<img src="${avatarUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+  }
+  // Topbar avatar
+  const chipAvatar = document.getElementById('chipAvatar');
+  if (chipAvatar) {
+    chipAvatar.innerHTML = `<img src="${avatarUrl}" alt="${nombre}" style="width:38px;height:38px;object-fit:cover;border-radius:50%;display:block;">`;
+    chipAvatar.className = '';
+  }
+}
+
+// ─── SEGUIR / SIGUIENDO ───────────────────────
+async function actualizarBtnSeguir(nick) {
+  if (!usuario) return;
+  const btn = document.getElementById('perfilSeguirBtn');
+  if (!btn) return;
+  try {
+    const { count } = await db.from('seguimientos')
+      .select('id', { count: 'exact', head: true })
+      .eq('seguidor', usuario.nickname).eq('siguiendo', nick);
+    if ((count||0) > 0) {
+      btn.textContent = '✓ Siguiendo'; btn.classList.add('siguiendo');
+    } else {
+      btn.textContent = '+ Seguir'; btn.classList.remove('siguiendo');
+    }
+  } catch(e) {
+    btn.textContent = '+ Seguir'; btn.classList.remove('siguiendo');
+  }
+}
+
+async function toggleSeguir() {
+  if (!usuario || !perfilUsuarioActual || usuario.nickname === perfilUsuarioActual) return;
+  const btn = document.getElementById('perfilSeguirBtn');
+  const estaSiguiendo = btn.classList.contains('siguiendo');
+  try {
+    if (estaSiguiendo) {
+      await db.from('seguimientos').delete()
+        .eq('seguidor', usuario.nickname).eq('siguiendo', perfilUsuarioActual);
+      btn.textContent = '+ Seguir'; btn.classList.remove('siguiendo');
+      toast(`Dejaste de seguir a ${cap(perfilUsuarioActual)}`);
+    } else {
+      await db.from('seguimientos').insert({ seguidor: usuario.nickname, siguiendo: perfilUsuarioActual });
+      btn.textContent = '✓ Siguiendo'; btn.classList.add('siguiendo');
+      toast(`✅ Sigues a ${cap(perfilUsuarioActual)}`);
+    }
+  } catch(e) {
+    toast('⚠️ Crea la tabla "seguimientos" en Supabase (seguidor text, siguiendo text)');
+  }
+}
+
 </script>
 </body>
 </html>
