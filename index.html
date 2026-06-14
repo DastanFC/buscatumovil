@@ -4302,8 +4302,14 @@ body {
 
 <!-- PANEL ACTUALIZACIONES (visible para todos los usuarios) -->
 <div id="actualizacionesPanel" style="display:none;">
-  <div style="background:var(--surface);border-radius:0;border-bottom:1px solid var(--border);padding:10px 20px;max-width:1060px;margin:0 auto;">
-    <div id="actualizacionesList" style="display:flex;flex-direction:column;gap:6px;"></div>
+  <div style="background:var(--surface);border-radius:0;border-bottom:1px solid var(--border);max-width:1060px;margin:0 auto;">
+    <div id="actualizacionesHeader" onclick="toggleActualizaciones()" style="display:flex;align-items:center;justify-content:space-between;padding:8px 20px;cursor:pointer;user-select:none;">
+      <span style="font-size:12px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.5px;">📢 Avisos del sistema</span>
+      <span id="actualizacionesArrow" style="font-size:14px;color:var(--text-3);transition:transform 0.2s;">▲</span>
+    </div>
+    <div id="actualizacionesBody" style="padding:0 20px 10px;">
+      <div id="actualizacionesList" style="display:flex;flex-direction:column;gap:6px;"></div>
+    </div>
   </div>
 </div>
 
@@ -7389,6 +7395,27 @@ function mostrarActualizacionesUsuario(items) {
   }).join('');
 
   panel.style.display = 'block';
+  // En móvil empieza colapsado, en escritorio expandido
+  const esMobil = window.innerWidth <= 600;
+  const colapsado = sessionStorage.getItem('actualizacionesColapsado') !== null
+    ? sessionStorage.getItem('actualizacionesColapsado') === 'true'
+    : esMobil;
+  const body = document.getElementById('actualizacionesBody');
+  const arrow = document.getElementById('actualizacionesArrow');
+  if (body && arrow) {
+    body.style.display = colapsado ? 'none' : 'block';
+    arrow.style.transform = colapsado ? 'rotate(180deg)' : '';
+  }
+}
+
+function toggleActualizaciones() {
+  const body = document.getElementById('actualizacionesBody');
+  const arrow = document.getElementById('actualizacionesArrow');
+  if (!body) return;
+  const colapsado = body.style.display === 'none';
+  body.style.display = colapsado ? 'block' : 'none';
+  if (arrow) arrow.style.transform = colapsado ? '' : 'rotate(180deg)';
+  sessionStorage.setItem('actualizacionesColapsado', colapsado ? 'false' : 'true');
 }
 
 async function cargarActualizacionesUsuario() {
