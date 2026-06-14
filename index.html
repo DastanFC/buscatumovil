@@ -1551,6 +1551,19 @@ body {
   white-space: nowrap;
 }
 
+.hilo-editado-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 10px;
+  color: var(--text-3);
+  font-weight: 500;
+  margin-left: 6px;
+  vertical-align: middle;
+  white-space: nowrap;
+  font-style: italic;
+}
+
 .resolve-btn {
   background: none;
   border: 1.5px solid var(--green);
@@ -2605,21 +2618,21 @@ body {
 /* ── Q&A pill rows (hilo card) ── */
 .qa-rows { display:flex; flex-direction:column; margin:12px 0 0; }
 .qa-row-item {
-  display:flex; align-items:center; justify-content:space-between;
+  display:flex; align-items:flex-start; justify-content:space-between;
   gap:10px; padding:8px 0; border-bottom:1px solid var(--border);
 }
 .qa-row-item:last-child { border-bottom:none; }
-.qa-row-label { font-size:13px; color:var(--text-2); flex-shrink:0; }
+.qa-row-label { font-size:13px; color:var(--text-2); flex-shrink:0; padding-top:3px; }
 .qa-row-pill {
   font-size:12px; font-weight:600;
   background:#D1FAE5; color:#065F46;
   padding:4px 12px; border-radius:999px;
-  white-space:nowrap; max-width:55%;
-  overflow:hidden; text-overflow:ellipsis; text-align:right;
+  white-space:normal; max-width:58%;
+  word-break:break-word; text-align:right; line-height:1.4;
 }
 @media (max-width:600px) {
   .qa-row-label { font-size:12px; }
-  .qa-row-pill  { font-size:11px; padding:3px 9px; max-width:52%; }
+  .qa-row-pill  { font-size:11px; padding:3px 9px; max-width:55%; }
 }
 
 /* ── Top-rec ranking cards ── */
@@ -3409,6 +3422,26 @@ body {
 .reply-ranking-chip b {
   font-weight: 700;
   color: var(--navy);
+}
+
+
+/* ─── BOTÓN EDITAR HILO ─── */
+.edit-hilo-btn {
+  background: none;
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-3);
+  padding: 5px 12px;
+  cursor: pointer;
+  transition: all 0.18s;
+  white-space: nowrap;
+}
+.edit-hilo-btn:hover {
+  background: var(--surface-3);
+  color: var(--text-2);
+  border-color: var(--text-3);
 }
 
 /* ─── BOTÓN RECOMENDAR MÓVIL en reply-box ─── */
@@ -4894,6 +4927,81 @@ body {
       </div>
     </div>
   </div>
+
+
+<!-- ══ MODAL EDITAR HILO ══ -->
+<div id="editHiloOverlay" style="display:none;position:fixed;inset:0;background:rgba(10,22,40,0.7);z-index:1000;align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this)cerrarEditarHilo()">
+  <div style="background:#fff;border-radius:20px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,0.25);">
+    <div style="padding:18px 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+      <span style="font-weight:700;font-size:16px;color:var(--text);">✎ Editar consulta</span>
+      <button onclick="cerrarEditarHilo()" style="background:none;border:none;font-size:20px;color:var(--text-3);cursor:pointer;line-height:1;">✕</button>
+    </div>
+    <div style="padding:16px 20px;display:flex;flex-direction:column;gap:12px;">
+
+      <div class="form-field">
+        <label>💰 Presupuesto</label>
+        <select id="eh_presupuesto">
+          <option value="sin-limite">Sin límite</option>
+          <option value="0-100">Menos de 100€</option>
+          <option value="100-150">100€ - 150€</option>
+          <option value="150-200">150€ - 200€</option>
+          <option value="200-300">200€ - 300€</option>
+          <option value="300-450">300€ - 450€</option>
+          <option value="450-600">450€ - 600€</option>
+          <option value="600-800">600€ - 800€</option>
+          <option value="800-1000">800€ - 1000€</option>
+          <option value="mas-1000">Más de 1000€</option>
+        </select>
+      </div>
+
+      <div class="form-field"><label>📱 Móvil actual</label><input type="text" id="eh_movil_actual" placeholder="ej. Redmi Note 10" /></div>
+      <div class="form-field"><label>⭐ Marca preferida</label><input type="text" id="eh_marca_pref" placeholder="Sin preferencia" /></div>
+      <div class="form-field"><label>🚫 Marca que NO quieres</label><input type="text" id="eh_marca_no" placeholder="ej. Apple" /></div>
+
+      <div class="form-field">
+        <label>🛡️ Garantía España</label>
+        <select id="eh_garantia"><option value="Sí">Sí</option><option value="No">No</option></select>
+      </div>
+
+      <div class="form-field"><label>🎯 Uso principal</label><input type="text" id="eh_uso" placeholder="ej. WhatsApp, fotos, redes..." /></div>
+
+      <div class="form-field">
+        <label>📏 Tamaño pantalla</label>
+        <select id="eh_tamano">
+          <option value="Sin preferencia">Sin preferencia</option>
+          <option value='Pequeño <6"'>Pequeño &lt;6"</option>
+          <option value='Normal 6-6.5"'>Normal 6-6.5"</option>
+          <option value='Grande >6.5"'>Grande &gt;6.5"</option>
+        </select>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="form-field">
+          <label>🎮 Juegos</label>
+          <select id="eh_juegos"><option value="No">No</option><option value="Algún casual">Algún casual</option><option value="Sí, bastante">Sí, bastante</option></select>
+        </div>
+        <div class="form-field">
+          <label>📸 Cámara</label>
+          <select id="eh_camara"><option value="No mucho">No mucho</option><option value="Sí, importante">Sí, importante</option></select>
+        </div>
+        <div class="form-field">
+          <label>🔋 Batería</label>
+          <select id="eh_bateria"><option value="Normal">Normal</option><option value="Sí, prioritaria">Sí, prioritaria</option></select>
+        </div>
+        <div class="form-field">
+          <label>⚡ Carga rápida</label>
+          <select id="eh_carga"><option value="No necesaria">No necesaria</option><option value="Sí">Sí</option></select>
+        </div>
+      </div>
+
+      <div class="form-field"><label>📝 Descripción</label><textarea id="eh_extra" rows="3" style="min-height:70px;resize:vertical;" placeholder="Explica con detalle..."></textarea></div>
+    </div>
+    <div style="padding:14px 20px 18px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;">
+      <button onclick="cerrarEditarHilo()" style="padding:10px 18px;border-radius:10px;border:1.5px solid var(--border);background:none;font-size:13px;font-weight:600;color:var(--text-2);cursor:pointer;">Cancelar</button>
+      <button onclick="guardarEdicionHilo()" style="padding:10px 20px;border-radius:10px;border:none;background:var(--blue);color:white;font-size:13px;font-weight:700;cursor:pointer;">Guardar cambios</button>
+    </div>
+  </div>
+</div>
 
   <!-- Threads -->
   <div id="hilosList"></div>
@@ -6499,7 +6607,7 @@ async function renderHilo(h, usersMap = {}) {
           <div class="avatar" style="background:${ac.bg};color:${ac.color};">${nombre.substring(0,2).toUpperCase()}</div>
           <div class="author-block">
             <div class="author-name">${nombre} ${getBadgeHtml(pts, rol)}</div>
-            <div class="thread-time">${timeAgo(h.created_at)}${haParticipado ? '<span class="participated-icon">✏️ Participé</span>' : ''}</div>
+            <div class="thread-time">${timeAgo(h.created_at)}${haParticipado ? \'<span class="participated-icon">✏️ Participé</span>\' : \'\'}${renderEdicionLog(h.edicion_log)}</div>
           </div>
         </div>
 
@@ -6525,9 +6633,12 @@ async function renderHilo(h, usersMap = {}) {
         <button class="reply-count-btn" onclick="toggleReplies('${h.id}')">
           💬 <span class="cnt" id="rcnt_${h.id}">${replyCount}</span> respuestas${replyCount === 0 ? '<span class="badge-sin-responder">⚡ Sin responder</span>' : ''}${unreadCount > 0 ? `<span class="unread-badge" id="unread_${h.id}">${unreadCount} nuevo${unreadCount > 1 ? 's' : ''}</span>` : `<span class="unread-badge" id="unread_${h.id}" style="display:none"></span>`}
         </button>
-        ${h.resuelto
-          ? '<div class="resolved-pill">✅ Resuelta</div>'
-          : (puedeCerrar ? `<button class="resolve-btn" onclick="marcarResuelta('${h.id}')">🔒 Marcar resuelta</button>` : '')}
+        <div style="display:flex;align-items:center;gap:6px;">
+          ${usuario && (usuario.nickname === h.nickname || esAdmin()) && !h.resuelto ? `<button class="edit-hilo-btn" onclick="abrirEditarHilo('${h.id}')">✎ Editar</button>` : ''}
+          ${h.resuelto
+            ? '<div class="resolved-pill">✅ Resuelta</div>'
+            : (puedeCerrar ? `<button class="resolve-btn" onclick="marcarResuelta('${h.id}')">🔒 Marcar resuelta</button>` : '')}
+        </div>
       </div>
 
       <div class="replies-section" id="replies_${h.id}" style="display:none;"></div>
@@ -6628,6 +6739,132 @@ function marcarRespuestasVistas(hiloId) {
   } catch(e) {}
   // Ocultar el badge
   if (badgeEl) badgeEl.style.display = 'none';
+}
+
+
+// ═══════════════════════════════════════════
+// EDITAR HILO
+// ═══════════════════════════════════════════
+
+// Mapa de campos editables: id → etiqueta legible
+const CAMPOS_EDITABLES = {
+  presupuesto:    'Presupuesto',
+  movil_actual:   'Móvil actual',
+  marca_preferida:'Marca pref.',
+  marca_no_quiere:'Marca excluida',
+  garantia_espana:'Garantía ES',
+  uso_principal:  'Uso principal',
+  tamano_pantalla:'Pantalla',
+  juegos:         'Juegos',
+  camara:         'Cámara',
+  bateria:        'Batería',
+  carga_rapida:   'Carga rápida',
+  datos_extra:    'Descripción',
+};
+
+function renderEdicionLog(logRaw) {
+  try {
+    const log = typeof logRaw === 'string' ? JSON.parse(logRaw) : logRaw;
+    if (log && log.campos && log.campos.length) {
+      return `<span class="hilo-editado-badge">✎ ${log.campos.join(' · ')} · ${timeAgo(log.fecha)}</span>`;
+    }
+  } catch(e) {}
+  return '';
+}
+
+let hiloEditandoId = null;
+let hiloEditandoData = null;
+
+function abrirEditarHilo(hiloId) {
+  const hilo = hilosData.find(h => h.id === hiloId);
+  if (!hilo) return;
+  if (!usuario) return;
+  if (usuario.nickname !== hilo.nickname && !esAdmin()) return;
+
+  hiloEditandoId = hiloId;
+  hiloEditandoData = hilo;
+
+  // Rellenar campos del modal
+  document.getElementById('eh_presupuesto').value    = hilo.presupuesto || '';
+  document.getElementById('eh_movil_actual').value   = hilo.movil_actual || '';
+  document.getElementById('eh_marca_pref').value     = hilo.marca_preferida || '';
+  document.getElementById('eh_marca_no').value       = hilo.marca_no_quiere || '';
+  document.getElementById('eh_garantia').value       = hilo.garantia_espana || 'Sí';
+  document.getElementById('eh_uso').value            = hilo.uso_principal || '';
+  document.getElementById('eh_tamano').value         = hilo.tamano_pantalla || 'Sin preferencia';
+  document.getElementById('eh_juegos').value         = hilo.juegos || 'No';
+  document.getElementById('eh_camara').value         = hilo.camara || 'No mucho';
+  document.getElementById('eh_bateria').value        = hilo.bateria || 'Normal';
+  document.getElementById('eh_carga').value          = hilo.carga_rapida || 'No necesaria';
+  document.getElementById('eh_extra').value          = hilo.datos_extra || '';
+
+  document.getElementById('editHiloOverlay').style.display = 'flex';
+}
+
+function cerrarEditarHilo() {
+  document.getElementById('editHiloOverlay').style.display = 'none';
+  hiloEditandoId = null;
+  hiloEditandoData = null;
+}
+
+async function guardarEdicionHilo() {
+  if (!hiloEditandoId || !hiloEditandoData) return;
+
+  const camposDB = {
+    presupuesto:     document.getElementById('eh_presupuesto').value,
+    movil_actual:    document.getElementById('eh_movil_actual').value.trim(),
+    marca_preferida: document.getElementById('eh_marca_pref').value.trim(),
+    marca_no_quiere: document.getElementById('eh_marca_no').value.trim(),
+    garantia_espana: document.getElementById('eh_garantia').value,
+    uso_principal:   document.getElementById('eh_uso').value.trim(),
+    tamano_pantalla: document.getElementById('eh_tamano').value,
+    juegos:          document.getElementById('eh_juegos').value,
+    camara:          document.getElementById('eh_camara').value,
+    bateria:         document.getElementById('eh_bateria').value,
+    carga_rapida:    document.getElementById('eh_carga').value,
+    datos_extra:     document.getElementById('eh_extra').value.trim(),
+  };
+
+  // Detectar qué campos cambiaron
+  const camposMap = {
+    presupuesto:     'presupuesto',
+    movil_actual:    'movil_actual',
+    marca_preferida: 'marca_preferida',
+    marca_no_quiere: 'marca_no_quiere',
+    garantia_espana: 'garantia_espana',
+    uso_principal:   'uso_principal',
+    tamano_pantalla: 'tamano_pantalla',
+    juegos:          'juegos',
+    camara:          'camara',
+    bateria:         'bateria',
+    carga_rapida:    'carga_rapida',
+    datos_extra:     'datos_extra',
+  };
+
+  const camposEditados = [];
+  for (const [dbKey, label] of Object.entries(CAMPOS_EDITABLES)) {
+    const anterior = (hiloEditandoData[dbKey] || '').toString().trim();
+    const nuevo    = (camposDB[dbKey] || '').toString().trim();
+    if (anterior !== nuevo) camposEditados.push(label);
+  }
+
+  if (camposEditados.length === 0) {
+    toast('ℹ️ No hay cambios');
+    cerrarEditarHilo();
+    return;
+  }
+
+  const edicionLog = { campos: camposEditados, fecha: new Date().toISOString() };
+
+  const { error } = await db.from('hilos')
+    .update({ ...camposDB, edicion_log: edicionLog })
+    .eq('id', hiloEditandoId);
+
+  if (error) { toast('❌ Error: ' + error.message); return; }
+
+  toast(`✅ Consulta actualizada · ${camposEditados.join(', ')}`);
+  cerrarEditarHilo();
+  cargarHilos();
 }
 
 async function marcarResuelta(hiloId) {
