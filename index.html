@@ -2055,6 +2055,8 @@ body {
 }
 .notif-item:hover { background: var(--surface-2); }
 .notif-item.unread { background: var(--blue-pale); }
+.notif-highlight { animation: notifPulse 0.6s ease 0s 4 alternate; border-radius: 10px; }
+@keyframes notifPulse { from { box-shadow: 0 0 0 0 rgba(29,111,232,0); background: transparent; } to { box-shadow: 0 0 0 5px rgba(29,111,232,0.45); background: rgba(29,111,232,0.1); } }
 .notif-item .notif-bold { font-weight: 600; color: var(--text); }
 .notif-empty { padding: 20px 16px; text-align: center; color: var(--text-3); font-size: 13px; }
 
@@ -5614,48 +5616,53 @@ function clearCita(hiloId) {
 // ═══════════════════════════════════════════
 async function cargarNotificaciones() {
   if (!usuario) return;
-  
+
   // Hilos propios
   const { data: misHilos } = await db.from('hilos')
-    .select('id, datos_extra, created_at')
+    .select('id, created_at')
     .eq('nickname', usuario.nickname);
-  
-  if (!misHilos || misHilos.length === 0) return;
-  
-  const hilosIds = misHilos.map(h => h.id);
-  const vistoKey = `notif_visto_${usuario.nickname}`;
-  let visto = {};
-  try { visto = JSON.parse(localStorage.getItem(vistoKey) || '{}'); } catch(e) {}
-  
-  // Respuestas a mis hilos
-  const { data: respuestas } = await db.from('respuestas')
-    .select('*, hilo_id')
-    .in('hilo_id', hilosIds)
-    .neq('nickname', usuario.nickname)
-    .order('created_at', { ascending: false })
-    .limit(20);
 
-  // Menciones a mí
+  const hilosIds = misHilos ? misHilos.map(h => h.id) : [];
+
+  // Leídas desde Supabase
+  const { data: vistosDB } = await db.from('notif_visto')
+    .select('notif_id')
+    .eq('nickname', usuario.nickname);
+  const visto = {};
+  if (vistosDB) vistosDB.forEach(v => visto[v.notif_id] = true);
+
+  const todas = [];
+
+  // Respuestas a mis hilos
+  if (hilosIds.length > 0) {
+    const { data: respuestas } = await db.from('respuestas')
+      .select('id, nickname, hilo_id, created_at')
+      .in('hilo_id', hilosIds)
+      .neq('nickname', usuario.nickname)
+      .order('created_at', { ascending: false })
+      .limit(20);
+
+    if (respuestas) {
+      for (const r of respuestas) {
+        todas.push({
+          id: `resp_${r.id}`,
+          texto: `<span class="notif-bold">${cap(r.nickname)}</span> respondió en tu consulta`,
+          tiempo: timeAgo(r.created_at),
+          hiloId: r.hilo_id,
+          respuestaId: r.id,
+          leido: !!visto[`resp_${r.id}`],
+        });
+      }
+    }
+  }
+
+  // Menciones en consultas
   const { data: menciones } = await db.from('respuestas')
-    .select('*, hilo_id')
+    .select('id, nickname, hilo_id, created_at')
     .ilike('contenido', `%@${usuario.nickname}%`)
     .neq('nickname', usuario.nickname)
     .order('created_at', { ascending: false })
     .limit(10);
-
-  const todas = [];
-  
-  if (respuestas) {
-    for (const r of respuestas) {
-      todas.push({
-        id: `resp_${r.id}`,
-        texto: `<span class="notif-bold">${cap(r.nickname)}</span> respondió en tu consulta`,
-        tiempo: timeAgo(r.created_at),
-        hiloId: r.hilo_id,
-        leido: !!visto[`resp_${r.id}`],
-      });
-    }
-  }
 
   if (menciones) {
     for (const m of menciones) {
@@ -5665,9 +5672,32 @@ async function cargarNotificaciones() {
           texto: `<span class="notif-bold">${cap(m.nickname)}</span> te mencionó`,
           tiempo: timeAgo(m.created_at),
           hiloId: m.hilo_id,
+          respuestaId: m.id,
           leido: !!visto[`men_${m.id}`],
         });
       }
+    }
+  }
+
+  // Menciones en el foro
+  const { data: menForo } = await db.from('foro_replies')
+    .select('id, nickname, post_id, created_at')
+    .ilike('contenido', `%@${usuario.nickname}%`)
+    .neq('nickname', usuario.nickname)
+    .order('created_at', { ascending: false })
+    .limit(10);
+
+  if (menForo) {
+    for (const m of menForo) {
+      todas.push({
+        id: `foro_${m.id}`,
+        texto: `<span class="notif-bold">${cap(m.nickname)}</span> te mencionó en el foro`,
+        tiempo: timeAgo(m.created_at),
+        hiloId: null,
+        foroPostId: m.post_id,
+        foroReplyId: m.id,
+        leido: !!visto[`foro_${m.id}`],
+      });
     }
   }
 
@@ -5675,7 +5705,7 @@ async function cargarNotificaciones() {
 
   const noLeidas = todas.filter(n => !n.leido).length;
   notifCount = noLeidas;
-  
+
   const badge = document.getElementById('notifBadge');
   if (noLeidas > 0) {
     badge.textContent = noLeidas > 9 ? '9+' : noLeidas;
@@ -5690,46 +5720,103 @@ async function cargarNotificaciones() {
     return;
   }
 
-  list.innerHTML = todas.slice(0, 10).map(n => `
-    <div class="notif-item ${n.leido ? '' : 'unread'}" onclick="irAHilo('${n.hiloId}', '${n.id}')">
+  window._notifCache = todas;
+
+  list.innerHTML = todas.slice(0, 10).map((n, i) => `
+    <div class="notif-item ${n.leido ? '' : 'unread'}" onclick="irAHilo(${i})">
       ${n.texto} · <span style="color:var(--text-3)">${n.tiempo}</span>
     </div>
   `).join('');
 }
 
-function irAHilo(hiloId, notifId) {
-  const vistoKey = `notif_visto_${usuario.nickname}`;
-  let visto = {};
-  try { visto = JSON.parse(localStorage.getItem(vistoKey) || '{}'); } catch(e) {}
-  visto[notifId] = true;
-  try { localStorage.setItem(vistoKey, JSON.stringify(visto)); } catch(e) {}
+async function irAHilo(idx) {
+  const n = (window._notifCache || [])[idx];
+  if (!n) return;
+
+  // Marcar como leída en Supabase
+  await db.from('notif_visto').upsert(
+    { nickname: usuario.nickname, notif_id: n.id },
+    { onConflict: 'nickname,notif_id' }
+  );
+
   toggleNotifPanel();
 
-  const el = document.getElementById(`thread_${hiloId}`);
-  if (el) {
-    // Abrir las respuestas si están cerradas
-    const rep = document.getElementById(`replies_${hiloId}`);
-    const box = document.getElementById(`replybox_${hiloId}`);
-    if (rep && rep.style.display === 'none') {
-      rep.style.display = 'block';
-      if (box) box.style.display = 'block';
-      if (rep.innerHTML === '') cargarRespuestas(hiloId);
-    }
-    setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+  // Navegación: foro
+  if (n.foroPostId) {
+    setTab('foro');
+    setTimeout(async () => {
+      await abrirForumPost(n.foroPostId);
+      if (n.foroReplyId) {
+        setTimeout(() => {
+          const el = document.getElementById(`foro_reply_${n.foroReplyId}`);
+          if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.classList.add('notif-highlight'); setTimeout(() => el.classList.remove('notif-highlight'), 2000); }
+        }, 600);
+      }
+    }, 200);
+    cargarNotificaciones();
+    return;
   }
+
+  // Navegación: consulta
+  if (n.hiloId) {
+    setTab('inicio');
+    setTimeout(async () => {
+      let el = document.getElementById(`thread_${n.hiloId}`);
+      if (!el) {
+        // El hilo puede estar en otra página — buscarlo y paginarlo
+        await buscarYMostrarHilo(n.hiloId);
+        await new Promise(r => setTimeout(r, 400));
+        el = document.getElementById(`thread_${n.hiloId}`);
+      }
+      if (el) {
+        const rep = document.getElementById(`replies_${n.hiloId}`);
+        const box = document.getElementById(`replybox_${n.hiloId}`);
+        if (rep && rep.style.display === 'none') {
+          rep.style.display = 'block';
+          if (box) box.style.display = 'block';
+        }
+        if (rep && rep.innerHTML.trim() === '') await cargarRespuestas(n.hiloId);
+        // Scroll a la respuesta concreta si existe
+        if (n.respuestaId) {
+          await new Promise(r => setTimeout(r, 400));
+          const replyEl = document.getElementById(`reply_${n.respuestaId}`);
+          if (replyEl) {
+            replyEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            replyEl.classList.add('notif-highlight');
+            setTimeout(() => replyEl.classList.remove('notif-highlight'), 2000);
+          } else {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        } else {
+          setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+        }
+      }
+    }, 200);
+  }
+
   cargarNotificaciones();
 }
 
-function marcarTodasLeidas() {
+async function buscarYMostrarHilo(hiloId) {
+  // Forzar que el hilo aparezca en pantalla aunque esté en otra página
+  if (!window._todosHilos) return;
+  const idx = window._todosHilos.findIndex(h => h.id === hiloId);
+  if (idx === -1) return;
+  const pagSize = window._paginaSize || 10;
+  const pagTarget = Math.floor(idx / pagSize) + 1;
+  if (window._paginaActual !== pagTarget) {
+    window._paginaActual = pagTarget;
+    await renderHilos();
+  }
+}
+
+async function marcarTodasLeidas() {
   if (!usuario) return;
-  const vistoKey = `notif_visto_${usuario.nickname}`;
-  let visto = {};
-  try { visto = JSON.parse(localStorage.getItem(vistoKey) || '{}'); } catch(e) {}
-  document.querySelectorAll('.notif-item').forEach(el => {
-    const match = el.getAttribute('onclick')?.match(/'([^']+)', '([^']+)'/);
-    if (match) visto[match[2]] = true;
-  });
-  try { localStorage.setItem(vistoKey, JSON.stringify(visto)); } catch(e) {}
+  const notifs = window._notifCache || [];
+  const rows = notifs.filter(n => !n.leido).map(n => ({ nickname: usuario.nickname, notif_id: n.id }));
+  if (rows.length > 0) {
+    await db.from('notif_visto').upsert(rows, { onConflict: 'nickname,notif_id' });
+  }
   cargarNotificaciones();
   toggleNotifPanel();
 }
