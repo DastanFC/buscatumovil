@@ -6105,8 +6105,23 @@ async function marcarTodasLeidas() {
   if (rows.length > 0) {
     await db.from('notif_visto').upsert(rows, { onConflict: 'nickname,notif_id' });
   }
-  cargarNotificaciones();
-  toggleNotifPanel();
+  // Actualizar cache local y UI sin recargar todo
+  notifs.forEach(n => n.leido = true);
+  window._notifCache = notifs;
+  notifCount = 0;
+  const badge = document.getElementById('notifBadge');
+  badge.classList.remove('visible');
+  // Re-renderizar lista como leídas
+  const list = document.getElementById('notifList');
+  if (notifs.length === 0) {
+    list.innerHTML = '<div class="notif-empty">Sin notificaciones</div>';
+  } else {
+    list.innerHTML = notifs.slice(0, 10).map((n, i) => `
+      <div class="notif-item" onclick="irAHilo(${i})">
+        ${n.texto} · <span style="color:var(--text-3)">${n.tiempo}</span>
+      </div>
+    `).join('');
+  }
 }
 
 function toggleNotifPanel() {
@@ -6867,6 +6882,7 @@ async function guardarEdicionConsulta() {
   } catch(e) { console.warn('Tabla hilo_ediciones no existe aún'); }
 
   // Notificar a respondedores
+  let notificados = 0;
   try {
     const { data: respondedores } = await db.from('respuestas')
       .select('nickname')
@@ -6875,6 +6891,7 @@ async function guardarEdicionConsulta() {
 
     if (respondedores && respondedores.length > 0) {
       const nicksUnicos = [...new Set(respondedores.map(r => r.nickname))];
+      notificados = nicksUnicos.length;
       const resumenCambios = cambios.map(c => c.label).join(', ');
       const filaNotif = nicksUnicos.map(nick => ({
         hilo_id: _editConsultaHiloId,
@@ -6894,7 +6911,10 @@ async function guardarEdicionConsulta() {
     oldBadge.outerHTML = `<button class="edited-badge" id="editedBadge_${hid}" onclick="abrirHistorial('${hid}')">✏️ Editado hace un momento</button>`;
   }
 
-  toast('✅ Consulta actualizada · Respondedores notificados');
+  toast(notificados > 0
+    ? `✅ Consulta actualizada · ${notificados} usuario${notificados > 1 ? 's' : ''} notificado${notificados > 1 ? 's' : ''}`
+    : '✅ Consulta actualizada · Sin otros respondedores que notificar'
+  );
   if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = '💾 Guardar cambios'; }
   cerrarModalEditarConsulta();
   cargarHilos();
