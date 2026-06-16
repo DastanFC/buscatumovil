@@ -2836,6 +2836,10 @@ body {
 .top-rec-info { flex:1; min-width:0; }
 .top-rec-name {
   font-size:13px; font-weight:700; color:var(--text);
+  white-space:normal; overflow:hidden;
+  display:flex; flex-direction:column; gap:2px;
+}
+.top-rec-name-item {
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
 .top-rec-card.gold .top-rec-name { color:var(--accent); }
@@ -7146,11 +7150,12 @@ async function cargarRespuestas(hiloId, forceVisible = false) {
         const med = _medallas[idx];
         const uid = `tv_${hiloId}_${item.r.id}`;
         const nombre_movil = item.modelos.join(' · ');
+        const nombre_movil_html = item.modelos.map(m => `<span class="top-rec-name-item">${m}</span>`).join('');
         return `
           <div class="top-rec-card ${med.cls}" id="trc_${uid}">
             <div class="top-rec-emoji">📱</div>
             <div class="top-rec-info">
-              <div class="top-rec-name">${nombre_movil}</div>
+              <div class="top-rec-name">${nombre_movil_html}</div>
               <div class="top-rec-by">por ${cap(item.r.nickname)}</div>
             </div>
             <div class="top-rec-right">
