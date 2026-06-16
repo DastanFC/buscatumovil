@@ -14,7 +14,7 @@
 <link rel="icon" type="image/png" sizes="512x512" href="android-chrome-512x512.png">
 
 <!-- MODAL HISTORIAL EDICIONES -->
-<div class="hist-overlay" id="histOverlay" onclick="if(event.target===this)cerrarHistorial()">
+<div class="hist-overlay" id="histOverlay" style="display:none" onclick="if(event.target===this)cerrarHistorial()">
   <div class="hist-modal">
     <div class="hist-modal-header">
       <h3>📋 Historial de ediciones</h3>
@@ -27,7 +27,7 @@
 </div>
 
 <!-- MODAL EDITAR CONSULTA -->
-<div class="edit-consulta-overlay" id="editConsultaOverlay" onclick="if(event.target===this)cerrarModalEditarConsulta()">
+<div class="edit-consulta-overlay" id="editConsultaOverlay" style="display:none" onclick="if(event.target===this)cerrarModalEditarConsulta()">
   <div class="edit-consulta-modal">
     <h3>✏️ Editar consulta</h3>
     <div class="edit-consulta-field">
@@ -105,6 +105,11 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
+
+@keyframes skPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
 
 html {
   overflow-x: hidden;
@@ -5072,7 +5077,23 @@ body {
   </div>
 
   <!-- Threads -->
-  <div id="hilosList"></div>
+  <div id="hilosList">
+    <div class="skeleton-hilo" style="background:var(--surface);border-radius:var(--radius);padding:18px 20px;margin-bottom:12px;border:1px solid var(--border);">
+      <div style="height:14px;width:60%;background:var(--surface-3);border-radius:6px;margin-bottom:12px;animation:skPulse 1.4s ease-in-out infinite;"></div>
+      <div style="height:11px;width:85%;background:var(--surface-3);border-radius:6px;margin-bottom:8px;animation:skPulse 1.4s ease-in-out infinite 0.1s;"></div>
+      <div style="height:11px;width:70%;background:var(--surface-3);border-radius:6px;animation:skPulse 1.4s ease-in-out infinite 0.2s;"></div>
+    </div>
+    <div class="skeleton-hilo" style="background:var(--surface);border-radius:var(--radius);padding:18px 20px;margin-bottom:12px;border:1px solid var(--border);">
+      <div style="height:14px;width:50%;background:var(--surface-3);border-radius:6px;margin-bottom:12px;animation:skPulse 1.4s ease-in-out infinite 0.05s;"></div>
+      <div style="height:11px;width:90%;background:var(--surface-3);border-radius:6px;margin-bottom:8px;animation:skPulse 1.4s ease-in-out infinite 0.15s;"></div>
+      <div style="height:11px;width:55%;background:var(--surface-3);border-radius:6px;animation:skPulse 1.4s ease-in-out infinite 0.25s;"></div>
+    </div>
+    <div class="skeleton-hilo" style="background:var(--surface);border-radius:var(--radius);padding:18px 20px;margin-bottom:12px;border:1px solid var(--border);">
+      <div style="height:14px;width:75%;background:var(--surface-3);border-radius:6px;margin-bottom:12px;animation:skPulse 1.4s ease-in-out infinite 0.1s;"></div>
+      <div style="height:11px;width:80%;background:var(--surface-3);border-radius:6px;margin-bottom:8px;animation:skPulse 1.4s ease-in-out infinite 0.2s;"></div>
+      <div style="height:11px;width:65%;background:var(--surface-3);border-radius:6px;animation:skPulse 1.4s ease-in-out infinite 0.3s;"></div>
+    </div>
+  </div>
   <div id="pagination" class="pagination"></div>
 
   <!-- Noticias -->
@@ -6815,11 +6836,15 @@ async function abrirModalEditarConsulta(hiloId) {
   if (marcaNo)   marcaNo.value   = h.marca_no_quiere || '';
   if (extra)     extra.value     = h.datos_extra || '';
 
-  document.getElementById('editConsultaOverlay').classList.add('open');
+  const ecOverlay = document.getElementById('editConsultaOverlay');
+  ecOverlay.style.display = 'flex';
+  requestAnimationFrame(() => ecOverlay.classList.add('open'));
 }
 
 function cerrarModalEditarConsulta() {
-  document.getElementById('editConsultaOverlay').classList.remove('open');
+  const ecOverlay = document.getElementById('editConsultaOverlay');
+  ecOverlay.classList.remove('open');
+  setTimeout(() => { ecOverlay.style.display = 'none'; }, 220);
   _editConsultaHiloId = null;
 }
 
@@ -6922,7 +6947,9 @@ async function guardarEdicionConsulta() {
 
 // ─── HISTORIAL DE EDICIONES ───────────────
 async function abrirHistorial(hiloId) {
-  document.getElementById('histOverlay').classList.add('open');
+  const histOv = document.getElementById('histOverlay');
+  histOv.style.display = 'flex';
+  requestAnimationFrame(() => histOv.classList.add('open'));
   const body = document.getElementById('histModalBody');
   body.innerHTML = '<div style="color:var(--text-3);text-align:center;padding:30px 0;">⏳ Cargando...</div>';
 
@@ -6958,7 +6985,9 @@ async function abrirHistorial(hiloId) {
 }
 
 function cerrarHistorial() {
-  document.getElementById('histOverlay').classList.remove('open');
+  const histOv = document.getElementById('histOverlay');
+  histOv.classList.remove('open');
+  setTimeout(() => { histOv.style.display = 'none'; }, 220);
 }
 
 // ── MÓVILES RECOMENDADOS: gestión de chips en el formulario ──
