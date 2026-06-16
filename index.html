@@ -4770,7 +4770,7 @@ body {
     <!-- Puntos y rango — solo visible cuando hay sesión -->
     <div id="drawerRankInfo" style="display:none; padding: 6px 16px 10px; border-bottom: 1px solid rgba(255,255,255,0.08);">
       <div style="font-size:11px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Puntos y rango</div>
-      <div id="drawerRankText" style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.85);"></div>
+      <div id="drawerRankText" style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.85);line-height:1.5;"></div>
     </div>
     <button class="drawer-item" id="drawerLogoutBtn" style="display:none;" onclick="closeSideDrawer(); cerrarSesion()">
       <span class="drawer-item-icon">🚪</span>
@@ -4831,7 +4831,7 @@ body {
 <!-- HERO -->
 <div class="hero-strip" id="heroStrip">
   <div class="hero-sub">TÚ PREGUNTAS , NOSOTROS DE AYUDAMOS.</div>
-  <div class="rank-progress" id="rankProgressWrap" style="display:none;">
+  <div class="rank-progress" id="rankProgressWrap" style="display:none !important;">
     <!-- Desktop: barra con progreso -->
     <div class="rank-progress-top rank-desktop-only">
       <div class="rank-bar-wrap"><div class="rank-bar-fill" id="rankBarFill" style="width:0%"></div></div>
