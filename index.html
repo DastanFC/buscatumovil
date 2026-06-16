@@ -1533,22 +1533,25 @@ body {
 
 /* Thread footer bar */
 .thread-bar {
-  padding: 12px 24px;
+  padding: 10px 16px;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 8px;
   background: var(--surface-2);
   border-top: 1px solid var(--border);
-  gap: 8px;
   border-radius: 0 0 var(--radius) var(--radius);
+}
+.thread-bar-row1 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   flex-wrap: wrap;
 }
-
-@media (max-width: 600px) {
-  .thread-bar { padding: 10px 16px; gap: 6px; }
-  .resolve-btn { font-size: 11px; padding: 5px 10px; }
-  .resolve-btn .resolve-text { display: none; }
-  .resolve-btn::after { content: '🔒 Resuelta'; }
+.thread-bar-row2 {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
 }
 
 .reply-count-btn {
@@ -5865,7 +5868,6 @@ function avatarColor(nick) {
 }
 
 function getRango(puntos, rol) {
-  if (rol === 'admin') return { label: 'Admin', icon: '👑', id: 'admin', min: 0, max: 0 };
   // Ordenar de mayor a menor para que el primero que cumpla sea el más alto
   const sorted = [...RANGOS].sort((a, b) => b.min - a.min);
   for (let i = 0; i < sorted.length; i++) {
@@ -5876,9 +5878,9 @@ function getRango(puntos, rol) {
 
 function getBadgeHtml(puntos, rol) {
   const r = getRango(puntos, rol);
-  if (rol === 'admin') return `<span class="author-rank rank-admin">👑 Admin</span>`;
   const cls = `rank-${r.id}`;
-  return `<span class="author-rank ${cls}">${r.icon} ${r.label}</span>`;
+  const crown = rol === 'admin' ? '👑 ' : '';
+  return `<span class="author-rank ${cls}">${crown}${r.icon} ${r.label}</span>`;
 }
 
 function esAdmin() { return usuario?.rol === 'admin'; }
@@ -6209,8 +6211,7 @@ function togglePerks() {
 function actualizarBarraRango() {
   if (!usuario) return;
   const pts = usuario.puntos || 0;
-  const wrap = document.getElementById('rankProgressWrap');
-  wrap.style.display = 'block';
+  // rank bar hidden
 
   const rango = getRango(pts, usuario.rol);
   const pill = document.getElementById('rankMobilePill');
@@ -6763,16 +6764,16 @@ async function renderHilo(h, usersMap = {}) {
       <div id="topRec_${h.id}"></div>
 
       <div class="thread-bar">
-        <button class="reply-count-btn" onclick="toggleReplies('${h.id}')">
-          💬 <span class="cnt" id="rcnt_${h.id}">${replyCount}</span> respuestas${replyCount === 0 ? '<span class="badge-sin-responder">⚡ Sin responder</span>' : ''}${unreadCount > 0 ? `<span class="unread-badge" id="unread_${h.id}">${unreadCount} nuevo${unreadCount > 1 ? 's' : ''}</span>` : `<span class="unread-badge" id="unread_${h.id}" style="display:none"></span>`}
-        </button>
-        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-left:auto;">
+        <div class="thread-bar-row1">
+          <button class="reply-count-btn" onclick="toggleReplies('${h.id}')">
+            💬 <span class="cnt" id="rcnt_${h.id}">${replyCount}</span> respuestas${replyCount === 0 ? '<span class="badge-sin-responder">⚡ Sin responder</span>' : ''}${unreadCount > 0 ? `<span class="unread-badge" id="unread_${h.id}">${unreadCount} nuevo${unreadCount > 1 ? 's' : ''}</span>` : `<span class="unread-badge" id="unread_${h.id}" style="display:none"></span>`}
+          </button>
           ${h.editado_at ? `<button class="edited-badge" id="editedBadge_${h.id}" onclick="abrirHistorial('${h.id}')">📋 Consulta actualizada · Ver cambios</button>` : `<span id="editedBadge_${h.id}"></span>`}
-          ${!h.resuelto && puedeCerrar ? `<button class="edit-consulta-btn" onclick="abrirModalEditarConsulta('${h.id}')">✏️ Editar</button>` : ''}
-          ${h.resuelto
-            ? '<div class="resolved-pill">✅ Resuelta</div>'
-            : (puedeCerrar ? `<button class="resolve-btn" onclick="marcarResuelta('${h.id}')">🔒 Marcar resuelta</button>` : '')}
         </div>
+        ${puedeCerrar ? `<div class="thread-bar-row2">
+          ${!h.resuelto ? `<button class="edit-consulta-btn" onclick="abrirModalEditarConsulta('${h.id}')">✏️ Editar</button>` : ''}
+          ${h.resuelto ? '<div class="resolved-pill">✅ Resuelta</div>' : `<button class="resolve-btn" onclick="marcarResuelta('${h.id}')">🔒 Marcar resuelta</button>`}
+        </div>` : ''}
       </div>
 
       <div class="replies-section" id="replies_${h.id}" style="display:none;"></div>
