@@ -4737,6 +4737,23 @@ body {
     <span class="drawer-title">📱 EL RECOMENDADOR</span>
     <button class="drawer-close" onclick="closeSideDrawer()">✕</button>
   </div>
+      <!-- Puntos y rango — solo visible cuando hay sesión -->
+ <div id="drawerRankInfo" style="display:block; padding: 0; border-bottom: 1px solid rgba(255,255,255,0.08);">
+  <div class="drawer-item" style="cursor: default; pointer-events: none;">
+    <span class="drawer-item-icon">🏆</span>
+    <span class="drawer-item-label" id="drawerRankText" style="font-size:15px;font-weight:500;color:rgba(0, 0, 0, 0.85);line-height:1.5;">
+      <!-- Aquí se insertará el contenido de puntos y rango -->
+      Novato · 0 pts
+    </span>
+    <!-- Sin flecha (drawer-item-arrow) para que sea estático -->
+  </div>
+
+      <button class="drawer-item" id="drawerPerfilBtn" style="display:none;" onclick="closeSideDrawer(); abrirMiPerfil()">
+      <span class="drawer-item-icon">👤</span>
+      <span class="drawer-item-label">Mi perfil</span>
+      <span class="drawer-item-arrow">›</span>
+    </button>
+</div>
   <div class="drawer-menu">
     <button class="drawer-item" onclick="closeSideDrawer(); abrirForm()">
       <span class="drawer-item-icon">✏️</span>
@@ -4765,16 +4782,8 @@ body {
         <span class="drawer-item-arrow">›</span>
       </button>
     </div>
-    <button class="drawer-item" id="drawerPerfilBtn" style="display:none;" onclick="closeSideDrawer(); abrirMiPerfil()">
-      <span class="drawer-item-icon">👤</span>
-      <span class="drawer-item-label">Mi perfil</span>
-      <span class="drawer-item-arrow">›</span>
-    </button>
-    <!-- Puntos y rango — solo visible cuando hay sesión -->
-    <div id="drawerRankInfo" style="display:none; padding: 6px 16px 10px; border-bottom: 1px solid rgba(255,255,255,0.08);">
-      <div style="font-size:11px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Puntos y rango</div>
-      <div id="drawerRankText" style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.85);line-height:1.5;"></div>
-    </div>
+
+
     <button class="drawer-item" id="drawerLogoutBtn" style="display:none;" onclick="closeSideDrawer(); cerrarSesion()">
       <span class="drawer-item-icon">🚪</span>
       <span class="drawer-item-label" style="color:var(--accent-red);">Cerrar sesión</span>
