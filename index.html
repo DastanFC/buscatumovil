@@ -492,6 +492,31 @@ body {
 }
 
 /* ─── CONTAINER ─── */
+/* ─── LAYOUT DESKTOP CON SIDEBAR ─── */
+.page-layout {
+  display: block;
+}
+.page-sidebar { display: none; }
+
+@media (min-width: 1300px) {
+  .page-layout {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .page-sidebar {
+    display: block;
+    width: 300px;
+    flex-shrink: 0;
+    margin-top: 20px;
+    position: sticky;
+    top: 84px;
+  }
+}
+
 .container {
   max-width: 1060px;
   margin: 0 auto;
@@ -2629,6 +2654,26 @@ body {
   margin-right: 4px;
 }
 
+/* Respuesta de usuario experto/colaborador destacada */
+.reply-item.reply-expert {
+  background: linear-gradient(135deg, rgba(29, 111, 232, 0.06) 0%, rgba(29, 111, 232, 0.02) 100%);
+  border-left: 4px solid var(--blue);
+  border-radius: 12px;
+  margin: 8px 0;
+  padding-left: 12px;
+  position: relative;
+}
+
+.author-especialidad {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  font-weight: 600;
+  color: var(--blue);
+  background: var(--blue-pale);
+  border: 1px solid var(--blue-pale);
+}
+
 /* Collapse rangos banner on mobile by default */
 @media (max-width: 600px) {
   .perks-banner {
@@ -3458,6 +3503,56 @@ body {
   background: white;
   box-shadow: 0 0 0 3px rgba(29,111,232,0.08);
 }
+.ranking-oferta-wrap-inline {
+  margin: 10px 0 0;
+}
+.ranking-oferta-wrap {
+  background: var(--surface-2);
+  border: 1.5px dashed var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  margin-bottom: 14px;
+}
+.ranking-oferta-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-2);
+  margin-bottom: 8px;
+}
+.ranking-oferta-label span {
+  font-weight: 400;
+  color: var(--text-3);
+}
+.ranking-oferta-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.ranking-oferta-select,
+.ranking-oferta-input {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  background: var(--surface);
+  color: var(--text);
+  transition: all 0.18s;
+  -webkit-appearance: none;
+}
+.ranking-oferta-select { appearance: menulist; -webkit-appearance: menulist; }
+.ranking-oferta-input-full { margin-bottom: 0; }
+.ranking-oferta-select:focus,
+.ranking-oferta-input:focus {
+  outline: none; border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(29,111,232,0.08);
+}
+@media (max-width: 380px) {
+  .ranking-oferta-grid { grid-template-columns: 1fr; }
+}
+
 .ranking-scores-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -3602,6 +3697,67 @@ body {
 .reply-ranking-chip b {
   font-weight: 700;
   color: var(--navy);
+}
+
+/* ─── TARJETA DE OFERTA: tienda / precio / cupón ─── */
+.reply-oferta-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0 6px;
+  padding: 11px 14px;
+  background: linear-gradient(135deg, var(--blue-pale) 0%, #FFFFFF 100%);
+  border: 1px solid #D7E6FC;
+  border-radius: 14px;
+}
+.reply-oferta-icon {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: white;
+  border: 1px solid #D7E6FC;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+}
+.reply-oferta-body {
+  flex: 1;
+  min-width: 0;
+}
+.reply-oferta-store {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  color: var(--navy);
+  line-height: 1.3;
+}
+.reply-oferta-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin-top: 3px;
+}
+.reply-oferta-price {
+  font-family: 'DM Mono', monospace;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--green);
+}
+.reply-oferta-coupon {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  background: rgba(245,166,35,0.12);
+  border: 1px dashed var(--accent);
+  border-radius: 7px;
+  padding: 2px 8px;
+  letter-spacing: 0.3px;
 }
 
 /* ─── BOTÓN RECOMENDAR MÓVIL en reply-box ─── */
@@ -3757,11 +3913,15 @@ body {
 .top-moviles-info {
     flex: 1;
     padding: 0 12px;
+    min-width: 0;
 }
 .top-moviles-name {
     font-weight: 800;
     font-size: 1rem;
     color: var(--navy);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .top-moviles-stats {
     font-size: 0.7rem;
@@ -4648,6 +4808,332 @@ body {
 /* Compatibilidad: ocultar viejo forum-post-card si queda */
 .forum-post-card { display: none; }
 
+/* ─── WIDGET ENCUESTA HOME ─── */
+.home-encuesta-widget {
+  background: white;
+  border: 1.5px solid #DBEAFE;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(29,111,232,0.08);
+  margin-bottom: 14px;
+}
+.home-encuesta-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px 10px;
+  border-bottom: 1px solid #EFF6FF;
+  background: #EFF6FF;
+}
+.home-encuesta-badge {
+  background: var(--blue);
+  color: white;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-family: 'Roboto', sans-serif;
+}
+.home-encuesta-title {
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy);
+  flex: 1;
+  line-height: 1.35;
+}
+.home-encuesta-body { padding: 12px 14px 14px; }
+.home-encuesta-opciones { display: flex; flex-direction: column; gap: 7px; margin-bottom: 10px; }
+.home-encuesta-opcion {
+  position: relative;
+  background: #F8FAFF;
+  border: 1.5px solid #DBEAFE;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  transition: border-color 0.15s;
+}
+.home-encuesta-opcion:hover:not(.votada) { border-color: var(--blue); }
+.home-encuesta-opcion.votada { cursor: default; border-color: var(--blue); }
+.home-encuesta-opcion-bar {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  background: rgba(29,111,232,0.13);
+  transition: width 0.55s cubic-bezier(.22,1,.36,1);
+  pointer-events: none;
+}
+.home-encuesta-opcion-label {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+.home-encuesta-opcion-pct {
+  position: relative;
+  z-index: 1;
+  padding: 0 10px 0 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--blue);
+  min-width: 36px;
+  text-align: right;
+}
+.home-encuesta-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-3);
+}
+.home-encuesta-ver-btn {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--blue);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+}
+.home-encuesta-ver-btn:hover { text-decoration: underline; }
+
+.foro-hub {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 14px 12px 10px;
+}
+@media (max-width: 400px) {
+  .foro-hub { grid-template-columns: 1fr; }
+}
+.foro-hub-card {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: border-color 0.18s, box-shadow 0.18s, transform 0.12s;
+  box-shadow: 0 2px 8px rgba(15,27,45,0.06);
+  user-select: none;
+}
+.foro-hub-card:hover { border-color: var(--blue); box-shadow: 0 4px 16px rgba(29,111,232,0.15); }
+.foro-hub-card:active { transform: scale(0.97); }
+.foro-hub-icon { font-size: 32px; line-height: 1; }
+.foro-hub-name {
+  font-family: 'Roboto', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--navy);
+}
+.foro-hub-desc {
+  font-size: 11px;
+  color: var(--text-3);
+  line-height: 1.4;
+}
+.foro-hub-count {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--blue);
+  background: var(--blue-pale);
+  border-radius: 999px;
+  padding: 2px 10px;
+  margin-top: 2px;
+}
+
+/* ─── FORO RECENT ACTIVITY ─── */
+.foro-recent-header {
+  font-family: 'Roboto', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 8px 14px 6px;
+}
+.foro-recent-list {
+  background: white;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.foro-recent-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid #f0f2f5;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.foro-recent-item:last-child { border-bottom: none; }
+.foro-recent-item:hover { background: #f7f9fc; }
+.foro-recent-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+.foro-recent-body { flex: 1; min-width: 0; }
+.foro-recent-text {
+  font-size: 12px;
+  color: var(--text-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.foro-recent-text b { color: var(--navy); }
+.foro-recent-time { font-size: 10px; color: var(--text-3); margin-top: 1px; }
+.foro-recent-badge {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.foro-recent-badge.noticia { background: #EFF6FF; color: #1D6FE8; }
+.foro-recent-badge.encuesta { background: #F0FDF4; color: #16A34A; }
+.foro-recent-loading { padding: 20px; text-align: center; font-size: 13px; color: var(--text-3); }
+
+/* ─── ENCUESTA CARD en hilo del foro ─── */
+.encuesta-widget {
+  background: linear-gradient(135deg, #EFF6FF 0%, #F0FDF4 100%);
+  border: 1.5px solid #DBEAFE;
+  border-radius: 14px;
+  padding: 16px;
+  margin: 12px 0;
+}
+.encuesta-widget-pregunta {
+  font-family: 'Roboto', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+.encuesta-opciones { display: flex; flex-direction: column; gap: 8px; }
+.encuesta-opcion {
+  position: relative;
+  background: white;
+  border: 1.5px solid #DBEAFE;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+}
+.encuesta-opcion:hover:not(.votada) { border-color: var(--blue); }
+.encuesta-opcion.votada { cursor: default; border-color: var(--blue); }
+.encuesta-opcion-bar {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  background: rgba(29,111,232,0.12);
+  border-radius: 8px 0 0 8px;
+  transition: width 0.5s cubic-bezier(.22,1,.36,1);
+  pointer-events: none;
+}
+.encuesta-opcion-label {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+.encuesta-opcion-pct {
+  position: relative;
+  z-index: 1;
+  padding: 0 12px 0 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--blue);
+  min-width: 38px;
+  text-align: right;
+}
+.encuesta-meta {
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--text-3);
+  display: flex;
+  justify-content: space-between;
+}
+.encuesta-ya-votaste {
+  font-size: 11px;
+  color: #16A34A;
+  font-weight: 600;
+  margin-top: 6px;
+}
+
+/* ─── ADMIN ENCUESTAS ─── */
+.encuesta-admin-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+.encuesta-admin-pregunta {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--navy);
+  margin-bottom: 6px;
+}
+.encuesta-admin-meta {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-bottom: 8px;
+}
+.encuesta-admin-opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+.encuesta-admin-opcion-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.encuesta-admin-opcion-row input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+}
+.encuesta-add-opcion-btn {
+  background: none;
+  border: 1.5px dashed var(--border);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  color: var(--text-3);
+  cursor: pointer;
+  margin-top: 4px;
+  transition: border-color 0.15s, color 0.15s;
+}
+.encuesta-add-opcion-btn:hover { border-color: var(--blue); color: var(--blue); }
+
 /* ─── MÓVIL: ajustes lista hilos foro ─── */
 @media (max-width: 600px) {
   .fc-thread-header-row { display: none; }
@@ -4687,7 +5173,6 @@ body {
     overflow: hidden;
   }
 }
-
 </style>
 </head>
 <body>
@@ -4737,23 +5222,6 @@ body {
     <span class="drawer-title">📱 EL RECOMENDADOR</span>
     <button class="drawer-close" onclick="closeSideDrawer()">✕</button>
   </div>
-      <!-- Puntos y rango — solo visible cuando hay sesión -->
- <div id="drawerRankInfo" style="display:block; padding: 0; border-bottom: 1px solid rgba(255,255,255,0.08);">
-  <div class="drawer-item" style="cursor: default; pointer-events: none;">
-    <span class="drawer-item-icon">🏆</span>
-    <span class="drawer-item-label" id="drawerRankText" style="font-size:15px;font-weight:500;color:rgba(0, 0, 0, 0.85);line-height:1.5;">
-      <!-- Aquí se insertará el contenido de puntos y rango -->
-      Novato · 0 pts
-    </span>
-    <!-- Sin flecha (drawer-item-arrow) para que sea estático -->
-  </div>
-
-      <button class="drawer-item" id="drawerPerfilBtn" style="display:none;" onclick="closeSideDrawer(); abrirMiPerfil()">
-      <span class="drawer-item-icon">👤</span>
-      <span class="drawer-item-label">Mi perfil</span>
-      <span class="drawer-item-arrow">›</span>
-    </button>
-</div>
   <div class="drawer-menu">
     <button class="drawer-item" onclick="closeSideDrawer(); abrirForm()">
       <span class="drawer-item-icon">✏️</span>
@@ -4782,8 +5250,16 @@ body {
         <span class="drawer-item-arrow">›</span>
       </button>
     </div>
-
-
+    <button class="drawer-item" id="drawerPerfilBtn" style="display:none;" onclick="closeSideDrawer(); abrirMiPerfil()">
+      <span class="drawer-item-icon">👤</span>
+      <span class="drawer-item-label">Mi perfil</span>
+      <span class="drawer-item-arrow">›</span>
+    </button>
+    <!-- Puntos y rango — solo visible cuando hay sesión -->
+    <div id="drawerRankInfo" style="display:none; padding: 6px 16px 10px; border-bottom: 1px solid rgba(255,255,255,0.08);">
+      <div style="font-size:11px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Puntos y rango</div>
+      <div id="drawerRankText" style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.85);line-height:1.5;"></div>
+    </div>
     <button class="drawer-item" id="drawerLogoutBtn" style="display:none;" onclick="closeSideDrawer(); cerrarSesion()">
       <span class="drawer-item-icon">🚪</span>
       <span class="drawer-item-label" style="color:var(--accent-red);">Cerrar sesión</span>
@@ -4877,6 +5353,7 @@ body {
 </div>
 
 <!-- MAIN -->
+<div class="page-layout">
 <div class="container">
 
   <!-- BOTÓN FORO (entre banner global y consultas) -->
@@ -4884,66 +5361,49 @@ body {
     <span style="font-size:20px;">💬</span>
     <div style="flex:1;min-width:0;">
       <div style="font-weight:700;font-size:14px;font-family:'Roboto',sans-serif;">Foro de la comunidad</div>
-      <div style="font-size:11px;color:rgba(255,255,255,0.6);">Android · iOS · Apps · Ayuda</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.6);">Noticias · Encuestas · Debate</div>
     </div>
     <span style="font-size:18px;opacity:0.7;">›</span>
   </div>
 
+  <!-- WIDGET ENCUESTA ACTIVA EN HOME -->
+  <div id="homeEncuestaWidget" style="display:none;"></div>
+
   <!-- FORO -->
   <div id="forumSection" class="forum-section">
-    <!-- Lista de categorías -->
+    <!-- Portada del foro: Noticias + Encuestas -->
     <div id="forumCats">
       <div class="forum-exit-bar">
         <button class="forum-exit-btn" onclick="setTab('abiertas', document.querySelector('.tab.active') || document.querySelector('.tab'))">
-          ← Salir del foro
+          ← Salir
         </button>
         <span class="forum-exit-title">💬 Foro</span>
       </div>
-      <div class="fc-cats-list">
-        <div class="fc-cats-header-row">
-          <div class="fc-cats-header-name">Subforo</div>
-          <div class="fc-cats-header-count">Posts</div>
-        </div>
-        <div class="fc-cat-row" onclick="abrirCategoria('android')">
-          <div class="fc-cat-icon-col">🤖</div>
-          <div class="fc-cat-body">
-            <div class="fc-cat-name">Foro Android</div>
-            <div class="fc-cat-desc">Noticias, dudas y debate sobre Android</div>
+
+      <!-- Dos secciones principales -->
+      <div class="foro-hub">
+        <div class="foro-hub-card" onclick="abrirSeccionForo('noticias')">
+          <div class="foro-hub-icon">📰</div>
+          <div class="foro-hub-body">
+            <div class="foro-hub-name">Noticias</div>
+            <div class="foro-hub-desc">Comenta las últimas noticias del mundo móvil</div>
           </div>
-          <div class="fc-cat-count-col" id="fcat_count_android">...</div>
+          <div class="foro-hub-count" id="fhub_count_noticias">...</div>
         </div>
-        <div class="fc-cat-row" onclick="abrirCategoria('ios')">
-          <div class="fc-cat-icon-col">🍎</div>
-          <div class="fc-cat-body">
-            <div class="fc-cat-name">Foro iOS</div>
-            <div class="fc-cat-desc">Todo sobre iPhone, iPad y Apple</div>
+        <div class="foro-hub-card" onclick="abrirSeccionForo('encuestas')">
+          <div class="foro-hub-icon">📊</div>
+          <div class="foro-hub-body">
+            <div class="foro-hub-name">Encuestas</div>
+            <div class="foro-hub-desc">Vota y debate sobre móviles y tecnología</div>
           </div>
-          <div class="fc-cat-count-col" id="fcat_count_ios">...</div>
+          <div class="foro-hub-count" id="fhub_count_encuestas">...</div>
         </div>
-        <div class="fc-cat-row" onclick="abrirCategoria('personalizacion')">
-          <div class="fc-cat-icon-col">🎨</div>
-          <div class="fc-cat-body">
-            <div class="fc-cat-name">Personalización</div>
-            <div class="fc-cat-desc">Launchers, widgets, temas y fondos</div>
-          </div>
-          <div class="fc-cat-count-col" id="fcat_count_personalizacion">...</div>
-        </div>
-        <div class="fc-cat-row" onclick="abrirCategoria('apps')">
-          <div class="fc-cat-icon-col">📲</div>
-          <div class="fc-cat-body">
-            <div class="fc-cat-name">Apps y juegos</div>
-            <div class="fc-cat-desc">Recomendaciones y novedades <span style="color:var(--accent-red);font-size:10px;font-weight:700;">⚠️ No piratería</span></div>
-          </div>
-          <div class="fc-cat-count-col" id="fcat_count_apps">...</div>
-        </div>
-        <div class="fc-cat-row" onclick="abrirCategoria('ayuda')">
-          <div class="fc-cat-icon-col">🆘</div>
-          <div class="fc-cat-body">
-            <div class="fc-cat-name">Foro Ayuda</div>
-            <div class="fc-cat-desc">Problemas técnicos y soporte</div>
-          </div>
-          <div class="fc-cat-count-col" id="fcat_count_ayuda">...</div>
-        </div>
+      </div>
+
+      <!-- Últimos comentarios recientes (mini feed) -->
+      <div class="foro-recent-header">🕐 Actividad reciente</div>
+      <div id="foroRecentActivity" class="foro-recent-list">
+        <div class="foro-recent-loading">Cargando...</div>
       </div>
     </div>
 
@@ -4960,7 +5420,7 @@ body {
     <!-- Detalle de un post — estilo ForoCoches vertical -->
     <div id="forumDetailArea" class="forum-detail-area">
       <div class="forum-thread-header" style="margin-bottom:0;">
-        <button class="forum-back-btn" onclick="volverForumHilos()">← Volver a la categoría</button>
+        <button class="forum-back-btn" id="forumDetailBackBtn" onclick="volverForumHilos()">← Volver</button>
       </div>
 
       <!-- Post original -->
@@ -5019,6 +5479,7 @@ body {
         <button class="admin-tab" onclick="adminSetTab('config', this)">⚙️ Config</button>
         <button class="admin-tab" onclick="adminSetTab('actualizaciones', this)">📋 Actualizaciones</button>
         <button class="admin-tab" onclick="adminSetTab('noticias_admin', this)">📰 Noticias</button>
+        <button class="admin-tab" onclick="adminSetTab('encuestas_admin', this)">📊 Encuestas</button>
         <button class="admin-tab" onclick="adminSetTab('reportes', this)">⚠️ Reportes</button>
       </div>
       <div id="adminContent"><div class="admin-loading">⏳ Cargando...</div></div>
@@ -5119,6 +5580,43 @@ body {
   <!-- Noticias -->
   <div id="noticiasList" style="display:none;"></div>
 </div>
+
+<!-- SIDEBAR DESKTOP (oculta en móvil) -->
+<aside class="page-sidebar" id="pageSidebar">
+
+  <div class="top-moviles-card" id="topMovilesSection">
+    <div class="top-moviles-header" onclick="toggleTopMoviles()">
+      <div class="top-moviles-title">🏆 Top Móviles</div>
+      <button class="top-moviles-toggle" id="topToggleBtn">▾</button>
+    </div>
+    <div class="top-moviles-content" id="topMovilesContent">
+      <div class="top-moviles-filter">
+        <div class="form-field">
+          <select id="topPresupuestoFiltro" onchange="cargarTopMoviles()">
+            <option value="">💰 Todos los presupuestos</option>
+            <option value="0-100">Menos de 100€</option>
+            <option value="100-150">100€ - 150€</option>
+            <option value="150-200">150€ - 200€</option>
+            <option value="200-300">200€ - 300€</option>
+            <option value="300-450">300€ - 450€</option>
+            <option value="450-600">450€ - 600€</option>
+            <option value="600-800">600€ - 800€</option>
+            <option value="800-1000">800€ - 1000€</option>
+            <option value="mas-1000">Más de 1000€</option>
+          </select>
+        </div>
+      </div>
+      <div class="top-moviles-list" id="topMovilesList">
+        <div class="loading">⏳ Cargando...</div>
+      </div>
+      <div class="top-moviles-footer">Según votos, actualidad y presupuesto de las consultas</div>
+    </div>
+  </div>
+
+</aside>
+
+</div>
+
 
 <!-- BOTÓN ADMIN FLOTANTE (solo dastan) -->
 <button id="adminBtn" onclick="emergenciaAdmin()">👑</button>
@@ -5399,6 +5897,31 @@ body {
     <input class="ranking-movil-input" type="text" id="rankingMovilNombre"
       placeholder="Nombre del móvil que recomiendas (ej: Redmi Note 14)"
       autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+
+    <div class="ranking-oferta-wrap">
+      <div class="ranking-oferta-label">🛒 ¿Dónde lo compraste? <span>(opcional)</span></div>
+      <div class="ranking-oferta-grid">
+        <select class="ranking-oferta-select" id="rankingTienda">
+          <option value="">Tienda…</option>
+          <option value="Amazon">Amazon</option>
+          <option value="AliExpress">AliExpress</option>
+          <option value="TradingShenzhen">TradingShenzhen</option>
+          <option value="MediaMarkt">MediaMarkt</option>
+          <option value="Carrefour">Carrefour</option>
+          <option value="eBay">eBay</option>
+          <option value="PcComponentes">PcComponentes</option>
+          <option value="El Corte Inglés">El Corte Inglés</option>
+          <option value="Fnac">Fnac</option>
+          <option value="Miravia">Miravia</option>
+          <option value="Rakuten">Rakuten</option>
+          <option value="PowerPlanet">PowerPlanet</option>
+          <option value="Operadoras">Operadoras</option>
+          <option value="Otra">Otra tienda</option>
+        </select>
+        <input class="ranking-oferta-input" type="text" id="rankingPrecio" placeholder="💰 Precio (ej: 219€)" />
+      </div>
+      <input class="ranking-oferta-input ranking-oferta-input-full" type="text" id="rankingCupon" placeholder="🏷️ Código de cupón (ej: VERANO10)" />
+    </div>
 
     <div class="ranking-scores-grid" id="rankingScoresGrid">
       <!-- Generado por JS -->
@@ -5885,11 +6408,19 @@ function getRango(puntos, rol) {
   return RANGOS[0];
 }
 
-function getBadgeHtml(puntos, rol) {
+function getBadgeHtml(puntos, rol, especialidad) {
   const r = getRango(puntos, rol);
   const cls = `rank-${r.id}`;
   const crown = rol === 'admin' ? '👑 ' : '';
-  return `<span class="author-rank ${cls}">${crown}${r.icon} ${r.label}</span>`;
+  const espHtml = especialidad ? `<span class="author-especialidad">🎯 ${escHtml(especialidad)}</span>` : '';
+  return `<span class="author-rank ${cls}">${crown}${r.icon} ${r.label}</span>${espHtml}`;
+}
+
+// Determina si un autor debe verse "destacado" en sus respuestas (borde/fondo expert)
+function esAutorDestacado(puntos, rol) {
+  if (rol === 'admin') return true;
+  const r = getRango(puntos, rol);
+  return ['experto', 'colaborador_top', 'leyenda'].includes(r.id);
 }
 
 function esAdmin() { return usuario?.rol === 'admin'; }
@@ -6440,12 +6971,10 @@ function onLogin(prefetchedData = null) {
   renderRangos();
   cargarBannerGlobal();
   cargarActualizacionesUsuario();
+  cargarEncuestaHome();
   
   // Cargar TOP de móviles al iniciar sesión
   cargarTopMoviles();
-  
-  // Cargar TOP de usuarios
-  cargarTopUsuarios();
   
   // Mostrar botones de admin si corresponde
   if (usuario && usuario.nickname === 'dastan') {
@@ -6582,6 +7111,8 @@ function setTab(tab, el) {
     if (forumEl) forumEl.classList.remove('open');
   }
 
+  const widgetEncuesta = document.getElementById('homeEncuestaWidget');
+
   if (tab === 'noticias') {
     hilosEl.style.display = 'none';
     pagEl.style.display = 'none';
@@ -6590,6 +7121,7 @@ function setTab(tab, el) {
     if (forumEl) forumEl.classList.remove('open');
     if (topMovilesEl) topMovilesEl.style.display = '';
     if (topUsuariosEl) topUsuariosEl.style.display = '';
+    if (widgetEncuesta) widgetEncuesta.style.display = 'none';
     cargarNoticias();
   } else if (tab === 'foro') {
     hilosEl.style.display = 'none';
@@ -6599,6 +7131,7 @@ function setTab(tab, el) {
     if (forumEl) forumEl.classList.add('open');
     if (topMovilesEl) topMovilesEl.style.display = 'none';
     if (topUsuariosEl) topUsuariosEl.style.display = 'none';
+    if (widgetEncuesta) widgetEncuesta.style.display = 'none';
     // Ocultar botón foro shortcut cuando estamos en el foro
     const shortcut = document.getElementById('forumShortcutBtn');
     if (shortcut) shortcut.style.display = 'none';
@@ -6611,9 +7144,10 @@ function setTab(tab, el) {
     if (forumEl) forumEl.classList.remove('open');
     if (topMovilesEl) topMovilesEl.style.display = '';
     if (topUsuariosEl) topUsuariosEl.style.display = '';
-    // Restaurar botón acceso al foro
+    // Restaurar botón acceso al foro y widget encuesta
     const shortcut = document.getElementById('forumShortcutBtn');
     if (shortcut) shortcut.style.display = '';
+    cargarEncuestaHome();
     cargarHilos();
   }
 }
@@ -6662,7 +7196,7 @@ async function cargarHilos(prefetchedData = null) {
 
   // Batch: una sola query para todos los usuarios de esta página
   const nicknames = [...new Set(pag.map(h => h.nickname))];
-  const { data: usersData } = await db.from('usuarios').select('nickname, puntos, rol').in('nickname', nicknames);
+  const { data: usersData } = await db.from('usuarios').select('nickname, puntos, rol, especialidad').in('nickname', nicknames);
   const usersMap = {};
   if (usersData) usersData.forEach(u => usersMap[u.nickname] = u);
 
@@ -6679,7 +7213,7 @@ async function renderHilosPrefetched(data) {
   const start = (currentPage - 1) * ITEMS_PER_PAGE;
   const pag = hilosData.slice(start, start + ITEMS_PER_PAGE);
   const nicknames = [...new Set(pag.map(h => h.nickname))];
-  const { data: usersData } = await db.from('usuarios').select('nickname, puntos, rol').in('nickname', nicknames);
+  const { data: usersData } = await db.from('usuarios').select('nickname, puntos, rol, especialidad').in('nickname', nicknames);
   const usersMap = {};
   if (usersData) usersData.forEach(u => usersMap[u.nickname] = u);
   let html = '';
@@ -6749,7 +7283,7 @@ async function renderHilo(h, usersMap = {}) {
         <div class="thread-meta">
           <div class="avatar" style="background:${ac.bg};color:${ac.color};">${nombre.substring(0,2).toUpperCase()}</div>
           <div class="author-block">
-            <div class="author-name">${nombre} ${getBadgeHtml(pts, rol)}</div>
+            <div class="author-name">${nombre} ${getBadgeHtml(pts, rol, uData?.especialidad)}</div>
           </div>
           <div class="thread-time">${timeAgo(h.created_at)}${haParticipado ? '<span class="participated-icon">✏️ Participé</span>' : ''}</div>
         </div>
@@ -6812,6 +7346,30 @@ async function renderHilo(h, usersMap = {}) {
                 onkeydown="if(event.key==='Enter'){event.preventDefault();addMovilRec('${h.id}')}"
               />
               <button class="rec-moviles-add-btn" onclick="addMovilRec('${h.id}')">+ Añadir</button>
+            </div>
+            <div class="ranking-oferta-wrap ranking-oferta-wrap-inline">
+              <div class="ranking-oferta-label">🛒 ¿Dónde lo compraste? <span>(opcional)</span></div>
+              <div class="ranking-oferta-grid">
+                <select class="ranking-oferta-select" id="recTienda_${h.id}">
+                  <option value="">Tienda…</option>
+                  <option value="Amazon">Amazon</option>
+                  <option value="AliExpress">AliExpress</option>
+                  <option value="TradingShenzhen">TradingShenzhen</option>
+                  <option value="MediaMarkt">MediaMarkt</option>
+                  <option value="Carrefour">Carrefour</option>
+                  <option value="eBay">eBay</option>
+                  <option value="PcComponentes">PcComponentes</option>
+                  <option value="El Corte Inglés">El Corte Inglés</option>
+                  <option value="Fnac">Fnac</option>
+                  <option value="Miravia">Miravia</option>
+                  <option value="Rakuten">Rakuten</option>
+                  <option value="PowerPlanet">PowerPlanet</option>
+                  <option value="Operadoras">Operadoras</option>
+                  <option value="Otra">Otra tienda</option>
+                </select>
+                <input class="ranking-oferta-input" type="text" id="recPrecio_${h.id}" placeholder="💰 Precio (ej: 219€)" />
+              </div>
+              <input class="ranking-oferta-input ranking-oferta-input-full" type="text" id="recCupon_${h.id}" placeholder="🏷️ Código de cupón (ej: VERANO10)" />
             </div>
           </div>
         </div>` : ''}
@@ -7213,7 +7771,7 @@ async function cargarRespuestas(hiloId, forceVisible = false) {
   }
 
   const nicknames = [...new Set(respuestas.map(r => r.nickname))];
-  const { data: usuariosData } = await db.from('usuarios').select('nickname, puntos, rol').in('nickname', nicknames);
+  const { data: usuariosData } = await db.from('usuarios').select('nickname, puntos, rol, especialidad').in('nickname', nicknames);
   const usuariosMap = {};
   if (usuariosData) usuariosData.forEach(u => usuariosMap[u.nickname] = u);
 
@@ -7225,7 +7783,10 @@ async function cargarRespuestas(hiloId, forceVisible = false) {
     const miVoto = votosUsuario[r.id];
     const votosUtil = r.votos_util || 0;
     const esTopVotada = (mejorRespuesta && mejorRespuesta.id === r.id && maxVotos > 0);
-    const topClass = esTopVotada ? 'reply-item top-voted' : 'reply-item';
+    const esDestacado = esAutorDestacado(uData?.puntos || 0, uData?.rol || 'usuario');
+    let topClass = 'reply-item';
+    if (esTopVotada) topClass += ' top-voted';
+    if (esDestacado) topClass += ' reply-expert';
 
     // INDICADOR DE EDITADO
     const editadoBadge = r.editado ? `<span class="editado-badge"><i>✏️</i> Editado ${r.editado_en ? timeAgo(r.editado_en) : ''}</span>` : '';
@@ -7303,7 +7864,7 @@ async function cargarRespuestas(hiloId, forceVisible = false) {
         <div class="reply-header">
           <div class="reply-avatar" style="background:${ac.bg};color:${ac.color};">${nombre.substring(0,2).toUpperCase()}</div>
           <span class="reply-author">${nombre}</span>
-          ${getBadgeHtml(uData?.puntos || 0, uData?.rol || 'usuario')}
+          ${getBadgeHtml(uData?.puntos || 0, uData?.rol || 'usuario', uData?.especialidad)}
           ${esTopVotada ? `<span class="top-voted-badge">🏅 Más votada</span>` : ''}
           ${editadoBadge}
           <span class="reply-time">${timeAgo(r.created_at)}</span>
@@ -7312,6 +7873,7 @@ async function cargarRespuestas(hiloId, forceVisible = false) {
           ${citaHtml}
           ${movilesHtml}
           ${rankingHtml}
+          ${renderOfertaCard(r.tienda, r.precio_tienda, r.cupon)}
           ${contenidoLimpio}
         </div>
         <div class="reply-actions">
@@ -7358,6 +7920,21 @@ async function cargarRespuestas(hiloId, forceVisible = false) {
 
 // MODAL RANKING — RECOMENDAR MÓVIL
 // ═══════════════════════════════════════════
+function renderOfertaCard(tienda, precio, cupon) {
+  if (!tienda && !precio && !cupon) return '';
+  return `
+    <div class="reply-oferta-card">
+      <div class="reply-oferta-icon">🛒</div>
+      <div class="reply-oferta-body">
+        <div class="reply-oferta-store">${tienda ? escHtml(tienda) : 'Comprado en tienda'}</div>
+        <div class="reply-oferta-meta">
+          ${precio ? `<span class="reply-oferta-price">${escHtml(precio)}</span>` : ''}
+          ${cupon ? `<span class="reply-oferta-coupon">🏷️ ${escHtml(cupon)}</span>` : ''}
+        </div>
+      </div>
+    </div>`;
+}
+
 function abrirModalRanking(hiloId) {
   if (!usuario) { mostrarModalAuth(); return; }
   rankingHiloActivo = hiloId;
@@ -7381,6 +7958,9 @@ function abrirModalRanking(hiloId) {
 
   document.getElementById('rankingMovilNombre').value = '';
   document.getElementById('rankingNota').value = '';
+  document.getElementById('rankingTienda').value = '';
+  document.getElementById('rankingPrecio').value = '';
+  document.getElementById('rankingCupon').value = '';
   document.getElementById('rankingMediaNum').textContent = '—';
   document.getElementById('rankingModalOverlay').style.display = 'flex';
   document.getElementById('rankingMovilNombre').focus();
@@ -7434,6 +8014,9 @@ async function enviarConRanking() {
     : null;
 
   const nota = document.getElementById('rankingNota').value.trim();
+  const tienda = document.getElementById('rankingTienda').value.trim();
+  const precio = document.getElementById('rankingPrecio').value.trim();
+  const cupon = document.getElementById('rankingCupon').value.trim();
 
   // Construir texto legible para el campo contenido
   // Nota: el nombre del móvil se guarda en movil_nombre y se renderiza como tag,
@@ -7453,6 +8036,9 @@ async function enviarConRanking() {
     ...scores,
     sc_media: media,
     tiene_ranking: true,
+    tienda: tienda || null,
+    precio_tienda: precio || null,
+    cupon: cupon || null,
   };
 
   // Adjuntar cita si existe
@@ -7462,16 +8048,22 @@ async function enviarConRanking() {
 
   const { error } = await db.from('respuestas').insert(insertData);
   if (error) {
-    // Si las columnas de score no existen aún, insertamos sin ellas
-    const fallback = {
-      hilo_id: rankingHiloActivo,
-      usuario_id: usuario.id,
-      nickname: usuario.nickname,
-      contenido,
-    };
-    if (quoteActiva && quoteActiva.hiloId === rankingHiloActivo) fallback.cita_id = quoteActiva.replyId;
-    const { error: err2 } = await db.from('respuestas').insert(fallback);
-    if (err2) { toast('⚠️ Error: ' + err2.message); return; }
+    // Si las columnas de tienda/precio/cupón no existen aún, reintentamos sin ellas
+    const sinOferta = { ...insertData };
+    delete sinOferta.tienda; delete sinOferta.precio_tienda; delete sinOferta.cupon;
+    const { error: errSinOferta } = await db.from('respuestas').insert(sinOferta);
+    if (errSinOferta) {
+      // Si las columnas de score tampoco existen, insertamos lo mínimo
+      const fallback = {
+        hilo_id: rankingHiloActivo,
+        usuario_id: usuario.id,
+        nickname: usuario.nickname,
+        contenido,
+      };
+      if (quoteActiva && quoteActiva.hiloId === rankingHiloActivo) fallback.cita_id = quoteActiva.replyId;
+      const { error: err2 } = await db.from('respuestas').insert(fallback);
+      if (err2) { toast('⚠️ Error: ' + err2.message); return; }
+    }
   }
 
   // Cerrar modal inmediatamente (los puntos se actualizan en background abajo)
@@ -7503,12 +8095,13 @@ async function enviarConRanking() {
       <div class="reply-header">
         <div class="reply-avatar" style="background:${ac2.bg};color:${ac2.color};">${nombre2.substring(0,2).toUpperCase()}</div>
         <span class="reply-author">${nombre2}</span>
-        ${getBadgeHtml(usuario.puntos || 0, usuario.rol || 'usuario')}
+        ${getBadgeHtml(usuario.puntos || 0, usuario.rol || 'usuario', usuario.especialidad)}
         <span class="reply-time">ahora</span>
       </div>
       <div class="reply-content">
         <div class="reply-model-title"><span class="phone-title-tag">📱 ${formatearModelo(nombre)}</span></div>
         ${rankingInstant}
+        ${renderOfertaCard(tienda, precio, cupon)}
         ${nota ? renderizarContenido(nota) : ''}
       </div>
       <div class="reply-actions">
@@ -7549,23 +8142,39 @@ async function enviarRespuesta(hiloId) {
   const sendBtn = document.getElementById(`sendbtn_${hiloId}`);
   sendBtn.disabled = true;
 
+  const tiendaEl = document.getElementById(`recTienda_${hiloId}`);
+  const precioEl = document.getElementById(`recPrecio_${hiloId}`);
+  const cuponEl = document.getElementById(`recCupon_${hiloId}`);
+  const tienda = tiendaEl ? tiendaEl.value.trim() : '';
+  const precio = precioEl ? precioEl.value.trim() : '';
+  const cupon = cuponEl ? cuponEl.value.trim() : '';
+
   const insertData = {
     hilo_id: hiloId,
     usuario_id: usuario.id,
     nickname: usuario.nickname,
     contenido: texto,
     moviles_recomendados: (_movilesRec[hiloId] || []).length > 0 ? _movilesRec[hiloId] : null,
+    tienda: tienda || null,
+    precio_tienda: precio || null,
+    cupon: cupon || null,
   };
 
   if (quoteActiva && quoteActiva.hiloId === hiloId) {
     insertData.cita_id = quoteActiva.replyId;
   }
 
-  const { error } = await db.from('respuestas').insert(insertData);
+  let { error } = await db.from('respuestas').insert(insertData);
   if (error) {
-    toast('⚠️ Error al enviar: ' + error.message);
-    sendBtn.disabled = false;
-    return;
+    // Si las columnas de tienda/precio/cupón no existen aún, reintentamos sin ellas
+    const sinOferta = { ...insertData };
+    delete sinOferta.tienda; delete sinOferta.precio_tienda; delete sinOferta.cupon;
+    const { error: err2 } = await db.from('respuestas').insert(sinOferta);
+    if (err2) {
+      toast('⚠️ Error al enviar: ' + err2.message);
+      sendBtn.disabled = false;
+      return;
+    }
   }
 
   // Limpiar input y chips
@@ -7575,6 +8184,9 @@ async function enviarRespuesta(hiloId) {
   clearCita(hiloId);
   _movilesRec[hiloId] = [];
   renderMovilRecChips(hiloId);
+  if (tiendaEl) tiendaEl.value = '';
+  if (precioEl) precioEl.value = '';
+  if (cuponEl) cuponEl.value = '';
   sendBtn.disabled = false;
   toast('✅ Respuesta enviada · +2 pts');
 
@@ -7593,10 +8205,13 @@ async function enviarRespuesta(hiloId) {
       <div class="reply-header">
         <div class="reply-avatar" style="background:${ac.bg};color:${ac.color};">${nombre.substring(0,2).toUpperCase()}</div>
         <span class="reply-author">${nombre}</span>
-        ${getBadgeHtml(usuario.puntos || 0, usuario.rol || 'usuario')}
+        ${getBadgeHtml(usuario.puntos || 0, usuario.rol || 'usuario', usuario.especialidad)}
         <span class="reply-time">ahora</span>
       </div>
-      <div class="reply-content">${renderizarContenido(textoCopy)}</div>
+      <div class="reply-content">
+        ${renderOfertaCard(tienda, precio, cupon)}
+        ${renderizarContenido(textoCopy)}
+      </div>
       <div class="reply-actions">
         <button class="vote-btn">👍 0</button>
         <button class="vote-btn">👎 0</button>
@@ -7872,11 +8487,22 @@ async function guardarNoticia() {
   
   toast('⏳ Guardando...');
   
-  let error;
+  let error, data;
   if (id) {
     ({ error } = await db.from('noticias').update({ titulo, resumen, imagen_url, categoria, fecha }).eq('id', id));
   } else {
-    ({ error } = await db.from('noticias').insert({ titulo, resumen, imagen_url, categoria, fecha }));
+    ({ error, data } = await db.from('noticias').insert({ titulo, resumen, imagen_url, categoria, fecha }).select().single());
+    // Crear hilo automático en el foro vinculado a esta noticia
+    if (!error && data) {
+      await db.from('foro_posts').insert({
+        titulo: titulo,
+        contenido: `<p>💬 Comenta aquí la noticia: <b>${titulo}</b></p>`,
+        nickname: usuario?.nickname || 'admin',
+        categoria: 'noticias',
+        tipo: 'noticia',
+        noticia_id: data.id
+      });
+    }
   }
   
   if (error) { toast('❌ Error: ' + error.message); return; }
@@ -7967,8 +8593,151 @@ async function adminBorrarNoticia(id) {
   if (tabActual === 'noticias') cargarNoticias();
 }
 
+// ═══════════════════════════════════════════
+// ENCUESTAS ADMIN
+// ═══════════════════════════════════════════
+
+async function renderAdminEncuestas() {
+  const { data: encuestas } = await db.from('encuestas')
+    .select('*, encuesta_opciones(*)')
+    .order('created_at', { ascending: false });
+
+  let listaHtml = '';
+  if (encuestas && encuestas.length > 0) {
+    listaHtml = encuestas.map(e => {
+      const totalVotos = (e.encuesta_opciones || []).reduce((s, o) => s + (o.votos || 0), 0);
+      const opcionesStr = (e.encuesta_opciones || []).map(o => `${escHtml(o.texto)} (${o.votos || 0})`).join(' · ');
+      return `
+        <div class="encuesta-admin-card">
+          <div class="encuesta-admin-pregunta">${escHtml(e.pregunta)}</div>
+          <div class="encuesta-admin-meta">${totalVotos} votos · ${e.activa ? '🟢 Activa' : '🔴 Cerrada'} · ${timeAgo(e.created_at)}</div>
+          <div style="font-size:12px;color:var(--text-3);margin-bottom:10px;">${opcionesStr}</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="admin-btn ${e.activa ? 'admin-btn-gray' : 'admin-btn-blue'}" onclick="adminToggleEncuesta('${e.id}', ${!e.activa})">${e.activa ? '🔴 Cerrar' : '🟢 Activar'}</button>
+            <button class="admin-btn admin-btn-red" onclick="adminBorrarEncuesta('${e.id}')">🗑 Borrar</button>
+          </div>
+        </div>`;
+    }).join('');
+  } else {
+    listaHtml = '<div class="admin-empty">No hay encuestas aún. ¡Crea la primera!</div>';
+  }
+
+  document.getElementById('adminContent').innerHTML = `
+    <div style="margin-bottom:16px;">
+      <button class="admin-btn admin-btn-blue" onclick="abrirModalNuevaEncuesta()">➕ Nueva encuesta</button>
+    </div>
+    <div class="admin-section-title">📊 Encuestas</div>
+    ${listaHtml}
+  `;
+}
+
+async function adminToggleEncuesta(id, activa) {
+  await db.from('encuestas').update({ activa }).eq('id', id);
+  toast(activa ? '🟢 Encuesta activada' : '🔴 Encuesta cerrada');
+  renderAdminEncuestas();
+}
+
+async function adminBorrarEncuesta(id) {
+  if (!confirm('¿Borrar esta encuesta y todos sus votos?')) return;
+  await db.from('encuesta_votos').delete().eq('encuesta_id', id);
+  await db.from('encuesta_opciones').delete().eq('encuesta_id', id);
+  // Borrar hilo del foro vinculado (por encuesta_id o por tipo+título)
+  const { data: enc } = await db.from('encuestas').select('pregunta').eq('id', id).single();
+  await db.from('foro_posts').delete().eq('tipo', 'encuesta').eq('encuesta_id', id);
+  if (enc) await db.from('foro_posts').delete().eq('tipo', 'encuesta').eq('titulo', enc.pregunta);
+  await db.from('encuestas').delete().eq('id', id);
+  toast('🗑 Encuesta borrada');
+  renderAdminEncuestas();
+}
+
+function abrirModalNuevaEncuesta() {
+  // Crear modal si no existe
+  let modal = document.getElementById('encuestaModalAdmin');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'encuestaModalAdmin';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(15,27,45,0.6);backdrop-filter:blur(4px);z-index:1000;display:flex;align-items:flex-end;justify-content:center;';
+    modal.innerHTML = `
+      <div style="background:white;border-radius:20px 20px 0 0;width:100%;max-width:560px;max-height:85vh;overflow-y:auto;padding:20px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <div style="font-family:'Roboto',sans-serif;font-size:16px;font-weight:800;color:var(--navy);">📊 Nueva encuesta</div>
+          <button onclick="cerrarModalNuevaEncuesta()" style="background:var(--surface-3);border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:16px;">✕</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--text-2);display:block;margin-bottom:4px;">Pregunta *</label>
+            <input id="encuestaPregunta" type="text" placeholder="ej. ¿Qué marca de móvil prefieres?" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;box-sizing:border-box;" />
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--text-2);display:block;margin-bottom:4px;">Descripción (opcional)</label>
+            <textarea id="encuestaDescripcion" placeholder="Contexto adicional para la encuesta..." style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;min-height:60px;box-sizing:border-box;resize:none;"></textarea>
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--text-2);display:block;margin-bottom:6px;">Opciones * (mín. 2)</label>
+            <div id="encuestaOpcionesAdmin" style="display:flex;flex-direction:column;gap:6px;">
+              <div class="encuesta-admin-opcion-row"><input type="text" placeholder="Opción 1" /><button onclick="this.parentElement.remove()" style="background:none;border:none;color:#cc3333;font-size:18px;cursor:pointer;padding:0 4px;">✕</button></div>
+              <div class="encuesta-admin-opcion-row"><input type="text" placeholder="Opción 2" /><button onclick="this.parentElement.remove()" style="background:none;border:none;color:#cc3333;font-size:18px;cursor:pointer;padding:0 4px;">✕</button></div>
+            </div>
+            <button class="encuesta-add-opcion-btn" onclick="addOpcionEncuesta()" style="width:100%;margin-top:6px;">+ Añadir opción</button>
+          </div>
+          <button onclick="guardarNuevaEncuesta()" style="background:var(--blue);color:white;border:none;border-radius:999px;padding:14px;font-size:14px;font-weight:700;cursor:pointer;margin-top:4px;">📊 Publicar encuesta</button>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+  }
+  modal.style.display = 'flex';
+}
+
+function cerrarModalNuevaEncuesta() {
+  const m = document.getElementById('encuestaModalAdmin');
+  if (m) m.style.display = 'none';
+}
+
+function addOpcionEncuesta() {
+  const cont = document.getElementById('encuestaOpcionesAdmin');
+  if (!cont) return;
+  const n = cont.children.length + 1;
+  const row = document.createElement('div');
+  row.className = 'encuesta-admin-opcion-row';
+  row.innerHTML = `<input type="text" placeholder="Opción ${n}" /><button onclick="this.parentElement.remove()" style="background:none;border:none;color:#cc3333;font-size:18px;cursor:pointer;padding:0 4px;">✕</button>`;
+  cont.appendChild(row);
+}
+
+async function guardarNuevaEncuesta() {
+  const pregunta = document.getElementById('encuestaPregunta').value.trim();
+  const descripcion = document.getElementById('encuestaDescripcion').value.trim();
+  const inputs = document.querySelectorAll('#encuestaOpcionesAdmin input');
+  const opciones = Array.from(inputs).map(i => i.value.trim()).filter(Boolean);
+
+  if (!pregunta) { toast('❌ Escribe una pregunta'); return; }
+  if (opciones.length < 2) { toast('❌ Añade al menos 2 opciones'); return; }
+
+  toast('⏳ Guardando encuesta...');
+
+  const { data: enc, error } = await db.from('encuestas').insert({ pregunta, descripcion, activa: true }).select().single();
+  if (error || !enc) { toast('❌ Error: ' + (error?.message || 'desconocido')); return; }
+
+  // Insertar opciones
+  const opcionesData = opciones.map(texto => ({ encuesta_id: enc.id, texto, votos: 0 }));
+  await db.from('encuesta_opciones').insert(opcionesData);
+
+  // Crear hilo automático en el foro
+  await db.from('foro_posts').insert({
+    titulo: pregunta,
+    contenido: `<p>📊 Vota y comenta esta encuesta: <b>${pregunta}</b></p>`,
+    nickname: usuario?.nickname || 'admin',
+    categoria: 'encuestas',
+    tipo: 'encuesta',
+    encuesta_id: enc.id
+  });
+
+  toast('✅ Encuesta publicada');
+  cerrarModalNuevaEncuesta();
+  renderAdminEncuestas();
+}
+
 // Función global para abrir noticia
-function abrirNoticia(idx) {
+async function abrirNoticia(idx) {
   const n = noticiasCache[idx];
   if (!n) return;
   const catClass = 'noticia-cat-' + (n.categoria || 'comunidad');
@@ -7976,6 +8745,11 @@ function abrirNoticia(idx) {
   const imgHtml = n.imagen_url
     ? `<img class="noticia-modal-img" src="${n.imagen_url}" alt="${n.titulo}" onerror="this.style.display='none'" />`
     : '';
+
+  // Buscar hilo del foro vinculado para contar comentarios
+  const { data: postForo } = await db.from('foro_posts').select('id, foro_replies(count)').eq('tipo', 'noticia').eq('noticia_id', n.id).maybeSingle();
+  const numComents = postForo?.foro_replies?.[0]?.count || 0;
+
   const html = `
     <div class="noticia-modal-overlay" id="noticiaModal" onclick="cerrarNoticia(event)">
       <div class="noticia-modal" onclick="event.stopPropagation()">
@@ -7985,6 +8759,7 @@ function abrirNoticia(idx) {
           <div class="noticia-modal-titulo">${n.titulo}</div>
           <div class="noticia-modal-resumen ql-editor" style="padding:0;">${n.resumen || ''}</div>
           <div class="noticia-modal-meta">🗓️ ${n.fecha || ''}</div>
+          ${postForo ? `<button onclick="cerrarNoticia();irAlHiloNoticia('${postForo.id}')" style="margin-top:14px;width:100%;background:var(--blue);color:white;border:none;border-radius:999px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;">💬 ${numComents > 0 ? `Ver ${numComents} comentarios` : 'Comentar esta noticia'}</button>` : ''}
         </div>
         <button class="noticia-modal-close" onclick="cerrarNoticia()">✕ Cerrar</button>
       </div>
@@ -7993,6 +8768,17 @@ function abrirNoticia(idx) {
   const old = document.getElementById('noticiaModal');
   if (old) old.remove();
   document.body.insertAdjacentHTML('beforeend', html);
+}
+
+function irAlHiloNoticia(postId) {
+  // Ir al foro sección noticias y abrir el post
+  setTab('foro', document.getElementById('forumTabBtn'));
+  setTimeout(async () => {
+    forumSeccionActual = 'noticias';
+    document.getElementById('forumCats').style.display = 'none';
+    document.getElementById('forumThreadArea').classList.remove('open');
+    await abrirPost(postId);
+  }, 100);
 }
 
 function cerrarNoticia(e) {
@@ -8071,6 +8857,7 @@ async function cargarAdminContent() {
   else if (adminTabActual === 'config') renderAdminConfig();
   else if (adminTabActual === 'actualizaciones') renderAdminActualizaciones();
   else if (adminTabActual === 'noticias_admin') await renderAdminNoticias();
+  else if (adminTabActual === 'encuestas_admin') await renderAdminEncuestas();
   else if (adminTabActual === 'reportes') await renderAdminReportes();
 }
 
@@ -8098,7 +8885,7 @@ async function renderAdminUsuarios() {
   let html = `
     <div class="admin-section-title">👥 Todos los usuarios (${users.length})</div>
     <div class="admin-table-wrap"><table class="admin-table">
-      <thead><tr><th>Usuario</th><th>Puntos</th><th>Estado</th><th>Acciones</th></tr></thead>
+      <thead><tr><th>Usuario</th><th>Puntos</th><th>Especialidad</th><th>Estado</th><th>Acciones</th></tr></thead>
       <tbody>`;
 
   for (const u of pag) {
@@ -8115,6 +8902,10 @@ async function renderAdminUsuarios() {
       <td>
         <input class="admin-inline-input" type="number" value="${u.puntos||0}" id="pts_${u.nickname}" />
         <button class="admin-btn admin-btn-blue" onclick="adminAjustarPuntos('${u.nickname}')">✔</button>
+       </td>
+      <td>
+        <input class="admin-inline-input" type="text" placeholder="Ej: Experto en Pixel" value="${u.especialidad ? escHtml(u.especialidad) : ''}" id="esp_${u.nickname}" style="width:120px;" />
+        <button class="admin-btn admin-btn-blue" onclick="adminSetEspecialidad('${u.nickname}')">✔</button>
        </td>
       <td>${badge}</td>
       <td><div class="admin-actions-row">
@@ -8321,6 +9112,14 @@ async function adminAjustarPuntos(nick) {
   if (isNaN(val) || val < 0) { toast('❌ Valor no válido'); return; }
   await db.from('usuarios').update({ puntos: val }).eq('nickname', nick);
   toast(`✅ Puntos de ${cap(nick)} → ${val}`);
+  cargarAdminContent();
+}
+
+async function adminSetEspecialidad(nick) {
+  const input = document.getElementById(`esp_${nick}`);
+  const val = input.value.trim();
+  await db.from('usuarios').update({ especialidad: val || null }).eq('nickname', nick);
+  toast(val ? `✅ Especialidad de ${cap(nick)} → ${val}` : `✅ Especialidad de ${cap(nick)} eliminada`);
   cargarAdminContent();
 }
 
@@ -8692,13 +9491,9 @@ async function cargarTopMoviles() {
   
   listContainer.innerHTML = '<div class="loading">⏳ Analizando recomendaciones de la comunidad...</div>';
   
-  // Obtener filtro de presupuesto
+  // Obtener filtro de presupuesto (mismo tramo que usa el formulario de consulta)
   const presupuestoInput = document.getElementById('topPresupuestoFiltro');
-  let presupuestoFiltro = null;
-  if (presupuestoInput && presupuestoInput.value) {
-    presupuestoFiltro = parseInt(presupuestoInput.value);
-    if (isNaN(presupuestoFiltro)) presupuestoFiltro = null;
-  }
+  const presupuestoFiltro = (presupuestoInput && presupuestoInput.value) ? presupuestoInput.value : null;
   
   // Obtener hilos con respuestas
   const { data: hilosConRespuestas, error: hilosError } = await db
@@ -8728,10 +9523,7 @@ async function cargarTopMoviles() {
   const recomendacionesPonderadas = [];
   
   for (const hilo of hilosConRespuestas) {
-    if (presupuestoFiltro && hilo.presupuesto) {
-      const presupuestoHilo = parseInt(hilo.presupuesto);
-      if (!isNaN(presupuestoHilo) && Math.abs(presupuestoHilo - presupuestoFiltro) > 100) continue;
-    }
+    if (presupuestoFiltro && hilo.presupuesto !== presupuestoFiltro) continue;
     
     for (const respuesta of hilo.respuestas) {
       // Prioridad: nuevo array > movil_nombre legacy > parser texto
@@ -8793,7 +9585,9 @@ async function cargarTopMoviles() {
   
   // Renderizar
   if (topMoviles.length === 0) {
-    listContainer.innerHTML = '<div class="empty-state">🤷‍♂️ No hay móviles recomendados con suficientes votos.</div>';
+    listContainer.innerHTML = presupuestoFiltro
+      ? '<div class="empty-state">🤷‍♂️ Aún no hay recomendaciones suficientes para este presupuesto.</div>'
+      : '<div class="empty-state">🤷‍♂️ No hay móviles recomendados con suficientes votos.</div>';
     return;
   }
   
@@ -8970,77 +9764,101 @@ function mostrarForumCats() {
   document.getElementById('forumCats').style.display = 'block';
   document.getElementById('forumThreadArea').classList.remove('open');
   document.getElementById('forumDetailArea').classList.remove('open');
+  forumSeccionActual = null;
 }
 
 function volverForumCats() {
   mostrarForumCats();
   forumPostActual = null;
+  window._encuestaIdActual = null;
 }
 
 function volverForumHilos() {
   document.getElementById('forumDetailArea').classList.remove('open');
   document.getElementById('forumThreadArea').classList.add('open');
   forumPostActual = null;
+  window._encuestaPostPendiente = null;
+  window._encuestaIdActual = null;
 }
 
 async function cargarContadoresForo() {
-  for (const cat of Object.keys(FORUM_CATS)) {
-    const { count } = await db.from('foro_posts')
-      .select('id', { count: 'exact', head: true })
-      .eq('categoria', cat);
-    const el = document.getElementById(`fcat_count_${cat}`);
-    if (el) el.textContent = (count || 0) + ' posts';
-  }
+  // Contar posts tipo noticia
+  const { count: cNoticias } = await db.from('foro_posts')
+    .select('id', { count: 'exact', head: true })
+    .eq('tipo', 'noticia');
+  const elN = document.getElementById('fhub_count_noticias');
+  if (elN) elN.textContent = (cNoticias || 0) + ' comentarios';
+
+  // Contar encuestas activas
+  const { count: cEncuestas } = await db.from('encuestas')
+    .select('id', { count: 'exact', head: true })
+    .eq('activa', true);
+  const elE = document.getElementById('fhub_count_encuestas');
+  if (elE) elE.textContent = (cEncuestas || 0) + ' encuestas';
+
+  // Cargar actividad reciente
+  cargarActividadRecienteForo();
 }
 
-async function abrirCategoria(cat) {
-  forumCatActual = cat;
-  const catInfo = FORUM_CATS[cat];
+// ─── Nueva navegación del foro hub ───
+let forumSeccionActual = null; // 'noticias' | 'encuestas'
+
+async function abrirSeccionForo(seccion) {
+  forumSeccionActual = seccion;
   document.getElementById('forumCats').style.display = 'none';
   document.getElementById('forumDetailArea').classList.remove('open');
   document.getElementById('forumThreadArea').classList.add('open');
-  document.getElementById('forumCatTitle').textContent = `${catInfo.icon} ${catInfo.name}`;
+
+  const titles = { noticias: '📰 Noticias comentadas', encuestas: '📊 Encuestas' };
+  document.getElementById('forumCatTitle').textContent = titles[seccion] || seccion;
+
+  // Actualizar botón nuevo post: solo admin puede crear encuestas; noticias no se crean desde aquí
+  const newBtn = document.querySelector('.forum-new-btn');
+  if (newBtn) {
+    if (seccion === 'encuestas' && esAdmin()) {
+      newBtn.style.display = '';
+      newBtn.textContent = '➕ Nueva encuesta';
+      newBtn.onclick = abrirModalNuevaEncuesta;
+    } else {
+      newBtn.style.display = 'none';
+    }
+  }
+
   document.getElementById('forumPostList').innerHTML = '<div class="loading">⏳ Cargando...</div>';
 
+  if (seccion === 'noticias') {
+    await cargarHilosNoticias();
+  } else if (seccion === 'encuestas') {
+    await cargarListaEncuestas();
+  }
+}
+
+async function cargarHilosNoticias() {
   const { data: posts, error } = await db.from('foro_posts')
     .select('*, foro_replies(count)')
-    .eq('categoria', cat)
-    .order('pinned', { ascending: false })
+    .eq('tipo', 'noticia')
     .order('created_at', { ascending: false })
     .limit(50);
 
   if (error) {
-    document.getElementById('forumPostList').innerHTML = '<div class="empty-state">❌ Error cargando posts. ¿Está la tabla creada en Supabase?</div>';
+    document.getElementById('forumPostList').innerHTML = '<div class="empty-state">❌ Error cargando. Asegúrate de tener la columna <b>tipo</b> en foro_posts.</div>';
     return;
   }
-
   if (!posts || posts.length === 0) {
-    document.getElementById('forumPostList').innerHTML = `
-      <div class="empty-state">
-        <div class="empty-state-icon">${catInfo.icon}</div>
-        <div>Sé el primero en publicar en ${catInfo.name}</div>
-      </div>`;
+    document.getElementById('forumPostList').innerHTML = '<div class="empty-state"><div class="empty-state-icon">📰</div><div>Aún no hay comentarios en noticias</div></div>';
     return;
   }
-
-  let html = `
-    <div class="fc-thread-header-row">
-      <div class="fc-thread-header-title">Tema</div>
-      <div class="fc-thread-header-right">Resp. / Última</div>
-    </div>`;
+  let html = `<div class="fc-thread-header-row"><div class="fc-thread-header-title">Noticia</div><div class="fc-thread-header-right">Coment. / Última</div></div>`;
   for (const p of posts) {
-    const nombre = cap(p.nickname);
     const replies = p.foro_replies?.[0]?.count || 0;
-    const preview = (p.contenido || '').replace(/\[cite:[^\]]*\][\s\S]*?\[\/cite\]/g,'').replace(/<[^>]*>/g,'').trim().substring(0, 80);
+    const preview = (p.contenido || '').replace(/<[^>]*>/g,'').trim().substring(0, 80);
     html += `
       <div class="fc-thread-row" onclick="abrirPost('${p.id}')">
-        <div class="fc-thread-icon">
-          <div class="fc-thread-envelope${p.pinned ? ' pinned' : ''}"></div>
-        </div>
+        <div class="fc-thread-icon"><div class="fc-thread-envelope"></div></div>
         <div class="fc-thread-body">
-          <div class="fc-thread-title-text">${p.pinned ? '<span class="fc-pin-badge">📌 Fijado</span>' : ''}${escHtml(p.titulo)}</div>
+          <div class="fc-thread-title-text"><span style="font-size:10px;background:#EFF6FF;color:#1D6FE8;border-radius:3px;padding:1px 5px;margin-right:5px;font-weight:700;">📰</span>${escHtml(p.titulo)}</div>
           <div class="fc-thread-meta-row">
-            <span class="fc-thread-author">@${nombre}</span>
+            <span class="fc-thread-author">@${cap(p.nickname)}</span>
             ${preview ? `<span class="fc-thread-preview">· ${escHtml(preview)}</span>` : ''}
           </div>
         </div>
@@ -9048,10 +9866,282 @@ async function abrirCategoria(cat) {
           <span class="fc-thread-replies">💬 ${replies}</span>
           <span class="fc-thread-time">${timeAgo(p.created_at)}</span>
         </div>
-      </div>
-    `;
+      </div>`;
   }
   document.getElementById('forumPostList').innerHTML = html;
+}
+
+async function cargarListaEncuestas() {
+  const { data: encuestas, error } = await db.from('encuestas')
+    .select('*, encuesta_opciones(*)')
+    .eq('activa', true)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    document.getElementById('forumPostList').innerHTML = '<div class="empty-state">❌ Error. Crea la tabla <b>encuestas</b> en Supabase.</div>';
+    return;
+  }
+  if (!encuestas || encuestas.length === 0) {
+    document.getElementById('forumPostList').innerHTML = '<div class="empty-state"><div class="empty-state-icon">📊</div><div>Aún no hay encuestas activas</div></div>';
+    return;
+  }
+
+  let html = '';
+  for (const e of encuestas) {
+    const totalVotos = (e.encuesta_opciones || []).reduce((s, o) => s + (o.votos || 0), 0);
+    html += `
+      <div class="fc-thread-row" onclick="abrirEncuestaPost('${e.id}')">
+        <div class="fc-thread-icon"><div style="font-size:20px;padding:0 2px;">📊</div></div>
+        <div class="fc-thread-body">
+          <div class="fc-thread-title-text">${escHtml(e.pregunta)}</div>
+          <div class="fc-thread-meta-row">
+            <span class="fc-thread-author">${totalVotos} votos</span>
+            <span class="fc-thread-preview">· ${(e.encuesta_opciones||[]).length} opciones</span>
+          </div>
+        </div>
+        <div class="fc-thread-right">
+          <span class="fc-thread-replies">🗳️</span>
+          <span class="fc-thread-time">${timeAgo(e.created_at)}</span>
+        </div>
+      </div>`;
+  }
+  document.getElementById('forumPostList').innerHTML = html;
+}
+
+async function abrirEncuestaPost(encuestaId) {
+  window._encuestaIdActual = encuestaId;
+  forumPostActual = 'encuesta_' + encuestaId;
+  document.getElementById('forumThreadArea').classList.remove('open');
+  const detailArea = document.getElementById('forumDetailArea');
+  detailArea.classList.add('open');
+  document.getElementById('forumDetailContent').innerHTML = '<div class="loading" style="padding:20px;">⏳ Cargando encuesta...</div>';
+  document.getElementById('forumRepliesSection').innerHTML = '';
+  document.getElementById('forumReplyBox').style.display = 'none';
+
+  const { data: enc } = await db.from('encuestas').select('*, encuesta_opciones(*)').eq('id', encuestaId).single();
+  if (!enc) { document.getElementById('forumDetailContent').innerHTML = '<div class="empty-state">❌ Encuesta no encontrada</div>'; return; }
+
+  // Comprobar si el usuario ya votó
+  let yaVote = null;
+  if (usuario) {
+    const { data: voto } = await db.from('encuesta_votos').select('opcion_id').eq('encuesta_id', encuestaId).eq('nickname', usuario.nickname).maybeSingle();
+    if (voto) yaVote = voto.opcion_id;
+  }
+
+  const totalVotos = (enc.encuesta_opciones || []).reduce((s, o) => s + (o.votos || 0), 0);
+  const mostrarResultados = yaVote !== null || !usuario;
+
+  let opcionesHtml = '';
+  for (const op of (enc.encuesta_opciones || [])) {
+    const pct = totalVotos > 0 ? Math.round((op.votos || 0) / totalVotos * 100) : 0;
+    const esLaVotada = op.id === yaVote;
+    if (mostrarResultados) {
+      opcionesHtml += `
+        <div class="encuesta-opcion votada">
+          <div class="encuesta-opcion-bar" style="width:${pct}%"></div>
+          <span class="encuesta-opcion-label">${esLaVotada ? '✅ ' : ''}${escHtml(op.texto)}</span>
+          <span class="encuesta-opcion-pct">${pct}%</span>
+        </div>`;
+    } else {
+      opcionesHtml += `
+        <div class="encuesta-opcion" onclick="votarEncuesta('${encuestaId}','${op.id}')">
+          <span class="encuesta-opcion-label">${escHtml(op.texto)}</span>
+        </div>`;
+    }
+  }
+
+  document.getElementById('forumDetailContent').innerHTML = `
+    <div style="padding:12px 12px 4px;">
+      <div class="encuesta-widget">
+        <div class="encuesta-widget-pregunta">${escHtml(enc.pregunta)}</div>
+        <div class="encuesta-opciones" id="encuesta_opciones_${encuestaId}">${opcionesHtml}</div>
+        <div class="encuesta-meta">
+          <span>${totalVotos} votos en total · ${timeAgo(enc.created_at)}</span>
+          ${yaVote ? '<span class="encuesta-ya-votaste">✅ Ya has votado</span>' : (!usuario ? '<span>Inicia sesión para votar</span>' : '')}
+        </div>
+      </div>
+      ${enc.descripcion ? `<div style="font-size:13px;color:var(--text-2);margin-top:8px;line-height:1.6;padding:0 2px;">${escHtml(enc.descripcion)}</div>` : ''}
+    </div>`;
+
+  // Actualizar botón volver
+  const backBtn = document.getElementById('forumDetailBackBtn');
+  if (backBtn) backBtn.onclick = () => { document.getElementById('forumDetailArea').classList.remove('open'); document.getElementById('forumThreadArea').classList.add('open'); };
+
+  // Cargar comentarios del hilo de la encuesta
+  // Buscar primero por encuesta_id, luego fallback por título (por si encuesta_id no está en BD)
+  let postForo = null;
+  const { data: postPorId } = await db.from('foro_posts')
+    .select('id')
+    .eq('tipo', 'encuesta')
+    .eq('encuesta_id', encuestaId)
+    .maybeSingle();
+  
+  if (postPorId) {
+    postForo = postPorId;
+  } else {
+    // Fallback: buscar por título exacto
+    const { data: postPorTitulo } = await db.from('foro_posts')
+      .select('id')
+      .eq('tipo', 'encuesta')
+      .eq('titulo', enc.pregunta)
+      .maybeSingle();
+    if (postPorTitulo) postForo = postPorTitulo;
+  }
+  if (postForo) {
+    forumPostActual = postForo.id;
+    await cargarRespuestasForo(postForo.id);
+    if (usuario) document.getElementById('forumReplyBox').style.display = 'block';
+  } else {
+    document.getElementById('forumRepliesSection').innerHTML = `<div style="padding:16px;text-align:center;font-size:13px;color:var(--text-3);">Sé el primero en comentar esta encuesta 💬</div>`;
+    if (usuario) {
+      // Crear hilo automáticamente al primer comentario
+      document.getElementById('forumReplyBox').style.display = 'block';
+      window._encuestaPostPendiente = encuestaId;
+    }
+  }
+}
+
+async function votarEncuesta(encuestaId, opcionId) {
+  if (!usuario) { toast('⚠️ Inicia sesión para votar'); return; }
+  const { error } = await db.from('encuesta_votos').insert({ encuesta_id: encuestaId, opcion_id: opcionId, nickname: usuario.nickname });
+  if (error) { toast('❌ Error al votar'); return; }
+  // Incrementar contador de votos
+  await db.rpc('incrementar_voto', { p_opcion_id: opcionId });
+  toast('✅ Voto registrado');
+  abrirEncuestaPost(encuestaId);
+}
+
+// ═══════════════════════════════════════════
+// WIDGET ENCUESTA EN HOME
+// ═══════════════════════════════════════════
+async function cargarEncuestaHome() {
+  const el = document.getElementById('homeEncuestaWidget');
+  if (!el) return;
+
+  const { data: encuestas } = await db.from('encuestas')
+    .select('*, encuesta_opciones(*)')
+    .eq('activa', true)
+    .order('created_at', { ascending: false })
+    .limit(1);
+
+  if (!encuestas || encuestas.length === 0) {
+    el.style.display = 'none';
+    return;
+  }
+
+  const enc = encuestas[0];
+  const opciones = (enc.encuesta_opciones || []).sort((a, b) => a.created_at > b.created_at ? 1 : -1);
+  const totalVotos = opciones.reduce((s, o) => s + (o.votos || 0), 0);
+
+  // Ver si el usuario ya votó
+  let yaVote = null;
+  if (usuario) {
+    const { data: voto } = await db.from('encuesta_votos')
+      .select('opcion_id')
+      .eq('encuesta_id', enc.id)
+      .eq('nickname', usuario.nickname)
+      .maybeSingle();
+    if (voto) yaVote = voto.opcion_id;
+  }
+
+  const mostrarResultados = yaVote !== null || !usuario;
+
+  let opcionesHtml = '';
+  for (const op of opciones) {
+    const pct = totalVotos > 0 ? Math.round((op.votos || 0) / totalVotos * 100) : 0;
+    const esLaVotada = op.id === yaVote;
+    if (mostrarResultados) {
+      opcionesHtml += `
+        <div class="home-encuesta-opcion votada">
+          <div class="home-encuesta-opcion-bar" style="width:${pct}%"></div>
+          <span class="home-encuesta-opcion-label">${esLaVotada ? '✅ ' : ''}${escHtml(op.texto)}</span>
+          <span class="home-encuesta-opcion-pct">${pct}%</span>
+        </div>`;
+    } else {
+      opcionesHtml += `
+        <div class="home-encuesta-opcion" onclick="votarEncuestaHome('${enc.id}','${op.id}')">
+          <span class="home-encuesta-opcion-label">${escHtml(op.texto)}</span>
+        </div>`;
+    }
+  }
+
+  el.innerHTML = `
+    <div class="home-encuesta-widget">
+      <div class="home-encuesta-header">
+        <span class="home-encuesta-badge">📊 Encuesta</span>
+        <span class="home-encuesta-title">${escHtml(enc.pregunta)}</span>
+      </div>
+      <div class="home-encuesta-body">
+        <div class="home-encuesta-opciones">${opcionesHtml}</div>
+        <div class="home-encuesta-footer">
+          <span>${totalVotos} votos${yaVote ? ' · ✅ Ya votaste' : (!usuario ? ' · Inicia sesión para votar' : '')}</span>
+          <button class="home-encuesta-ver-btn" onclick="irAEncuestaForo('${enc.id}')">Ver debate →</button>
+        </div>
+      </div>
+    </div>`;
+  el.style.display = 'block';
+}
+
+async function votarEncuestaHome(encuestaId, opcionId) {
+  if (!usuario) { toast('⚠️ Inicia sesión para votar'); return; }
+  const { error } = await db.from('encuesta_votos').insert({
+    encuesta_id: encuestaId,
+    opcion_id: opcionId,
+    nickname: usuario.nickname
+  });
+  if (error) { toast('❌ Error al votar'); return; }
+  await db.rpc('incrementar_voto', { p_opcion_id: opcionId });
+  toast('✅ ¡Voto registrado!');
+  cargarEncuestaHome();
+}
+
+function irAEncuestaForo(encuestaId) {
+  setTab('foro', document.getElementById('forumTabBtn'));
+  setTimeout(() => abrirEncuestaPost(encuestaId), 150);
+}
+
+async function cargarActividadRecienteForo() {
+  const el = document.getElementById('foroRecentActivity');
+  if (!el) return;
+  try {
+    // Últimas respuestas en posts tipo noticia o encuesta
+    const { data: replies } = await db.from('foro_replies')
+      .select('*, foro_posts(titulo, tipo)')
+      .order('created_at', { ascending: false })
+      .limit(8);
+
+    if (!replies || replies.length === 0) {
+      el.innerHTML = '<div class="foro-recent-loading">Sin actividad reciente aún</div>';
+      return;
+    }
+
+    let html = '';
+    for (const r of replies) {
+      const tipo = r.foro_posts?.tipo || 'noticia';
+      const titulo = r.foro_posts?.titulo || 'Hilo';
+      const ac = avatarColor(r.nickname);
+      const inicial = cap(r.nickname).charAt(0);
+      const badgeLabel = tipo === 'encuesta' ? 'Encuesta' : 'Noticia';
+      const badgeClass = tipo === 'encuesta' ? 'encuesta' : 'noticia';
+      html += `
+        <div class="foro-recent-item" onclick="abrirPost('${r.post_id}')">
+          <div class="foro-recent-avatar" style="background:${ac};">${inicial}</div>
+          <div class="foro-recent-body">
+            <div class="foro-recent-text"><b>${cap(r.nickname)}</b> comentó en "${escHtml(titulo.substring(0,40))}"</div>
+            <div class="foro-recent-time">${timeAgo(r.created_at)}</div>
+          </div>
+          <span class="foro-recent-badge ${badgeClass}">${badgeLabel}</span>
+        </div>`;
+    }
+    el.innerHTML = html;
+  } catch(e) {
+    el.innerHTML = '<div class="foro-recent-loading">Sin actividad reciente</div>';
+  }
+}
+
+async function abrirCategoria(cat) {
+  // Compatibilidad con categorías antiguas — redirigir al hub
+  abrirSeccionForo('noticias');
 }
 
 async function abrirPost(postId) {
@@ -9183,6 +10273,35 @@ function renderForumContent(text) {
 
 async function enviarRespuestaForo() {
   if (!usuario) { toast('❌ Inicia sesión para responder'); return; }
+
+  // Si hay encuesta pendiente de crear hilo, crearlo primero
+  if (window._encuestaPostPendiente && (!forumPostActual || String(forumPostActual).startsWith('encuesta_'))) {
+    const encId = window._encuestaPostPendiente;
+    const { data: enc } = await db.from('encuestas').select('pregunta').eq('id', encId).single();
+    const { data: nuevoPost, error: errPost } = await db.from('foro_posts').insert({
+      titulo: enc?.pregunta || 'Encuesta',
+      contenido: `<p>📊 Debate sobre esta encuesta</p>`,
+      nickname: usuario.nickname,
+      categoria: 'encuestas',
+      tipo: 'encuesta',
+      encuesta_id: encId
+    }).select().single();
+    if (errPost) {
+      // Intentar sin encuesta_id por si la columna no existe aún
+      const { data: nuevoPost2 } = await db.from('foro_posts').insert({
+        titulo: enc?.pregunta || 'Encuesta',
+        contenido: `<p>📊 Debate sobre esta encuesta</p>`,
+        nickname: usuario.nickname,
+        categoria: 'encuestas',
+        tipo: 'encuesta'
+      }).select().single();
+      if (nuevoPost2) forumPostActual = nuevoPost2.id;
+    } else if (nuevoPost) {
+      forumPostActual = nuevoPost.id;
+    }
+    window._encuestaPostPendiente = null;
+  }
+
   if (!forumPostActual) return;
 
   const input = document.getElementById('forumReplyInput');
@@ -9191,7 +10310,6 @@ async function enviarRespuestaForo() {
     const rawText = input.textContent.trim();
     if (fcCitaActiva) {
       if (fcCitaActiva.isMulti) {
-        // Multicita: el contenido ya viene formateado
         texto = `${fcCitaActiva.contenido}\n${rawText}`;
       } else {
         texto = `[cite:${fcCitaActiva.nickname}]${fcCitaActiva.contenido.substring(0,200)}[/cite]\n${rawText}`;
@@ -9216,7 +10334,13 @@ async function enviarRespuestaForo() {
   if (error) { toast('❌ Error: ' + error.message); return; }
   clearForumCita();
   toast('✅ Respuesta publicada');
-  await cargarRespuestasForo(forumPostActual);
+
+  // Si estábamos en una encuesta, recargar la vista completa para que salgan los comentarios
+  if (window._encuestaIdActual) {
+    await abrirEncuestaPost(window._encuestaIdActual);
+  } else {
+    await cargarRespuestasForo(forumPostActual);
+  }
 }
 
 // ── EDITAR / BORRAR POST DEL FORO ──────────────
@@ -9839,7 +10963,7 @@ async function init() {
     cargarBannerGlobal();
     cargarStats();
     restaurarEstadoTop();
-    cargarTopUsuarios();
+    cargarTopMoviles();
     const token = leerToken();
 
     // Prefetch hilos en paralelo con la validación del token
@@ -9866,6 +10990,7 @@ async function init() {
     const prefetched = await hilosPrefetch;
     renderHilosPrefetched(prefetched);
     mostrarUsuario();
+    cargarEncuestaHome();
 }
 
 async function prefetchHilos() {
