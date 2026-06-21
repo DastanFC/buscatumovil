@@ -106,6 +106,11 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+/* Evita que el modo oscuro del sistema operativo pinte los desplegables
+   nativos (<select>) con texto blanco invisible sobre fondo claro —
+   p.ej. el selector de rol "Admin" en el panel de administración */
+select { color-scheme: light; }
+
 /* ─── ICONOS DE LÍNEA (sustituyen emojis en menús de navegación) ─── */
 .nav-ico {
   width: 18px;
@@ -120,6 +125,19 @@
   stroke-linejoin: round;
 }
 .bnav-icon .nav-ico { width: 20px; height: 20px; }
+/* Icono de rango (sustituye el emoji por un icono de línea, escala con el texto que lo rodea) */
+.rank-ico {
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  display: inline-block;
+  vertical-align: -0.15em;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 .bnav-foro-center .nav-ico { width: 20px; height: 20px; }
 .drawer-item-icon .nav-ico { width: 20px; height: 20px; }
 .inicio-btn .nav-ico { width: 17px; height: 17px; }
@@ -593,10 +611,6 @@ body {
   .stat-chip { font-size: 10px; padding: 3px 7px; }
 }
 
-/* Panel avisos: en móvil siempre parte colapsado — JS añade .open para abrirlo */
-#actualizacionesBody { display: none; }
-#actualizacionesBody.open { display: block; }
-
 @media (max-width: 600px) {
   /* En móvil la regla base ya lo colapsa; .open lo expande */
 }
@@ -722,6 +736,20 @@ body {
 }
 .new-noticia-btn:hover { background: #e09618; }
 
+/* Contenedor que apila "Nueva noticia" encima de "Nueva consulta" en PC */
+.new-btns-stack {
+  flex-shrink: 0;
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.new-btns-stack .new-btn,
+.new-btns-stack .new-noticia-btn {
+  margin-left: 0;
+  padding: 5px 14px;
+}
+
 .inicio-btn {
   flex-shrink: 0;
   width: 32px;
@@ -742,6 +770,7 @@ body {
 @media (max-width: 600px) {
   .new-btn { display: none; }
   .new-noticia-btn { display: none; }
+  .new-btns-stack { display: none; }
 }
 
 .tabs-divider {
@@ -2333,16 +2362,31 @@ body {
 .perks-panel.open { display: block; }
 
 .ranks-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
   margin-top: 14px;
 }
 
+.perfil-rangos-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+
 .rank-card {
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  grid-template-areas:
+    "icon name pts"
+    "icon perk perk";
+  align-items: center;
+  column-gap: 10px;
+  row-gap: 1px;
   background: var(--surface-2);
-  border-radius: 14px;
-  padding: 14px;
+  border-radius: 12px;
+  padding: 8px 12px;
   border: 1.5px solid var(--border);
   transition: all 0.18s;
 }
@@ -2350,10 +2394,25 @@ body {
 .rank-card.unlocked { border-color: var(--green); background: #F0FDF4; }
 .rank-card.current { border-color: var(--blue); background: var(--blue-pale); }
 
-.rank-card-icon { font-size: 22px; margin-bottom: 6px; }
-.rank-card-name { font-family: 'Roboto', sans-serif; font-size: 13px; font-weight: 700; margin-bottom: 2px; }
-.rank-card-pts { font-size: 11px; color: var(--text-3); margin-bottom: 8px; }
-.rank-card-perk { font-size: 12px; color: var(--text-2); }
+.rank-card-icon {
+  grid-area: icon;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  color: var(--text-2);
+  background: var(--surface-3);
+  border-radius: 9px;
+}
+.rank-card.unlocked .rank-card-icon { background: rgba(16,185,129,0.16); color: #0D9F6E; }
+.rank-card.current .rank-card-icon { background: rgba(29,111,232,0.16); color: var(--blue); }
+
+.rank-card-name { grid-area: name; font-family: 'Roboto', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); }
+.rank-card-pts { grid-area: pts; font-size: 11px; color: var(--text-3); font-weight: 600; white-space: nowrap; }
+.rank-card-perk { grid-area: perk; font-size: 11px; color: var(--text-2); line-height: 1.3; }
 .rank-card-perk.locked { color: var(--text-3); filter: blur(3px); user-select: none; }
 
 /* ─── NOTIFICATIONS PANEL ─── */
@@ -3280,10 +3339,6 @@ body {
     word-break: break-word;
   }
   
-  .ranks-grid {
-    grid-template-columns: 1fr;
-  }
-  
   .admin-tab-row {
     flex-wrap: wrap;
   }
@@ -3319,6 +3374,8 @@ body {
   display: flex;
   transition: transform 0.15s, box-shadow 0.15s;
 }
+#adminBtn .nav-ico { width: 20px; height: 20px; stroke-width: 2; }
+#adminBtn .admin-btn-label { display: none; }
 
 @media (max-width: 600px) {
   #adminBtn {
@@ -3330,11 +3387,31 @@ body {
   }
 }
 
+/* PC: el botón admin pasa de icono redondo a botón con texto "P. Administración" */
+@media (min-width: 601px) {
+  #adminBtn {
+    width: auto;
+    height: 38px;
+    border-radius: 999px;
+    padding: 0 16px 0 14px;
+    gap: 7px;
+    bottom: 18px;
+    left: 18px;
+  }
+  #adminBtn .admin-btn-label {
+    display: inline-block;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+}
+
 /* ─── FAB NOTICIA ADMIN (derecha, solo móvil admin) ─── */
 #fabNoticiaMovil {
   display: none;
   position: fixed;
-  bottom: 128px;
+  bottom: 190px;  /* Subido a 190px para que no se superponga */
   right: 14px;
   z-index: 461;
   width: 44px;
@@ -3346,13 +3423,15 @@ body {
   font-size: 20px;
   box-shadow: 0 3px 12px rgba(245,166,35,0.55);
   cursor: pointer;
+  display: flex;
   align-items: center;
   justify-content: center;
   transition: transform 0.15s, box-shadow 0.15s;
 }
 #fabNoticiaMovil:hover { transform: scale(1.1); }
-@media (max-width: 600px) {
-  #fabNoticiaMovil { display: flex; }
+#fabNoticiaMovil .nav-ico { width: 20px; height: 20px; stroke-width: 2; }
+@media (min-width: 601px) {
+  #fabNoticiaMovil { display: none !important; }
 }
 
 /* ─── BADGE SIN RESPONDER ─── */
@@ -4083,12 +4162,20 @@ body {
 .hamburger-btn:hover { background: rgba(255,255,255,0.14); }
 .hamburger-btn span {
   display: block;
-  width: 20px;
   height: 2px;
   background: white;
-  border-radius: 2px;
-  transition: all 0.2s;
+  border-radius: 999px;
+  transition: transform 0.28s cubic-bezier(.4,0,.2,1), opacity 0.2s, width 0.28s cubic-bezier(.4,0,.2,1);
 }
+.hamburger-btn span:nth-child(1) { width: 18px; }
+.hamburger-btn span:nth-child(2) { width: 22px; }
+.hamburger-btn span:nth-child(3) { width: 14px; align-self: flex-start; margin-left: 9px; }
+
+/* Estado abierto: las 3 líneas se transforman en una X */
+.hamburger-btn.open span { width: 20px; align-self: center; margin-left: 0; }
+.hamburger-btn.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger-btn.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger-btn.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
 /* ─── SIDE DRAWER ─── */
 .drawer-overlay {
@@ -5293,7 +5380,7 @@ body {
 
 <!-- TOPBAR -->
 <div class="topbar">
-  <button class="hamburger-btn" onclick="toggleSideDrawer()" aria-label="Menú" style="background:rgba(255,255,255,0.07);border-radius:12px;width:40px;height:40px;">
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleSideDrawer()" aria-label="Menú">
     <span></span><span></span><span></span>
   </button>
 
@@ -5336,53 +5423,61 @@ body {
     <span class="drawer-title">📱 EL RECOMENDADOR</span>
     <button class="drawer-close" onclick="closeSideDrawer()">✕</button>
   </div>
-  <div class="drawer-menu">
-    <button class="drawer-item" onclick="closeSideDrawer(); abrirForm()">
-      <span class="drawer-item-icon"><svg class="nav-ico" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
-      <span class="drawer-item-label">Nueva consulta</span>
-      <span class="drawer-item-arrow">›</span>
-    </button>
-    <button class="drawer-item" onclick="closeSideDrawer(); setTab('sin_responder', document.querySelector('.tab'))">
-      <span class="drawer-item-icon"><svg class="nav-ico" viewBox="0 0 24 24"><path d="M13 3 4 14h6l-1 7 9-11h-6l1-7Z"/></svg></span>
-      <span class="drawer-item-label">Consultas sin responder</span>
-      <span class="drawer-item-arrow">›</span>
-    </button>
-    <button class="drawer-item" onclick="closeSideDrawer(); abrirModalRangos()">
-      <span class="drawer-item-icon"><svg class="nav-ico" viewBox="0 0 24 24"><path d="M8 4h8v4a4 4 0 0 1-8 0V4Z"/><path d="M8 5H5a1 1 0 0 0-1 1c0 2.5 1.8 4 4 4.3M16 5h3a1 1 0 0 1 1 1c0 2.5-1.8 4-4 4.3M10 13.5v2.5M12 16v4M9 20h6"/></svg></span>
-      <span class="drawer-item-label">Rangos de usuarios</span>
-      <span class="drawer-item-arrow">›</span>
-    </button>
-    <button class="drawer-item" onclick="closeSideDrawer(); abrirModalTopUsuarios()">
-      <span class="drawer-item-icon"><svg class="nav-ico" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><circle cx="17" cy="9" r="2.3"/><path d="M15.5 14c2.3.2 4 1.9 4 4.3"/></svg></span>
-      <span class="drawer-item-label">Top usuarios</span>
-      <span class="drawer-item-arrow">›</span>
-    </button>
-    <button class="drawer-item" onclick="closeSideDrawer(); abrirModalTopMoviles()">
-      <span class="drawer-item-icon"><svg class="nav-ico" viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M11 19h2"/></svg></span>
-      <span class="drawer-item-label">Top móviles</span>
-      <span class="drawer-item-arrow">›</span>
-    </button>
-    <div id="drawerAdminItems" style="display:none;">
-      <button class="drawer-item" onclick="closeSideDrawer(); abrirModalNuevaNoticia()">
-        <span class="drawer-item-icon"><svg class="nav-ico" viewBox="0 0 24 24"><rect x="3.5" y="5" width="13.5" height="14" rx="1.5"/><path d="M17 8.5h2.5a1 1 0 0 1 1 1v8a1.5 1.5 0 0 1-1.5 1.5H7"/><path d="M7 9h7M7 12h7M7 15h4"/></svg></span>
-        <span class="drawer-item-label">Nueva noticia</span>
-        <span class="drawer-item-arrow">›</span>
-      </button>
-    </div>
-    <button class="drawer-item" id="drawerPerfilBtn" style="display:none;" onclick="closeSideDrawer(); abrirMiPerfil()">
-      <span class="drawer-item-icon"><svg class="nav-ico" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7"/></svg></span>
-      <span class="drawer-item-label">Mi perfil</span>
-      <span class="drawer-item-arrow">›</span>
-    </button>
-    <!-- Puntos y rango — solo visible cuando hay sesión -->
-    <div id="drawerRankInfo" style="display:none; padding: 6px 16px 10px; border-bottom: 1px solid rgba(255,255,255,0.08);">
-      <div style="font-size:11px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Puntos y rango</div>
-      <div id="drawerRankText" style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.85);line-height:1.5;"></div>
-    </div>
-    <button class="drawer-item" id="drawerLogoutBtn" style="display:none;" onclick="closeSideDrawer(); cerrarSesion()">
-      <span class="drawer-item-icon"><svg class="nav-ico" viewBox="0 0 24 24"><path d="M13 4h-3a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3"/><path d="M16 8l4 4-4 4M20 12H9"/></svg></span>
-      <span class="drawer-item-label" style="color:var(--accent-red);">Cerrar sesión</span>
-    </button>
+
+
+  <!-- Mi perfil -->
+  <button class="drawer-item" id="drawerPerfilBtn" style="display:none;" onclick="closeSideDrawer(); abrirMiPerfil()">
+    <span class="drawer-item-icon">
+      <svg class="nav-ico" viewBox="0 0 24 24">
+        <circle cx="12" cy="8" r="3.5"/>
+        <path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7"/>
+      </svg>
+    </span>
+    <span class="drawer-item-label">Mi perfil</span>
+    <span class="drawer-item-arrow">›</span>
+  </button>
+
+  <!-- Top usuarios -->
+  <button class="drawer-item" onclick="closeSideDrawer(); abrirModalTopUsuarios()">
+    <span class="drawer-item-icon">
+      <svg class="nav-ico" viewBox="0 0 24 24">
+        <circle cx="9" cy="8" r="3"/>
+        <path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/>
+        <circle cx="17" cy="9" r="2.3"/>
+        <path d="M15.5 14c2.3.2 4 1.9 4 4.3"/>
+      </svg>
+    </span>
+    <span class="drawer-item-label">Top usuarios</span>
+    <span class="drawer-item-arrow">›</span>
+  </button>
+
+  <!-- Rangos de usuarios -->
+  <button class="drawer-item" onclick="closeSideDrawer(); abrirModalRangos()">
+    <span class="drawer-item-icon">
+      <svg class="nav-ico" viewBox="0 0 24 24">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </svg>
+    </span>
+    <span class="drawer-item-label">Rangos de usuarios</span>
+    <span class="drawer-item-arrow">›</span>
+  </button>
+
+
+
+  <!-- Cerrar sesión -->
+  <button class="drawer-item" id="drawerLogoutBtn" style="display:none;" onclick="closeSideDrawer(); cerrarSesion()">
+    <span class="drawer-item-icon">
+      <svg class="nav-ico" viewBox="0 0 24 24">
+        <path d="M13 4h-3a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3"/>
+        <path d="M16 8l4 4-4 4M20 12H9"/>
+      </svg>
+    </span>
+    <span class="drawer-item-label" style="color:var(--accent-red);">Cerrar sesión</span>
+  </button>
+
+</div>
+
+
   </div>
 </div>
 
@@ -5462,19 +5557,6 @@ body {
   <button onclick="ocultarBannerGlobal()" style="background:rgba(255,255,255,0.15);border:none;color:white;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:0.85rem;flex-shrink:0;" title="Cerrar aviso">✕</button>
 </div>
 <div id="globalBannerPill" onclick="expandirBannerGlobal()" style="display:none;align-items:center;gap:8px;padding:5px 14px;background:linear-gradient(90deg,#1D6FE8,#1A2D45);color:white;font-size:0.75rem;font-weight:600;border-bottom:1px solid rgba(255,255,255,0.1);cursor:pointer;z-index:100;">  <span>📢</span>  <span>Nuevo aviso — pulsa para ver</span>  <span style="margin-left:auto;font-size:0.7rem;opacity:0.8;">▼</span></div>
-
-<!-- PANEL ACTUALIZACIONES (visible para todos los usuarios) -->
-<div id="actualizacionesPanel" style="display:none;">
-  <div style="background:var(--surface);border-radius:0;border-bottom:1px solid var(--border);max-width:1060px;margin:0 auto;">
-    <div id="actualizacionesHeader" onclick="toggleActualizaciones()" style="display:flex;align-items:center;justify-content:space-between;padding:8px 20px;cursor:pointer;user-select:none;">
-      <span style="font-size:12px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.5px;">📢 Avisos del sistema</span>
-      <span id="actualizacionesArrow" style="font-size:14px;color:var(--text-3);transition:transform 0.2s;">▼</span>
-    </div>
-    <div id="actualizacionesBody" style="padding:0 20px 10px;">
-      <div id="actualizacionesList" style="display:flex;flex-direction:column;gap:6px;"></div>
-    </div>
-  </div>
-</div>
 
 <!-- MAIN -->
 <div class="page-layout">
@@ -5599,7 +5681,6 @@ body {
         <button class="admin-tab" onclick="adminSetTab('respuestas', this)">💬 Respuestas</button>
         <button class="admin-tab" onclick="adminSetTab('stats', this)">📊 Estadísticas</button>
         <button class="admin-tab" onclick="adminSetTab('config', this)">⚙️ Config</button>
-        <button class="admin-tab" onclick="adminSetTab('actualizaciones', this)">📋 Actualizaciones</button>
         <button class="admin-tab" onclick="adminSetTab('noticias_admin', this)">📰 Noticias</button>
         <button class="admin-tab" onclick="adminSetTab('encuestas_admin', this)">📊 Encuestas</button>
         <button class="admin-tab" onclick="adminSetTab('reportes', this)">⚠️ Reportes</button>
@@ -5618,8 +5699,10 @@ body {
     <span class="tabs-divider"></span>
     <button class="forum-tab-btn" id="forumTabBtn" onclick="setTab('foro', this)"><svg class="nav-ico" viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4V5Z"/><path d="M8 9h8M8 12.5h5"/></svg> Foro</button>
     <button class="tab" onclick="setTab('noticias', this)"><svg class="nav-ico" viewBox="0 0 24 24"><rect x="3.5" y="5" width="13.5" height="14" rx="1.5"/><path d="M17 8.5h2.5a1 1 0 0 1 1 1v8a1.5 1.5 0 0 1-1.5 1.5H7"/><path d="M7 9h7M7 12h7M7 15h4"/></svg> Noticias</button>
-    <button class="new-btn" onclick="abrirForm()"><svg class="nav-ico" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Nueva consulta</button>
-    <button class="new-noticia-btn" id="newNoticiaBtn" style="display:none;" onclick="abrirModalNuevaNoticia()"><svg class="nav-ico" viewBox="0 0 24 24"><rect x="3.5" y="5" width="13.5" height="14" rx="1.5"/><path d="M17 8.5h2.5a1 1 0 0 1 1 1v8a1.5 1.5 0 0 1-1.5 1.5H7"/><path d="M7 9h7M7 12h7M7 15h4"/></svg> Nueva noticia</button>
+    <div class="new-btns-stack">
+      <button class="new-noticia-btn" id="newNoticiaBtn" style="display:none;" onclick="abrirModalNuevaNoticia()"><svg class="nav-ico" viewBox="0 0 24 24"><rect x="3.5" y="5" width="13.5" height="14" rx="1.5"/><path d="M17 8.5h2.5a1 1 0 0 1 1 1v8a1.5 1.5 0 0 1-1.5 1.5H7"/><path d="M7 9h7M7 12h7M7 15h4"/></svg> Nueva noticia</button>
+      <button class="new-btn" onclick="abrirForm()"><svg class="nav-ico" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Nueva consulta</button>
+    </div>
   </div>
 
   <!-- Form -->
@@ -5742,16 +5825,14 @@ body {
 
 
 <!-- BOTÓN ADMIN FLOTANTE (solo dastan) -->
-<button id="adminBtn" onclick="emergenciaAdmin()">👑</button>
+<button id="adminBtn" onclick="emergenciaAdmin()" title="Panel de Administración"><svg class="nav-ico" viewBox="0 0 24 24"><path d="M3 9.5 7 12l5-7 5 7 4-2.5L19.5 19h-15L3 9.5Z"/></svg><span class="admin-btn-label">P. Administración</span></button>
 
 <!-- FAB NOTICIA MOVIL (solo admin, derecha) -->
-<button id="fabNoticiaMovil" onclick="abrirModalNuevaNoticia()" style="display:none;" title="Nueva noticia">📰</button>
-
-<!-- FAB periódico (solo admin) -->
-<button class="fab-news" id="fabNewsBtn" onclick="abrirModalNuevaNoticia()" style="display:none;">
-  <span class="fab-icon">📰</span>
-  <span class="fab-label">Nueva noticia</span>
+<button id="fabNoticiaMovil" onclick="abrirModalNuevaNoticia()" title="Nueva noticia">
+  <svg class="nav-ico" viewBox="0 0 24 24"><rect x="3.5" y="5" width="13.5" height="14" rx="1.5"/><path d="M17 8.5h2.5a1 1 0 0 1 1 1v8a1.5 1.5 0 0 1-1.5 1.5H7"/><path d="M7 9h7M7 12h7M7 15h4"/></svg>
 </button>
+
+
 
 <!-- BARRA MULTICITA -->
 <div class="fc-multicita-bar" id="fcMulticitaBar">
@@ -5784,9 +5865,9 @@ body {
       <span class="bnav-icon"><svg class="nav-ico" viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4V5Z"/><path d="M8 9h8M8 12.5h5"/></svg></span>
       <span class="bnav-label">Foro</span>
     </button>
-    <button class="bnav-btn bnav-foro-center" id="bnav_nueva" onclick="abrirForm()">
-      <span class="bnav-icon-wrap"><span class="bnav-icon"><svg class="nav-ico" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></span>
-      <span class="bnav-label">Consultar</span>
+    <button class="bnav-btn bnav-foro-center" id="bnav_nueva" onclick="bnavNueva()">
+      <span class="bnav-icon-wrap"><span class="bnav-icon"><svg class="nav-ico" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span></span>
+      <span class="bnav-label" id="bnavNuevaLabel">Consultar</span>
     </button>
     <button class="bnav-btn" id="bnav_mis_abiertas" onclick="setTab('mis_abiertas', this); syncBnav('mis_abiertas')">
       <span class="bnav-icon"><svg class="nav-ico" viewBox="0 0 24 24"><path d="M4 19.5V6a2 2 0 0 1 2-2h9l5 5v10.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 19.5Z"/><path d="M14 4v4a1 1 0 0 0 1 1h4M8 13h8M8 17h5"/></svg></span>
@@ -5798,6 +5879,12 @@ body {
     </button>
   </div>
 </nav>
+
+<!-- BOTÓN FLOTANTE NUEVA NOTICIA (FAB, solo PC, solo admin) -->
+<button class="fab-news" id="fabNewsBtn" onclick="abrirModalNuevaNoticia()">
+  <span class="fab-icon"><svg class="nav-ico" viewBox="0 0 24 24" style="width:18px;height:18px;stroke-width:2;"><rect x="3.5" y="5" width="13.5" height="14" rx="1.5"/><path d="M17 8.5h2.5a1 1 0 0 1 1 1v8a1.5 1.5 0 0 1-1.5 1.5H7"/><path d="M7 9h7M7 12h7M7 15h4"/></svg></span>
+  <span class="fab-label">Nueva noticia</span>
+</button>
 
 <!-- BOTÓN FLOTANTE NUEVA CONSULTA (FAB) -->
 <button class="fab" onclick="abrirForm()">
@@ -5904,6 +5991,8 @@ body {
       </div>
       <div class="perfil-section-title" style="margin-top:14px;">Sobre mí</div>
       <div class="perfil-sobre-mi" id="perfilSobreMi">—</div>
+      <div class="perfil-section-title" style="margin-top:14px;">Rangos y puntos</div>
+      <div class="perfil-rangos-grid" id="perfilRangosGrid"></div>
     </div>
 
     <!-- TAB: CITAS -->
@@ -6094,12 +6183,12 @@ const FORBIDDEN_NAMES = [
 ];
 
 const RANGOS = window.RANGOS = [
-  { id: 'nuevo', label: 'Nuevo', icon: '🌱', min: 0, max: 19, perk: 'Acceso básico a la comunidad', locked: false },
-  { id: 'aprendiz', label: 'Aprendiz', icon: '📚', min: 20, max: 49, perk: 'Badge especial en tus respuestas', locked: false },
-  { id: 'confiable', label: 'Confiable', icon: '⭐', min: 50, max: 79, perk: 'Tus recomendaciones se destacan primero', locked: false },
-  { id: 'experto', label: 'Experto', icon: '🏆', min: 80, max: 99, perk: 'Acceso al canal #expertos (próximamente)', locked: true },
-  { id: 'colaborador_top', label: 'Colaborador TOP', icon: '🏅', min: 100, max: 199, perk: 'Insignia dorada + voto doble', locked: false },
-  { id: 'leyenda', label: 'Leyenda', icon: '🔥', min: 200, max: 999, perk: 'Insignia legendaria', locked: true },
+  { id: 'nuevo', label: 'Nuevo', icon: '<svg class="rank-ico" viewBox="0 0 24 24"><path d="M14 9.536V7a4 4 0 0 1 4-4h1.5a.5.5 0 0 1 .5.5V5a4 4 0 0 1-4 4 4 4 0 0 0-4 4c0 2 1 3 1 5a5 5 0 0 1-1 3"/><path d="M4 9a5 5 0 0 1 8 4 5 5 0 0 1-8-4"/><path d="M5 21h14"/></svg>', min: 0, max: 19, perk: 'Acceso básico a la comunidad', locked: false },
+  { id: 'aprendiz', label: 'Aprendiz', icon: '<svg class="rank-ico" viewBox="0 0 24 24"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>', min: 20, max: 49, perk: 'Badge especial en tus respuestas', locked: false },
+  { id: 'confiable', label: 'Confiable', icon: '<svg class="rank-ico" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>', min: 50, max: 79, perk: 'Tus recomendaciones se destacan primero', locked: false },
+  { id: 'experto', label: 'Experto', icon: '<svg class="rank-ico" viewBox="0 0 24 24"><path d="M10 14.66v1.626a2 2 0 0 1-.976 1.696A5 5 0 0 0 7 21.978"/><path d="M14 14.66v1.626a2 2 0 0 0 .976 1.696A5 5 0 0 1 17 21.978"/><path d="M18 9h1.5a1 1 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z"/><path d="M6 9H4.5a1 1 0 0 1 0-5H6"/></svg>', min: 80, max: 99, perk: 'Acceso al canal #expertos (próximamente)', locked: true },
+  { id: 'colaborador_top', label: 'Colaborador TOP', icon: '<svg class="rank-ico" viewBox="0 0 24 24"><path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/><circle cx="12" cy="8" r="6"/></svg>', min: 100, max: 199, perk: 'Insignia dorada + voto doble', locked: false },
+  { id: 'leyenda', label: 'Leyenda', icon: '<svg class="rank-ico" viewBox="0 0 24 24"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"/></svg>', min: 200, max: 999, perk: 'Insignia legendaria', locked: true },
 ];
 
 let usuario = null;
@@ -6854,7 +6943,8 @@ function renderRangos() {
   const pts = usuario?.puntos || 0;
   const rol = usuario?.rol || 'usuario';
   const grid = document.getElementById('ranksGrid');
-  
+  if (!grid) return;
+
   grid.innerHTML = RANGOS.map(r => {
     const unlocked = pts >= r.min;
     const current = pts >= r.min && pts <= r.max;
@@ -6890,7 +6980,7 @@ function actualizarBarraRango() {
   if (usuario.rol === 'admin' || rango.id === 'leyenda' || rango.id === 'colaborador_top') {
     document.getElementById('rankBarFill').style.width = '100%';
     document.getElementById('rankNextLabel').innerHTML = '¡Máximo rango!';
-    document.getElementById('rankPtsLabel').textContent = `${pts} pts · ${rango.icon} ${rango.label}`;
+    document.getElementById('rankPtsLabel').innerHTML = `${pts} pts · ${rango.icon} ${rango.label}`;
     if (pill) pill.innerHTML = `${rango.icon} ${rango.label} · <b style="color:var(--accent)">${pts} pts</b>`;
     return;
   }
@@ -6902,7 +6992,7 @@ function actualizarBarraRango() {
   const ptsFaltan = next.min - pts;
   document.getElementById('rankBarFill').style.width = `${pct}%`;
   document.getElementById('rankNextLabel').innerHTML = `<span class="rank-next-icon">${next.icon}</span> ${next.label} · faltan ${ptsFaltan} pts`;
-  document.getElementById('rankPtsLabel').textContent = `Tienes ${pts} pts · Rango actual: ${rango.icon} ${rango.label} (${Math.round(pct)}%)`;
+  document.getElementById('rankPtsLabel').innerHTML = `Tienes ${pts} pts · Rango actual: ${rango.icon} ${rango.label} (${Math.round(pct)}%)`;
   if (pill) pill.innerHTML = `${rango.icon} ${rango.label} · <b style="color:var(--accent)">${pts} pts</b> · faltan ${ptsFaltan} para ${next.icon}`;
 }
 
@@ -7101,7 +7191,6 @@ function onLogin(prefetchedData = null) {
   if (usuario) mostrarAdminPanel();
   renderRangos();
   cargarBannerGlobal();
-  cargarActualizacionesUsuario();
   cargarEncuestaHome();
   
   // Cargar TOP de móviles al iniciar sesión
@@ -7177,13 +7266,13 @@ function mostrarUsuario() {
   if (nameEl) nameEl.textContent = nombre + (esAdmin() ? ' 👑' : '');
 
   const ptsEl = document.getElementById('chipPts');
-  if (ptsEl) ptsEl.textContent = `${rango.icon} ${usuario.puntos || 0}pts`;
+  if (ptsEl) ptsEl.innerHTML = `${rango.icon} ${usuario.puntos || 0}pts`;
 
   // Dropdown
   const dropNick = document.getElementById('dropdownNick');
   const dropPts = document.getElementById('dropdownPts');
   if (dropNick) dropNick.textContent = nombre + (esAdmin() ? ' 👑' : '');
-  if (dropPts) dropPts.textContent = `${rango.icon} ${rango.label} · ${usuario.puntos || 0} pts`;
+  if (dropPts) dropPts.innerHTML = `${rango.icon} ${rango.label} · ${usuario.puntos || 0} pts`;
 }
 
 function toggleUserMenu() {
@@ -8988,7 +9077,6 @@ async function cargarAdminContent() {
   else if (adminTabActual === 'respuestas') await renderAdminRespuestas();
   else if (adminTabActual === 'stats') await renderAdminStats();
   else if (adminTabActual === 'config') renderAdminConfig();
-  else if (adminTabActual === 'actualizaciones') renderAdminActualizaciones();
   else if (adminTabActual === 'noticias_admin') await renderAdminNoticias();
   else if (adminTabActual === 'encuestas_admin') await renderAdminEncuestas();
   else if (adminTabActual === 'reportes') await renderAdminReportes();
@@ -9209,14 +9297,14 @@ async function renderAdminStats() {
 function renderAdminConfig() {
   document.getElementById('adminContent').innerHTML = `
     <div class="admin-section-title">🎖️ Rangos — puntos mínimos</div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-bottom:20px;">
-      ${window.RANGOS.map(r => `
-        <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:12px;">
-          <div style="font-size:1rem;margin-bottom:4px;">${r.icon} <b>${r.label}</b></div>
-          <div style="display:flex;align-items:center;gap:6px;margin-top:6px;">
-            <input class="admin-inline-input" type="number" value="${r.min}" id="rango_min_${r.id}" style="width:70px;" />
-            <button class="admin-btn admin-btn-blue" onclick="adminActualizarRango('${r.id}')">✔</button>
-          </div>
+    <div style="display:flex;flex-direction:column;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:20px;">
+      ${window.RANGOS.map((r, i) => `
+        <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--surface-2);${i > 0 ? 'border-top:1px solid var(--surface-3);' : ''}">
+          <div style="width:28px;height:28px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--surface-3);border-radius:8px;color:var(--text-2);font-size:14px;">${r.icon}</div>
+          <b style="font-size:0.82rem;flex:1;min-width:0;color:var(--text);">${r.label}</b>
+          <input class="admin-inline-input" type="number" value="${r.min}" id="rango_min_${r.id}" style="width:64px;" />
+          <span style="font-size:0.7rem;color:var(--text-3);flex-shrink:0;">pts</span>
+          <button class="admin-btn admin-btn-blue" onclick="adminActualizarRango('${r.id}')">✔</button>
         </div>`).join('')}
     </div>
 
@@ -9375,142 +9463,6 @@ function adminActualizarRango(rangoId) {
   if (isNaN(nuevoMin) || nuevoMin < 0) { toast('❌ Valor inválido'); return; }
   r.min = nuevoMin;
   toast(`✅ Rango ${r.label} actualizado a ${nuevoMin} pts mínimos (sesión actual)`);
-}
-
-// ── ACTUALIZACIONES (CHANGELOG) ───────────────
-const ACTUALIZACIONES_KEY = 'admin_actualizaciones';
-
-async function getActualizaciones() {
-  try {
-    const { data } = await db.from('configuracion').select('valor').eq('clave', 'actualizaciones').single();
-    if (data?.valor) return JSON.parse(data.valor);
-  } catch(e) {}
-  try { return JSON.parse(localStorage.getItem(ACTUALIZACIONES_KEY) || '[]'); } catch(e) { return []; }
-}
-
-async function saveActualizaciones(list) {
-  const json = JSON.stringify(list);
-  try {
-    await db.from('configuracion').upsert({ clave: 'actualizaciones', valor: json });
-  } catch(e) {
-    try { localStorage.setItem(ACTUALIZACIONES_KEY, json); } catch(e2) {}
-  }
-  mostrarActualizacionesUsuario(list);
-}
-
-function mostrarActualizacionesUsuario(items) {
-  const panel = document.getElementById('actualizacionesPanel');
-  const list = document.getElementById('actualizacionesList');
-  if (!panel || !list) return;
-  if (!items || items.length === 0) { panel.style.display = 'none'; return; }
-
-  const iconMap = { x: '❌', v: '✅', '?': '🔍' };
-  const colorMap = {
-    x:   { bg: '#FEF2F2', border: '#FECACA', text: '#991B1B' },
-    v:   { bg: '#ECFDF5', border: '#A7F3D0', text: '#065F46' },
-    '?': { bg: '#FFFBEB', border: '#FDE68A', text: '#92400E' },
-  };
-
-  list.innerHTML = items.map(it => {
-    const c = colorMap[it.tipo] || colorMap['?'];
-    const ic = iconMap[it.tipo] || '🔍';
-    return `<div style="display:flex;align-items:flex-start;gap:8px;padding:7px 10px;background:${c.bg};border-radius:10px;border:1px solid ${c.border};">
-      <span style="font-size:1rem;flex-shrink:0;">${ic}</span>
-      <span style="font-size:0.8rem;color:${c.text};line-height:1.45;flex:1;">${it.texto}</span>
-      ${it.fecha ? `<span style="font-size:0.65rem;color:var(--text-3);white-space:nowrap;align-self:center;">${it.fecha}</span>` : ''}
-    </div>`;
-  }).join('');
-
-  panel.style.display = 'block';
-  const body = document.getElementById('actualizacionesBody');
-  const arrow = document.getElementById('actualizacionesArrow');
-  // Nunca tocar body.style.display — el CSS y la clase .open lo controlan todo
-  const esMobil = window.innerWidth <= 600;
-  if (!esMobil) {
-    const colapsadoDesktop = sessionStorage.getItem('actualizacionesColapsado') === 'true';
-    if (body) body.classList.toggle('open', !colapsadoDesktop);
-    if (arrow) arrow.textContent = colapsadoDesktop ? '▼' : '▲';
-  }
-  // Móvil: no tocar nada — CSS lo colapsa, .open lo expande al hacer clic
-}
-
-function toggleActualizaciones() {
-  const body = document.getElementById('actualizacionesBody');
-  const arrow = document.getElementById('actualizacionesArrow');
-  if (!body) return;
-  const abierto = body.classList.contains('open');
-  body.classList.toggle('open', !abierto);
-  if (arrow) arrow.textContent = abierto ? '▼' : '▲';
-  // Guardar preferencia solo en desktop
-  if (window.innerWidth > 600) {
-    sessionStorage.setItem('actualizacionesColapsado', abierto ? 'false' : 'true');
-  }
-}
-
-async function cargarActualizacionesUsuario() {
-  const items = await getActualizaciones();
-  mostrarActualizacionesUsuario(items);
-}
-
-async function renderAdminActualizaciones() {
-  const items = await getActualizaciones();
-  const iconOpts = [
-    { val: 'x', label: '❌ No funciona' },
-    { val: 'v', label: '✅ Solucionado' },
-    { val: '?', label: '🔍 Investigando' },
-  ];
-
-  const listaHtml = items.length === 0
-    ? `<div class="admin-empty">Sin actualizaciones todavía.</div>`
-    : items.map((it, i) => {
-        const icon = it.tipo === 'x' ? '❌' : it.tipo === 'v' ? '✅' : '🔍';
-        const color = it.tipo === 'x' ? '#991B1B' : it.tipo === 'v' ? '#065F46' : '#92400E';
-        const bg = it.tipo === 'x' ? '#FEF2F2' : it.tipo === 'v' ? '#ECFDF5' : '#FFFBEB';
-        const border = it.tipo === 'x' ? '#FECACA' : it.tipo === 'v' ? '#A7F3D0' : '#FDE68A';
-        return `
-          <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:${bg};border-radius:12px;margin-bottom:8px;border:1px solid ${border};">
-            <span style="font-size:1.2rem;flex-shrink:0;margin-top:1px;">${icon}</span>
-            <div style="flex:1;">
-              <span style="font-size:0.82rem;color:${color};line-height:1.5;">${it.texto}</span>
-              ${it.fecha ? `<div style="font-size:0.65rem;color:var(--text-3);margin-top:2px;">${it.fecha}</div>` : ''}
-            </div>
-            <button onclick="eliminarActualizacion(${i})" style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:0.85rem;padding:2px 4px;border-radius:6px;flex-shrink:0;" title="Eliminar">✕</button>
-          </div>`;
-      }).join('');
-
-  document.getElementById('adminContent').innerHTML = `
-    <div class="admin-section-title">📋 Registro de cambios <span style="font-size:0.7rem;font-weight:400;color:var(--text-3);">Visible para todos los usuarios bajo la barra de rango</span></div>
-    <div style="margin-bottom:16px;background:var(--surface-2);border:1px solid var(--border);border-radius:14px;padding:16px;">
-      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
-        ${iconOpts.map(o => `
-          <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:0.78rem;padding:6px 12px;border-radius:999px;border:1.5px solid var(--border);background:var(--surface);">
-            <input type="radio" name="tipo_act" value="${o.val}" ${o.val === 'v' ? 'checked' : ''} style="margin:0;" />
-            ${o.label}
-          </label>`).join('')}
-      </div>
-      <textarea id="actTexto" rows="2" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:12px;font-size:0.82rem;font-family:'DM Sans',sans-serif;resize:vertical;background:var(--surface);" placeholder="Describe el cambio, error o novedad..."></textarea>
-      <button class="admin-btn admin-btn-blue" onclick="añadirActualizacion()" style="margin-top:10px;">➕ Añadir entrada</button>
-    </div>
-    <div id="actLista">${listaHtml}</div>
-  `;
-}
-
-async function añadirActualizacion() {
-  const tipo = document.querySelector('input[name="tipo_act"]:checked')?.value || 'v';
-  const texto = document.getElementById('actTexto')?.value?.trim();
-  if (!texto) { toast('❌ Escribe el texto del cambio'); return; }
-  const list = await getActualizaciones();
-  list.unshift({ tipo, texto, fecha: new Date().toLocaleDateString('es-ES') });
-  await saveActualizaciones(list);
-  toast('✅ Entrada añadida y visible para usuarios');
-  renderAdminActualizaciones();
-}
-
-async function eliminarActualizacion(idx) {
-  const list = await getActualizaciones();
-  list.splice(idx, 1);
-  await saveActualizaciones(list);
-  renderAdminActualizaciones();
 }
 
 async function adminEnviarMasivo() {
@@ -10670,16 +10622,9 @@ function bnavNueva() {
 
 // Update bnav nueva label based on context
 function actualizarBnavNueva() {
-  const icon = document.getElementById('bnavNuevaIcon');
   const label = document.getElementById('bnavNuevaLabel');
-  if (!icon || !label) return;
-  if (tabActual === 'foro') {
-    icon.textContent = '✏️';
-    label.textContent = 'Nuevo post';
-  } else {
-    icon.textContent = '✏️';
-    label.textContent = 'Nueva';
-  }
+  if (!label) return;
+  label.textContent = (tabActual === 'foro') ? 'Nuevo post' : 'Consultar';
 }
 
 // ═══════════════════════════════════════════
@@ -10688,12 +10633,16 @@ function actualizarBnavNueva() {
 function toggleSideDrawer() {
   const drawer = document.getElementById('sideDrawer');
   const overlay = document.getElementById('drawerOverlay');
+  const btn = document.getElementById('hamburgerBtn');
   drawer.classList.toggle('open');
   overlay.classList.toggle('open');
+  if (btn) btn.classList.toggle('open');
 }
 function closeSideDrawer() {
   document.getElementById('sideDrawer').classList.remove('open');
   document.getElementById('drawerOverlay').classList.remove('open');
+  const btn = document.getElementById('hamburgerBtn');
+  if (btn) btn.classList.remove('open');
 }
 
 // ═══════════════════════════════════════════
@@ -11332,6 +11281,21 @@ function initKeyboardHandler() {
     rafId = requestAnimationFrame(() => {
       const vv = window.visualViewport;
 
+      // Este ajuste dinámico es solo para evitar que el teclado tape los botones en móvil.
+      // En PC no hay teclado virtual, así que dejamos que la posición la controle el CSS
+      // (si no, los FAB de escritorio se solapan entre sí).
+      if (window.innerWidth > 600) {
+        const nav2 = document.getElementById('bottomNav');
+        if (nav2) nav2.style.bottom = '';
+        const adminBtn2 = document.getElementById('adminBtn');
+        if (adminBtn2) adminBtn2.style.bottom = '';
+        const fabNoticia2 = document.getElementById('fabNoticiaMovil');
+        if (fabNoticia2) fabNoticia2.style.bottom = '';
+        const fab2 = document.querySelector('.fab');
+        if (fab2) fab2.style.bottom = '';
+        return;
+      }
+
       // Keep bottom nav pinned to bottom of visual viewport (handles Chrome showing/hiding URL bar)
       const nav = document.getElementById('bottomNav');
       if (nav) {
@@ -11433,8 +11397,25 @@ async function abrirPerfil(nick) {
   }
 
   document.getElementById('perfilNickEl').textContent = nombre;
-  document.getElementById('perfilRangoEl').textContent = `${rango.icon} ${rango.label} · ${u.puntos || 0} pts`;
+  document.getElementById('perfilRangoEl').innerHTML = `${rango.icon} ${rango.label} · ${u.puntos || 0} pts`;
   document.getElementById('perfilStatPts').textContent = u.puntos || 0;
+
+  // Rangos y puntos del usuario
+  const rangosGrid = document.getElementById('perfilRangosGrid');
+  if (rangosGrid) {
+    const ptsUsuario = u.puntos || 0;
+    rangosGrid.innerHTML = RANGOS.map(r => {
+      const unlocked = ptsUsuario >= r.min || u.rol === 'admin';
+      const current = rango.id === r.id;
+      return `
+        <div class="rank-card ${unlocked ? 'unlocked' : ''} ${current ? 'current' : ''}">
+          <div class="rank-card-icon">${r.icon}</div>
+          <div class="rank-card-name">${r.label}</div>
+          <div class="rank-card-pts">${r.min === 0 ? '0 pts' : `${r.min}+ pts`}</div>
+          <div class="rank-card-perk ${!unlocked ? 'locked' : ''}">${r.perk}</div>
+        </div>`;
+    }).join('');
+  }
 
   // Info pública
   document.getElementById('pi_ciudad').textContent = u.ciudad || '—';
