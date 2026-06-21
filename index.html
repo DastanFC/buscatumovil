@@ -509,9 +509,7 @@ body {
 
 /* ─── HOME ACTIVITY TICKER (línea única, sin pastillas) ─── */
 .home-activity {
-  max-width: 1060px;
-  margin: 0 auto;
-  padding: 8px 20px 0;
+  padding: 0 0 14px;
   box-sizing: border-box;
 }
 .home-activity-bar {
@@ -585,7 +583,6 @@ body {
 }
 @media (max-width: 600px) {
   .help-toast { bottom: 78px; }
-  .home-activity { padding: 8px 14px 0; }
 }
 
 @media (max-width: 600px) {
@@ -3956,7 +3953,7 @@ body {
     border: 1px solid var(--border);
     box-shadow: var(--shadow);
     transition: all 0.2s;
-    margin-top: 140px; /* 👈 Ajusta este valor para bajar la card */
+    margin-top: 0; /* alineado dinámicamente por JS con alinearSidebarTop() */
 }
 
 .top-moviles-header {
@@ -7284,6 +7281,8 @@ function setTab(tab, el) {
     cargarEncuestaHome();
     cargarHilos();
   }
+
+  alinearSidebarTopDebounced();
 }
 
 // ═══════════════════════════════════════════
@@ -10164,12 +10163,13 @@ async function cargarEncuestaHome(_retry = true) {
     // puede fallar la primera vez aunque sí haya una encuesta activa.
     console.warn('cargarEncuestaHome: error al consultar encuestas', error);
     if (_retry) { setTimeout(() => cargarEncuestaHome(false), 1200); }
-    else { el.style.display = 'none'; }
+    else { el.style.display = 'none'; alinearSidebarTopDebounced(); }
     return;
   }
 
   if (!encuestas || encuestas.length === 0) {
     el.style.display = 'none';
+    alinearSidebarTopDebounced();
     return;
   }
 
@@ -10224,6 +10224,7 @@ async function cargarEncuestaHome(_retry = true) {
       </div>
     </div>`;
   el.style.display = 'block';
+  alinearSidebarTopDebounced();
 }
 
 async function votarEncuestaHome(encuestaId, opcionId) {
@@ -11194,12 +11195,13 @@ async function cargarActividadHome() {
     items.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     items = items.slice(0, 8).map(it => ({ ...it, time: timeAgo(it.created_at) }));
 
-    if (items.length === 0) { wrap.style.display = 'none'; return; }
+    if (items.length === 0) { wrap.style.display = 'none'; alinearSidebarTopDebounced(); return; }
 
     window._activityFeedItems = items;
     window._activityFeedIdx = 0;
     pintarActividadTicker();
     wrap.style.display = 'block';
+    alinearSidebarTopDebounced();
 
     clearInterval(window._activityTickerTimer);
     if (items.length > 1) {
@@ -11208,7 +11210,7 @@ async function cargarActividadHome() {
         pintarActividadTicker();
       }, 4500);
     }
-  } catch(e) { wrap.style.display = 'none'; }
+  } catch(e) { wrap.style.display = 'none'; alinearSidebarTopDebounced(); }
 }
 
 function pintarActividadTicker() {
@@ -11221,6 +11223,32 @@ function pintarActividadTicker() {
     line.style.opacity = '1';
   }, 150);
 }
+
+/* ════════ ALINEAR SIDEBAR (Top Móviles) CON LA LISTA DE CONSULTAS ════════
+   En vez de un margin-top fijo (que se descuadra en cuanto aparece/desaparece
+   el ticker de actividad o la encuesta de portada, ya que cambian la altura
+   de la columna principal), medimos en tiempo real dónde empieza la lista
+   de consultas y movemos la card del sidebar a esa misma altura. */
+function alinearSidebarTop() {
+  const sidebar = document.getElementById('pageSidebar');
+  const card = document.getElementById('topMovilesSection');
+  const hilos = document.getElementById('hilosList');
+  if (!sidebar || !card || !hilos) return;
+  if (getComputedStyle(sidebar).display === 'none') return; // sidebar oculto (<1300px)
+
+  card.style.marginTop = '0px';
+  const sidebarTop = sidebar.getBoundingClientRect().top;
+  const hilosTop = hilos.getBoundingClientRect().top;
+  const diff = Math.round(hilosTop - sidebarTop);
+  card.style.marginTop = (diff > 0 ? diff : 0) + 'px';
+}
+
+let _alinearSidebarRaf = null;
+function alinearSidebarTopDebounced() {
+  if (_alinearSidebarRaf) cancelAnimationFrame(_alinearSidebarRaf);
+  _alinearSidebarRaf = requestAnimationFrame(() => requestAnimationFrame(alinearSidebarTop));
+}
+window.addEventListener('resize', alinearSidebarTopDebounced);
 
 async function irAHiloDesdeFeed(hiloId) {
   setTab('abiertas', document.querySelector('.tab.active') || document.querySelector('.tab'));
@@ -11292,12 +11320,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initPresence();
   cargarActividadHome();
   initHelpToastLoop();
-  // Red de seguridad: si por cualquier motivo la encuesta de portada no se
-  // pintó en la primera pasada (carga inicial en móvil), lo reintentamos.
-  setTimeout(() => {
-    const w = document.getElementById('homeEncuestaWidget');
-    if (w && w.style.display === 'none') cargarEncuestaHome();
-  }, 2000);
+  window.addEventListener('load', alinearSidebarTopDebounced);
 });
 
 function initKeyboardHandler() {
