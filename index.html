@@ -33,22 +33,21 @@
     <div class="edit-consulta-field">
       <label>💰 Presupuesto</label>
       <select id="ec_presupuesto">
-        <option value="">Sin límite</option>
-        <option value="100">Hasta 100€</option>
-        <option value="150">Hasta 150€</option>
-        <option value="200">Hasta 200€</option>
-        <option value="250">Hasta 250€</option>
-        <option value="300">Hasta 300€</option>
-        <option value="350">Hasta 350€</option>
-        <option value="400">Hasta 400€</option>
-        <option value="450">Hasta 450€</option>
-        <option value="500">Hasta 500€</option>
-        <option value="600">Hasta 600€</option>
-        <option value="700">Hasta 700€</option>
-        <option value="800">Hasta 800€</option>
-        <option value="1000">Hasta 1000€</option>
-        <option value="9999">Sin límite</option>
+        <option value="sin-limite">Sin límite</option>
+        <option value="0-100">Menos de 100€</option>
+        <option value="100-150">100€ - 150€</option>
+        <option value="150-200">150€ - 200€</option>
+        <option value="200-300">200€ - 300€</option>
+        <option value="300-450">300€ - 450€</option>
+        <option value="450-600">450€ - 600€</option>
+        <option value="600-800">600€ - 800€</option>
+        <option value="800-1000">800€ - 1000€</option>
+        <option value="mas-1000">Más de 1000€</option>
       </select>
+    </div>
+    <div class="edit-consulta-field">
+      <label>📱 Móvil actual</label>
+      <input type="text" id="ec_movil_actual" placeholder="ej. Redmi Note 10" />
     </div>
     <div class="edit-consulta-field">
       <label>⭐ Marca preferida</label>
@@ -2729,26 +2728,31 @@ body {
   transform: translateX(-50%) translateY(0);
 }
 
-/* Contador de miembros: chip junto al de "conectados ahora" */
+/* Contador de miembros */
 .usuarios-counter {
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: rgba(255,255,255,0.7);
-  padding: 4px 10px;
+  position: fixed;
+  bottom: 76px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #065F46, #047857);
+  color: white;
+  padding: 7px 16px;
   border-radius: 999px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
+  z-index: 997;
+  pointer-events: none;
   white-space: nowrap;
+  box-shadow: 0 2px 10px rgba(6,95,70,0.4);
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   opacity: 0;
   transition: opacity 0.6s;
 }
-.usuarios-counter b { color: white; font-weight: 700; }
 .usuarios-counter.visible { opacity: 1; }
 @media (max-width: 600px) {
-  .usuarios-counter { font-size: 10px; padding: 3px 7px; }
+  .usuarios-counter { bottom: 136px; font-size: 11px; padding: 6px 14px; }
 }
 
 /* Rank info in topbar chip */
@@ -5559,7 +5563,6 @@ body {
     <div class="stat-chip live-chip" id="liveChip">
       <span class="live-dot"></span> <b id="liveCount">1</b>&nbsp;conectados ahora
     </div>
-    <div class="usuarios-counter" id="usuariosCounter">👥 <span id="usuariosCount">…</span> miembros</div>
   </div>
   <div class="rank-progress" id="rankProgressWrap" style="display:none !important;">
     <!-- Desktop: barra con progreso -->
@@ -5866,6 +5869,7 @@ body {
 
 <!-- TOAST -->
 <div class="send-toast" id="sendToast"></div>
+<div class="usuarios-counter" id="usuariosCounter">👥 <span id="usuariosCount">…</span> miembros</div>
 <div class="help-toast" id="helpToast" onclick="irAConsultaDesdeToast()">
   <div class="help-toast-icon">🙋</div>
   <div class="help-toast-body">
@@ -7665,7 +7669,7 @@ async function abrirModalEditarConsulta(hiloId) {
   _editConsultaHiloId = hiloId;
 
   const { data: h } = await db.from('hilos')
-    .select('presupuesto, marca_preferida, marca_no_quiere, datos_extra')
+    .select('presupuesto, movil_actual, marca_preferida, marca_no_quiere, datos_extra')
     .eq('id', hiloId).single();
   if (!h) return;
 
@@ -7673,16 +7677,19 @@ async function abrirModalEditarConsulta(hiloId) {
 
   const sel = document.getElementById('ec_presupuesto');
   if (sel) {
+    const val = String(h.presupuesto || '');
     const opts = Array.from(sel.options);
-    const match = opts.find(o => o.value === String(h.presupuesto || ''));
-    sel.value = match ? match.value : '';
+    const match = opts.find(o => o.value === val);
+    sel.value = match ? match.value : 'sin-limite';
   }
-  const marcaPref = document.getElementById('ec_marca_pref');
-  const marcaNo   = document.getElementById('ec_marca_no');
-  const extra     = document.getElementById('ec_extra');
-  if (marcaPref) marcaPref.value = h.marca_preferida || '';
-  if (marcaNo)   marcaNo.value   = h.marca_no_quiere || '';
-  if (extra)     extra.value     = h.datos_extra || '';
+  const movilActual = document.getElementById('ec_movil_actual');
+  const marcaPref   = document.getElementById('ec_marca_pref');
+  const marcaNo     = document.getElementById('ec_marca_no');
+  const extra       = document.getElementById('ec_extra');
+  if (movilActual) movilActual.value = h.movil_actual || '';
+  if (marcaPref)   marcaPref.value   = h.marca_preferida || '';
+  if (marcaNo)     marcaNo.value     = h.marca_no_quiere || '';
+  if (extra)       extra.value       = h.datos_extra || '';
 
   const ecOverlay = document.getElementById('editConsultaOverlay');
   ecOverlay.style.display = 'flex';
@@ -7703,6 +7710,7 @@ async function guardarEdicionConsulta() {
 
   const nuevo = {
     presupuesto:     document.getElementById('ec_presupuesto').value || null,
+    movil_actual:    (document.getElementById('ec_movil_actual').value || '').trim() || null,
     marca_preferida: (document.getElementById('ec_marca_pref').value || '').trim() || null,
     marca_no_quiere: (document.getElementById('ec_marca_no').value || '').trim() || null,
     datos_extra:     (document.getElementById('ec_extra').value || '').trim() || null,
@@ -7710,6 +7718,7 @@ async function guardarEdicionConsulta() {
 
   const etiquetas = {
     presupuesto:     'Presupuesto',
+    movil_actual:    'Móvil actual',
     marca_preferida: 'Marca preferida',
     marca_no_quiere: 'Marca excluida',
     datos_extra:     'Descripción',
@@ -8174,10 +8183,8 @@ async function cargarRespuestas(hiloId, forceVisible = false) {
   container.querySelectorAll('.edit-reply-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.dataset.editId;
-      // Buscar el contenido original en la respuesta ya cargada
       const resp = respuestas.find(r => r.id === id);
-      const contenido = resp ? resp.contenido : '';
-      abrirModalEditarRespuesta(id, contenido);
+      abrirModalEditarRespuesta(id, resp || {});
     });
   });
   container.querySelectorAll('.delete-reply-btn').forEach(btn => {
@@ -10923,10 +10930,15 @@ function fcInsertLink() {
 }
 
 
-function abrirModalEditarRespuesta(respuestaId, contenidoActual) {
+function abrirModalEditarRespuesta(respuestaId, respData) {
   if (!usuario) { toast('❌ Inicia sesión para editar'); return; }
   const oldModal = document.getElementById('editModal');
   if (oldModal) oldModal.remove();
+
+  // Compatibilidad: si se pasa string legacy en vez de objeto
+  if (typeof respData === 'string') respData = { contenido: respData };
+
+  const movilesActuales = respData.moviles_recomendados || (respData.movil_nombre ? [respData.movil_nombre] : []);
 
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
@@ -10939,7 +10951,44 @@ function abrirModalEditarRespuesta(respuestaId, contenidoActual) {
   modal.innerHTML = `
     <div class="modal-title">✏️ Editar respuesta</div>
     <div class="modal-sub">Modifica tu recomendación.</div>
-    <textarea id="editContenido" rows="6" style="width:100%; padding:12px; border:1.5px solid var(--border); border-radius:12px; font-size:0.9rem; margin-bottom:16px; font-family:'DM Sans',sans-serif; resize:vertical;"></textarea>
+    <textarea id="editContenido" rows="5" style="width:100%; padding:12px; border:1.5px solid var(--border); border-radius:12px; font-size:0.9rem; margin-bottom:12px; font-family:'DM Sans',sans-serif; resize:vertical;"></textarea>
+
+    <div style="margin-bottom:10px;">
+      <div style="font-size:12px;color:var(--text-2);margin-bottom:6px;">📱 Móviles recomendados</div>
+      <div id="editMovilChips" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;"></div>
+      <div style="display:flex;gap:6px;">
+        <input id="editMovilInput" type="text" placeholder="ej: Samsung Galaxy A55"
+          style="flex:1;padding:8px 10px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:'DM Sans',sans-serif;"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();_editAddMovil()}" />
+        <button onclick="_editAddMovil()" style="padding:8px 12px;background:var(--blue);color:white;border:none;border-radius:10px;font-size:13px;cursor:pointer;">+ Añadir</button>
+      </div>
+    </div>
+
+    <div style="font-size:12px;color:var(--text-2);margin-bottom:6px;">🛒 Dónde comprarlo <span style="opacity:0.6">(opcional)</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+      <select id="editTienda" style="padding:8px 10px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:'DM Sans',sans-serif;color-scheme:light;">
+        <option value="">Tienda…</option>
+        <option value="Amazon">Amazon</option>
+        <option value="AliExpress">AliExpress</option>
+        <option value="TradingShenzhen">TradingShenzhen</option>
+        <option value="MediaMarkt">MediaMarkt</option>
+        <option value="Carrefour">Carrefour</option>
+        <option value="eBay">eBay</option>
+        <option value="PcComponentes">PcComponentes</option>
+        <option value="El Corte Inglés">El Corte Inglés</option>
+        <option value="Fnac">Fnac</option>
+        <option value="Miravia">Miravia</option>
+        <option value="Rakuten">Rakuten</option>
+        <option value="PowerPlanet">PowerPlanet</option>
+        <option value="Operadoras">Operadoras</option>
+        <option value="Otra">Otra tienda</option>
+      </select>
+      <input id="editPrecio" type="text" placeholder="💰 Precio (ej: 219€)"
+        style="padding:8px 10px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:'DM Sans',sans-serif;" />
+    </div>
+    <input id="editCupon" type="text" placeholder="🏷️ Código de cupón (ej: VERANO10)"
+      style="width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:'DM Sans',sans-serif;margin-bottom:16px;" />
+
     <div style="display:flex; gap:10px; justify-content:flex-end;">
       <button class="btn-cancel" id="editModalCancelBtn">Cancelar</button>
       <button class="btn-submit" id="editModalSaveBtn">Guardar</button>
@@ -10949,12 +10998,45 @@ function abrirModalEditarRespuesta(respuestaId, contenidoActual) {
   overlay.appendChild(modal);
   document.body.appendChild(overlay);
 
-  // Asignar contenido directamente via JS (evita problemas con HTML encoding)
-  document.getElementById('editContenido').value = contenidoActual || '';
+  // Rellenar campos con datos actuales
+  document.getElementById('editContenido').value = respData.contenido || '';
+  document.getElementById('editTienda').value    = respData.tienda || '';
+  document.getElementById('editPrecio').value    = respData.precio_tienda || '';
+  document.getElementById('editCupon').value     = respData.cupon || '';
+
+  // Chips de móviles
+  window._editMoviles = [...movilesActuales];
+  _renderEditMovilChips();
 
   document.getElementById('editModalCancelBtn').addEventListener('click', cerrarModalEditar);
   document.getElementById('editModalSaveBtn').addEventListener('click', () => guardarEdicionRespuesta(respuestaId));
   overlay.addEventListener('click', (e) => { if (e.target === overlay) cerrarModalEditar(); });
+}
+
+function _renderEditMovilChips() {
+  const container = document.getElementById('editMovilChips');
+  if (!container) return;
+  container.innerHTML = (window._editMoviles || []).map((m, i) =>
+    `<span style="display:inline-flex;align-items:center;gap:4px;background:var(--blue-pale);color:var(--blue);padding:4px 10px;border-radius:999px;font-size:12px;font-weight:500;">
+      📱 ${escHtml(m)}
+      <button onclick="_editRemoveMovil(${i})" style="background:none;border:none;cursor:pointer;color:var(--blue);font-size:13px;line-height:1;padding:0 0 0 2px;">✕</button>
+    </span>`
+  ).join('');
+}
+
+function _editAddMovil() {
+  const input = document.getElementById('editMovilInput');
+  if (!input) return;
+  const val = input.value.trim();
+  if (!val) return;
+  if (!window._editMoviles.includes(val)) window._editMoviles.push(val);
+  input.value = '';
+  _renderEditMovilChips();
+}
+
+function _editRemoveMovil(idx) {
+  window._editMoviles.splice(idx, 1);
+  _renderEditMovilChips();
 }
 
 function cerrarModalEditar() {
@@ -10968,16 +11050,32 @@ async function guardarEdicionRespuesta(respuestaId) {
   const saveBtn = document.getElementById('editModalSaveBtn');
   if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Guardando...'; }
 
-  const { error } = await db.from('respuestas').update({
-    contenido: nuevo,
-    editado: true,
-    editado_en: new Date().toISOString()
-  }).eq('id', respuestaId);
+  const tienda = (document.getElementById('editTienda')?.value || '').trim();
+  const precio = (document.getElementById('editPrecio')?.value || '').trim();
+  const cupon  = (document.getElementById('editCupon')?.value || '').trim();
+  const moviles = (window._editMoviles || []).length > 0 ? window._editMoviles : null;
 
+  const updateData = {
+    contenido:            nuevo,
+    moviles_recomendados: moviles,
+    tienda:               tienda || null,
+    precio_tienda:        precio || null,
+    cupon:                cupon  || null,
+    editado:              true,
+    editado_en:           new Date().toISOString(),
+  };
+
+  let { error } = await db.from('respuestas').update(updateData).eq('id', respuestaId);
+
+  // Si las columnas de tienda/precio/cupón no existen aún, reintentamos sin ellas
   if (error) {
-    toast('❌ Error: ' + error.message);
-    if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Guardar'; }
-    return;
+    const sinOferta = { contenido: nuevo, editado: true, editado_en: updateData.editado_en };
+    const { error: err2 } = await db.from('respuestas').update(sinOferta).eq('id', respuestaId);
+    if (err2) {
+      toast('❌ Error: ' + err2.message);
+      if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Guardar'; }
+      return;
+    }
   }
 
   toast('✅ Editado');
@@ -10987,7 +11085,6 @@ async function guardarEdicionRespuesta(respuestaId) {
   const { data: resp } = await db.from('respuestas').select('hilo_id').eq('id', respuestaId).single();
   if (resp) {
     const container = document.getElementById(`replies_${resp.hilo_id}`);
-    // Solo recargar si ya está visible (para no abrir secciones cerradas)
     if (container && container.style.display !== 'none') {
       await cargarRespuestas(resp.hilo_id);
     }
