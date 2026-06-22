@@ -6619,6 +6619,20 @@ function avatarColor(nick) {
   return AVATAR_COLORS[Math.abs(h) % AVATAR_COLORS.length];
 }
 
+// Genera el HTML del círculo de avatar: foto si existe, iniciales si no
+function avatarHtml(nick, avatarUrl, cssClass) {
+  const ac = avatarColor(nick);
+  const nombre = cap(nick);
+  const iniciales = nombre.substring(0, 2).toUpperCase();
+  if (avatarUrl) {
+    return `<div class="${cssClass}" style="background:transparent;overflow:hidden;">` +
+      `<img src="${avatarUrl}" alt="${nombre}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;" ` +
+      `onerror="this.parentElement.style.background='${ac.bg}';this.parentElement.style.color='${ac.color}';this.parentElement.innerHTML='${iniciales}';">` +
+      `</div>`;
+  }
+  return `<div class="${cssClass}" style="background:${ac.bg};color:${ac.color};">${iniciales}</div>`;
+}
+
 function getRango(puntos, rol) {
   // Ordenar de mayor a menor para que el primero que cumpla sea el más alto
   const sorted = [...RANGOS].sort((a, b) => b.min - a.min);
@@ -7418,7 +7432,7 @@ async function cargarHilos(prefetchedData = null) {
 
   // Batch: una sola query para todos los usuarios de esta página
   const nicknames = [...new Set(pag.map(h => h.nickname))];
-  const { data: usersData } = await db.from('usuarios').select('nickname, puntos, rol, especialidad').in('nickname', nicknames);
+  const { data: usersData } = await db.from('usuarios').select('nickname, puntos, rol, especialidad, avatar_url').in('nickname', nicknames);
   const usersMap = {};
   if (usersData) usersData.forEach(u => usersMap[u.nickname] = u);
 
@@ -7435,7 +7449,7 @@ async function renderHilosPrefetched(data) {
   const start = (currentPage - 1) * ITEMS_PER_PAGE;
   const pag = hilosData.slice(start, start + ITEMS_PER_PAGE);
   const nicknames = [...new Set(pag.map(h => h.nickname))];
-  const { data: usersData } = await db.from('usuarios').select('nickname, puntos, rol, especialidad').in('nickname', nicknames);
+  const { data: usersData } = await db.from('usuarios').select('nickname, puntos, rol, especialidad, avatar_url').in('nickname', nicknames);
   const usersMap = {};
   if (usersData) usersData.forEach(u => usersMap[u.nickname] = u);
   let html = '';
@@ -7503,7 +7517,7 @@ async function renderHilo(h, usersMap = {}) {
       <div class="thread-header">
 
         <div class="thread-meta">
-          <div class="avatar" style="background:${ac.bg};color:${ac.color};">${nombre.substring(0,2).toUpperCase()}</div>
+          ${avatarHtml(h.nickname, uData?.avatar_url, 'avatar')}
           <div class="author-block">
             <div class="author-name">${nombre} ${getBadgeHtml(pts, rol, uData?.especialidad)}</div>
           </div>
@@ -7993,7 +8007,7 @@ async function cargarRespuestas(hiloId, forceVisible = false) {
   }
 
   const nicknames = [...new Set(respuestas.map(r => r.nickname))];
-  const { data: usuariosData } = await db.from('usuarios').select('nickname, puntos, rol, especialidad').in('nickname', nicknames);
+  const { data: usuariosData } = await db.from('usuarios').select('nickname, puntos, rol, especialidad, avatar_url').in('nickname', nicknames);
   const usuariosMap = {};
   if (usuariosData) usuariosData.forEach(u => usuariosMap[u.nickname] = u);
 
@@ -8084,7 +8098,7 @@ async function cargarRespuestas(hiloId, forceVisible = false) {
     html += `
       <div class="${topClass}" id="reply_${r.id}" data-reply-id="${r.id}">
         <div class="reply-header">
-          <div class="reply-avatar" style="background:${ac.bg};color:${ac.color};">${nombre.substring(0,2).toUpperCase()}</div>
+          ${avatarHtml(r.nickname, uData?.avatar_url, 'reply-avatar')}
           <span class="reply-author">${nombre}</span>
           ${getBadgeHtml(uData?.puntos || 0, uData?.rol || 'usuario', uData?.especialidad)}
           ${esTopVotada ? `<span class="top-voted-badge">🏅 Más votada</span>` : ''}
@@ -8315,7 +8329,7 @@ async function enviarConRanking() {
   const nuevoHtmlRanking = `
     <div class="reply-item" id="temp_${Date.now()}">
       <div class="reply-header">
-        <div class="reply-avatar" style="background:${ac2.bg};color:${ac2.color};">${nombre2.substring(0,2).toUpperCase()}</div>
+        ${avatarHtml(usuario.nickname, usuario.avatar_url, 'reply-avatar')}
         <span class="reply-author">${nombre2}</span>
         ${getBadgeHtml(usuario.puntos || 0, usuario.rol || 'usuario', usuario.especialidad)}
         <span class="reply-time">ahora</span>
@@ -8425,7 +8439,7 @@ async function enviarRespuesta(hiloId) {
   const nuevoHtml = `
     <div class="reply-item" id="${tempId}">
       <div class="reply-header">
-        <div class="reply-avatar" style="background:${ac.bg};color:${ac.color};">${nombre.substring(0,2).toUpperCase()}</div>
+        ${avatarHtml(usuario.nickname, usuario.avatar_url, 'reply-avatar')}
         <span class="reply-author">${nombre}</span>
         ${getBadgeHtml(usuario.puntos || 0, usuario.rol || 'usuario', usuario.especialidad)}
         <span class="reply-time">ahora</span>
