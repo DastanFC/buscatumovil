@@ -6720,6 +6720,7 @@ async function cargarNotificaciones() {
   if (vistosDB) vistosDB.forEach(v => visto[v.notif_id] = true);
 
   const todas = [];
+  const hace30dias = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
 
   // Respuestas a mis hilos
   if (hilosIds.length > 0) {
@@ -6727,6 +6728,7 @@ async function cargarNotificaciones() {
       .select('id, nickname, hilo_id, created_at')
       .in('hilo_id', hilosIds)
       .neq('nickname', usuario.nickname)
+      .gte('created_at', hace30dias)
       .order('created_at', { ascending: false })
       .limit(20);
 
@@ -6749,6 +6751,7 @@ async function cargarNotificaciones() {
     .select('id, nickname, hilo_id, created_at')
     .ilike('contenido', `%@${usuario.nickname}%`)
     .neq('nickname', usuario.nickname)
+    .gte('created_at', hace30dias)
     .order('created_at', { ascending: false })
     .limit(10);
 
@@ -6772,6 +6775,7 @@ async function cargarNotificaciones() {
     .select('id, nickname, post_id, created_at')
     .ilike('contenido', `%@${usuario.nickname}%`)
     .neq('nickname', usuario.nickname)
+    .gte('created_at', hace30dias)
     .order('created_at', { ascending: false })
     .limit(10);
 
@@ -6924,9 +6928,10 @@ async function marcarTodasLeidas() {
   const notifs = window._notifCache || [];
   const rows = notifs.filter(n => !n.leido).map(n => ({ nickname: usuario.nickname, notif_id: n.id }));
   if (rows.length > 0) {
-    await db.from('notif_visto').upsert(rows, { onConflict: 'nickname,notif_id' });
+    const { error } = await db.from('notif_visto').upsert(rows, { onConflict: 'nickname,notif_id' });
+    if (error) { console.error('Error marcando notificaciones como leídas:', error); return; }
   }
-  // Actualizar cache local y UI sin recargar todo
+  // Actualizar cache local y UI sin recargar desde BD
   notifs.forEach(n => n.leido = true);
   window._notifCache = notifs;
   notifCount = 0;
@@ -6943,12 +6948,14 @@ async function marcarTodasLeidas() {
       </div>
     `).join('');
   }
+  // No llamar a cargarNotificaciones() — el cache local ya está actualizado
 }
 
 function toggleNotifPanel() {
   const p = document.getElementById('notifPanel');
   p.classList.toggle('open');
   if (p.classList.contains('open')) {
+    cargarNotificaciones();
     setTimeout(() => document.addEventListener('click', cerrarNotifPanelFuera, { once: true }), 10);
   }
 }
