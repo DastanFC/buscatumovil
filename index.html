@@ -3039,6 +3039,45 @@ body {
   .qa-row-pill  { font-size:11px; padding:3px 9px; max-width:52%; }
 }
 
+/* ── Ficha del móvil elegido por el autor del hilo ── */
+.ficha-elegida-card {
+  margin:14px 20px 0;
+  padding:16px 18px;
+  border-radius:var(--radius);
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+  color:#fff;
+  box-shadow: var(--shadow-lg);
+}
+@media (max-width:600px) { .ficha-elegida-card { margin:12px 14px 0; padding:14px; } }
+.ficha-elegida-header {
+  display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;
+}
+.ficha-elegida-tag {
+  font-size:11px; font-weight:700; letter-spacing:0.4px;
+  background:rgba(16,185,129,0.18); color:#4ADE80;
+  padding:4px 10px; border-radius:999px;
+}
+.ficha-elegida-media {
+  font-size:22px; font-weight:900; color:var(--accent);
+}
+.ficha-elegida-nombre { font-size:17px; font-weight:800; margin-top:4px; }
+.ficha-elegida-por { font-size:12px; color:rgba(255,255,255,0.6); margin-bottom:12px; }
+.ficha-bar-list { display:flex; flex-direction:column; gap:7px; }
+.ficha-bar-row { display:flex; align-items:center; gap:8px; }
+.ficha-bar-label { flex:0 0 108px; font-size:12px; color:rgba(255,255,255,0.75); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ficha-bar-track { flex:1; height:6px; border-radius:999px; background:rgba(255,255,255,0.12); overflow:hidden; }
+.ficha-bar-fill { height:100%; border-radius:999px; background:linear-gradient(90deg, var(--blue), var(--blue-light)); }
+.ficha-bar-val { flex:0 0 34px; text-align:right; font-size:11px; font-weight:700; color:rgba(255,255,255,0.85); }
+
+/* ── Botón "Marcar como elegida" (visible solo para el autor del hilo) ── */
+.elegir-reply-btn {
+  border:1px solid var(--border); background:var(--surface); color:var(--text-2);
+  border-radius:999px; padding:6px 12px; font-size:12px; font-weight:600;
+  cursor:pointer; transition:all .15s ease;
+}
+.elegir-reply-btn:hover { border-color: var(--green); color: var(--green); }
+.elegir-reply-btn.is-elegida { background:var(--green); border-color:var(--green); color:#fff; }
+
 /* ── Top-rec ranking cards ── */
 .top-rec-section {
   padding:14px 20px 16px;
@@ -6221,6 +6260,60 @@ const NOTICIAS_POR_PAGINA = 5;
 let topMovilesVisible = true;
 
 // ─── CATEGORÍAS DE RANKING ───────────────────
+// ── Helper: calcula los scores por categoría y la media de una respuesta ──
+// (columnas de BD si existen, si no parsea desde el texto guardado en [Scores:...])
+function calcularScoresYMedia(r) {
+  const scoresEnBD = RANKING_CATS.some(c => r[c.key] != null);
+  const scoresFinales = scoresEnBD ? r : parsearScoresDesdeContenido(r.contenido);
+  const mediaFinal = r.sc_media != null
+    ? r.sc_media
+    : (() => {
+        const vs = RANKING_CATS.map(c => scoresFinales[c.key]).filter(v => v != null);
+        return vs.length ? parseFloat((vs.reduce((a,b) => a+b, 0) / vs.length).toFixed(1)) : null;
+      })();
+  return { scoresFinales, mediaFinal };
+}
+
+// ── Ficha visual del móvil elegido por el autor del hilo ──
+function renderFichaElegida(hiloId, r) {
+  if (!r) return '';
+  const { scoresFinales, mediaFinal } = calcularScoresYMedia(r);
+
+  let modelos = [];
+  if (r.moviles_recomendados && r.moviles_recomendados.length > 0) {
+    modelos = r.moviles_recomendados.map(m => formatearModelo(m));
+  } else if (r.movil_nombre) {
+    modelos = [formatearModelo(r.movil_nombre)];
+  } else {
+    modelos = extraerModelos(r.contenido).map(m => formatearModelo(m));
+  }
+  const nombreMovil = modelos.length ? modelos.join(' · ') : 'Móvil recomendado';
+
+  const barsHtml = RANKING_CATS
+    .filter(cat => scoresFinales[cat.key] != null)
+    .map(cat => {
+      const val = scoresFinales[cat.key];
+      const pct = Math.max(0, Math.min(100, val * 10));
+      return `
+        <div class="ficha-bar-row">
+          <span class="ficha-bar-label">${cat.icon} ${cat.label}</span>
+          <div class="ficha-bar-track"><div class="ficha-bar-fill" style="width:${pct}%"></div></div>
+          <span class="ficha-bar-val">${val}/10</span>
+        </div>`;
+    }).join('');
+
+  return `
+    <div class="ficha-elegida-card" id="fichaElegida_${hiloId}">
+      <div class="ficha-elegida-header">
+        <span class="ficha-elegida-tag">✅ Elección final</span>
+        ${mediaFinal != null ? `<span class="ficha-elegida-media">${mediaFinal}<span style="font-size:0.6em;opacity:0.7">/10</span></span>` : ''}
+      </div>
+      <div class="ficha-elegida-nombre">📱 ${escHtml(nombreMovil)}</div>
+      <div class="ficha-elegida-por">Recomendado por ${cap(r.nickname)}</div>
+      ${barsHtml ? `<div class="ficha-bar-list">${barsHtml}</div>` : ''}
+    </div>`;
+}
+
 const RANKING_CATS = [
   { key: 'sc_pantalla',    label: 'Pantalla',     icon: '📱' },
   { key: 'sc_potencia',    label: 'Potencia',     icon: '🚀' },
@@ -6720,7 +6813,6 @@ async function cargarNotificaciones() {
   if (vistosDB) vistosDB.forEach(v => visto[v.notif_id] = true);
 
   const todas = [];
-  const hace30dias = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
 
   // Respuestas a mis hilos
   if (hilosIds.length > 0) {
@@ -6728,7 +6820,6 @@ async function cargarNotificaciones() {
       .select('id, nickname, hilo_id, created_at')
       .in('hilo_id', hilosIds)
       .neq('nickname', usuario.nickname)
-      .gte('created_at', hace30dias)
       .order('created_at', { ascending: false })
       .limit(20);
 
@@ -6751,7 +6842,6 @@ async function cargarNotificaciones() {
     .select('id, nickname, hilo_id, created_at')
     .ilike('contenido', `%@${usuario.nickname}%`)
     .neq('nickname', usuario.nickname)
-    .gte('created_at', hace30dias)
     .order('created_at', { ascending: false })
     .limit(10);
 
@@ -6775,7 +6865,6 @@ async function cargarNotificaciones() {
     .select('id, nickname, post_id, created_at')
     .ilike('contenido', `%@${usuario.nickname}%`)
     .neq('nickname', usuario.nickname)
-    .gte('created_at', hace30dias)
     .order('created_at', { ascending: false })
     .limit(10);
 
@@ -6928,10 +7017,9 @@ async function marcarTodasLeidas() {
   const notifs = window._notifCache || [];
   const rows = notifs.filter(n => !n.leido).map(n => ({ nickname: usuario.nickname, notif_id: n.id }));
   if (rows.length > 0) {
-    const { error } = await db.from('notif_visto').upsert(rows, { onConflict: 'nickname,notif_id' });
-    if (error) { console.error('Error marcando notificaciones como leídas:', error); return; }
+    await db.from('notif_visto').upsert(rows, { onConflict: 'nickname,notif_id' });
   }
-  // Actualizar cache local y UI sin recargar desde BD
+  // Actualizar cache local y UI sin recargar todo
   notifs.forEach(n => n.leido = true);
   window._notifCache = notifs;
   notifCount = 0;
@@ -6948,14 +7036,12 @@ async function marcarTodasLeidas() {
       </div>
     `).join('');
   }
-  // No llamar a cargarNotificaciones() — el cache local ya está actualizado
 }
 
 function toggleNotifPanel() {
   const p = document.getElementById('notifPanel');
   p.classList.toggle('open');
   if (p.classList.contains('open')) {
-    cargarNotificaciones();
     setTimeout(() => document.addEventListener('click', cerrarNotifPanelFuera, { once: true }), 10);
   }
 }
@@ -7911,6 +7997,21 @@ async function marcarResuelta(hiloId) {
   }
 }
 
+// ── Marcar / desmarcar una respuesta como "la elegida" (solo el autor del hilo) ──
+async function marcarRespuestaElegida(hiloId, respuestaId, estabaElegida) {
+  if (!usuario) return;
+  const { data: hilo } = await db.from('hilos').select('nickname').eq('id', hiloId).single();
+  if (!hilo || usuario.nickname !== hilo.nickname) {
+    toast('⚠️ Solo quien abrió la consulta puede marcar la elegida');
+    return;
+  }
+  const nuevoValor = estabaElegida ? null : respuestaId;
+  const { error } = await db.from('hilos').update({ respuesta_elegida_id: nuevoValor }).eq('id', hiloId);
+  if (error) { toast('❌ ' + error.message); return; }
+  toast(nuevoValor ? '✅ Respuesta marcada como elegida' : 'Elección retirada');
+  cargarRespuestas(hiloId);
+}
+
 // ═══════════════════════════════════════════
 // RESPUESTAS MAS VOTADAS DESTACADAS
 // ═══════════════════════════════════════════
@@ -7955,6 +8056,15 @@ async function cargarRespuestas(hiloId, forceVisible = false) {
     return;
   }
 
+  // ── Datos del hilo (autor + respuesta elegida) para la ficha y el botón "Marcar como elegida" ──
+  const { data: hiloInfo } = await db.from('hilos')
+    .select('nickname, respuesta_elegida_id')
+    .eq('id', hiloId)
+    .single();
+  const hiloAutorNick = hiloInfo?.nickname || null;
+  const respuestaElegidaId = hiloInfo?.respuesta_elegida_id || null;
+  const esAutorHilo = !!(usuario && hiloAutorNick && usuario.nickname === hiloAutorNick);
+
   if (!respuestas || respuestas.length === 0) {
     container.innerHTML = '<div class="replies-empty">💬 Sé el primero en recomendar</div>';
     const topRecEl0 = document.getElementById(`topRec_${hiloId}`);
@@ -7983,8 +8093,13 @@ async function cargarRespuestas(hiloId, forceVisible = false) {
   let mejorRespuesta = _top3.length > 0 ? _top3[0].r : null;
   let maxVotos = _top3.length > 0 ? _top3[0].votos : -1;
 
+  // ── Ficha del móvil elegido por el autor del hilo (si ya hay una respuesta marcada) ──
+  const respuestaElegida = respuestaElegidaId ? respuestas.find(r => r.id === respuestaElegidaId) : null;
+  const fichaElegidaHtml = renderFichaElegida(hiloId, respuestaElegida);
+
   const topRecEl = document.getElementById(`topRec_${hiloId}`);
   if (topRecEl) {
+    let top3Html = '';
     if (_top3.length > 0) {
       const _medallas = [
         { cls:'gold',   emoji:'🥇', label:'#1' },
@@ -8017,7 +8132,7 @@ async function cargarRespuestas(hiloId, forceVisible = false) {
           </div>`;
       }).join('');
 
-      topRecEl.innerHTML = `
+      top3Html = `
         <div class="top-rec-section">
           <div class="top-rec-header">
             <span style="font-size:14px">🏆</span>
@@ -8025,9 +8140,8 @@ async function cargarRespuestas(hiloId, forceVisible = false) {
           </div>
           <div class="top-rec-list" id="topRecList_${hiloId}">${_cards}</div>
         </div>`;
-    } else {
-      topRecEl.innerHTML = '';
     }
+    topRecEl.innerHTML = fichaElegidaHtml + top3Html;
   }
 
   const cntEl = document.getElementById(`rcnt_${hiloId}`);
@@ -8070,6 +8184,13 @@ async function cargarRespuestas(hiloId, forceVisible = false) {
       `<button class="edit-reply-btn" data-edit-id="${r.id}">✏️ Editar</button>` : '';
     const deleteBtn = esAutor ?
       `<button class="delete-reply-btn" data-delete-id="${r.id}" data-delete-hilo="${hiloId}">🗑 Borrar</button>` : '';
+
+    // BOTÓN "MARCAR COMO ELEGIDA" (solo lo ve el autor del HILO, no del reply)
+    const esElegida = respuestaElegidaId === r.id;
+    const elegirBtn = esAutorHilo ?
+      `<button class="elegir-reply-btn ${esElegida ? 'is-elegida' : ''}" onclick="marcarRespuestaElegida('${hiloId}','${r.id}',${esElegida})">
+         ${esElegida ? '✅ Elegida · quitar' : '☑️ Marcar como elegida'}
+       </button>` : '';
 
     // Cita
     let citaHtml = '';
@@ -8155,6 +8276,7 @@ async function cargarRespuestas(hiloId, forceVisible = false) {
           <button class="cite-btn" data-hilo="${hiloId}" data-reply="${r.id}" data-autor="${r.nickname}" data-contenido="${r.contenido.replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/\n/g,' ')}">↩ Citar</button>
           ${editBtn}
           ${deleteBtn}
+          ${elegirBtn}
         </div>
       </div>
     `;
