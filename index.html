@@ -3039,64 +3039,35 @@ body {
   .qa-row-pill  { font-size:11px; padding:3px 9px; max-width:52%; }
 }
 
-/* ── Ficha del móvil elegido por el autor del hilo (estilo pros/contras) ── */
+/* ── Ficha del móvil elegido por el autor del hilo ── */
 .ficha-elegida-card {
   margin:14px 20px 0;
-  padding:20px 22px 18px;
+  padding:16px 18px;
   border-radius:var(--radius);
-  background:var(--surface);
-  border:1px solid var(--border);
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+  color:#fff;
   box-shadow: var(--shadow-lg);
-  text-align:center;
 }
-@media (max-width:600px) { .ficha-elegida-card { margin:12px 14px 0; padding:16px 16px 14px; } }
-.ficha-tag-row { margin-bottom:8px; }
-.ficha-tag {
-  font-size:11px; font-weight:800; letter-spacing:0.6px;
-  color: var(--accent-red);
+@media (max-width:600px) { .ficha-elegida-card { margin:12px 14px 0; padding:14px; } }
+.ficha-elegida-header {
+  display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;
 }
-.ficha-nombre { font-size:24px; font-weight:900; color:var(--text); letter-spacing:-0.3px; }
-@media (max-width:600px) { .ficha-nombre { font-size:19px; } }
-.ficha-sub { font-size:12px; color:var(--text-3); margin-top:4px; }
-.ficha-meta-row { display:flex; justify-content:center; gap:8px; flex-wrap:wrap; margin:10px 0 4px; }
-.ficha-meta-pill {
-  font-size:12px; font-weight:600; color:var(--text-2);
-  background:var(--surface-3); border-radius:999px; padding:6px 14px;
+.ficha-elegida-tag {
+  font-size:11px; font-weight:700; letter-spacing:0.4px;
+  background:rgba(16,185,129,0.18); color:#4ADE80;
+  padding:4px 10px; border-radius:999px;
 }
-.ficha-meta-nota { color:var(--accent-red); font-weight:800; }
-.ficha-sin-score {
-  margin-top:14px; padding:12px 14px; border-radius:var(--radius-sm);
-  background:var(--surface-2); color:var(--text-2); font-size:13px; line-height:1.5;
+.ficha-elegida-media {
+  font-size:22px; font-weight:900; color:var(--accent);
 }
-.ficha-proscontras {
-  display:grid; grid-template-columns:1fr 1fr; gap:18px;
-  margin-top:16px; padding-top:16px; border-top:1px solid var(--border);
-  text-align:left;
-}
-@media (max-width:600px) { .ficha-proscontras { gap:10px; } }
-.ficha-col-head {
-  display:flex; align-items:center; justify-content:center; gap:6px;
-  font-size:12px; font-weight:800; letter-spacing:0.5px; margin-bottom:10px;
-}
-.ficha-col-pros .ficha-col-head { color:var(--green); }
-.ficha-col-contras .ficha-col-head { color:var(--accent-red); }
-.ficha-col ul { list-style:none; display:flex; flex-direction:column; gap:8px; }
-.ficha-col li {
-  font-size:13px; color:var(--text-2); display:flex; justify-content:space-between; gap:6px;
-}
-.ficha-col li b { color:var(--text); }
-.ficha-col li.ficha-vacio { color:var(--text-3); font-style:italic; justify-content:flex-start; }
-.ficha-veredicto {
-  margin-top:16px; text-align:left;
-  background:#FFF8E6; border-left:3px solid var(--accent);
-  border-radius:0 var(--radius-sm) var(--radius-sm) 0;
-  padding:12px 14px;
-}
-.ficha-veredicto-tag {
-  display:block; font-size:11px; font-weight:800; letter-spacing:0.5px;
-  color:var(--accent); margin-bottom:4px;
-}
-.ficha-veredicto-txt { font-size:13px; color:var(--text-2); line-height:1.4; }
+.ficha-elegida-nombre { font-size:17px; font-weight:800; margin-top:4px; }
+.ficha-elegida-por { font-size:12px; color:rgba(255,255,255,0.6); margin-bottom:12px; }
+.ficha-bar-list { display:flex; flex-direction:column; gap:7px; }
+.ficha-bar-row { display:flex; align-items:center; gap:8px; }
+.ficha-bar-label { flex:0 0 108px; font-size:12px; color:rgba(255,255,255,0.75); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ficha-bar-track { flex:1; height:6px; border-radius:999px; background:rgba(255,255,255,0.12); overflow:hidden; }
+.ficha-bar-fill { height:100%; border-radius:999px; background:linear-gradient(90deg, var(--blue), var(--blue-light)); }
+.ficha-bar-val { flex:0 0 34px; text-align:right; font-size:11px; font-weight:700; color:rgba(255,255,255,0.85); }
 
 /* ── Botón "Marcar como elegida" (visible solo para el autor del hilo) ── */
 .elegir-reply-btn {
@@ -6318,68 +6289,28 @@ function renderFichaElegida(hiloId, r) {
   }
   const nombreMovil = modelos.length ? modelos.join(' · ') : 'Móvil recomendado';
 
-  const catsConScore = RANKING_CATS.filter(cat => scoresFinales[cat.key] != null);
-
-  // ── Sin puntuaciones guardadas: ficha simple + aviso ──
-  if (catsConScore.length === 0) {
-    return `
-      <div class="ficha-elegida-card">
-        <div class="ficha-tag-row">
-          <span class="ficha-tag">✅ ELECCIÓN FINAL</span>
-        </div>
-        <div class="ficha-nombre">${escHtml(nombreMovil)}</div>
-        <div class="ficha-sub">Recomendado por ${cap(r.nickname)}</div>
-        <div class="ficha-sin-score">
-          📊 Sin puntuación detallada — recomiéndalo con 📱 para añadir valoración por categorías.
-        </div>
-      </div>`;
-  }
-
-  // ── Pros (≥5) / Contras (<5) automáticos a partir de las categorías puntuadas ──
-  const pros = catsConScore.filter(cat => scoresFinales[cat.key] >= 5)
-    .sort((a,b) => scoresFinales[b.key] - scoresFinales[a.key]);
-  const contras = catsConScore.filter(cat => scoresFinales[cat.key] < 5)
-    .sort((a,b) => scoresFinales[a.key] - scoresFinales[b.key]);
-
-  const prosHtml = pros.length
-    ? pros.map(cat => `<li>${cat.icon} ${cat.label} <b>${scoresFinales[cat.key]}/10</b></li>`).join('')
-    : '<li class="ficha-vacio">Ningún punto destacado</li>';
-  const contrasHtml = contras.length
-    ? contras.map(cat => `<li>${cat.icon} ${cat.label} <b>${scoresFinales[cat.key]}/10</b></li>`).join('')
-    : '<li class="ficha-vacio">Sin puntos débiles</li>';
-
-  // ── Veredicto corto, generado a partir de la media y el nº de contras ──
-  let veredicto;
-  if (mediaFinal == null) veredicto = 'Elección marcada por el autor de la consulta.';
-  else if (mediaFinal >= 8 && contras.length <= 1) veredicto = 'Elección muy sólida, destaca en casi todo.';
-  else if (mediaFinal >= 6.5) veredicto = 'Buena opción en general, con algún punto a vigilar.';
-  else if (mediaFinal >= 5) veredicto = 'Cumple lo básico, aunque tiene varios contras a tener en cuenta.';
-  else veredicto = 'Opción con bastantes puntos flojos según esta valoración.';
+  const barsHtml = RANKING_CATS
+    .filter(cat => scoresFinales[cat.key] != null)
+    .map(cat => {
+      const val = scoresFinales[cat.key];
+      const pct = Math.max(0, Math.min(100, val * 10));
+      return `
+        <div class="ficha-bar-row">
+          <span class="ficha-bar-label">${cat.icon} ${cat.label}</span>
+          <div class="ficha-bar-track"><div class="ficha-bar-fill" style="width:${pct}%"></div></div>
+          <span class="ficha-bar-val">${val}/10</span>
+        </div>`;
+    }).join('');
 
   return `
-    <div class="ficha-elegida-card">
-      <div class="ficha-tag-row">
-        <span class="ficha-tag">✅ ELECCIÓN FINAL</span>
+    <div class="ficha-elegida-card" id="fichaElegida_${hiloId}">
+      <div class="ficha-elegida-header">
+        <span class="ficha-elegida-tag">✅ Elección final</span>
+        ${mediaFinal != null ? `<span class="ficha-elegida-media">${mediaFinal}<span style="font-size:0.6em;opacity:0.7">/10</span></span>` : ''}
       </div>
-      <div class="ficha-nombre">${escHtml(nombreMovil)}</div>
-      <div class="ficha-meta-row">
-        <span class="ficha-meta-pill">Recomendado por ${cap(r.nickname)}</span>
-        ${mediaFinal != null ? `<span class="ficha-meta-pill ficha-meta-nota">⭐ Nota: ${mediaFinal}/10</span>` : ''}
-      </div>
-      <div class="ficha-proscontras">
-        <div class="ficha-col ficha-col-pros">
-          <div class="ficha-col-head"><span class="ficha-icon-ok">✅</span>PROS</div>
-          <ul>${prosHtml}</ul>
-        </div>
-        <div class="ficha-col ficha-col-contras">
-          <div class="ficha-col-head"><span class="ficha-icon-no">❌</span>CONTRAS</div>
-          <ul>${contrasHtml}</ul>
-        </div>
-      </div>
-      <div class="ficha-veredicto">
-        <span class="ficha-veredicto-tag">📣 VEREDICTO</span>
-        <span class="ficha-veredicto-txt">${veredicto}</span>
-      </div>
+      <div class="ficha-elegida-nombre">📱 ${escHtml(nombreMovil)}</div>
+      <div class="ficha-elegida-por">Recomendado por ${cap(r.nickname)}</div>
+      ${barsHtml ? `<div class="ficha-bar-list">${barsHtml}</div>` : ''}
     </div>`;
 }
 
