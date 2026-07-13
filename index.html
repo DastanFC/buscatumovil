@@ -3039,35 +3039,54 @@ body {
   .qa-row-pill  { font-size:11px; padding:3px 9px; max-width:52%; }
 }
 
-/* ── Ficha del móvil elegido por el autor del hilo ── */
+/* ── Ficha del móvil elegido por el autor del hilo (card pros/contras) ── */
 .ficha-elegida-card {
   margin:14px 20px 0;
-  padding:16px 18px;
   border-radius:var(--radius);
-  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
-  color:#fff;
+  background: var(--surface);
+  border:1px solid var(--border);
   box-shadow: var(--shadow-lg);
+  overflow:hidden;
 }
-@media (max-width:600px) { .ficha-elegida-card { margin:12px 14px 0; padding:14px; } }
-.ficha-elegida-header {
-  display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;
+@media (max-width:600px) { .ficha-elegida-card { margin:12px 14px 0; } }
+.ficha-elegida-top {
+  text-align:center;
+  padding:18px 20px 14px;
+  border-bottom:1px solid var(--border);
+  background: var(--surface-2);
 }
 .ficha-elegida-tag {
-  font-size:11px; font-weight:700; letter-spacing:0.4px;
-  background:rgba(16,185,129,0.18); color:#4ADE80;
-  padding:4px 10px; border-radius:999px;
+  font-size:11px; font-weight:700; letter-spacing:0.6px; text-transform:uppercase;
+  color:var(--green);
 }
-.ficha-elegida-media {
-  font-size:22px; font-weight:900; color:var(--accent);
+.ficha-elegida-nombre { font-size:19px; font-weight:800; color:var(--navy); margin:6px 0 8px; }
+.ficha-elegida-por {
+  display:inline-block;
+  font-size:12px; font-weight:600; color:var(--text-2);
+  background:var(--surface-3);
+  padding:5px 14px; border-radius:999px;
 }
-.ficha-elegida-nombre { font-size:17px; font-weight:800; margin-top:4px; }
-.ficha-elegida-por { font-size:12px; color:rgba(255,255,255,0.6); margin-bottom:12px; }
-.ficha-bar-list { display:flex; flex-direction:column; gap:7px; }
-.ficha-bar-row { display:flex; align-items:center; gap:8px; }
-.ficha-bar-label { flex:0 0 108px; font-size:12px; color:rgba(255,255,255,0.75); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.ficha-bar-track { flex:1; height:6px; border-radius:999px; background:rgba(255,255,255,0.12); overflow:hidden; }
-.ficha-bar-fill { height:100%; border-radius:999px; background:linear-gradient(90deg, var(--blue), var(--blue-light)); }
-.ficha-bar-val { flex:0 0 34px; text-align:right; font-size:11px; font-weight:700; color:rgba(255,255,255,0.85); }
+.ficha-elegida-body { padding:18px 20px 20px; }
+.ficha-procon-grid { display:flex; gap:22px; flex-wrap:wrap; justify-content:center; }
+.ficha-procon-col { flex:1; min-width:150px; text-align:center; }
+.ficha-procon-head { font-size:12px; font-weight:800; letter-spacing:0.4px; margin:4px 0 10px; }
+.ficha-procon-col.pros .ficha-procon-head { color:var(--green); }
+.ficha-procon-col.contras .ficha-procon-head { color:#DC2626; }
+.ficha-procon-list { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px; }
+.ficha-procon-list li {
+  font-size:13px; color:var(--text-2); line-height:1.4;
+  padding-left:18px; position:relative; text-align:left;
+}
+.ficha-procon-col.pros .ficha-procon-list li::before { content:"✓"; position:absolute; left:0; color:var(--green); font-weight:800; }
+.ficha-procon-col.contras .ficha-procon-list li::before { content:"✕"; position:absolute; left:0; color:#DC2626; font-weight:800; }
+.ficha-procon-empty { font-size:12px; color:var(--text-3); }
+.ficha-veredicto {
+  margin-top:16px;
+  background:#FFFBEB; border-left:4px solid var(--accent);
+  border-radius:var(--radius-sm);
+  padding:12px 16px;
+  font-size:13px; color:#7C4A03; line-height:1.5; text-align:center;
+}
 
 /* ── Botón "Marcar como elegida" (visible solo para el autor del hilo) ── */
 .elegir-reply-btn {
@@ -3797,86 +3816,47 @@ body {
   .ranking-oferta-grid { grid-template-columns: 1fr; }
 }
 
-.ranking-scores-grid {
+.ranking-procon-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 12px;
   margin-bottom: 14px;
 }
 @media (max-width: 480px) {
-  .ranking-scores-grid { gap: 8px; margin-bottom: 10px; }
-  .ranking-score-label { font-size: 10px; }
-  .ranking-score-input { width: 44px; font-size: 13px; padding: 5px 6px; }
-  .ranking-media-badge { padding: 8px 12px; margin-bottom: 10px; }
+  .ranking-procon-grid { grid-template-columns: 1fr; gap: 10px; margin-bottom: 10px; }
   .ranking-nota-input { margin-bottom: 10px; min-height: 48px; }
 }
-.ranking-score-item {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.ranking-score-label {
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--text-3);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.ranking-score-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.ranking-score-input {
-  width: 52px;
-  padding: 6px 8px;
-  border: 1.5px solid var(--border);
-  border-radius: 8px;
-  font-size: 14px;
+.ranking-procon-item { display: flex; flex-direction: column; gap: 6px; }
+.ranking-procon-label {
+  font-size: 12px;
   font-weight: 700;
-  font-family: 'DM Mono', monospace;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.ranking-procon-label.pros { color: var(--green); }
+.ranking-procon-label.contras { color: #DC2626; }
+.ranking-procon-textarea {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  resize: vertical;
+  min-height: 74px;
   background: var(--surface-2);
-  color: var(--navy);
+  color: var(--text);
   transition: all 0.18s;
   -webkit-appearance: none;
 }
-.ranking-score-input:focus {
+.ranking-procon-textarea:focus {
   outline: none; border-color: var(--blue);
   background: white; box-shadow: 0 0 0 3px rgba(29,111,232,0.08);
 }
-.ranking-score-bar {
-  flex: 1; height: 5px;
-  background: var(--surface-3);
-  border-radius: 999px; overflow: hidden;
-}
-.ranking-score-bar-fill {
-  height: 100%; border-radius: 999px;
-  background: linear-gradient(90deg, var(--blue), var(--blue-light));
-  transition: width 0.25s;
-}
-.ranking-media-badge {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--navy);
-  color: white;
-  border-radius: 12px;
-  padding: 10px 14px;
-  margin-bottom: 14px;
-  font-family: 'Roboto', sans-serif;
-}
-.ranking-media-num {
-  font-size: 21px;
-  font-weight: 800;
-  color: var(--accent);
-}
-.ranking-media-label {
-  font-size: 12px;
-  color: rgba(255,255,255,0.55);
+.ranking-procon-hint {
+  font-size: 10.5px;
+  color: var(--text-3);
 }
 .ranking-nota-input {
   width: 100%;
@@ -3901,47 +3881,31 @@ body {
   display: flex; gap: 8px; justify-content: flex-end;
 }
 
-/* ─── RENDER DE SCORES EN RESPUESTA ─── */
+/* ─── RENDER DE PROS/CONTRAS EN RESPUESTA ─── */
 .reply-ranking-block {
   margin: 8px 0 6px;
   padding: 10px 12px;
   background: var(--surface-2);
   border-radius: 12px;
   border: 1px solid var(--border);
-}
-.reply-ranking-media {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--navy);
-  color: var(--accent);
-  border-radius: 8px;
-  padding: 4px 10px;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 800;
-  font-size: 14px;
-  margin-bottom: 8px;
-}
-.reply-ranking-chips {
   display: flex;
+  gap: 16px;
   flex-wrap: wrap;
-  gap: 5px;
 }
-.reply-ranking-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 3px 9px;
-  font-size: 11px;
-  color: var(--text-2);
+.reply-procon-col { flex: 1; min-width: 130px; }
+.reply-procon-title {
+  font-size: 10.5px; font-weight: 800; letter-spacing: 0.4px; text-transform: uppercase;
+  margin-bottom: 5px;
 }
-.reply-ranking-chip b {
-  font-weight: 700;
-  color: var(--navy);
+.reply-procon-col.pros .reply-procon-title { color: var(--green); }
+.reply-procon-col.contras .reply-procon-title { color: #DC2626; }
+.reply-procon-col ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; }
+.reply-procon-col li {
+  font-size: 12px; color: var(--text-2); line-height: 1.4;
+  padding-left: 15px; position: relative;
 }
+.reply-procon-col.pros li::before { content:"✓"; position:absolute; left:0; color:var(--green); font-weight:800; }
+.reply-procon-col.contras li::before { content:"✕"; position:absolute; left:0; color:#DC2626; font-weight:800; }
 
 /* ─── TARJETA DE OFERTA: tienda / precio / cupón ─── */
 .reply-oferta-card {
@@ -6166,8 +6130,8 @@ body {
 <div class="ranking-modal-overlay" id="rankingModalOverlay" style="display:none;" onclick="cerrarModalRanking(event)">
   <div class="ranking-modal" onclick="event.stopPropagation()">
     <div class="ranking-modal-handle"></div>
-    <div class="ranking-modal-title">📱 Recomendar móvil con puntuación</div>
-    <div class="ranking-modal-sub">Opcional · Las puntuaciones ayudan a otros usuarios a decidir mejor</div>
+    <div class="ranking-modal-title">📱 Recomendar un móvil</div>
+    <div class="ranking-modal-sub">Cuenta sus pros y contras · así no comparamos un móvil de 200€ con uno de 800€ con un simple número</div>
 
     <input class="ranking-movil-input" type="text" id="rankingMovilNombre"
       placeholder="Nombre del móvil que recomiendas (ej: Redmi Note 14)"
@@ -6198,20 +6162,21 @@ body {
       <input class="ranking-oferta-input ranking-oferta-input-full" type="text" id="rankingCupon" placeholder="🏷️ Código de cupón (ej: VERANO10)" />
     </div>
 
-    <div class="ranking-scores-grid" id="rankingScoresGrid">
-      <!-- Generado por JS -->
-    </div>
-
-    <div class="ranking-media-badge" id="rankingMediaBadge">
-      <div>
-        <div class="ranking-media-label">Valoración media</div>
-        <div class="ranking-media-num" id="rankingMediaNum">—</div>
+    <div class="ranking-procon-grid">
+      <div class="ranking-procon-item">
+        <div class="ranking-procon-label pros">✅ Pros</div>
+        <textarea class="ranking-procon-textarea" id="rankingPros" placeholder="Buena batería&#10;Buen brillo&#10;Buena cámara" rows="4"></textarea>
+        <div class="ranking-procon-hint">Uno por línea</div>
       </div>
-      <div style="margin-left:auto;font-size:0.72rem;color:rgba(255,255,255,0.4);">sobre 10</div>
+      <div class="ranking-procon-item">
+        <div class="ranking-procon-label contras">❌ Contras</div>
+        <textarea class="ranking-procon-textarea" id="rankingContras" placeholder="Carga lenta&#10;Sin jack de auriculares" rows="4"></textarea>
+        <div class="ranking-procon-hint">Uno por línea</div>
+      </div>
     </div>
 
     <textarea class="ranking-nota-input" id="rankingNota"
-      placeholder="Añade un comentario sobre este móvil (opcional)..."
+      placeholder="Veredicto final: resume tu opinión en una frase (opcional)..."
       rows="2"></textarea>
 
     <div class="ranking-actions">
@@ -6259,25 +6224,35 @@ let noticiasPagina = 1;
 const NOTICIAS_POR_PAGINA = 5;
 let topMovilesVisible = true;
 
-// ─── CATEGORÍAS DE RANKING ───────────────────
-// ── Helper: calcula los scores por categoría y la media de una respuesta ──
-// (columnas de BD si existen, si no parsea desde el texto guardado en [Scores:...])
-function calcularScoresYMedia(r) {
-  const scoresEnBD = RANKING_CATS.some(c => r[c.key] != null);
-  const scoresFinales = scoresEnBD ? r : parsearScoresDesdeContenido(r.contenido);
-  const mediaFinal = r.sc_media != null
-    ? r.sc_media
-    : (() => {
-        const vs = RANKING_CATS.map(c => scoresFinales[c.key]).filter(v => v != null);
-        return vs.length ? parseFloat((vs.reduce((a,b) => a+b, 0) / vs.length).toFixed(1)) : null;
-      })();
-  return { scoresFinales, mediaFinal };
+// ─── PROS / CONTRAS DE UNA RECOMENDACIÓN ───────────────────
+// (columnas de BD si existen, si no parsea desde el texto guardado en [PROS:...][CONTRAS:...])
+function obtenerProsContras(r) {
+  if ((Array.isArray(r.pros) && r.pros.length) || (Array.isArray(r.contras) && r.contras.length)) {
+    return { pros: r.pros || [], contras: r.contras || [] };
+  }
+  return parsearProsContrasDesdeContenido(r.contenido);
 }
 
-// ── Ficha visual del móvil elegido por el autor del hilo ──
+// ── Texto libre (veredicto) de una recomendación, limpio de tags y del nombre del móvil ──
+function extraerVeredicto(r) {
+  let texto = (r.contenido || '')
+    .replace(/\[PROS:[^\]]*\]/gi, '')
+    .replace(/\[CONTRAS:[^\]]*\]/gi, '')
+    .replace(/\[Scores:[^\]]*\]/gi, '')
+    .trim();
+  if (r.movil_nombre && texto) {
+    const lineas = texto.split('\n');
+    if (lineas[0].trim().toLowerCase() === r.movil_nombre.trim().toLowerCase()) lineas.shift();
+    texto = lineas.join('\n').trim();
+  }
+  return texto;
+}
+
+// ── Ficha visual del móvil elegido por el autor del hilo (pros / contras) ──
 function renderFichaElegida(hiloId, r) {
   if (!r) return '';
-  const { scoresFinales, mediaFinal } = calcularScoresYMedia(r);
+  const { pros, contras } = obtenerProsContras(r);
+  const veredicto = extraerVeredicto(r);
 
   let modelos = [];
   if (r.moviles_recomendados && r.moviles_recomendados.length > 0) {
@@ -6289,43 +6264,35 @@ function renderFichaElegida(hiloId, r) {
   }
   const nombreMovil = modelos.length ? modelos.join(' · ') : 'Móvil recomendado';
 
-  const barsHtml = RANKING_CATS
-    .filter(cat => scoresFinales[cat.key] != null)
-    .map(cat => {
-      const val = scoresFinales[cat.key];
-      const pct = Math.max(0, Math.min(100, val * 10));
-      return `
-        <div class="ficha-bar-row">
-          <span class="ficha-bar-label">${cat.icon} ${cat.label}</span>
-          <div class="ficha-bar-track"><div class="ficha-bar-fill" style="width:${pct}%"></div></div>
-          <span class="ficha-bar-val">${val}/10</span>
-        </div>`;
-    }).join('');
+  const prosHtml = pros.length
+    ? `<ul class="ficha-procon-list">${pros.map(p => `<li>${escHtml(p)}</li>`).join('')}</ul>`
+    : `<div class="ficha-procon-empty">Sin pros indicados</div>`;
+  const contrasHtml = contras.length
+    ? `<ul class="ficha-procon-list">${contras.map(c => `<li>${escHtml(c)}</li>`).join('')}</ul>`
+    : `<div class="ficha-procon-empty">Sin contras indicados</div>`;
 
   return `
     <div class="ficha-elegida-card" id="fichaElegida_${hiloId}">
-      <div class="ficha-elegida-header">
+      <div class="ficha-elegida-top">
         <span class="ficha-elegida-tag">✅ Elección final</span>
-        ${mediaFinal != null ? `<span class="ficha-elegida-media">${mediaFinal}<span style="font-size:0.6em;opacity:0.7">/10</span></span>` : ''}
+        <div class="ficha-elegida-nombre">📱 ${escHtml(nombreMovil)}</div>
+        <span class="ficha-elegida-por">Recomendado por ${cap(r.nickname)}</span>
       </div>
-      <div class="ficha-elegida-nombre">📱 ${escHtml(nombreMovil)}</div>
-      <div class="ficha-elegida-por">Recomendado por ${cap(r.nickname)}</div>
-      ${barsHtml ? `<div class="ficha-bar-list">${barsHtml}</div>` : ''}
+      <div class="ficha-elegida-body">
+        <div class="ficha-procon-grid">
+          <div class="ficha-procon-col pros">
+            <div class="ficha-procon-head">✅ PROS</div>
+            ${prosHtml}
+          </div>
+          <div class="ficha-procon-col contras">
+            <div class="ficha-procon-head">❌ CONTRAS</div>
+            ${contrasHtml}
+          </div>
+        </div>
+        ${veredicto ? `<div class="ficha-veredicto">📢 ${escHtml(veredicto)}</div>` : ''}
+      </div>
     </div>`;
 }
-
-const RANKING_CATS = [
-  { key: 'sc_pantalla',    label: 'Pantalla',     icon: '📱' },
-  { key: 'sc_potencia',    label: 'Potencia',     icon: '🚀' },
-  { key: 'sc_camara',      label: 'Cámara',       icon: '📷' },
-  { key: 'sc_video',       label: 'Vídeo',        icon: '🎥' },
-  { key: 'sc_bateria',     label: 'Batería',      icon: '🔋' },
-  { key: 'sc_carga',       label: 'Carga',        icon: '⚡' },
-  { key: 'sc_sonido',      label: 'Sonido',       icon: '🔊' },
-  { key: 'sc_bloatware',   label: 'Bloatware',    icon: '🧹' },
-  { key: 'sc_actualizaciones', label: 'Updates',  icon: '🔄' },
-  { key: 'sc_software',    label: 'Software',     icon: '💻' },
-];
 
 // ═══════════════════════════════════════════
 // LISTA MAESTRA DE MODELOS CONOCIDOS
@@ -8016,22 +7983,15 @@ async function marcarRespuestaElegida(hiloId, respuestaId, estabaElegida) {
 // RESPUESTAS MAS VOTADAS DESTACADAS
 // ═══════════════════════════════════════════
 
-// ── Parsear scores desde el campo contenido (fallback si las columnas no existen en BD) ──
-function parsearScoresDesdeContenido(contenido) {
-  if (!contenido) return {};
-  const match = contenido.match(/\[Scores:\s*([^\]]+)\]/);
-  if (!match) return {};
-  const scores = {};
-  const partes = match[1].split('·');
-  for (const parte of partes) {
-    const m = parte.trim().match(/(.+?)\s+([\d.]+)\/10/);
-    if (!m) continue;
-    const labelRaw = m[1].replace(/^[\s\S]*?([\w]+[\w\s]*)$/, '$1').trim();
-    const val = parseFloat(m[2]);
-    const cat = RANKING_CATS.find(c => c.label.toLowerCase() === labelRaw.toLowerCase());
-    if (cat) scores[cat.key] = val;
-  }
-  return scores;
+// ── Parsear pros/contras desde el campo contenido (fallback si las columnas no existen en BD) ──
+function parsearProsContrasDesdeContenido(contenido) {
+  const out = { pros: [], contras: [] };
+  if (!contenido) return out;
+  const mPros = contenido.match(/\[PROS:\s*([^\]]*)\]/i);
+  const mContras = contenido.match(/\[CONTRAS:\s*([^\]]*)\]/i);
+  if (mPros && mPros[1].trim()) out.pros = mPros[1].split('|').map(s => s.trim()).filter(Boolean);
+  if (mContras && mContras[1].trim()) out.contras = mContras[1].split('|').map(s => s.trim()).filter(Boolean);
+  return out;
 }
 
 async function cargarRespuestas(hiloId, forceVisible = false) {
@@ -8205,8 +8165,12 @@ async function cargarRespuestas(hiloId, forceVisible = false) {
       }
     }
 
-    // ── Limpiar texto: quitar [Scores:...] y la primera línea si es el nombre del móvil ──
-    let textoLimpio = (r.contenido || '').replace(/\[Scores:[^\]]*\]/g, '').trim();
+    // ── Limpiar texto: quitar [PROS:...]/[CONTRAS:...] y la primera línea si es el nombre del móvil ──
+    let textoLimpio = (r.contenido || '')
+      .replace(/\[PROS:[^\]]*\]/gi, '')
+      .replace(/\[CONTRAS:[^\]]*\]/gi, '')
+      .replace(/\[Scores:[^\]]*\]/gi, '')
+      .trim();
     if (r.movil_nombre && textoLimpio) {
       const lineas = textoLimpio.split('\n');
       if (lineas[0].trim().toLowerCase() === r.movil_nombre.trim().toLowerCase()) lineas.shift();
@@ -8228,28 +8192,20 @@ async function cargarRespuestas(hiloId, forceVisible = false) {
       ? `<div class="reply-rec-moviles">${movilesAMostrar.map(m => `<span class="reply-rec-chip">📱 ${formatearModelo(m)}</span>`).join('')}</div>`
       : '';
 
-    // ── Scores: primero columnas de BD, si no hay, parsear desde el campo contenido ──
-    const scoresEnBD = RANKING_CATS.some(c => r[c.key] != null);
-    const scoresFinales = scoresEnBD ? r : parsearScoresDesdeContenido(r.contenido);
-    const mediaFinal = r.sc_media != null
-      ? r.sc_media
-      : (() => {
-          const vs = RANKING_CATS.map(c => scoresFinales[c.key]).filter(v => v != null);
-          return vs.length ? parseFloat((vs.reduce((a,b) => a+b, 0) / vs.length).toFixed(1)) : null;
-        })();
+    // ── Pros/contras: primero columnas de BD, si no hay, parsear desde el campo contenido ──
+    const { pros: prosFinales, contras: contrasFinales } = obtenerProsContras(r);
 
-    // ── Bloque de ranking ──
+    // ── Bloque de pros/contras ──
     let rankingHtml = '';
-    const tieneScores = RANKING_CATS.some(c => scoresFinales[c.key] != null);
-    if (r.tiene_ranking || r.movil_nombre || tieneScores) {
-      const chipsHtml = RANKING_CATS
-        .filter(cat => scoresFinales[cat.key] != null)
-        .map(cat => `<span class="reply-ranking-chip">${cat.icon} ${cat.label} <b>${scoresFinales[cat.key]}/10</b></span>`)
-        .join('');
+    if (prosFinales.length || contrasFinales.length) {
+      const prosListHtml = prosFinales.length
+        ? `<ul>${prosFinales.map(p => `<li>${escHtml(p)}</li>`).join('')}</ul>` : '';
+      const contrasListHtml = contrasFinales.length
+        ? `<ul>${contrasFinales.map(c => `<li>${escHtml(c)}</li>`).join('')}</ul>` : '';
       rankingHtml = `
         <div class="reply-ranking-block">
-          ${mediaFinal != null ? `<div class="reply-ranking-media">⭐ Media <span style="margin-left:4px;font-size:1.05rem;">${mediaFinal}/10</span></div>` : ''}
-          ${chipsHtml ? `<div class="reply-ranking-chips">${chipsHtml}</div>` : ''}
+          ${prosListHtml ? `<div class="reply-procon-col pros"><div class="reply-procon-title">✅ Pros</div>${prosListHtml}</div>` : ''}
+          ${contrasListHtml ? `<div class="reply-procon-col contras"><div class="reply-procon-title">❌ Contras</div>${contrasListHtml}</div>` : ''}
         </div>`;
     }
 
@@ -8332,29 +8288,13 @@ function abrirModalRanking(hiloId) {
   if (!usuario) { mostrarModalAuth(); return; }
   rankingHiloActivo = hiloId;
 
-  // Generar grid de categorías
-  const grid = document.getElementById('rankingScoresGrid');
-  grid.innerHTML = RANKING_CATS.map(cat => `
-    <div class="ranking-score-item">
-      <div class="ranking-score-label">${cat.icon} ${cat.label}</div>
-      <div class="ranking-score-row">
-        <input class="ranking-score-input" type="number" id="rk_${cat.key}"
-          min="0" max="10" step="1" value=""
-          placeholder="—"
-          oninput="actualizarMediaRanking()" />
-        <div class="ranking-score-bar">
-          <div class="ranking-score-bar-fill" id="bar_${cat.key}" style="width:0%"></div>
-        </div>
-      </div>
-    </div>
-  `).join('');
-
   document.getElementById('rankingMovilNombre').value = '';
+  document.getElementById('rankingPros').value = '';
+  document.getElementById('rankingContras').value = '';
   document.getElementById('rankingNota').value = '';
   document.getElementById('rankingTienda').value = '';
   document.getElementById('rankingPrecio').value = '';
   document.getElementById('rankingCupon').value = '';
-  document.getElementById('rankingMediaNum').textContent = '—';
   document.getElementById('rankingModalOverlay').style.display = 'flex';
   document.getElementById('rankingMovilNombre').focus();
 }
@@ -8365,19 +8305,12 @@ function cerrarModalRanking(e) {
   rankingHiloActivo = null;
 }
 
-function actualizarMediaRanking() {
-  const vals = RANKING_CATS.map(cat => {
-    const v = parseFloat(document.getElementById(`rk_${cat.key}`)?.value);
-    // Actualizar barra
-    const bar = document.getElementById(`bar_${cat.key}`);
-    if (bar) bar.style.width = (!isNaN(v) && v >= 0 && v <= 10) ? `${v * 10}%` : '0%';
-    return (!isNaN(v) && v >= 0 && v <= 10) ? v : null;
-  }).filter(v => v !== null);
-
-  const mediaEl = document.getElementById('rankingMediaNum');
-  if (vals.length === 0) { mediaEl.textContent = '—'; return; }
-  const media = (vals.reduce((a,b) => a+b, 0) / vals.length).toFixed(1);
-  mediaEl.textContent = media;
+// ── Convierte el texto de un textarea (una línea por elemento) en un array limpio ──
+function lineasATexto(valor) {
+  return (valor || '')
+    .split('\n')
+    .map(s => s.trim())
+    .filter(Boolean);
 }
 
 async function enviarConRanking() {
@@ -8386,39 +8319,21 @@ async function enviarConRanking() {
   const nombre = document.getElementById('rankingMovilNombre').value.trim();
   if (!nombre) { toast('❌ Escribe el nombre del móvil'); document.getElementById('rankingMovilNombre').focus(); return; }
 
-  // Recoger scores
-  const scores = {};
-  let algunScore = false;
-  const vals = [];
-  for (const cat of RANKING_CATS) {
-    const raw = document.getElementById(`rk_${cat.key}`)?.value;
-    const v = parseFloat(raw);
-    if (!isNaN(v) && v >= 0 && v <= 10) {
-      scores[cat.key] = Math.round(v * 10) / 10;
-      vals.push(scores[cat.key]);
-      algunScore = true;
-    } else {
-      scores[cat.key] = null;
-    }
-  }
-
-  const media = vals.length > 0
-    ? Math.round((vals.reduce((a,b) => a+b, 0) / vals.length) * 10) / 10
-    : null;
+  const pros = lineasATexto(document.getElementById('rankingPros').value);
+  const contras = lineasATexto(document.getElementById('rankingContras').value);
 
   const nota = document.getElementById('rankingNota').value.trim();
   const tienda = document.getElementById('rankingTienda').value.trim();
   const precio = document.getElementById('rankingPrecio').value.trim();
   const cupon = document.getElementById('rankingCupon').value.trim();
 
-  // Construir texto legible para el campo contenido
+  // Construir texto legible para el campo contenido (fallback si las columnas pros/contras no existen en BD)
   // Nota: el nombre del móvil se guarda en movil_nombre y se renderiza como tag,
   // así que NO lo incluimos en el texto plano para evitar duplicados.
-  const scoreTxt = RANKING_CATS
-    .filter(cat => scores[cat.key] !== null)
-    .map(cat => `${cat.icon} ${cat.label} ${scores[cat.key]}/10`)
-    .join(' · ');
-  const contenido = `${nombre}\n${nota ? nota : ''}${algunScore ? '\n[Scores: ' + scoreTxt + ']' : ''}`.trim();
+  const bracketEscape = s => s.replace(/[\[\]|]/g, '');
+  const prosTag = pros.length ? `[PROS: ${pros.map(bracketEscape).join(' | ')}]` : '';
+  const contrasTag = contras.length ? `[CONTRAS: ${contras.map(bracketEscape).join(' | ')}]` : '';
+  const contenido = `${nombre}\n${nota ? nota : ''}${prosTag ? '\n' + prosTag : ''}${contrasTag ? '\n' + contrasTag : ''}`.trim();
 
   const insertData = {
     hilo_id: rankingHiloActivo,
@@ -8426,8 +8341,8 @@ async function enviarConRanking() {
     nickname: usuario.nickname,
     contenido,
     movil_nombre: nombre,
-    ...scores,
-    sc_media: media,
+    pros: pros.length ? pros : null,
+    contras: contras.length ? contras : null,
     tiene_ranking: true,
     tienda: tienda || null,
     precio_tienda: precio || null,
@@ -8446,16 +8361,22 @@ async function enviarConRanking() {
     delete sinOferta.tienda; delete sinOferta.precio_tienda; delete sinOferta.cupon;
     const { error: errSinOferta } = await db.from('respuestas').insert(sinOferta);
     if (errSinOferta) {
-      // Si las columnas de score tampoco existen, insertamos lo mínimo
-      const fallback = {
-        hilo_id: rankingHiloActivo,
-        usuario_id: usuario.id,
-        nickname: usuario.nickname,
-        contenido,
-      };
-      if (quoteActiva && quoteActiva.hiloId === rankingHiloActivo) fallback.cita_id = quoteActiva.replyId;
-      const { error: err2 } = await db.from('respuestas').insert(fallback);
-      if (err2) { toast('⚠️ Error: ' + err2.message); return; }
+      // Si las columnas pros/contras tampoco existen, insertamos sin ellas (quedan igualmente en el texto plano)
+      const sinProsContras = { ...sinOferta };
+      delete sinProsContras.pros; delete sinProsContras.contras;
+      const { error: errSinPC } = await db.from('respuestas').insert(sinProsContras);
+      if (errSinPC) {
+        // Insertamos lo mínimo
+        const fallback = {
+          hilo_id: rankingHiloActivo,
+          usuario_id: usuario.id,
+          nickname: usuario.nickname,
+          contenido,
+        };
+        if (quoteActiva && quoteActiva.hiloId === rankingHiloActivo) fallback.cita_id = quoteActiva.replyId;
+        const { error: err2 } = await db.from('respuestas').insert(fallback);
+        if (err2) { toast('⚠️ Error: ' + err2.message); return; }
+      }
     }
   }
 
@@ -8474,15 +8395,13 @@ async function enviarConRanking() {
   // Insertar la recomendación en el DOM al instante
   const ac2 = avatarColor(usuario.nickname);
   const nombre2 = cap(usuario.nickname);
-  const chipsInstant = RANKING_CATS
-    .filter(cat => scores[cat.key] !== null)
-    .map(cat => `<span class="reply-ranking-chip">${cat.icon} ${cat.label} <b>${scores[cat.key]}/10</b></span>`)
-    .join('');
-  const rankingInstant = `
+  const prosListInstant = pros.length ? `<ul>${pros.map(p => `<li>${escHtml(p)}</li>`).join('')}</ul>` : '';
+  const contrasListInstant = contras.length ? `<ul>${contras.map(c => `<li>${escHtml(c)}</li>`).join('')}</ul>` : '';
+  const rankingInstant = (prosListInstant || contrasListInstant) ? `
     <div class="reply-ranking-block">
-      ${media != null ? `<div class="reply-ranking-media">⭐ Media <span style="margin-left:4px;font-size:1.05rem;">${media}/10</span></div>` : ''}
-      ${chipsInstant ? `<div class="reply-ranking-chips">${chipsInstant}</div>` : ''}
-    </div>`;
+      ${prosListInstant ? `<div class="reply-procon-col pros"><div class="reply-procon-title">✅ Pros</div>${prosListInstant}</div>` : ''}
+      ${contrasListInstant ? `<div class="reply-procon-col contras"><div class="reply-procon-title">❌ Contras</div>${contrasListInstant}</div>` : ''}
+    </div>` : '';
   const nuevoHtmlRanking = `
     <div class="reply-item" id="temp_${Date.now()}">
       <div class="reply-header">
